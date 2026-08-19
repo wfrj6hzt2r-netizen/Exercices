@@ -2277,11 +2277,11 @@ const MANNEQUIN_BOX = { x: 63, y: 24, w: 174, h: 522.8 };
 // pour qu'aucune cible n'en recouvre une autre. « labelY » ne s'ecarte de « cy » que pour
 // la cheville, dont le libelle est remonte afin de laisser respirer celui du pied.
 const REALISTIC_MARKERS = [
-    { id: "cervical", label: "Cervical", cx: 150, cy: 105, labelX: 242, labelY: 105, anchor: "start", hit: 22 },
+    { id: "cervical", label: "Cervicales", cx: 150, cy: 105, labelX: 242, labelY: 105, anchor: "start", hit: 22 },
     { id: "epaule", label: "Épaule", cx: 96.1, cy: 137.8, labelX: 62, labelY: 138, anchor: "end", hit: 22 },
-    { id: "thoracique", label: "Thoracique", cx: 150.3, cy: 166.8, labelX: 242, labelY: 167, anchor: "start", hit: 22 },
+    { id: "thoracique", label: "Thoraciques", cx: 150.3, cy: 166.8, labelX: 242, labelY: 167, anchor: "start", hit: 22 },
     { id: "coude", label: "Coude", cx: 86.3, cy: 215.3, labelX: 62, labelY: 215, anchor: "end", hit: 22 },
-    { id: "lombaire", label: "Lombaire", cx: 150.3, cy: 225.1, labelX: 242, labelY: 225, anchor: "start", hit: 22 },
+    { id: "lombaire", label: "Lombaires", cx: 150.3, cy: 225.1, labelX: 242, labelY: 225, anchor: "start", hit: 22 },
     { id: "hanche", label: "Hanche", cx: 111.2, cy: 277.1, labelX: 62, labelY: 277, anchor: "end", hit: 19 },
     { id: "pubalgie", label: "Pubalgie", cx: 150.3, cy: 281.2, labelX: 242, labelY: 281, anchor: "start", hit: 19 },
     { id: "genou", label: "Genou", cx: 119.1, cy: 395.6, labelX: 62, labelY: 396, anchor: "end", hit: 22 },
@@ -2291,10 +2291,10 @@ const REALISTIC_MARKERS = [
 function RealisticSelector({ onSelect }) {
     // Marqueur actuellement touché, survolé ou au clavier, pour donner un retour visuel.
     const [active, setActive] = useState(null);
-    // Cadrage : le mannequin occupe x 63..237, les libellés vont de x≈2 à x≈318. Une largeur
-    // de 340 pour 310 px d'affichage laisse des libellés à ~13,7 px et des cibles tactiles
-    // d'environ 40 px sur les repères isolés.
-    return (React.createElement("svg", { viewBox: "-16 18 340 570", className: "w-full max-w-[310px] mx-auto", role: "group", "aria-label": "S\u00E9lection de la zone du corps" },
+    // Cadrage : le mannequin occupe x 63..237, les libellés vont de x≈6 à x≈331. La largeur
+    // est passée de 340 à 358 quand les libellés du rachis sont passés au pluriel :
+    // « Thoraciques » dépassait de 7 px et « Cervicales » frôlait le bord.
+    return (React.createElement("svg", { viewBox: "-16 18 358 570", className: "w-full max-w-[310px] mx-auto", role: "group", "aria-label": "S\u00E9lection de la zone du corps" },
         React.createElement("defs", null,
             React.createElement("filter", { id: "corpsFlou", x: "-70%", y: "-70%", width: "240%", height: "240%" },
                 React.createElement("feGaussianBlur", { stdDeviation: "6" }))),
