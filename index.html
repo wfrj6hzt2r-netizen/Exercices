@@ -338,7 +338,10 @@ const POSES = [
             || n.includes("muscles intrinsèques") || n.includes("de la main")) },
     // « pompes de cheville » n'est pas une pompe : on exige le contexte du membre supérieur.
     { key: "triceps-push", icon: PoseTricepsPush, test: (n) => n.includes("triceps")
-            || n.includes("poussée") || (n.includes("pompes") && !n.includes("cheville")) },
+            // « poussée » ne suffit pas : dans le parcours croissance il s'agit des poussées de
+            // croissance, et « montées de marche en poussée » est un step. Seul le geste compte.
+            || n.includes("gestes de poussée")
+            || (n.includes("pompes") && !n.includes("cheville")) },
     { key: "thoracic-ext", icon: PoseThoracicExt, test: (n) => n.includes("haut du dos")
             || n.includes("rouleau") || n.includes("extension du haut") },
     // --- 1. Consignes et repères, qui ne sont pas des mouvements ---
@@ -419,7 +422,9 @@ const POSES = [
     { key: "neck", icon: PoseNeck, test: (n) => n.includes("cervical") || n.includes("menton") || n.includes("nuque") || n.includes("trapèze")
             || n.includes("oculo") || n.includes("visuel") || n.includes("céphalique") || n.includes("torticolis")
             || n.includes("inclinaisons latérales") || n.includes("extenseurs cervicaux") || n.includes("fléchisseurs profonds")
-            || n.includes("du cou") || n.includes("de la tête") || n.includes("rotations de tête") },
+            // « du cou » est contenu dans « du coude » : sans cette garde, la mobilité du coude
+            // de l'enfant lanceur s'affichait avec un pictogramme de nuque.
+            || (n.includes("du cou") && !n.includes("coude")) || n.includes("de la tête") || n.includes("rotations de tête") },
     { key: "trunk", icon: PoseTrunkRotation, test: (n) => !n.includes("hanche") && !n.includes("genou")
             && !n.includes("épaule") && !n.includes("cheville") && !n.includes("bras")
             && (n.includes("rotation du tronc") || n.includes("rotation lombaire")
@@ -1138,7 +1143,7 @@ const PATHOLOGIES = [
                             { name: "Reprise progressive de la course ou de la marche longue", dose: "selon plan", tip: "Augmentez d'environ 10 % par semaine, en terrain plat d'abord, et un seul paramètre à la fois." },
                             { name: "Réintroduction des côtes et des escaliers", dose: "à partir de la semaine 10", tip: "Ce sont les situations où le pied remonte le plus vers le tibia, donc celles qui compriment le plus l'insertion : elles reviennent en dernier et progressivement." },
                             { name: "Maintien du renforcement lourd et lent", dose: "2 à 3 × par semaine", tip: "À poursuivre plusieurs mois après la disparition de la douleur : c'est l'arrêt précoce qui explique une bonne part des récidives." },
-                            { name: "Suivi de la raideur matinale", dose: "chaque matin", tip: "Elle reste le juge : si elle remonte après une sortie, la charge était trop forte." }
+                            { name: "Suivi de la raideur après les sorties", dose: "chaque matin", tip: "Elle reste le juge : si elle remonte après une sortie, la charge était trop forte." }
                         ] }
                 ] },
             { id: "achille-paratenonite", label: "Paraténonite d'Achille", groupe: "Le tendon d'Achille", desc: "Gonflement et sensation de craquement autour du tendon, avec une zone douloureuse qui ne se déplace pas quand vous bougez la cheville.", context: "Ici c'est la gaine qui entoure le tendon qui est irritée, et non le tendon lui-même. Un repère simple permet de faire la différence : bougez la cheville de haut en bas en observant la zone gonflée ou douloureuse. Si elle se déplace avec le tendon, c'est le tendon ; si elle reste au même endroit, c'est la gaine. La prise en charge est moins codifiée que pour le corps du tendon, et les avis divergent davantage : on commence par réduire les frottements — volume d'entraînement, surfaces, chaussage — avant de reprendre la charge progressivement. L'évolution est souvent plus rapide que celle d'une tendinopathie du tendon lui-même. Une rougeur, une chaleur marquée ou de la fièvre justifient un avis médical avant tout exercice.", stages: [
@@ -2446,12 +2451,12 @@ const DRAPEAUX = {
     // Genou
     "genou:entorse": ["Un gonflement apparu dans l'heure suivant le traumatisme, ou un genou qui se dérobe franchement en appui."],
     "genou:lca": ["Un blocage du genou qui vous empêche de le tendre complètement, ou un gonflement qui réapparaît brutalement."],
-    "genou:menisque-suture.": ["Un blocage vrai du genou, ou un gonflement qui réapparaît après l'avoir vu disparaître."],
-    "genou:menisque-ablation.": ["Un blocage vrai du genou, qui reste coincé et refuse de se tendre."],
-    "genou:lesion-musculaire.": ["Un hématome volumineux, une déformation du muscle, ou l'impossibilité de contracter."],
+    "genou:menisque-suture": ["Un blocage vrai du genou, ou un gonflement qui réapparaît après l'avoir vu disparaître."],
+    "genou:menisque-ablation": ["Un blocage vrai du genou, qui reste coincé et refuse de se tendre."],
+    "genou:lesion-musculaire": ["Un hématome volumineux, une déformation du muscle, ou l'impossibilité de contracter."],
     "genou:ptg": ["Un écoulement, une rougeur qui s'étend autour de la cicatrice, ou de la fièvre.", "Un mollet douloureux, chaud et gonflé.", "Une perte brutale de mobilité du genou après l'avoir gagnée."],
     // Hanche
-    "hanche:arthrose-hanche.": ["Une douleur de hanche qui apparaît brutalement et empêche l'appui, surtout après une chute."],
+    "hanche:arthrose-hanche": ["Une douleur de hanche qui apparaît brutalement et empêche l'appui, surtout après une chute."],
     "hanche:pth": ["Une douleur brutale avec impossibilité de poser le pied, une jambe qui paraît plus courte ou tournée vers l'extérieur : cela peut évoquer une luxation de la prothèse et impose un avis en urgence.", "Un écoulement, une rougeur qui s'étend autour de la cicatrice, ou de la fièvre.", "Un mollet douloureux, chaud et gonflé."],
     // Épaule
     "epaule:instabilite": ["Une épaule qui reste déformée ou bloquée après un épisode, ou une impossibilité de lever le bras après un choc."],
@@ -2459,22 +2464,22 @@ const DRAPEAUX = {
     "epaule:capsulite": ["Une raideur apparue juste après un traumatisme ou une immobilisation, qui n'évolue pas comme décrit ici.", "Une douleur qui s'aggrave franchement au fil des semaines au lieu de se calmer, ou un amaigrissement inexpliqué."],
     // Cheville et pied
     "cheville:achille": ["Un claquement ressenti à l'arrière de la cheville suivi d'une impossibilité de monter sur la pointe : cela évoque une rupture et impose un avis rapide."],
-    "cheville:achille-insertion.": ["Un claquement suivi d'une impossibilité de monter sur la pointe du pied."],
-    "cheville:achille-paratenonite.": ["Une rougeur, une chaleur marquée ou de la fièvre associées au gonflement."],
-    "cheville:entorse-lat.": ["Une impossibilité de poser le pied et de faire quatre pas, ou une douleur à l'appui sur l'os de la cheville : une radiographie est alors justifiée."],
+    "cheville:achille-insertion": ["Un claquement suivi d'une impossibilité de monter sur la pointe du pied."],
+    "cheville:achille-paratenonite": ["Une rougeur, une chaleur marquée ou de la fièvre associées au gonflement."],
+    "cheville:entorse-lat": ["Une impossibilité de poser le pied et de faire quatre pas, ou une douleur à l'appui sur l'os de la cheville : une radiographie est alors justifiée."],
     "pied:coussinet": ["Une douleur du talon apparue après une chute ou une réception sur les talons.", "Un talon gonflé, chaud, ou une douleur qui vous réveille la nuit."],
     "pied:fasciite-pied": ["Une douleur du talon apparue brutalement pendant un effort, avec sensation de déchirure."],
     // Rachis — le plus important de tous
     "lombaire:lombalgie": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus : ce sont des urgences, consultez sans attendre."],
-    "lombaire:lombosciatique.": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou un pied qui tombe en marchant : consultez sans attendre."],
-    "lombaire:hernie-discale.": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou une faiblesse qui s'aggrave dans la jambe : consultez sans attendre."],
-    "lombaire:stenose-spinale.": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou des jambes qui se dérobent : consultez sans attendre."],
+    "lombaire:lombosciatique": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou un pied qui tombe en marchant : consultez sans attendre."],
+    "lombaire:hernie-discale": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou une faiblesse qui s'aggrave dans la jambe : consultez sans attendre."],
+    "lombaire:stenose-spinale": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou des jambes qui se dérobent : consultez sans attendre."],
     "cervical:ncb-c5": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:ncb-c6": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:ncb-c7": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:ncb-c8": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:whiplash": ["Des troubles de la vision, des vertiges, des difficultés à avaler ou à parler, ou une douleur intense après un choc violent."],
-    "cervical:cervicalgie.": ["Des troubles de la vision, des vertiges, ou une douleur qui descend dans le bras avec perte de force."],
+    "cervical:cervicalgie": ["Des troubles de la vision, des vertiges, ou une douleur qui descend dans le bras avec perte de force."],
 };
 const DRAPEAUX_COUREUR = {
     "periostite": ["Une douleur qui se concentre sur un point précis du tibia, réveille la nuit ou persiste au repos : une fracture de fatigue doit être écartée avant toute reprise."],
@@ -3488,6 +3493,13 @@ function SwipeBack({ onBack, actif, children }) {
             geste.current = null;
             return;
         }
+        // Un curseur se règle par un mouvement horizontal : sans cette exception, tirer la
+        // note de douleur de 2 vers 8 quittait l'écran et perdait le bilan de séance.
+        const cible = e.target;
+        if (cible && cible.closest && cible.closest("input, textarea, select, [role='slider']")) {
+            geste.current = null;
+            return;
+        }
         geste.current = { x: t.clientX, y: t.clientY, t: Date.now(), engage: false };
     };
     const bouge = (e) => {
@@ -3645,7 +3657,7 @@ function GuidedJourney() {
     // Journal des séances : une entrée par jour travaillé et par parcours.
     const [journal, setJournal] = useState(() => restored.journal || []);
     const [charges, setCharges] = useState(() => restored.charges || {});
-    const [jour] = useState(() => aujourdHui());
+    const [jour, setJour] = useState(() => aujourdHui());
     // Écran de fin de séance, proposé une fois le stade du jour terminé.
     const [bilanOuvert, setBilanOuvert] = useState(null);
     const [openInfo, setOpenInfo] = useState(new Set());
@@ -3723,6 +3735,26 @@ function GuidedJourney() {
         window.addEventListener("popstate", surRetour);
         return () => window.removeEventListener("popstate", surRetour);
     }, []);
+    // Passage de minuit. La remise à zéro des coches n'avait lieu qu'à la lecture du stockage :
+    // une application installée sur l'écran d'accueil, laissée ouverte, créditait la séance du
+    // lendemain à la veille et rouvrait sur des cases déjà cochées.
+    useEffect(() => {
+        if (typeof window === "undefined")
+            return;
+        const verifier = () => {
+            const maintenant = aujourdHui();
+            if (maintenant === jour)
+                return;
+            setJour(maintenant);
+            setDone({});
+            setBilanOuvert(null);
+        };
+        // Au retour d'un écran verrouillé d'abord — le cas courant — et à défaut une fois par
+        // minute, pour l'application restée affichée au passage de minuit.
+        document.addEventListener("visibilitychange", verifier);
+        const t = setInterval(verifier, 60000);
+        return () => { document.removeEventListener("visibilitychange", verifier); clearInterval(t); };
+    }, [jour]);
     // Chaque nouvel écran — et chaque changement d'étape — repart du haut. Sans cela, on arrive
     // au milieu de la liste suivante après avoir touché « Suivant » en bas de la précédente.
     useEffect(() => {
@@ -4486,7 +4518,9 @@ function GuidedJourney() {
                     totalDone,
                     " / ",
                     totalCount,
-                    " exercices cochés aujourd'hui"),
+                    // Ce compteur porte sur toutes les étapes, pas sur la seule affichée :
+                    // sans le dire, « 0 / 16 » devant quatre exercices se lisait comme une erreur.
+                    " exercices du parcours cochés aujourd'hui"),
                 React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
                     "\uD83D\uDCC5 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
@@ -4510,7 +4544,7 @@ function GuidedJourney() {
                     // "(3 sec / 3 sec)" décrivait la vitesse du mouvement, pas un maintien.
                     const timerSec = doseParts.note && doseParts.note.startsWith("répétitions") ? null : parseTimerSeconds(displayDose);
                 return (React.createElement("div", { key: exId, className: "rounded-2xl p-4 bg-white", style: { border: checked ? `1px solid ${ACCENT}` : "1px solid #E4E6F0" } },
-                    React.createElement("button", { onClick: () => toggle(key, exId, stage.exercises.length), className: "w-full text-left flex items-center gap-3" },
+                    React.createElement("button", { onClick: () => toggle(key, exId, totalCount), className: "w-full text-left flex items-center gap-3" },
                         React.createElement("div", { className: "w-11 h-11 rounded-full flex items-center justify-center shrink-0", style: { backgroundColor: checked ? ACCENT : "#E4EEE6" } },
                             React.createElement(Icon, { size: 24, color: checked ? "#FFFFFF" : ACCENT })),
                         React.createElement("div", { className: "flex-1 min-w-0" },
@@ -4573,8 +4607,10 @@ function GuidedJourney() {
                 // est fra\u00eeche, plut\u00f4t que de la reconstituer \u00e0 la consultation suivante.
                 stageComplete(stage) && bilanOuvert !== key && entreeDuJour(key) && entreeDuJour(key).douleur === undefined && (React.createElement("div", { className: "mt-4" },
                     React.createElement(BilanSeance, {
+                        // Les deux nombres doivent parler du même ensemble : les coches d'un
+                        // parcours par zone couvrent toutes ses étapes, pas la seule affichée.
                         faits: doneSet.size,
-                        total: stage.exercises.length,
+                        total: totalCount,
                         valeurInitiale: undefined,
                         accent: ACCENT,
                         onValider: (n) => { setJournal((j) => noterDouleur(j, key, jour, n)); setBilanOuvert(key); },
