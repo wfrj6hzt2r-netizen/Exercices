@@ -19,15 +19,16 @@ const PoseSquat = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "23", y1: "24", x2: "31", y2: "27" }),
     React.createElement("line", { x1: "31", y1: "27", x2: "31", y2: "35" }),
     React.createElement("line", { x1: "31", y1: "35", x2: "36", y2: "35" })));
+// Fente vue de profil : genou avant fléchi, genou arrière descendu vers le sol.
 const PoseLunge = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "22", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "22", y1: "12", x2: "24", y2: "24" }),
-    React.createElement("line", { x1: "23", y1: "16", x2: "14", y2: "20" }),
-    React.createElement("line", { x1: "23", y1: "16", x2: "30", y2: "12" }),
-    React.createElement("line", { x1: "24", y1: "24", x2: "14", y2: "26" }),
-    React.createElement("line", { x1: "14", y1: "26", x2: "10", y2: "40" }),
-    React.createElement("line", { x1: "24", y1: "24", x2: "32", y2: "30" }),
-    React.createElement("line", { x1: "32", y1: "30", x2: "32", y2: "40" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "22", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "22", y1: "13", x2: "22", y2: "27" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "33", y2: "32" }),
+    React.createElement("line", { x1: "33", y1: "32", x2: "33", y2: "44" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "14", y2: "34" }),
+    React.createElement("line", { x1: "14", y1: "34", x2: "10", y2: "44" }),
+    React.createElement("line", { x1: "22", y1: "17", x2: "27", y2: "26" })));
 const PoseBalance = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
     React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "26" }),
@@ -36,57 +37,78 @@ const PoseBalance = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "26", x2: "21", y2: "42" }),
     React.createElement("line", { x1: "24", y1: "26", x2: "30", y2: "24" }),
     React.createElement("line", { x1: "30", y1: "24", x2: "24", y2: "21" })));
+// Pont fessier : épaules et pieds au sol, bassin décollé. Le sol lève l'ambiguïté sur la position allongée.
 const PoseBridge = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "8", y1: "34", x2: "16", y2: "34" }),
-    React.createElement("line", { x1: "16", y1: "34", x2: "24", y2: "22" }),
-    React.createElement("line", { x1: "24", y1: "22", x2: "34", y2: "30" }),
-    React.createElement("circle", { cx: "38", cy: "32", r: "4" }),
-    React.createElement("line", { x1: "16", y1: "34", x2: "16", y2: "42" }),
-    React.createElement("line", { x1: "24", y1: "22", x2: "24", y2: "42" })));
+    React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "38", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "39", x2: "25", y2: "28" }),
+    React.createElement("line", { x1: "25", y1: "28", x2: "34", y2: "33" }),
+    React.createElement("line", { x1: "34", y1: "33", x2: "37", y2: "41" })));
+// Gainage sur les coudes, corps aligné. Le pied relevé de la version précédente faisait croire à un mouvement.
 const PosePlank = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "10", cy: "22", r: "4" }),
-    React.createElement("line", { x1: "14", y1: "24", x2: "38", y2: "34" }),
-    React.createElement("line", { x1: "14", y1: "24", x2: "10", y2: "34" }),
-    React.createElement("line", { x1: "24", y1: "28", x2: "22", y2: "38" }),
-    React.createElement("line", { x1: "38", y1: "34", x2: "42", y2: "30" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "11", cy: "22", r: "4" }),
+    React.createElement("line", { x1: "15", y1: "24", x2: "39", y2: "35" }),
+    React.createElement("line", { x1: "15", y1: "24", x2: "11", y2: "35" }),
+    React.createElement("line", { x1: "25", y1: "28", x2: "23", y2: "38" }),
+    React.createElement("line", { x1: "39", y1: "35", x2: "42", y2: "40" })));
+// Allongé sur le dos, un genou fléchi. L'ancienne version était illisible à 24 px :
+// proportions revues et sol ajouté pour donner l'assise du dessin.
 const PoseLyingMobilise = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "8", cy: "24", r: "4" }),
-    React.createElement("line", { x1: "12", y1: "25", x2: "30", y2: "27" }),
-    React.createElement("line", { x1: "30", y1: "27", x2: "26", y2: "16" }),
-    React.createElement("line", { x1: "26", y1: "16", x2: "34", y2: "14" }),
-    React.createElement("line", { x1: "12", y1: "25", x2: "10", y2: "34" })));
+    React.createElement("circle", { cx: "8", cy: "27", r: "4" }),
+    React.createElement("line", { x1: "12", y1: "29", x2: "25", y2: "30" }),
+    React.createElement("line", { x1: "25", y1: "30", x2: "31", y2: "19" }),
+    React.createElement("line", { x1: "31", y1: "19", x2: "38", y2: "29" }),
+    React.createElement("line", { x1: "25", y1: "30", x2: "40", y2: "33" }),
+    React.createElement("line", { x1: "4", y1: "38", x2: "44", y2: "38" })));
+// Étirement debout : talon ramené vers la fesse, main qui tient la cheville. Deux tentatives
+// de flexion avant ont échoué — en filaire, cette posture ferme toujours un triangle avec le
+// sol et cesse de se lire comme un corps. Ce geste-ci est le plus fréquent de la catégorie.
 const PoseStretchStanding = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "20", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "20", y1: "12", x2: "20", y2: "26" }),
-    React.createElement("line", { x1: "20", y1: "26", x2: "14", y2: "42" }),
-    React.createElement("line", { x1: "20", y1: "26", x2: "28", y2: "34" }),
-    React.createElement("line", { x1: "28", y1: "34", x2: "28", y2: "20" }),
-    React.createElement("line", { x1: "20", y1: "16", x2: "30", y2: "10" }),
-    React.createElement("line", { x1: "30", y1: "10", x2: "28", y2: "20" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "21", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "21", y1: "12", x2: "21", y2: "27" }),
+    React.createElement("line", { x1: "21", y1: "27", x2: "19", y2: "43" }),
+    React.createElement("line", { x1: "21", y1: "27", x2: "30", y2: "33" }),
+    React.createElement("line", { x1: "30", y1: "33", x2: "24", y2: "38" }),
+    React.createElement("line", { x1: "21", y1: "16", x2: "27", y2: "35" }),
+    React.createElement("line", { x1: "21", y1: "16", x2: "13", y2: "23" })));
+// Assis au sol jambes tendues, buste redressé et à peine penché vers le pied. Le buste très
+// incliné écrasait la silhouette : à une douzaine de degrés de la verticale, l'angle
+// tronc-jambes se lit et le bassin reste identifiable.
 const PoseStretchSeated = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "12", cy: "14", r: "4" }),
-    React.createElement("line", { x1: "14", y1: "17", x2: "18", y2: "34" }),
-    React.createElement("line", { x1: "18", y1: "34", x2: "38", y2: "34" }),
-    React.createElement("line", { x1: "14", y1: "20", x2: "30", y2: "14" }),
-    React.createElement("line", { x1: "30", y1: "14", x2: "34", y2: "30" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "23", cy: "18", r: "4" }),
+    React.createElement("line", { x1: "19", y1: "37", x2: "22", y2: "22" }),
+    React.createElement("line", { x1: "19", y1: "37", x2: "37", y2: "37" }),
+    React.createElement("line", { x1: "37", y1: "37", x2: "37", y2: "30" }),
+    React.createElement("line", { x1: "22", y1: "23", x2: "32", y2: "34" })));
+// Montée sur la pointe des pieds, vue de profil. De face, les deux jambes se croisaient et
+// donnaient un genu valgum ; de profil, la cheville forme un V — talon en haut et en
+// arrière, pointe seule au sol — ce qui est exactement le geste.
 const PoseCalfRaise = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "27" }),
-    React.createElement("line", { x1: "24", y1: "16", x2: "16", y2: "20" }),
-    React.createElement("line", { x1: "24", y1: "16", x2: "32", y2: "20" }),
-    React.createElement("line", { x1: "24", y1: "27", x2: "21", y2: "38" }),
-    React.createElement("line", { x1: "21", y1: "38", x2: "27", y2: "40" }),
-    React.createElement("line", { x1: "24", y1: "27", x2: "27", y2: "38" }),
-    React.createElement("line", { x1: "27", y1: "38", x2: "33", y2: "40" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "20", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "20", y1: "12", x2: "21", y2: "28" }),
+    React.createElement("line", { x1: "20", y1: "16", x2: "29", y2: "19" }),
+    React.createElement("line", { x1: "21", y1: "28", x2: "21", y2: "40" }),
+    React.createElement("line", { x1: "21", y1: "40", x2: "27", y2: "44" }),
+    React.createElement("line", { x1: "21", y1: "40", x2: "16", y2: "37" }),
+    React.createElement("line", { x1: "38", y1: "34", x2: "38", y2: "22" }),
+    React.createElement("path", { d: "M 34 26 L 38 21 L 42 26" })));
+// Course : appuis et segments cohérents, bras fléchis en opposition.
 const PoseWalkRun = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "22", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "22", y1: "12", x2: "26", y2: "24" }),
-    React.createElement("line", { x1: "24", y1: "15", x2: "14", y2: "10" }),
-    React.createElement("line", { x1: "24", y1: "18", x2: "33", y2: "22" }),
-    React.createElement("line", { x1: "26", y1: "24", x2: "16", y2: "30" }),
-    React.createElement("line", { x1: "16", y1: "30", x2: "18", y2: "40" }),
-    React.createElement("line", { x1: "26", y1: "24", x2: "35", y2: "28" }),
-    React.createElement("line", { x1: "35", y1: "28", x2: "30", y2: "40" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "27", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "27", y1: "12", x2: "24", y2: "26" }),
+    React.createElement("line", { x1: "27", y1: "16", x2: "33", y2: "19" }),
+    React.createElement("line", { x1: "33", y1: "19", x2: "36", y2: "14" }),
+    React.createElement("line", { x1: "27", y1: "16", x2: "20", y2: "19" }),
+    React.createElement("line", { x1: "20", y1: "19", x2: "17", y2: "14" }),
+    React.createElement("line", { x1: "24", y1: "26", x2: "31", y2: "32" }),
+    React.createElement("line", { x1: "31", y1: "32", x2: "33", y2: "43" }),
+    React.createElement("line", { x1: "24", y1: "26", x2: "17", y2: "30" }),
+    React.createElement("line", { x1: "17", y1: "30", x2: "13", y2: "25" })));
 const PoseJump = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
     React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "24" }),
@@ -111,24 +133,30 @@ const PoseShoulderRaise = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "16", x2: "38", y2: "14" }),
     React.createElement("line", { x1: "24", y1: "28", x2: "19", y2: "42" }),
     React.createElement("line", { x1: "24", y1: "28", x2: "29", y2: "42" })));
+// Nuque : tête plus grande, tronc raccourci et bras plus courts, pour que les trois traits ne se confondent plus.
 const PoseNeck = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "24", cy: "14", r: "6" }),
-    React.createElement("line", { x1: "24", y1: "20", x2: "24", y2: "38" }),
-    React.createElement("line", { x1: "24", y1: "24", x2: "14", y2: "30" }),
-    React.createElement("line", { x1: "24", y1: "24", x2: "34", y2: "30" }),
-    React.createElement("path", { d: "M 33 9 A 8 8 0 0 1 34 18" })));
+    React.createElement("circle", { cx: "24", cy: "13", r: "6" }),
+    React.createElement("line", { x1: "24", y1: "19", x2: "24", y2: "33" }),
+    React.createElement("line", { x1: "24", y1: "23", x2: "16", y2: "28" }),
+    React.createElement("line", { x1: "24", y1: "23", x2: "32", y2: "28" }),
+    React.createElement("path", { d: "M34 8 A 9 9 0 0 1 35 18" })));
+// Avant-bras et main de profil. Proportions corrigées : la main fait un peu moins de la
+// moitié de l'avant-bras, et se découpe en paume puis doigts pour se lire comme une main.
 const PoseWrist = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "10", y1: "30", x2: "30", y2: "24" }),
-    React.createElement("path", { d: "M 30 24 L 38 20 L 39 26 L 32 30 Z" }),
-    React.createElement("path", { d: "M 34 12 A 8 8 0 0 1 36 19" })));
+    React.createElement("line", { x1: "5", y1: "29", x2: "25", y2: "29" }),
+    React.createElement("circle", { cx: "27", cy: "29", r: "2.8" }),
+    React.createElement("line", { x1: "28.5", y1: "27", x2: "35", y2: "20.5" }),
+    React.createElement("line", { x1: "35", y1: "20.5", x2: "39", y2: "18.5" }),
+    React.createElement("path", { d: "M 33 38.5 A 11 11 0 0 0 38 29" })));
+// Rotation du tronc : épaules tournées, bassin fixe.
 const PoseTrunkRotation = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "10", r: "4" }),
     React.createElement("line", { x1: "24", y1: "14", x2: "24", y2: "30" }),
-    React.createElement("line", { x1: "24", y1: "18", x2: "14", y2: "24" }),
-    React.createElement("line", { x1: "24", y1: "18", x2: "34", y2: "12" }),
-    React.createElement("line", { x1: "24", y1: "30", x2: "18", y2: "42" }),
-    React.createElement("line", { x1: "24", y1: "30", x2: "30", y2: "42" }),
-    React.createElement("path", { d: "M 8 16 A 10 10 0 0 1 14 8" })));
+    React.createElement("line", { x1: "24", y1: "19", x2: "13", y2: "16" }),
+    React.createElement("line", { x1: "24", y1: "19", x2: "35", y2: "22" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "18", y2: "43" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "30", y2: "43" }),
+    React.createElement("path", { d: "M10 10 A 11 11 0 0 1 19 6" })));
 const PoseBreathing = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "10", r: "4" }),
     React.createElement("line", { x1: "24", y1: "14", x2: "24", y2: "34" }),
@@ -136,35 +164,41 @@ const PoseBreathing = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "34", x2: "31", y2: "42" }),
     React.createElement("path", { d: "M 14 20 A 10 10 0 0 0 14 28" }),
     React.createElement("path", { d: "M 34 20 A 10 10 0 0 1 34 28" })));
+// Bande élastique tendue entre les deux mains : une boucle, pas un bras.
 const PoseBand = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "16", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "16", y1: "12", x2: "16", y2: "28" }),
-    React.createElement("line", { x1: "16", y1: "16", x2: "30", y2: "18" }),
-    React.createElement("path", { d: "M 30 18 L 40 14 M 30 18 L 40 22" }),
-    React.createElement("line", { x1: "16", y1: "28", x2: "12", y2: "42" }),
-    React.createElement("line", { x1: "16", y1: "28", x2: "20", y2: "42" })));
+    React.createElement("circle", { cx: "9", cy: "24", r: "3" }),
+    React.createElement("circle", { cx: "39", cy: "24", r: "3" }),
+    React.createElement("path", { d: "M12 22 Q24 15 36 22" }),
+    React.createElement("path", { d: "M12 26 Q24 33 36 26" })));
+// Hanche en charnière : dos droit, fesses en arrière, genoux à peine fléchis.
 const PosePendulumHip = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "30", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "30", y1: "12", x2: "26", y2: "24" }),
-    React.createElement("line", { x1: "26", y1: "24", x2: "10", y2: "20" }),
-    React.createElement("line", { x1: "26", y1: "24", x2: "20", y2: "40" }),
-    React.createElement("path", { d: "M 20 40 A 8 8 0 0 1 30 40" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "12", cy: "18", r: "4" }),
+    React.createElement("line", { x1: "15", y1: "21", x2: "28", y2: "27" }),
+    React.createElement("line", { x1: "28", y1: "27", x2: "27", y2: "35" }),
+    React.createElement("line", { x1: "27", y1: "35", x2: "27", y2: "44" }),
+    React.createElement("line", { x1: "19", y1: "23", x2: "21", y2: "34" })));
 const PoseAdvice = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("rect", { x: "12", y: "8", width: "24", height: "32", rx: "3" }),
     React.createElement("path", { d: "M 19 8 L 19 5 L 29 5 L 29 8 Z" }),
     React.createElement("path", { d: "M 18 20 L 22 24 L 30 16" }),
     React.createElement("line", { x1: "18", y1: "31", x2: "30", y2: "31" })));
+// Jambe et pied de profil. Le pied devient une forme fermée — un trait seul se lisait comme
+// le prolongement du tibia, sans cheville visible. Position basse en pointillé.
 const PoseAnklePump = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "10", y1: "16", x2: "10", y2: "30" }),
-    React.createElement("path", { d: "M 10 30 L 26 30 L 32 26" }),
-    React.createElement("path", { d: "M 28 14 L 34 18 L 28 22" }),
-    React.createElement("path", { d: "M 34 18 A 12 12 0 0 1 30 27" })));
+    React.createElement("circle", { cx: "19", cy: "8", r: "2.4" }),
+    React.createElement("line", { x1: "19", y1: "10", x2: "19", y2: "27" }),
+    React.createElement("circle", { cx: "20", cy: "29.5", r: "3" }),
+    React.createElement("path", { d: "M 22 27.5 L 37 24 L 38 28 L 23 31.5 Z" }),
+    React.createElement("path", { d: "M 22 33 L 32 42", strokeDasharray: "3 3" })));
+// Allongé sur le côté, jambe du dessus levée : sol et deux jambes distinctes.
 const PoseSideLying = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "9", cy: "24", r: "4" }),
-    React.createElement("line", { x1: "13", y1: "25", x2: "30", y2: "27" }),
-    React.createElement("line", { x1: "30", y1: "27", x2: "40", y2: "30" }),
-    React.createElement("line", { x1: "26", y1: "26", x2: "34", y2: "16" }),
-    React.createElement("line", { x1: "34", y1: "16", x2: "41", y2: "19" })));
+    React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
+    React.createElement("circle", { cx: "10", cy: "34", r: "3.6" }),
+    React.createElement("line", { x1: "14", y1: "35", x2: "28", y2: "35" }),
+    React.createElement("line", { x1: "28", y1: "35", x2: "41", y2: "38" }),
+    React.createElement("line", { x1: "28", y1: "34", x2: "41", y2: "25" }),
+    React.createElement("line", { x1: "16", y1: "33", x2: "21", y2: "28" })));
 const PoseBike = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "12", cy: "32", r: "7" }),
     React.createElement("circle", { cx: "36", cy: "32", r: "7" }),
@@ -182,40 +216,131 @@ const PoseThrow = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "37", cy: "7", r: "3.5" }),
     React.createElement("line", { x1: "20", y1: "28", x2: "14", y2: "42" }),
     React.createElement("line", { x1: "20", y1: "28", x2: "27", y2: "42" })));
+// Une seule marche, et une silhouette plus grande : montée sur step.
 const PoseStep = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("path", { d: "M 6 40 L 20 40 L 20 28 L 34 28 L 34 16 L 44 16" }),
-    React.createElement("circle", { cx: "26", cy: "10", r: "4" }),
-    React.createElement("line", { x1: "26", y1: "14", x2: "26", y2: "24" }),
-    React.createElement("line", { x1: "26", y1: "24", x2: "20", y2: "28" })));
+    React.createElement("path", { d: "M27 44 L27 31 L43 31" }),
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "15", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "15", y1: "13", x2: "15", y2: "28" }),
+    React.createElement("line", { x1: "15", y1: "28", x2: "28", y2: "32" }),
+    React.createElement("line", { x1: "15", y1: "28", x2: "12", y2: "43" }),
+    React.createElement("line", { x1: "15", y1: "17", x2: "8", y2: "24" }),
+    React.createElement("line", { x1: "15", y1: "17", x2: "22", y2: "22" })));
+// Étirement de l'épaule bras croisé devant, le SECOND bras vient le retenir.
 const PoseShoulderStretch = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
     React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "30" }),
-    React.createElement("path", { d: "M 24 18 L 12 20" }),
-    React.createElement("path", { d: "M 12 20 L 16 26" }),
-    React.createElement("line", { x1: "24", y1: "30", x2: "19", y2: "42" }),
-    React.createElement("line", { x1: "24", y1: "30", x2: "29", y2: "42" })));
+    React.createElement("line", { x1: "24", y1: "18", x2: "11", y2: "22" }),
+    React.createElement("line", { x1: "24", y1: "21", x2: "16", y2: "27" }),
+    React.createElement("line", { x1: "16", y1: "27", x2: "13", y2: "23" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "28", y2: "44" })));
+// Contraction sans mouvement : deux forces opposées sur un appui immobile, et rien ne bouge.
 const PoseIsometricPush = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "8", y1: "10", x2: "8", y2: "38" }),
-    React.createElement("circle", { cx: "30", cy: "14", r: "4" }),
-    React.createElement("line", { x1: "30", y1: "18", x2: "30", y2: "34" }),
-    React.createElement("line", { x1: "30", y1: "22", x2: "14", y2: "22" }),
-    React.createElement("path", { d: "M 18 18 L 12 22 L 18 26" }),
-    React.createElement("line", { x1: "30", y1: "34", x2: "26", y2: "42" }),
-    React.createElement("line", { x1: "30", y1: "34", x2: "34", y2: "42" })));
+    React.createElement("line", { x1: "24", y1: "8", x2: "24", y2: "40" }),
+    React.createElement("line", { x1: "6", y1: "24", x2: "19", y2: "24" }),
+    React.createElement("path", { d: "M15 19 L20 24 L15 29" }),
+    React.createElement("line", { x1: "42", y1: "24", x2: "29", y2: "24" }),
+    React.createElement("path", { d: "M33 19 L28 24 L33 29" })));
 const PoseProneExtension = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "6", y1: "38", x2: "42", y2: "38" }),
     React.createElement("circle", { cx: "34", cy: "16", r: "4" }),
     React.createElement("path", { d: "M 10 36 L 24 34 C 30 32 32 26 33 20" }),
     React.createElement("line", { x1: "28", y1: "33", x2: "30", y2: "38" }),
     React.createElement("line", { x1: "16", y1: "35", x2: "16", y2: "38" })));
+// Assis sur une chaise, une jambe tendue devant, l'autre pied au sol : les deux jambes sont dessinées pour lever l'ambiguïté.
 const PoseSeatedFlexion = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("path", { d: "M 30 40 L 30 26 L 42 26" }),
-    React.createElement("circle", { cx: "16", cy: "20", r: "4" }),
-    React.createElement("path", { d: "M 19 23 C 24 27 26 26 30 26" }),
-    React.createElement("path", { d: "M 30 26 L 40 26" }),
-    React.createElement("line", { x1: "18", y1: "24", x2: "26", y2: "30" })));
+    React.createElement("line", { x1: "11", y1: "15", x2: "11", y2: "29" }),
+    React.createElement("line", { x1: "11", y1: "29", x2: "26", y2: "29" }),
+    React.createElement("line", { x1: "11", y1: "29", x2: "11", y2: "44" }),
+    React.createElement("line", { x1: "26", y1: "29", x2: "26", y2: "44" }),
+    React.createElement("circle", { cx: "17", cy: "11", r: "4" }),
+    React.createElement("line", { x1: "17", y1: "15", x2: "17", y2: "28" }),
+    React.createElement("line", { x1: "17", y1: "28", x2: "28", y2: "28" }),
+    React.createElement("line", { x1: "28", y1: "28", x2: "41", y2: "25" }),
+    React.createElement("line", { x1: "41", y1: "25", x2: "41", y2: "20" }),
+    React.createElement("line", { x1: "17", y1: "28", x2: "21", y2: "37" }),
+    React.createElement("line", { x1: "21", y1: "37", x2: "21", y2: "44" }),
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" })));
 // Table ordonnée du plus spécifique au plus général : le premier test qui passe l'emporte.
+// Glissement nerveux du membre supérieur : bras écarté coude tendu, tête inclinée du côté opposé, l'arc rappelant le va-et-vient.
+const PoseNerveGlide = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "19", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "21", y1: "13", x2: "21", y2: "31" }),
+    React.createElement("line", { x1: "21", y1: "17", x2: "33", y2: "17" }),
+    React.createElement("line", { x1: "33", y1: "17", x2: "41", y2: "12" }),
+    React.createElement("line", { x1: "21", y1: "17", x2: "14", y2: "26" }),
+    React.createElement("line", { x1: "21", y1: "31", x2: "17", y2: "44" }),
+    React.createElement("line", { x1: "21", y1: "31", x2: "26", y2: "44" }),
+    React.createElement("path", { d: "M35 24 A7 7 0 0 0 41 19" })));
+// Bras au repos posé sur un appui, main plus haute que le coude : la position de soulagement.
+// Première version illisible : l'appui traversait le bras au lieu de le porter. Le coude
+// repose maintenant franchement sur le plan, et l'avant-bras remonte vers la main.
+const PoseArmSupport = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "31", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "31", y1: "13", x2: "31", y2: "31" }),
+    React.createElement("line", { x1: "31", y1: "18", x2: "23", y2: "28" }),
+    React.createElement("line", { x1: "23", y1: "28", x2: "12", y2: "21" }),
+    React.createElement("line", { x1: "31", y1: "18", x2: "37", y2: "28" }),
+    React.createElement("line", { x1: "31", y1: "31", x2: "27", y2: "44" }),
+    React.createElement("line", { x1: "31", y1: "31", x2: "35", y2: "44" }),
+    React.createElement("line", { x1: "5", y1: "30", x2: "25", y2: "30" }),
+    React.createElement("line", { x1: "9", y1: "30", x2: "9", y2: "36" })));
+// Poussée contre un mur, les DEUX mains en appui : extension des coudes.
+const PoseTricepsPush = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "43", y1: "6", x2: "43", y2: "42" }),
+    React.createElement("circle", { cx: "16", cy: "11", r: "4" }),
+    React.createElement("line", { x1: "18", y1: "15", x2: "14", y2: "31" }),
+    React.createElement("line", { x1: "18", y1: "17", x2: "40", y2: "18" }),
+    React.createElement("line", { x1: "18", y1: "20", x2: "40", y2: "23" }),
+    React.createElement("line", { x1: "14", y1: "31", x2: "9", y2: "43" }),
+    React.createElement("line", { x1: "14", y1: "31", x2: "18", y2: "43" }),
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" })));
+// Main et doigts : renforcement de la préhension et travail de l'habileté.
+const PoseHand = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("rect", { x: "17", y: "24", width: "15", height: "13", rx: "3" }),
+    React.createElement("line", { x1: "20", y1: "24", x2: "20", y2: "14" }),
+    React.createElement("line", { x1: "24", y1: "24", x2: "24", y2: "12" }),
+    React.createElement("line", { x1: "28", y1: "24", x2: "28", y2: "13" }),
+    React.createElement("line", { x1: "31", y1: "24", x2: "32", y2: "16" }),
+    React.createElement("line", { x1: "17", y1: "29", x2: "11", y2: "24" })));
+// Ouverture du haut du dos sur un rouleau. Le rouleau est une capsule allongée, pour ne pas se confondre avec la tête.
+const PoseThoracicExt = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("rect", { x: "18", y: "32", width: "13", height: "7", rx: "3.5" }),
+    React.createElement("circle", { cx: "37", cy: "23", r: "4" }),
+    React.createElement("line", { x1: "34", y1: "26", x2: "16", y2: "33" }),
+    React.createElement("line", { x1: "35", y1: "20", x2: "43", y2: "14" }),
+    React.createElement("line", { x1: "16", y1: "33", x2: "9", y2: "42" }),
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" })));
+// Chaussage, amortissement et surfaces. Le profil de chaussure, essayé d'abord, se lisait
+// comme une bosse indistincte à 24 px : l'empreinte est une forme fermée que l'œil reconnaît
+// même minuscule, et la bande épaisse dit ce qui se trouve entre le pied et le sol.
+const PoseShoe = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M18 19 C18 12 30 12 30 19 C30 26 28 29 27 33 C26 38 20 38 20 33 C20 29 18 26 18 19 Z" }),
+    React.createElement("circle", { cx: "18.5", cy: "9.5", r: "1.7" }),
+    React.createElement("circle", { cx: "22.5", cy: "8", r: "1.5" }),
+    React.createElement("circle", { cx: "26", cy: "8", r: "1.4" }),
+    React.createElement("circle", { cx: "29.5", cy: "9", r: "1.3" }),
+    React.createElement("path", { d: "M8 41 L40 41" }),
+    React.createElement("path", { d: "M8 41 Q8 45 12 45 L36 45 Q40 45 40 41" })));
 const POSES = [
+    // --- 0. Gestes que des règles plus générales captaient à tort ---
+    // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
+    { key: "nerve", icon: PoseNerveGlide, test: (n) => n.includes("nerf") || n.includes("glissement nerveux")
+            || n.includes("glissement du") || n.includes("mise en tension") },
+    { key: "arm-support", icon: PoseArmSupport, test: (n) => n.includes("soulagement du bras")
+            || n.includes("installation pour la nuit") },
+    { key: "shoe", icon: PoseShoe, test: (n) => n.includes("talonnette") || n.includes("chauss")
+            || n.includes("pieds nus") || n.includes("semelle") || n.includes("terrains durs")
+            || n.includes("progression des surfaces") || n.includes("surfaces") },
+    { key: "hand", icon: PoseHand, test: (n) => !n.includes("pied") && (n.includes("main et")
+            || n.includes("des doigts") || n.includes("habileté de la main")
+            || n.includes("muscles intrinsèques") || n.includes("de la main")) },
+    // « pompes de cheville » n'est pas une pompe : on exige le contexte du membre supérieur.
+    { key: "triceps-push", icon: PoseTricepsPush, test: (n) => n.includes("triceps")
+            || n.includes("poussée") || (n.includes("pompes") && !n.includes("cheville")) },
+    { key: "thoracic-ext", icon: PoseThoracicExt, test: (n) => n.includes("haut du dos")
+            || n.includes("rouleau") || n.includes("extension du haut") },
     // --- 1. Consignes et repères, qui ne sont pas des mouvements ---
     { key: "advice", icon: PoseAdvice, test: (n) => n.includes("validation") || n.includes("bilan") || n.startsWith("test") || n.includes("tests de")
             || n.includes("suivi") || n.includes("adaptation") || n.includes("éducation") || n.includes("quantification")
@@ -248,10 +373,10 @@ const POSES = [
     { key: "calf", icon: PoseCalfRaise, test: (n) => n.includes("mollet") || n.includes("montée sur pointe") || n.includes("pointe des pieds")
             || n.includes("soléaire") || n.includes("sur pointe") },
     { key: "ankle-pump", icon: PoseAnklePump, test: (n) => n.includes("pompes de cheville") || n.includes("alphabet") || n.includes("mobilité de cheville")
-            || n.includes("mobilité en flexion dorsale") || n.includes("mobilité douce de cheville")
+            || n.includes("mobilité en flexion dorsale") || n.includes("mobilité douce de cheville") || n.includes("de la cheville")
             || n.includes("éverseur") || n.includes("inversion") || n.includes("éversion") || n.includes("tibial postérieur") },
     { key: "foot-arch", icon: PoseFootArch, test: (n) => n.includes("voûte") || n.includes("intrinsèques") || n.includes("short foot") || n.includes("orteil")
-            || n.includes("fascia") || n.includes("automassage plantaire") || n.includes("plantaire") },
+            || n.includes("fascia") || n.includes("automassage plantaire") || n.includes("plantaire") || n.includes("muscles du pied") || n.includes("muscles intrinsèques du pied") },
     { key: "side-lying", icon: PoseSideLying, test: (n) => n.includes("abducteur") || n.includes("abduction") || n.includes("moyen fessier") || n.includes("coquille") || n.includes("copenhague")
             || n.includes("rotateurs profonds") || n.includes("adduction") || n.includes("adducteur") },
     { key: "bridge", icon: PoseBridge, test: (n) => n.includes("pont fessier") || n.includes("pont ") || n.includes("fessier") },
@@ -262,7 +387,7 @@ const POSES = [
     { key: "hip-hinge", icon: PosePendulumHip, test: (n) => n.includes("charnière") || n.includes("deadlift") || n.includes("cercles de hanche")
             || n.includes("bascules de hanche") || n.includes("balancers de jambe")
             || n.includes("chaîne postérieure") || n.includes("ischio") || n.includes("nordic") || n.includes("curl")
-            || n.includes("port de charge") || n.includes("extension de hanche") || n.includes("soulevé") },
+            || n.includes("port de charge") || n.includes("extension de hanche") || n.includes("soulevé") || n.includes("hanche") },
     // --- 5. Équilibre, saut, course ---
     { key: "balance", icon: PoseBalance, test: (n) => n.includes("équilibre") || n.includes("proprio") || n.includes("plateau") || n.includes("unipodal")
             || n.includes("stabilité") || n.includes("perturbation") || n.includes("surface instable") },
@@ -283,18 +408,24 @@ const POSES = [
             || n.includes("trapèzes moyens") || n.includes("deltoïde") || n.includes("coiffe") || n.includes("épaule")
             || n.includes("appui mural") || n.includes("chaîne fermée") || n.includes("rotateur") || n.includes("au-dessus de 90")
             || n.includes("position de risque") },
-    { key: "wrist", icon: PoseWrist, test: (n) => n.includes("poignet") || n.includes("préhension") || n.includes("grip") || n.includes("motrice fine")
-            || n.includes("excentrique des extenseurs") || n.includes("excentrique des fléchisseurs")
-            || n.includes("isométrique des extenseurs") || n.includes("isométrique des fléchisseurs")
-            || n.includes("excentrique progressif") },
+    { key: "wrist", icon: PoseWrist, test: (n) => n.includes("poignet") || n.includes("préhension")
+            || n.includes("grip") || n.includes("motrice fine")
+            // « excentrique des fléchisseurs » attrapait ceux de la hanche : on exige le poignet.
+            || ((n.includes("excentrique des extenseurs") || n.includes("excentrique des fléchisseurs"))
+                && !n.includes("hanche") && !n.includes("genou") && !n.includes("cuisse")) },
     // --- 7. Tronc et rachis cervical ---
     { key: "plank", icon: PosePlank, test: (n) => n.includes("gainage") || n.includes("planche") || n.includes("abdomin") || n.includes("oblique")
             || n.includes("lombo-pelvienne") || n.includes("renforcement du tronc") || n.includes("pompes pliométriques") },
     { key: "neck", icon: PoseNeck, test: (n) => n.includes("cervical") || n.includes("menton") || n.includes("nuque") || n.includes("trapèze")
             || n.includes("oculo") || n.includes("visuel") || n.includes("céphalique") || n.includes("torticolis")
-            || n.includes("inclinaisons latérales") || n.includes("extenseurs cervicaux") || n.includes("fléchisseurs profonds") },
-    { key: "trunk", icon: PoseTrunkRotation, test: (n) => n.includes("rotation") || n.includes("chat-vache") || n.includes("dos rond") || n.includes("dos creux")
-            || n.includes("bascule") || n.includes("thoraco") || n.includes("postur") || n.includes("ouverture thoracique") },
+            || n.includes("inclinaisons latérales") || n.includes("extenseurs cervicaux") || n.includes("fléchisseurs profonds")
+            || n.includes("du cou") || n.includes("de la tête") || n.includes("rotations de tête") },
+    { key: "trunk", icon: PoseTrunkRotation, test: (n) => !n.includes("hanche") && !n.includes("genou")
+            && !n.includes("épaule") && !n.includes("cheville") && !n.includes("bras")
+            && (n.includes("rotation du tronc") || n.includes("rotation lombaire")
+                || n.includes("chat-vache") || n.includes("dos rond") || n.includes("dos creux")
+                || (n.includes("bascule") && n.includes("bassin")) || n.includes("thoraco") || n.includes("postur")
+                || n.includes("tronc")) },
     { key: "breathing", icon: PoseBreathing, test: (n) => n.includes("respiration") || n.includes("relâchement") },
     // --- 8. Modalités génériques, en dernier recours ---
     { key: "band", icon: PoseBand, test: (n) => n.includes("élastique") || n.includes("résistance") || n.includes("glissement") || n.includes("progressif en charge") },
@@ -798,7 +929,7 @@ const PATHOLOGIES = [
                 ] }
         ] },
     { id: "coude", label: "Coude", injuries: [
-            { id: "epicondylite", label: "Épicondylite", desc: "Douleur sur la face externe du coude, réveillée en serrant un objet, en tournant une poignée ou en soulevant une charge paume vers le bas.", context: "Malgré son nom en « -ite », il ne s'agit pas d'une inflammation mais d'une dégénérescence du tendon des muscles qui relèvent le poignet. Cela change tout : le repos seul soulage à court terme mais ne répare rien, alors que le renforcement progressif — en particulier excentrique — donne les meilleurs résultats à moyen terme. L'évolution est lente, souvent plusieurs mois, ce qui est normal et non un signe d'échec.", stages: [
+            { id: "epicondylite", label: "Épicondylite", desc: "Douleur sur la face externe du coude, réveillée en serrant un objet, en tournant une poignée ou en soulevant une charge paume vers le bas.", context: "Malgré son nom en « -ite », il ne s'agit pas d'une inflammation mais d'une dégénérescence du tendon des muscles qui relèvent le poignet. Cela change tout : le repos seul soulage à court terme mais ne répare rien, alors que le renforcement progressif — en particulier excentrique — donne les meilleurs résultats à moyen terme. L'évolution est lente, souvent plusieurs mois, ce qui est normal et non un signe d'échec. Avant de commencer, un point à vérifier : si la douleur descend du cou vers le coude, ou si vous avez des fourmillements dans les doigts, l'origine peut être une racine nerveuse cervicale plutôt que le tendon lui-même — voyez alors les parcours de névralgie cervico-brachiale dans la zone Rachis cervical.", stages: [
                     { label: "Douleur & mobilité", critere: "Serrer la main de quelqu'un ou tenir un objet ne déclenche plus la douleur vive sur le côté externe du coude.", exercises: [
                             { name: "Mobilité active du poignet", dose: "3 × 15", tip: "Avant-bras posé sur une table, main dans le vide. Montez et descendez le poignet lentement sur toute l'amplitude possible, sans réveiller de douleur vive." },
                             { name: "Étirement des extenseurs", dose: "3 × 30 sec", tip: "Bras tendu devant vous, paume vers le bas. Avec l'autre main, fléchissez doucement le poignet vers le bas jusqu'à sentir une tension sur le dessus de l'avant-bras. Tension modérée, jamais douloureuse." },
@@ -824,7 +955,7 @@ const PATHOLOGIES = [
                             { name: "Maintien du renforcement d'entretien", dose: "2 × par semaine", tip: "Poursuivez le travail excentrique plusieurs mois après la disparition de la douleur : la récidive est fréquente quand le renforcement s'arrête trop tôt." }
                         ] }
                 ] },
-            { id: "epitrochleite", label: "Épitrochléite", desc: "Douleur sur la face interne du coude, réveillée en fléchissant le poignet, en serrant fortement ou lors des gestes de lancer.", context: "C'est le pendant interne de l'épicondylite, touchant cette fois les muscles qui fléchissent le poignet. Même logique de prise en charge : il s'agit d'une dégénérescence tendineuse et non d'une inflammation, et c'est le renforcement progressif — notamment excentrique — qui fait la différence, pas le repos. L'évolution demande également plusieurs mois de patience.", stages: [
+            { id: "epitrochleite", label: "Épitrochléite", desc: "Douleur sur la face interne du coude, réveillée en fléchissant le poignet, en serrant fortement ou lors des gestes de lancer.", context: "C'est le pendant interne de l'épicondylite, touchant cette fois les muscles qui fléchissent le poignet. Même logique de prise en charge : il s'agit d'une dégénérescence tendineuse et non d'une inflammation, et c'est le renforcement progressif — notamment excentrique — qui fait la différence, pas le repos. L'évolution demande également plusieurs mois de patience. Avant de commencer, un point à vérifier : si la douleur descend du cou vers le coude, ou si vous avez des fourmillements dans les doigts, l'origine peut être une racine nerveuse cervicale plutôt que le tendon lui-même — voyez alors les parcours de névralgie cervico-brachiale dans la zone Rachis cervical.", stages: [
                     { label: "Douleur & mobilité", critere: "Serrer la main ou porter un sac ne déclenche plus la douleur vive sur le côté interne du coude.", exercises: [
                             { name: "Mobilité active du poignet", dose: "3 × 15", tip: "Avant-bras posé sur une table, main dans le vide. Montez et descendez le poignet lentement sur toute l'amplitude possible, sans douleur vive." },
                             { name: "Étirement des fléchisseurs", dose: "3 × 30 sec", tip: "Bras tendu devant vous, paume vers le haut. Avec l'autre main, tirez doucement les doigts vers le bas jusqu'à sentir une tension sur la face interne de l'avant-bras. Tension modérée uniquement." },
@@ -1038,7 +1169,7 @@ const PATHOLOGIES = [
                 ] }
         ] },
     { id: "pied", label: "Pied", injuries: [
-            { id: "morton", label: "Névrome de Morton", desc: "Douleur à type de décharge électrique ou de brûlure entre les orteils (souvent 3e et 4e), parfois une sensation de « caillou dans la chaussure », aggravée par les chaussures étroites ou à talon.", context: "Malgré son nom, ce n'est pas une tumeur mais un épaississement du tissu autour d'un nerf, irrité par la compression entre les têtes des métatarsiens. Le facteur mécanique dominant est le chaussage : un bout étroit ou un talon haut resserre l'avant-pied et entretient directement la compression. C'est pourquoi l'adaptation des chaussures est ici au moins aussi déterminante que les exercices.", stages: [
+            { id: "morton", label: "Névrome de Morton", groupe: "Douleur de l'avant-pied", desc: "Douleur à type de décharge électrique ou de brûlure entre les orteils (souvent 3e et 4e), parfois une sensation de « caillou dans la chaussure », aggravée par les chaussures étroites ou à talon.", context: "Malgré son nom, ce n'est pas une tumeur mais un épaississement du tissu autour d'un nerf, irrité par la compression entre les têtes des métatarsiens. Le facteur mécanique dominant est le chaussage : un bout étroit ou un talon haut resserre l'avant-pied et entretient directement la compression. C'est pourquoi l'adaptation des chaussures est ici au moins aussi déterminante que les exercices.", stages: [
                     { label: "Décharge & mobilité", critere: "Le changement de chaussage et la décharge de l'avant-pied ont fait disparaître la sensation de brûlure ou de caillou sous les orteils à la marche courte.", exercises: [
                             { name: "Adaptation temporaire du chaussage", dose: "quotidien", tip: "Privilégiez des chaussures à bout large et talon bas le temps de la phase douloureuse : la compression latérale de l'avant-pied est le principal facteur d'irritation du nerf." },
                             { name: "Mobilisation douce des orteils", dose: "3 × 10", tip: "Assis, écartez et mobilisez doucement les orteils à la main, dans toutes les directions, sans forcer sur la zone douloureuse." },
@@ -1064,7 +1195,7 @@ const PATHOLOGIES = [
                             { name: "Validation fonctionnelle", dose: "bilan", tip: "Une marche prolongée et une montée sur pointe sans décharge électrique sont de bons repères avant de reprendre une activité complète." }
                         ] }
                 ] },
-            { id: "fasciite-pied", label: "Fasciite plantaire", desc: "Douleur sous le talon ou le long de la voûte plantaire, très vive aux premiers pas du matin ou après être resté assis, puis atténuée en marchant avant de revenir en fin de journée.", context: "L'appellation en « -ite » est trompeuse : il s'agit d'une dégénérescence du fascia plantaire, pas d'une inflammation, ce qui explique que le repos et les anti-inflammatoires seuls soulagent sans régler le fond. Le renforcement en charge lente avec l'avant-pied surélevé a montré de meilleurs résultats à moyen terme que les seuls étirements. Les facteurs favorisants les plus fréquents sont la station debout prolongée, une augmentation rapide d'activité, un chaussage trop plat et un manque de souplesse du mollet. La douleur des premiers pas du matin reste le repère de suivi le plus utile — et l'évolution demande souvent plusieurs mois.", stages: [
+            { id: "fasciite-pied", label: "Fasciite plantaire", groupe: "Douleur du talon", desc: "Douleur sous le talon ou le long de la voûte plantaire, très vive aux premiers pas du matin ou après être resté assis, puis atténuée en marchant avant de revenir en fin de journée.", context: "L'appellation en « -ite » est trompeuse : il s'agit d'une dégénérescence du fascia plantaire, pas d'une inflammation, ce qui explique que le repos et les anti-inflammatoires seuls soulagent sans régler le fond. Le renforcement en charge lente avec l'avant-pied surélevé a montré de meilleurs résultats à moyen terme que les seuls étirements. Les facteurs favorisants les plus fréquents sont la station debout prolongée, une augmentation rapide d'activité, un chaussage trop plat et un manque de souplesse du mollet. La douleur des premiers pas du matin reste le repère de suivi le plus utile — et l'évolution demande souvent plusieurs mois. Un repère pour ne pas se tromper de problème : si la douleur siège au centre du talon plutôt que sur son bord interne, qu'elle est pire pieds nus sur sol dur et qu'elle ne donne pas cette douleur vive des premiers pas du matin, il s'agit probablement du coussinet adipeux, dont le parcours est distinct — les étirements y sont inutiles, voire gênants.", stages: [
                     { label: "Douleur & décharge", critere: "Les premiers pas du matin restent douloureux mais moins longtemps qu'au début, et la marche courte ne provoque plus de douleur vive au talon.", exercises: [
                             { name: "Étirement spécifique du fascia plantaire", dose: "3 × 10 chaque matin", tip: "Assis, jambe croisée sur l'autre genou. Attrapez les orteils et tirez-les vers vous jusqu'à sentir la tension sous le pied, maintenez quelques secondes puis relâchez. Réalisé avant même de poser le pied au sol le matin, cet étirement réduit nettement la douleur des premiers pas." },
                             { name: "Isométrique du mollet", dose: "5 × 45 sec", tip: "Debout, en appui si besoin, montez à mi-hauteur sur la pointe des pieds et maintenez. Maintien long volontairement : le mollet et le fascia plantaire forment une chaîne continue, et la tension du mollet se répercute directement sous le pied." },
@@ -1090,7 +1221,7 @@ const PATHOLOGIES = [
                             { name: "Réintroduction progressive du sport et des sols durs", dose: "1 séance", tip: "La course, les sauts et les surfaces dures augmentent fortement la tension sur le fascia : réintroduisez-les en dernier, après la marche prolongée bien tolérée." }
                         ] }
                 ] },
-            { id: "fibulaires", label: "Tendinopathie des fibulaires", desc: "Douleur derrière ou sous la malléole externe de la cheville, souvent après une augmentation d'activité, une entorse mal rééduquée, ou la course sur terrain en dévers.", context: "Ces tendons freinent activement la torsion du pied vers l'intérieur : ils sont donc très sollicités après une entorse, quand la cheville est moins stable, et sur les terrains en dévers. Comme pour toute tendinopathie, le repos complet n'est pas la solution : c'est le renforcement progressif, notamment excentrique, qui restaure la tolérance du tendon. Rechercher une instabilité de cheville associée fait partie du traitement, sans quoi la récidive est probable.", stages: [
+            { id: "fibulaires", label: "Tendinopathie des fibulaires", groupe: "Douleur du bord externe", desc: "Douleur derrière ou sous la malléole externe de la cheville, souvent après une augmentation d'activité, une entorse mal rééduquée, ou la course sur terrain en dévers.", context: "Ces tendons freinent activement la torsion du pied vers l'intérieur : ils sont donc très sollicités après une entorse, quand la cheville est moins stable, et sur les terrains en dévers. Comme pour toute tendinopathie, le repos complet n'est pas la solution : c'est le renforcement progressif, notamment excentrique, qui restaure la tolérance du tendon. Rechercher une instabilité de cheville associée fait partie du traitement, sans quoi la récidive est probable.", stages: [
                     { label: "Douleur & décharge", critere: "La douleur sur le bord externe de la cheville ne se réveille plus à la marche, et pousser le pied vers l'extérieur est possible sans douleur vive.", exercises: [
                             { name: "Isométrique des éverseurs", dose: "5 × 30 sec chaque côté", tip: "Assis, poussez le bord externe du pied vers l'extérieur contre une résistance fixe (mur, main), sans bouger la cheville. Effet antalgique utile en phase irritative." },
                             { name: "Mobilité douce de cheville", dose: "3 × 15", tip: "Assis, jambe surélevée et relâchée. Montez et descendez la pointe du pied sur toute l'amplitude disponible, puis décrivez de larges cercles dans un sens et dans l'autre, sans forcer en fin de course." },
@@ -1115,10 +1246,36 @@ const PATHOLOGIES = [
                             { name: "Changements de direction", dose: "4 × 15 m", tip: "Course sur une vingtaine de mètres avec un changement de direction franc au milieu. Augmentez la vitesse d'une série à l'autre, en commençant sur sol régulier." },
                             { name: "Validation fonctionnelle", dose: "bilan", tip: "Une course sur terrain irrégulier sans douleur ni sensation d'instabilité est un bon repère avant la reprise complète." }
                         ] }
+                ] },
+            { id: "coussinet", label: "Syndrome du coussinet adipeux", groupe: "Douleur du talon", desc: "Douleur sourde et profonde au centre du talon, pire pieds nus sur sol dur ou après une longue station debout, sans la douleur vive des premiers pas du matin.", context: "Sous votre talon se trouve un coussin de graisse compartimenté, qui amortit chaque pas. Avec les années, les impacts répétés ou une station debout prolongée, il s'amincit et perd de son élasticité : l'os appuie alors plus directement sur le sol à chaque appui. Ce n'est pas une fasciite plantaire, et c'est important : c'est la deuxième cause de douleur du talon, elle est régulièrement confondue avec la première, et le traitement n'est pas le même. Trois repères la distinguent. La douleur siège au « centre » du talon, pas sur son bord interne. Elle est pire pieds nus sur un sol dur ou après être resté longtemps debout, alors que la fasciite fait surtout mal aux premiers pas du matin puis s'atténue en marchant. Et étirer le fascia ne la soulage pas, voire l'aggrave. Ici, l'essentiel du traitement est de remettre de l'amortissement sous le talon et de renforcer ce qui absorbe le choc en amont. C'est plus lent qu'une fasciite, et la régularité compte plus que l'intensité.", stages: [
+                    { label: "Décharge et amortissement", critere: "Vous marchez une demi-heure avec vos talonnettes sans que la douleur s'installe, et rester debout à faire la vaisselle ne la réveille plus.", exercises: [
+                            { name: "Talonnette amortissante", dose: "en permanence", tip: "Placez une talonnette en gel ou en silicone dans vos deux chaussures, y compris à la maison. C'est la mesure qui soulage le plus vite : elle remplace temporairement l'amortissement que votre coussinet n'assure plus." },
+                            { name: "Bannir les pieds nus sur sol dur", dose: "tous les jours", tip: "Carrelage, parquet, béton : mettez des chaussons amortissants dès le lever. C'est souvent la source principale de la douleur, et la plus facile à supprimer." },
+                            { name: "Réduction de la station debout prolongée", dose: "cette semaine", tip: "Fractionnez : asseyez-vous quelques minutes toutes les demi-heures plutôt que de tenir une heure d'affilée. C'est la durée d'appui continue qui écrase le coussinet, plus que la distance parcourue." },
+                            { name: "Mobilité douce de la cheville", dose: "3 × 15", tip: "Montez et descendez la pointe du pied, dessinez des cercles. On entretient la circulation et la mobilité sans imposer d'impact au talon." }
+                        ] },
+                    { label: "Renforcer ce qui amortit en amont", critere: "Vous tenez les montées sur pointe sans douleur au talon, et une journée normale ne laisse plus qu'une gêne légère le soir.", exercises: [
+                            { name: "Montée sur pointe des deux pieds", dose: "3 × 15", tip: "Debout, montez sur la pointe et redescendez lentement, sans laisser le talon claquer au sol. Un mollet fort absorbe une part du choc avant qu'il n'arrive au talon." },
+                            { name: "Renforcement des muscles du pied", dose: "3 × 15", tip: "Pieds nus assis, creusez la voûte en rapprochant la base des orteils du talon, sans les recroqueviller. Ces petits muscles participent à l'amortissement de chaque appui." },
+                            { name: "Renforcement des fessiers et des cuisses", dose: "3 × 12", tip: "Pont fessier et assis-debout. Plus la jambe encaisse haut, moins le talon reçoit bas." },
+                            { name: "Marche en terrain souple", dose: "20 min", tip: "Gazon, chemin de terre, piste. On garde l'activité en choisissant les surfaces qui rendent une partie de l'énergie au lieu de la renvoyer dans le talon." }
+                        ] },
+                    { label: "Reprise de la charge", critere: "Vous marchez une heure sur sol dur, chaussé, sans réveil de la douleur le lendemain, et vous avez réduit l'épaisseur de la talonnette sans que la gêne revienne.", exercises: [
+                            { name: "Allongement progressif de la marche", dose: "selon tolérance", tip: "Augmentez d'environ dix minutes par semaine, sur terrain souple d'abord puis sur sol dur. Un seul changement à la fois : durée ou surface, jamais les deux." },
+                            { name: "Réduction progressive de la talonnette", dose: "chaque semaine", tip: "Diminuez l'épaisseur par paliers. Si la douleur revient, restez une semaine de plus au palier précédent : le coussinet a besoin de temps pour retrouver de la tolérance." },
+                            { name: "Sautillements légers", dose: "3 × 15", tip: "Petits sautillements sur avant-pied, sur surface souple. On réhabitue le talon aux impacts, très progressivement et jamais talon en premier." },
+                            { name: "Maintien du renforcement", dose: "3 × par semaine", tip: "Mollet, pied, fessiers. C'est ce travail qui rend la talonnette progressivement inutile." }
+                        ] },
+                    { label: "Retour à l'activité", critere: "Vous avez repris vos activités habituelles, y compris pieds nus à la maison, sans réapparition de la douleur. Comptez plusieurs mois : le coussinet se répare lentement, et il vieillit avec vous.", exercises: [
+                            { name: "Reprise complète des activités", dose: "selon votre plan", tip: "Station debout prolongée, marche longue, sport : réintroduisez-les une par une, en surveillant la gêne du lendemain plutôt que celle du moment." },
+                            { name: "Chaussage durablement amortissant", dose: "en continu", tip: "Gardez des chaussures à semelle épaisse et souple, et remplacez-les dès qu'elles s'écrasent. Une semelle morte fait revenir la douleur plus sûrement qu'une journée de trop." },
+                            { name: "Entretien du renforcement", dose: "2 × par semaine", tip: "Mollet et muscles du pied, durablement. C'est le seul amortissement que vous pouvez encore améliorer." },
+                            { name: "Surveillance du poids et des surfaces", dose: "en continu", tip: "Chaque kilo se retrouve sous le talon à chaque pas, et le béton ne pardonne pas. Ce sont les deux leviers qui restent quand le coussinet est aminci." }
+                        ] }
                 ] }
         ] },
     { id: "cervical", label: "Rachis cervical", injuries: [
-            { id: "cervicalgie", label: "Cervicalgie commune", desc: "Douleur ou raideur de la nuque apparue progressivement, sans choc, souvent liée à la posture de travail ou au stress.", context: "L'imagerie est rarement utile dans une cervicalgie commune : les anomalies visibles sur les radios ou IRM sont très fréquentes chez des personnes sans aucune douleur, et n'expliquent généralement pas les symptômes. Ce qui fonctionne, c'est l'association d'un renforcement des fléchisseurs profonds du cou et du travail des muscles de l'omoplate, poursuivi dans la durée. Rester actif et continuer à bouger la nuque donne de meilleurs résultats que le repos ou le port prolongé d'un collier.", stages: [
+            { id: "cervicalgie", label: "Cervicalgie commune", groupe: "Douleur limitée au cou", desc: "Douleur ou raideur de la nuque apparue progressivement, sans choc, souvent liée à la posture de travail ou au stress.", context: "L'imagerie est rarement utile dans une cervicalgie commune : les anomalies visibles sur les radios ou IRM sont très fréquentes chez des personnes sans aucune douleur, et n'expliquent généralement pas les symptômes. Ce qui fonctionne, c'est l'association d'un renforcement des fléchisseurs profonds du cou et du travail des muscles de l'omoplate, poursuivi dans la durée. Rester actif et continuer à bouger la nuque donne de meilleurs résultats que le repos ou le port prolongé d'un collier.", stages: [
                     { label: "Douleur & mobilité", critere: "Vous tournez la tête des deux côtés sans blocage, et la douleur ne descend pas dans le bras.", exercises: [
                             { name: "Rotations cervicales douces", dose: "3 × 10", tip: "Assis ou debout, tournez lentement la tête d'un côté puis de l'autre sur l'amplitude confortable. Bouger tôt et régulièrement vaut mieux que d'immobiliser la nuque par crainte de la douleur." },
                             { name: "Inclinaisons latérales douces", dose: "3 × 10", tip: "Amenez doucement l'oreille vers l'épaule, sans hausser l'épaule ni forcer en fin de mouvement, puis revenez et changez de côté." },
@@ -1144,7 +1301,7 @@ const PATHOLOGIES = [
                             { name: "Maintien du renforcement d'entretien", dose: "2 × par semaine", tip: "Poursuivez le travail des fléchisseurs profonds et des omoplates dans la durée : c'est ce qui réduit le mieux le risque de récidive, très fréquente dans les cervicalgies." }
                         ] }
                 ] },
-            { id: "whiplash", label: "Torticolis / coup du lapin", desc: "Blocage brutal de la nuque au réveil, ou douleur apparue après un choc ou un mouvement brusque.", context: "Après un traumatisme cervical, un point est bien établi : reprendre le mouvement tôt donne de meilleurs résultats que l'immobilisation ou le port prolongé d'un collier. Rassurer et remettre en mouvement fait partie du traitement, car l'appréhension et l'évitement des mouvements entretiennent la raideur. Un choc violent, une douleur intense, des troubles neurologiques ou une gêne à la déglutition justifient en revanche un avis médical avant tout exercice.", stages: [
+            { id: "whiplash", label: "Torticolis / coup du lapin", groupe: "Douleur limitée au cou", desc: "Blocage brutal de la nuque au réveil, ou douleur apparue après un choc ou un mouvement brusque.", context: "Après un traumatisme cervical, un point est bien établi : reprendre le mouvement tôt donne de meilleurs résultats que l'immobilisation ou le port prolongé d'un collier. Rassurer et remettre en mouvement fait partie du traitement, car l'appréhension et l'évitement des mouvements entretiennent la raideur. Un choc violent, une douleur intense, des troubles neurologiques ou une gêne à la déglutition justifient en revanche un avis médical avant tout exercice.", stages: [
                     { label: "Douleur & mobilité", critere: "Le blocage s'est desserré : vous tournez la tête nettement plus loin qu'au premier jour, et vous n'avez plus besoin de collier.", exercises: [
                             { name: "Mobilisation très douce", dose: "3 × 10", tip: "Tournez très doucement la tête d'un côté puis de l'autre, et inclinez l'oreille vers l'épaule, sur une amplitude volontairement réduite, bien en dessous de ce qui provoque une gêne. L'objectif est de bouger un peu et souvent, pas d'aller loin." },
                             { name: "Relâchement musculaire", dose: "3 × 1 min", tip: "Assis ou allongé confortablement, épaules basses. Respirez lentement par le nez, expirez longuement par la bouche en laissant se relâcher cou et épaules à chaque expiration." },
@@ -1168,6 +1325,110 @@ const PATHOLOGIES = [
                             { name: "Endurance posturale prolongée", dose: "3 × 1 min", tip: "Oreilles au-dessus des épaules, épaules basses et ouvertes, menton légèrement rentré, maintenu plus longtemps qu'aux étapes précédentes." },
                             { name: "Reprise des activités quotidiennes et du sport", dose: "1 séance", tip: "Progressive selon la tolérance, en réintroduisant en dernier les activités avec impacts ou mouvements brusques de la tête." },
                             { name: "Réassurance et gestion de l'appréhension", dose: "quotidien", tip: "Bouger la nuque n'aggrave pas la lésion : l'évitement des mouvements par crainte est l'un des facteurs qui entretiennent le plus la raideur et la douleur dans la durée." }
+                        ] }
+                ] },
+            { id: "ncb-c5", label: "Névralgie cervico-brachiale C5", groupe: "Douleur qui descend dans le bras", desc: "Douleur qui descend du cou vers l'épaule et la face externe du bras, sans atteindre les doigts, avec parfois une difficulté à lever le bras sur le côté.", context: "Une racine nerveuse sort de votre cou entre deux vertèbres, puis descend dans le bras. Quand elle est comprimée ou irritée à sa sortie, la douleur ne reste pas dans le cou : elle descend le long du trajet du nerf, ici l'épaule et la face externe du bras, sans descendre jusqu'aux doigts. C'est ce trajet, plus que l'intensité, qui dit quelle racine est en cause. Deux choses à savoir avant de commencer. D'abord, l'évolution est favorable dans la grande majorité des cas : environ trois patients sur quatre récupèrent sans chirurgie, et à distance neuf sur dix vont bien ou n'ont plus qu'une gêne légère. Ensuite, le repère qui compte n'est pas que la douleur diminue, mais qu'elle « remonte » : si elle quitte la main pour se limiter à l'épaule ou au cou, vous allez dans le bon sens, même si le cou est plus douloureux sur le moment. C'est ce qu'on appelle la centralisation, et c'est elle qui guide tout le parcours. Les exercices commencent par des mouvements de glissement du nerf, qui le font coulisser sans l'étirer : mesurés, ils déplacent le nerf deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte. La mise en tension viendra plus tard, quand le nerf sera calmé. Le muscle à surveiller pour cette racine est le deltoïde, celui qui lève le bras sur le côté, et le nerf principalement sollicité par les exercices est l'ensemble du plexus, sans nerf isolé dominant.", stages: [
+                    { label: "Calmer et faire remonter la douleur", critere: "La douleur a quitté la main ou l'avant-bras pour se limiter à l'épaule et au cou, et vous dormez la plupart des nuits. C'est cette remontée qui compte, même si le cou reste plus douloureux qu'avant.", exercises: [
+                            { name: "Position de soulagement du bras", dose: "aussi souvent que nécessaire", tip: "Posez l'avant-bras sur un coussin, main plus haute que le coude, épaule légèrement relevée vers l'oreille. Certains sont soulagés main posée sur le sommet du crâne : si c'est votre cas, utilisez-la sans crainte, c'est un bon signe." },
+                            { name: "Glissement du nerf, version très douce", dose: "3 × 8 lents", tip: "Tête inclinée du côté douloureux, coude fléchi : tendez lentement le coude tout en inclinant la tête du côté opposé, puis revenez. Le cou et le coude vont dans le même sens, c'est ce qui fait glisser le nerf sans le tirer. Arrêtez avant toute reproduction de la douleur dans la main." },
+                            { name: "Aménagement du poste et du sommeil", dose: "quotidien", tip: "Écran à hauteur des yeux, coude soutenu au bureau, oreiller qui garde la nuque dans l'axe. Évitez de dormir bras sous l'oreiller ou main sous la tête, position qui met le nerf en tension toute la nuit." },
+                            { name: "Marche quotidienne", dose: "20 min", tip: "Une marche régulière, bras relâchés le long du corps. Bouger entretient la circulation autour du nerf, et l'immobilité prolongée entretient la douleur." }
+                        ] },
+                    { label: "Redonner du glissement au nerf", critere: "Vous faites les glissements sans réveiller de fourmillements dans la main, et vous tournez la tête des deux côtés sans que la douleur redescende dans le bras.", exercises: [
+                            { name: "Glissement du bras dans son ensemble", dose: "4 × 10, environ 6 sec par mouvement", tip: "Mouvement lent et rythmé, une minute de repos entre les séries. On cherche le va-et-vient, jamais l'étirement : mesuré, ce glissement déplace le nerf environ deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte." },
+                            { name: "Renforcement des fléchisseurs profonds du cou", dose: "3 × 10 tenus 5 sec", tip: "Allongé sur le dos, rentrez légèrement le menton comme pour faire un double menton, sans décoller la tête. Ces muscles profonds stabilisent votre cou et se mettent en veille dès qu'il y a douleur." },
+                            { name: "Contrôle des omoplates", dose: "3 × 12", tip: "Assis ou debout, faites glisser les omoplates vers le bas et vers l'arrière, sans monter les épaules. Une omoplate qui tombe vers l'avant tire sur le trajet du nerf à chaque mouvement de bras." },
+                            { name: "Mobilité douce du cou", dose: "3 × 10", tip: "Rotations et inclinaisons dans l'amplitude confortable, lentement. On entretient le mouvement sans aller chercher la position qui réveille le bras." }
+                        ] },
+                    { label: "Renforcer et remettre en tension", critere: "Vous tenez les exercices de renforcement sans que la douleur redescende dans le bras le lendemain, et la force du deltoïde se rapproche de celle du côté sain.", exercises: [
+                            { name: "Mise en tension du bras dans son ensemble", dose: "3 × 8 lents", tip: "Même mouvement que le glissement, mais cette fois le cou et le coude vont en sens opposé : c'est ce qui met le nerf en tension. À n'introduire que maintenant, et à arrêter si des fourmillements apparaissent dans la main." },
+                            { name: "Renforcement du deltoïde", dose: "3 × 12", tip: "Debout, élastique léger ou petite charge : levez le bras sur le côté jusqu'à l'horizontale, lentement, puis redescendez en contrôlant. Comparez régulièrement avec le côté sain : c'est le muscle que cette racine commande." },
+                            { name: "Renforcement des stabilisateurs de l'omoplate", dose: "3 × 12", tip: "Tirage à l'élastique, coudes qui filent vers l'arrière, omoplates serrées sans monter les épaules. C'est le socle de tous les mouvements du bras." },
+                            { name: "Endurance des fléchisseurs profonds", dose: "3 × 30 sec", tip: "Même rentrée de menton que précédemment, tenue plus longtemps. C'est l'endurance, plus que la force, qui protège le cou dans la journée." }
+                        ] },
+                    { label: "Retour aux activités", critere: "La douleur ne descend plus dans le bras, la force est comparable des deux côtés, et une journée complète de travail ne fait plus réapparaître les fourmillements dans l'épaule.", exercises: [
+                            { name: "Travail au-dessus de la tête", dose: "3 × 12", tip: "Élévations progressives bras tendu, puis rangement d'objets en hauteur. C'est le geste que cette racine limite le plus, et celui qu'il faut retrouver en dernier." },
+                            { name: "Retour progressif au port de charges", dose: "selon tolérance", tip: "Reprenez le port de charges en commençant léger et près du corps. Un bras tendu chargé est la position qui sollicite le plus le trajet du nerf." },
+                            { name: "Entretien du glissement nerveux", dose: "2 × par semaine", tip: "Gardez quelques séries de glissement, même sans douleur, en particulier si votre travail vous impose des positions prolongées." },
+                            { name: "Pauses et changements de position au travail", dose: "toutes les 30 à 45 min", tip: "Levez-vous, changez de posture, relâchez les épaules. Ce n'est pas la mauvaise position qui pose problème, c'est la position tenue trop longtemps." }
+                        ] }
+                ] },
+            { id: "ncb-c6", label: "Névralgie cervico-brachiale C6", groupe: "Douleur qui descend dans le bras", desc: "Douleur qui descend le long de la face externe du bras et de l'avant-bras jusqu'au pouce et à l'index, souvent avec des fourmillements dans ces deux doigts.", context: "Une racine nerveuse sort de votre cou entre deux vertèbres, puis descend dans le bras. Quand elle est comprimée ou irritée à sa sortie, la douleur ne reste pas dans le cou : elle descend le long du trajet du nerf, ici la face externe du bras et de l'avant-bras, jusqu'au pouce et à l'index. C'est ce trajet, plus que l'intensité, qui dit quelle racine est en cause. Deux choses à savoir avant de commencer. D'abord, l'évolution est favorable dans la grande majorité des cas : environ trois patients sur quatre récupèrent sans chirurgie, et à distance neuf sur dix vont bien ou n'ont plus qu'une gêne légère. Ensuite, le repère qui compte n'est pas que la douleur diminue, mais qu'elle « remonte » : si elle quitte la main pour se limiter à l'épaule ou au cou, vous allez dans le bon sens, même si le cou est plus douloureux sur le moment. C'est ce qu'on appelle la centralisation, et c'est elle qui guide tout le parcours. Les exercices commencent par des mouvements de glissement du nerf, qui le font coulisser sans l'étirer : mesurés, ils déplacent le nerf deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte. La mise en tension viendra plus tard, quand le nerf sera calmé. Le muscle à surveiller pour cette racine est le biceps et les muscles qui relèvent le poignet, et le nerf principalement sollicité par les exercices est le nerf médian.", stages: [
+                    { label: "Calmer et faire remonter la douleur", critere: "La douleur a quitté la main ou l'avant-bras pour se limiter à l'épaule et au cou, et vous dormez la plupart des nuits. C'est cette remontée qui compte, même si le cou reste plus douloureux qu'avant.", exercises: [
+                            { name: "Position de soulagement du bras", dose: "aussi souvent que nécessaire", tip: "Posez l'avant-bras sur un coussin, main plus haute que le coude, épaule légèrement relevée vers l'oreille. Certains sont soulagés main posée sur le sommet du crâne : si c'est votre cas, utilisez-la sans crainte, c'est un bon signe." },
+                            { name: "Glissement du nerf, version très douce", dose: "3 × 8 lents", tip: "Tête inclinée du côté douloureux, coude fléchi : tendez lentement le coude tout en inclinant la tête du côté opposé, puis revenez. Le cou et le coude vont dans le même sens, c'est ce qui fait glisser le nerf sans le tirer. Arrêtez avant toute reproduction de la douleur dans la main." },
+                            { name: "Aménagement du poste et du sommeil", dose: "quotidien", tip: "Écran à hauteur des yeux, coude soutenu au bureau, oreiller qui garde la nuque dans l'axe. Évitez de dormir bras sous l'oreiller ou main sous la tête, position qui met le nerf en tension toute la nuit." },
+                            { name: "Marche quotidienne", dose: "20 min", tip: "Une marche régulière, bras relâchés le long du corps. Bouger entretient la circulation autour du nerf, et l'immobilité prolongée entretient la douleur." }
+                        ] },
+                    { label: "Redonner du glissement au nerf", critere: "Vous faites les glissements sans réveiller de fourmillements dans la main, et vous tournez la tête des deux côtés sans que la douleur redescende dans le bras.", exercises: [
+                            { name: "Glissement du nerf médian", dose: "4 × 10, environ 6 sec par mouvement", tip: "Mouvement lent et rythmé, une minute de repos entre les séries. On cherche le va-et-vient, jamais l'étirement : mesuré, ce glissement déplace le nerf environ deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte." },
+                            { name: "Renforcement des fléchisseurs profonds du cou", dose: "3 × 10 tenus 5 sec", tip: "Allongé sur le dos, rentrez légèrement le menton comme pour faire un double menton, sans décoller la tête. Ces muscles profonds stabilisent votre cou et se mettent en veille dès qu'il y a douleur." },
+                            { name: "Contrôle des omoplates", dose: "3 × 12", tip: "Assis ou debout, faites glisser les omoplates vers le bas et vers l'arrière, sans monter les épaules. Une omoplate qui tombe vers l'avant tire sur le trajet du nerf à chaque mouvement de bras." },
+                            { name: "Mobilité douce du cou", dose: "3 × 10", tip: "Rotations et inclinaisons dans l'amplitude confortable, lentement. On entretient le mouvement sans aller chercher la position qui réveille le bras." }
+                        ] },
+                    { label: "Renforcer et remettre en tension", critere: "Vous tenez les exercices de renforcement sans que la douleur redescende dans le bras le lendemain, et la force du biceps se rapproche de celle du côté sain.", exercises: [
+                            { name: "Mise en tension du nerf médian", dose: "3 × 8 lents", tip: "Même mouvement que le glissement, mais cette fois le cou et le coude vont en sens opposé : c'est ce qui met le nerf en tension. À n'introduire que maintenant, et à arrêter si des fourmillements apparaissent dans la main." },
+                            { name: "Renforcement du biceps et des extenseurs du poignet", dose: "3 × 12", tip: "Flexion de coude avec une charge légère, puis relevé du poignet main dans le vide au bord d'une table. Ce sont les deux muscles commandés par cette racine, et les premiers à faiblir." },
+                            { name: "Renforcement des stabilisateurs de l'omoplate", dose: "3 × 12", tip: "Tirage à l'élastique, coudes qui filent vers l'arrière, omoplates serrées sans monter les épaules. C'est le socle de tous les mouvements du bras." },
+                            { name: "Endurance des fléchisseurs profonds", dose: "3 × 30 sec", tip: "Même rentrée de menton que précédemment, tenue plus longtemps. C'est l'endurance, plus que la force, qui protège le cou dans la journée." }
+                        ] },
+                    { label: "Retour aux activités", critere: "La douleur ne descend plus dans le bras, la force est comparable des deux côtés, et une journée complète de travail ne fait plus réapparaître les fourmillements dans le pouce et l'index.", exercises: [
+                            { name: "Préhension et gestes fins", dose: "3 × 12", tip: "Reprenez les gestes de pince pouce-index, l'écriture, l'usage d'outils. C'est le territoire de cette racine, et la finesse du geste revient après la force." },
+                            { name: "Retour progressif au port de charges", dose: "selon tolérance", tip: "Reprenez le port de charges en commençant léger et près du corps. Un bras tendu chargé est la position qui sollicite le plus le trajet du nerf." },
+                            { name: "Entretien du glissement nerveux", dose: "2 × par semaine", tip: "Gardez quelques séries de glissement, même sans douleur, en particulier si votre travail vous impose des positions prolongées." },
+                            { name: "Pauses et changements de position au travail", dose: "toutes les 30 à 45 min", tip: "Levez-vous, changez de posture, relâchez les épaules. Ce n'est pas la mauvaise position qui pose problème, c'est la position tenue trop longtemps." }
+                        ] }
+                ] },
+            { id: "ncb-c7", label: "Névralgie cervico-brachiale C7", groupe: "Douleur qui descend dans le bras", desc: "Douleur qui descend derrière le bras et l'avant-bras jusqu'au majeur, souvent avec une difficulté à pousser ou à tendre le coude.", context: "Une racine nerveuse sort de votre cou entre deux vertèbres, puis descend dans le bras. Quand elle est comprimée ou irritée à sa sortie, la douleur ne reste pas dans le cou : elle descend le long du trajet du nerf, ici la face postérieure du bras et de l'avant-bras, jusqu'au majeur. C'est ce trajet, plus que l'intensité, qui dit quelle racine est en cause. Deux choses à savoir avant de commencer. D'abord, l'évolution est favorable dans la grande majorité des cas : environ trois patients sur quatre récupèrent sans chirurgie, et à distance neuf sur dix vont bien ou n'ont plus qu'une gêne légère. Ensuite, le repère qui compte n'est pas que la douleur diminue, mais qu'elle « remonte » : si elle quitte la main pour se limiter à l'épaule ou au cou, vous allez dans le bon sens, même si le cou est plus douloureux sur le moment. C'est ce qu'on appelle la centralisation, et c'est elle qui guide tout le parcours. Les exercices commencent par des mouvements de glissement du nerf, qui le font coulisser sans l'étirer : mesurés, ils déplacent le nerf deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte. La mise en tension viendra plus tard, quand le nerf sera calmé. Le muscle à surveiller pour cette racine est le triceps, celui qui tend le coude, et le nerf principalement sollicité par les exercices est le nerf médian, et le nerf radial pour la face postérieure.", stages: [
+                    { label: "Calmer et faire remonter la douleur", critere: "La douleur a quitté la main ou l'avant-bras pour se limiter à l'épaule et au cou, et vous dormez la plupart des nuits. C'est cette remontée qui compte, même si le cou reste plus douloureux qu'avant.", exercises: [
+                            { name: "Position de soulagement du bras", dose: "aussi souvent que nécessaire", tip: "Posez l'avant-bras sur un coussin, main plus haute que le coude, épaule légèrement relevée vers l'oreille. Certains sont soulagés main posée sur le sommet du crâne : si c'est votre cas, utilisez-la sans crainte, c'est un bon signe." },
+                            { name: "Glissement du nerf, version très douce", dose: "3 × 8 lents", tip: "Tête inclinée du côté douloureux, coude fléchi : tendez lentement le coude tout en inclinant la tête du côté opposé, puis revenez. Le cou et le coude vont dans le même sens, c'est ce qui fait glisser le nerf sans le tirer. Arrêtez avant toute reproduction de la douleur dans la main." },
+                            { name: "Aménagement du poste et du sommeil", dose: "quotidien", tip: "Écran à hauteur des yeux, coude soutenu au bureau, oreiller qui garde la nuque dans l'axe. Évitez de dormir bras sous l'oreiller ou main sous la tête, position qui met le nerf en tension toute la nuit." },
+                            { name: "Marche quotidienne", dose: "20 min", tip: "Une marche régulière, bras relâchés le long du corps. Bouger entretient la circulation autour du nerf, et l'immobilité prolongée entretient la douleur." }
+                        ] },
+                    { label: "Redonner du glissement au nerf", critere: "Vous faites les glissements sans réveiller de fourmillements dans la main, et vous tournez la tête des deux côtés sans que la douleur redescende dans le bras.", exercises: [
+                            { name: "Glissement du nerf médian", dose: "4 × 10, environ 6 sec par mouvement", tip: "Mouvement lent et rythmé, une minute de repos entre les séries. On cherche le va-et-vient, jamais l'étirement : mesuré, ce glissement déplace le nerf environ deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte." },
+                            { name: "Renforcement des fléchisseurs profonds du cou", dose: "3 × 10 tenus 5 sec", tip: "Allongé sur le dos, rentrez légèrement le menton comme pour faire un double menton, sans décoller la tête. Ces muscles profonds stabilisent votre cou et se mettent en veille dès qu'il y a douleur." },
+                            { name: "Contrôle des omoplates", dose: "3 × 12", tip: "Assis ou debout, faites glisser les omoplates vers le bas et vers l'arrière, sans monter les épaules. Une omoplate qui tombe vers l'avant tire sur le trajet du nerf à chaque mouvement de bras." },
+                            { name: "Mobilité douce du cou", dose: "3 × 10", tip: "Rotations et inclinaisons dans l'amplitude confortable, lentement. On entretient le mouvement sans aller chercher la position qui réveille le bras." }
+                        ] },
+                    { label: "Renforcer et remettre en tension", critere: "Vous tenez les exercices de renforcement sans que la douleur redescende dans le bras le lendemain, et la force du triceps se rapproche de celle du côté sain.", exercises: [
+                            { name: "Mise en tension du nerf médian", dose: "3 × 8 lents", tip: "Même mouvement que le glissement, mais cette fois le cou et le coude vont en sens opposé : c'est ce qui met le nerf en tension. À n'introduire que maintenant, et à arrêter si des fourmillements apparaissent dans la main." },
+                            { name: "Renforcement du triceps", dose: "3 × 12", tip: "Extension du coude à l'élastique, coude le long du corps, ou pompes contre un mur. Le triceps est le muscle de cette racine : sa faiblesse se remarque en poussant une porte ou en se relevant d'un fauteuil." },
+                            { name: "Renforcement des stabilisateurs de l'omoplate", dose: "3 × 12", tip: "Tirage à l'élastique, coudes qui filent vers l'arrière, omoplates serrées sans monter les épaules. C'est le socle de tous les mouvements du bras." },
+                            { name: "Endurance des fléchisseurs profonds", dose: "3 × 30 sec", tip: "Même rentrée de menton que précédemment, tenue plus longtemps. C'est l'endurance, plus que la force, qui protège le cou dans la journée." }
+                        ] },
+                    { label: "Retour aux activités", critere: "La douleur ne descend plus dans le bras, la force est comparable des deux côtés, et une journée complète de travail ne fait plus réapparaître les fourmillements dans le majeur.", exercises: [
+                            { name: "Gestes de poussée", dose: "3 × 12", tip: "Poussée contre un mur, puis port et déplacement d'objets devant soi. C'est le geste que cette racine limite, et il revient progressivement." },
+                            { name: "Retour progressif au port de charges", dose: "selon tolérance", tip: "Reprenez le port de charges en commençant léger et près du corps. Un bras tendu chargé est la position qui sollicite le plus le trajet du nerf." },
+                            { name: "Entretien du glissement nerveux", dose: "2 × par semaine", tip: "Gardez quelques séries de glissement, même sans douleur, en particulier si votre travail vous impose des positions prolongées." },
+                            { name: "Pauses et changements de position au travail", dose: "toutes les 30 à 45 min", tip: "Levez-vous, changez de posture, relâchez les épaules. Ce n'est pas la mauvaise position qui pose problème, c'est la position tenue trop longtemps." }
+                        ] }
+                ] },
+            { id: "ncb-c8", label: "Névralgie cervico-brachiale C8", groupe: "Douleur qui descend dans le bras", desc: "Douleur qui descend le long de la face interne de l'avant-bras jusqu'à l'annulaire et à l'auriculaire, souvent avec une main moins habile et une prise moins ferme.", context: "Une racine nerveuse sort de votre cou entre deux vertèbres, puis descend dans le bras. Quand elle est comprimée ou irritée à sa sortie, la douleur ne reste pas dans le cou : elle descend le long du trajet du nerf, ici la face interne de l'avant-bras, jusqu'à l'annulaire et à l'auriculaire. C'est ce trajet, plus que l'intensité, qui dit quelle racine est en cause. Deux choses à savoir avant de commencer. D'abord, l'évolution est favorable dans la grande majorité des cas : environ trois patients sur quatre récupèrent sans chirurgie, et à distance neuf sur dix vont bien ou n'ont plus qu'une gêne légère. Ensuite, le repère qui compte n'est pas que la douleur diminue, mais qu'elle « remonte » : si elle quitte la main pour se limiter à l'épaule ou au cou, vous allez dans le bon sens, même si le cou est plus douloureux sur le moment. C'est ce qu'on appelle la centralisation, et c'est elle qui guide tout le parcours. Les exercices commencent par des mouvements de glissement du nerf, qui le font coulisser sans l'étirer : mesurés, ils déplacent le nerf deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte. La mise en tension viendra plus tard, quand le nerf sera calmé. Le muscle à surveiller pour cette racine est les muscles de la main et les fléchisseurs des doigts, et le nerf principalement sollicité par les exercices est le nerf ulnaire.", stages: [
+                    { label: "Calmer et faire remonter la douleur", critere: "La douleur a quitté la main ou l'avant-bras pour se limiter à l'épaule et au cou, et vous dormez la plupart des nuits. C'est cette remontée qui compte, même si le cou reste plus douloureux qu'avant.", exercises: [
+                            { name: "Position de soulagement du bras", dose: "aussi souvent que nécessaire", tip: "Posez l'avant-bras sur un coussin, main plus haute que le coude, épaule légèrement relevée vers l'oreille. Certains sont soulagés main posée sur le sommet du crâne : si c'est votre cas, utilisez-la sans crainte, c'est un bon signe." },
+                            { name: "Glissement du nerf, version très douce", dose: "3 × 8 lents", tip: "Tête inclinée du côté douloureux, coude fléchi : tendez lentement le coude tout en inclinant la tête du côté opposé, puis revenez. Le cou et le coude vont dans le même sens, c'est ce qui fait glisser le nerf sans le tirer. Arrêtez avant toute reproduction de la douleur dans la main." },
+                            { name: "Aménagement du poste et du sommeil", dose: "quotidien", tip: "Écran à hauteur des yeux, coude soutenu au bureau, oreiller qui garde la nuque dans l'axe. Évitez de dormir bras sous l'oreiller ou main sous la tête, position qui met le nerf en tension toute la nuit." },
+                            { name: "Marche quotidienne", dose: "20 min", tip: "Une marche régulière, bras relâchés le long du corps. Bouger entretient la circulation autour du nerf, et l'immobilité prolongée entretient la douleur." }
+                        ] },
+                    { label: "Redonner du glissement au nerf", critere: "Vous faites les glissements sans réveiller de fourmillements dans la main, et vous tournez la tête des deux côtés sans que la douleur redescende dans le bras.", exercises: [
+                            { name: "Glissement du nerf ulnaire", dose: "4 × 10, environ 6 sec par mouvement", tip: "Mouvement lent et rythmé, une minute de repos entre les séries. On cherche le va-et-vient, jamais l'étirement : mesuré, ce glissement déplace le nerf environ deux fois plus qu'une mise en tension tout en lui imposant huit fois moins de contrainte." },
+                            { name: "Renforcement des fléchisseurs profonds du cou", dose: "3 × 10 tenus 5 sec", tip: "Allongé sur le dos, rentrez légèrement le menton comme pour faire un double menton, sans décoller la tête. Ces muscles profonds stabilisent votre cou et se mettent en veille dès qu'il y a douleur." },
+                            { name: "Contrôle des omoplates", dose: "3 × 12", tip: "Assis ou debout, faites glisser les omoplates vers le bas et vers l'arrière, sans monter les épaules. Une omoplate qui tombe vers l'avant tire sur le trajet du nerf à chaque mouvement de bras." },
+                            { name: "Mobilité douce du cou", dose: "3 × 10", tip: "Rotations et inclinaisons dans l'amplitude confortable, lentement. On entretient le mouvement sans aller chercher la position qui réveille le bras." }
+                        ] },
+                    { label: "Renforcer et remettre en tension", critere: "Vous tenez les exercices de renforcement sans que la douleur redescende dans le bras le lendemain, et la force du muscles de la main se rapproche de celle du côté sain.", exercises: [
+                            { name: "Mise en tension du nerf ulnaire", dose: "3 × 8 lents", tip: "Même mouvement que le glissement, mais cette fois le cou et le coude vont en sens opposé : c'est ce qui met le nerf en tension. À n'introduire que maintenant, et à arrêter si des fourmillements apparaissent dans la main." },
+                            { name: "Renforcement de la main et des doigts", dose: "3 × 15", tip: "Serrez une balle souple, puis écartez les doigts contre un élastique passé autour d'eux. Ce sont les petits muscles de la main, commandés par cette racine, qui perdent le plus vite leur force et leur habileté." },
+                            { name: "Renforcement des stabilisateurs de l'omoplate", dose: "3 × 12", tip: "Tirage à l'élastique, coudes qui filent vers l'arrière, omoplates serrées sans monter les épaules. C'est le socle de tous les mouvements du bras." },
+                            { name: "Endurance des fléchisseurs profonds", dose: "3 × 30 sec", tip: "Même rentrée de menton que précédemment, tenue plus longtemps. C'est l'endurance, plus que la force, qui protège le cou dans la journée." }
+                        ] },
+                    { label: "Retour aux activités", critere: "La douleur ne descend plus dans le bras, la force est comparable des deux côtés, et une journée complète de travail ne fait plus réapparaître les fourmillements dans l'annulaire et l'auriculaire.", exercises: [
+                            { name: "Habileté de la main", dose: "3 × 12", tip: "Manipulez de petits objets, boutonnez, écrivez, utilisez un clavier. L'habileté revient après la force, et c'est elle qui gêne le plus au quotidien." },
+                            { name: "Retour progressif au port de charges", dose: "selon tolérance", tip: "Reprenez le port de charges en commençant léger et près du corps. Un bras tendu chargé est la position qui sollicite le plus le trajet du nerf." },
+                            { name: "Entretien du glissement nerveux", dose: "2 × par semaine", tip: "Gardez quelques séries de glissement, même sans douleur, en particulier si votre travail vous impose des positions prolongées." },
+                            { name: "Pauses et changements de position au travail", dose: "toutes les 30 à 45 min", tip: "Levez-vous, changez de posture, relâchez les épaules. Ce n'est pas la mauvaise position qui pose problème, c'est la position tenue trop longtemps." }
                         ] }
                 ] }
         ] },
@@ -2092,9 +2353,14 @@ const SEARCH_SYNONYMS = {
     // Pied
     "morton": ["nevrome", "nevrome de morton", "brulure orteils", "caillou dans la chaussure", "metatarsalgie"],
     "instabilite-cheville": ["cheville instable", "entorses a repetition", "derobement", "cheville qui lache"],
+    "coussinet": ["coussinet adipeux", "talon qui fait mal debout", "douleur centre du talon", "atrophie du coussinet", "talalgie", "mal au talon pieds nus"],
     "fibulaires": ["peroniers", "peroniers lateraux", "malleole externe", "tendinite peroniers"],
     // Rachis
     "cervicalgie": ["mal de cou", "nuque", "cervicales", "arthrose cervicale", "cervicarthrose", "tension nuque"],
+    "ncb-c5": ["nevralgie cervico brachiale", "ncb", "nerf coince cou", "douleur qui descend dans le bras", "sciatique du bras", "cervico brachialgie", "epaule"],
+    "ncb-c6": ["nevralgie cervico brachiale", "ncb", "fourmillements pouce", "pouce et index", "nerf median", "cervico brachialgie", "c6"],
+    "ncb-c7": ["nevralgie cervico brachiale", "ncb", "fourmillements majeur", "triceps faible", "cervico brachialgie", "c7"],
+    "ncb-c8": ["nevralgie cervico brachiale", "ncb", "fourmillements auriculaire", "petit doigt", "nerf ulnaire", "cervico brachialgie", "c8"],
     "whiplash": ["torticolis", "coup du lapin", "traumatisme cervical", "nuque bloquee", "accident voiture"],
     "dorsalgie": ["mal de dos haut", "entre les omoplates", "dorsales", "haut du dos"],
     "raideur": ["dos voute", "cyphose", "posture", "dos raide", "mauvaise posture"],
@@ -2196,12 +2462,17 @@ const DRAPEAUX = {
     "cheville:achille-insertion.": ["Un claquement suivi d'une impossibilité de monter sur la pointe du pied."],
     "cheville:achille-paratenonite.": ["Une rougeur, une chaleur marquée ou de la fièvre associées au gonflement."],
     "cheville:entorse-lat.": ["Une impossibilité de poser le pied et de faire quatre pas, ou une douleur à l'appui sur l'os de la cheville : une radiographie est alors justifiée."],
+    "pied:coussinet": ["Une douleur du talon apparue après une chute ou une réception sur les talons.", "Un talon gonflé, chaud, ou une douleur qui vous réveille la nuit."],
     "pied:fasciite-pied": ["Une douleur du talon apparue brutalement pendant un effort, avec sensation de déchirure."],
     // Rachis — le plus important de tous
     "lombaire:lombalgie": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus : ce sont des urgences, consultez sans attendre."],
     "lombaire:lombosciatique.": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou un pied qui tombe en marchant : consultez sans attendre."],
     "lombaire:hernie-discale.": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou une faiblesse qui s'aggrave dans la jambe : consultez sans attendre."],
     "lombaire:stenose-spinale.": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou des jambes qui se dérobent : consultez sans attendre."],
+    "cervical:ncb-c5": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c6": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c7": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c8": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:whiplash": ["Des troubles de la vision, des vertiges, des difficultés à avaler ou à parler, ou une douleur intense après un choc violent."],
     "cervical:cervicalgie.": ["Des troubles de la vision, des vertiges, ou une douleur qui descend dans le bras avec perte de force."],
 };
@@ -2226,7 +2497,12 @@ const ORDRE_GROUPES = [
     // Cheville : regroupement anatomique, plus parlant ici que le mécanisme
     "La cheville elle-même",
     "Le tendon d'Achille",
-    // Rachis lombaire : c'est le trajet de la douleur qui aide à s'orienter
+    // Rachis cervical et lombaire : c'est le trajet de la douleur qui aide à s'orienter
+    "Douleur du talon",
+    "Douleur de l'avant-pied",
+    "Douleur du bord externe",
+    "Douleur limitée au cou",
+    "Douleur qui descend dans le bras",
     "Douleur limitée au dos",
     "Douleur qui descend dans la jambe",
     "Gêne à la marche",
