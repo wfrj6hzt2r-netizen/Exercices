@@ -677,6 +677,37 @@ const PoseStandingAbduction = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "19", y1: "27", x2: "18", y2: "45" }),
     React.createElement("line", { x1: "19", y1: "27", x2: "34", y2: "37" }),
     React.createElement("path", { d: "M35.5 32.5 L40 35.5 L35.5 38.5" })));
+// Assis au bord d'un lit ou sur une chaise, jambe qui se tend : c'est la position de seize
+// mobilisations de genou et de trois renforcements que le contenu décrit assis, et pour
+// lesquelles le dessin montrait quelqu'un allongé. Le pointillé donne le trajet de la jambe.
+const PoseSeatedLeg = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M8 13 L8 28 L22 28" }),
+    React.createElement("line", { x1: "9", y1: "28", x2: "9", y2: "45" }),
+    React.createElement("circle", { cx: "12", cy: "9", r: "3.6" }),
+    React.createElement("line", { x1: "12", y1: "12.6", x2: "14", y2: "27" }),
+    React.createElement("line", { x1: "14", y1: "27", x2: "27", y2: "27" }),
+    React.createElement("line", { x1: "27", y1: "27", x2: "39", y2: "24" }),
+    React.createElement("line", { x1: "39", y1: "24", x2: "41", y2: "20" }),
+    React.createElement("path", { d: "M27 27 L29 40", strokeDasharray: "3 3" }),
+    React.createElement("path", { d: "M30 40 A 13 13 0 0 0 38 27", strokeDasharray: "3 3" })));
+// Gainage profond allongé sur le dos, genoux pliés : la flèche rentre au niveau du nombril,
+// c'est tout le geste. Le dessin de planche montrait quelqu'un à plat ventre.
+const PoseSupineCore = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "34", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
+    React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
+    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "41" }),
+    React.createElement("path", { d: "M20 27 L20 32 M17.5 29.5 L20 32 L22.5 29.5" })));
+// À quatre pattes, dos plat : la position du chat-vache et du bras-jambe opposés.
+const PoseFourPoint = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "43", x2: "44", y2: "43" }),
+    React.createElement("circle", { cx: "11", cy: "22", r: "3.8" }),
+    React.createElement("line", { x1: "15", y1: "23", x2: "34", y2: "23" }),
+    React.createElement("line", { x1: "16", y1: "23", x2: "15", y2: "43" }),
+    React.createElement("line", { x1: "33", y1: "23", x2: "35", y2: "43" }),
+    React.createElement("path", { d: "M19 18 Q25 14 31 18", strokeDasharray: "3 3" })));
 const POSES = [
     // --- 0. Gestes que des règles plus générales captaient à tort ---
     // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
@@ -738,6 +769,11 @@ const POSES = [
     // Une abduction annoncée « en charge » ou « à l'élastique » se fait debout dans huit cas
     // sur neuf ; le dessin montrait pourtant quelqu'un allongé sur le côté. C'est la consigne
     // qui tranche, puisqu'elle commence toujours par installer le patient.
+    // Ce dessin n'est jamais choisi sur le nom : il sert de remplaçant quand la consigne
+    // installe le patient assis alors que le dessin retenu le montre allongé ou debout.
+    { key: "seated-leg", icon: PoseSeatedLeg, test: () => false },
+    { key: "supine-core", icon: PoseSupineCore, test: () => false },
+    { key: "four-point", icon: PoseFourPoint, test: () => false },
     { key: "standing-abduction", icon: PoseStandingAbduction,
         test: (n, t) => (n.includes("abduction") || n.includes("abducteur")) && /^debout/.test(t) },
     { key: "seated-hip-iso", icon: PoseSeatedHipIso,
@@ -817,12 +853,80 @@ const POSES = [
 // consigne : « Abduction de hanche en charge » ne dit pas qu'elle se fait debout, mais son
 // texte si — et le dessin montrait quelqu'un allongé. Les règles reçoivent donc aussi la
 // consigne ; celles qui n'en ont pas besoin l'ignorent, et se lisent comme avant.
+// Chaque dessin qui montre une posture la déclare ici. Ceux qui n'en montrent pas — une main,
+// une chaussure, deux flèches opposées — n'y figurent pas et ne sont jamais remis en cause.
+const POSTURE_DESSIN = {
+    "prone-extension": "ventre", plank: "ventre",
+    "seated-flexion": "assis", "etirement-assis": "assis", "seated-hip-iso": "assis",
+    "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
+    "side-lying": "allonge", bridge: "allonge", "lying-mobilise": "allonge",
+    "supine-core": "allonge", "four-point": "quatre",
+    "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
+    "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
+    balance: "debout", jump: "debout", run: "debout",
+};
+// Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
+// dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
+// le texte contredit : le patient regarde le dessin avant de lire.
+const DESSIN_AUTRE_POSTURE = {
+    "etirement-debout": { assis: "etirement-assis", allonge: "lying-mobilise", quatre: "four-point" },
+    "lying-mobilise": { assis: "seated-leg", debout: "trunk" },
+    "hip-hinge": { allonge: "lying-mobilise", ventre: "prone-extension" },
+    squat: { assis: "seated-leg" },
+    "side-lying": { debout: "standing-abduction" },
+    balance: { allonge: "lying-mobilise", quatre: "four-point" },
+    plank: { allonge: "supine-core", quatre: "four-point" },
+    "seated-flexion": { allonge: "lying-mobilise" },
+    "prone-extension": { debout: "trunk" },
+    bridge: { assis: "seated-leg", debout: "standing-abduction" },
+    "etirement-assis": { debout: "etirement-debout", allonge: "lying-mobilise" },
+};
+// La consigne ouvre presque toujours en installant le patient : « Assis au bord d'un lit… »,
+// « Debout, élastique au-dessus des chevilles… ». C'est ce début-là qui fait foi.
+function postureDecrite(tip) {
+    const t = normalizeSearch(tip || "").slice(0, 110);
+    // Le ventre et les quatre pattes se déclarent avant tout : « allongé sur le ventre »
+    // commence par « allongé » sans être pour autant la même posture que sur le dos.
+    if (/sur le ventre|a plat ventre|\bplanche\b/.test(t))
+        return "ventre";
+    if (/a quatre pattes/.test(t))
+        return "quatre";
+    const trouves = [];
+    const noter = (cle, re) => { const m = t.match(re); if (m) trouves.push([m.index, cle]); };
+    noter("allonge", /sur le dos|\ballonge\b|\bcouche\b|semi allonge/);
+    // « sur le côté » est le plus souvent une direction — « grand pas sur le côté », « bras
+    // levé sur le côté ». Ce n'est une posture que dit explicitement, ou en tête de consigne.
+    const couche = t.match(/(allonge|couche)e? sur le cote/);
+    const brut = t.match(/^sur le cote/);
+    if (couche)
+        trouves.push([couche.index, "allonge"]);
+    else if (brut)
+        trouves.push([0, "allonge"]);
+    noter("debout", /\bdebout\b/);
+    noter("assis", /\bassis\b|\bassise\b/);
+    if (!trouves.length)
+        return null;
+    trouves.sort((a, b) => a[0] - b[0]);
+    return trouves[0][1];
+}
 function getExerciseIcon(name, tip) {
     const n = (name || "").toLowerCase();
     const t = (tip || "").toLowerCase();
     const match = POSES.find((p) => p.test(n, t));
     // Repli neutre plutôt qu'une icône de mouvement, pour ne jamais suggérer un geste erroné
-    return match ? match.icon : PoseAdvice;
+    if (!match)
+        return PoseAdvice;
+    const montree = POSTURE_DESSIN[match.key];
+    const decrite = postureDecrite(tip);
+    if (!montree || !decrite || montree === decrite)
+        return match.icon;
+    const remplacant = (DESSIN_AUTRE_POSTURE[match.key] || {})[decrite];
+    if (remplacant) {
+        const pose = POSES.find((p) => p.key === remplacant);
+        if (pose)
+            return pose.icon;
+    }
+    return PoseAdvice;
 }
 const PATHOLOGIES = [
     { id: "genou", label: "Genou", injuries: [
