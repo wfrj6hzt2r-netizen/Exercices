@@ -3904,19 +3904,29 @@ function BandeAssiduite({ journal, jour, accent }) {
 // Curseur de fin de séance. La règle des 3-4/10 est rappelée sur chaque écran d'exercices
 // mais n'était jamais recueillie : le patient s'auto-évalue, et le kinésithérapeute dispose
 // d'un relevé à la consultation suivante plutôt que d'un souvenir approximatif.
-function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accent }) {
+function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accent, tutoie }) {
     const [note, setNote] = useState(valeurInitiale === undefined ? 2 : valeurInitiale);
     const teinte = note <= 3 ? "#4F7A5E" : note <= 5 ? "#B4801F" : "#E11D48";
-    const commentaire = note <= 3
-        ? "Dans la zone acceptable : vous pouvez poursuivre comme cela."
-        : note <= 5
-            ? "Un peu élevé. Si cela ne redescend pas d'ici demain, allégez la prochaine séance."
-            : "Trop élevé. Réduisez la charge à la prochaine séance, et parlez-en à votre kinésithérapeute.";
+    // Le parcours croissance tutoie l'enfant d'un bout à l'autre : le bilan ne peut pas
+    // être le seul écran à le vouvoyer, ni à le renvoyer seul vers son kinésithérapeute.
+    const commentaire = tutoie
+        ? (note <= 3
+            ? "C'est dans la zone normale : tu peux continuer comme ça."
+            : note <= 5
+                ? "Un peu haut. Si ça ne redescend pas demain, vas-y plus doucement la prochaine fois."
+                : "Trop haut. Allège la prochaine séance, et parles-en à un adulte ou à ton kiné.")
+        : (note <= 3
+            ? "Dans la zone acceptable : vous pouvez poursuivre comme cela."
+            : note <= 5
+                ? "Un peu élevé. Si cela ne redescend pas d'ici demain, allégez la prochaine séance."
+                : "Trop élevé. Réduisez la charge à la prochaine séance, et parlez-en à votre kinésithérapeute.");
     return (React.createElement("div", { className: "rounded-2xl p-5 bg-white" },
-        React.createElement("p", { className: "text-sm font-medium", style: { color: "#0F172A" } }, "Séance terminée"),
+        React.createElement("p", { className: "text-sm font-medium", style: { color: "#0F172A" } }, tutoie ? "C'est fini pour aujourd'hui" : "Séance terminée"),
         React.createElement("p", { className: "text-xs mt-1", style: { color: "#6B7086" } },
             faits, " exercice", faits > 1 ? "s" : "", " sur ", total, " aujourd'hui."),
-        React.createElement("p", { className: "text-xs mt-4 mb-2", style: { color: "#0F172A" } }, "Pendant les exercices, votre douleur était de :"),
+        React.createElement("p", { className: "text-xs mt-4 mb-2", style: { color: "#0F172A" } },
+            tutoie ? "Pendant les exercices, ta douleur était de :"
+                   : "Pendant les exercices, votre douleur était de :"),
         React.createElement("div", { className: "flex items-center gap-3" },
             React.createElement("input", { type: "range", min: 0, max: 10, step: 1, value: note,
                 onChange: (e) => setNote(Number(e.target.value)),
@@ -4361,6 +4371,22 @@ function GuidedJourney() {
         });
     };
     const stageComplete = (s) => s.exercises.filter((e) => doneSet.has(idExercice(e))).length === s.exercises.length;
+    // Le bilan de fin de séance n'était proposé que sur les parcours par zone : ni le coureur,
+    // ni l'enfant, ni la prévention ne se voyaient demander leur douleur, et leur colonne
+    // « Douleur relevée » du récapitulatif restait vide. Écrit une fois, appelé par les quatre.
+    const bilanDeFin = (cle, exercices, faitsDuJour, total, accent, tutoie) => {
+        const tousFaits = exercices.every((e) => faitsDuJour.has(idExercice(e)));
+        const entree = entreeDuJour(cle);
+        if (!tousFaits || bilanOuvert === cle || !entree || entree.douleur !== undefined)
+            return null;
+        return React.createElement("div", { className: "mt-4" },
+            React.createElement(BilanSeance, {
+                faits: faitsDuJour.size, total: total, valeurInitiale: undefined,
+                accent: accent, tutoie: tutoie,
+                onValider: (n) => { setJournal((j) => noterDouleur(j, cle, jour, n)); setBilanOuvert(cle); },
+                onIgnorer: () => setBilanOuvert(cle),
+            }));
+    };
     const entreeDuJour = (cle) => (journal || []).find((e) => e.date === jour && e.cle === cle);
     // Les écrans sont produits par cette fonction, puis enveloppés par SwipeBack : le geste
     // de retour et la colonne centrée sur ordinateur s'appliquent ainsi à tous, d'un seul point.
@@ -4688,6 +4714,7 @@ function GuidedJourney() {
                 st.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: CROISSANCE_FOND } },
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: CROISSANCE_ACCENT, letterSpacing: "0.08em" } }, "Tu peux passer à la suite quand"),
                     React.createElement("p", { className: "text-sm mt-1.5 leading-relaxed", style: { color: INK } }, st.critere))),
+                bilanDeFin(cle, st.exercises, faits, st.exercises.length, CROISSANCE_ACCENT, true),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { disabled: croissanceStageIdx === 0, onClick: () => setCroissanceStageIdx((i) => Math.max(0, i - 1)), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: "1px solid #E4E6F0", color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -4827,6 +4854,7 @@ function GuidedJourney() {
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: "#345940", letterSpacing: "0.08em" } }, "Prêt pour l'étape suivante ?"),
                     React.createElement("p", { className: "text-sm mt-1.5 leading-relaxed", style: { color: "#0F172A" } }, runnerStage.critere),
                     React.createElement("p", { className: "text-xs mt-2", style: { color: "#345940" } }, "Si ce n'est pas encore le cas, restez à cette étape : c'est elle qui prépare la suivante."))),
+                bilanDeFin(runnerKey, runnerStage.exercises, runnerDoneSet, totalCount, ACCENT, false),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { disabled: runnerStageIdx === 0, onClick: () => setRunnerStageIdx((i) => Math.max(0, i - 1)), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: "1px solid #E4E6F0", color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -4943,6 +4971,7 @@ function GuidedJourney() {
                 });
             })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: "#E4E6F0" } },
+                bilanDeFin(prevKey, sub.exercises, prevDoneSet, totalCount, ACCENT, false),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { onClick: () => setView("prevention-sub"), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm", style: { border: "1px solid #E4E6F0", color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -5061,17 +5090,9 @@ function GuidedJourney() {
                     "Il vous reste ", stage.exercises.length - stage.exercises.filter((e) => doneSet.has(idExercice(e))).length, " exercice", stage.exercises.length - stage.exercises.filter((e) => doneSet.has(idExercice(e))).length > 1 ? "s" : "", " à cocher. Vous pouvez continuer sans les faire.")),
                 // Le stade du jour est boucl\u00e9 : on recueille la douleur pendant que la s\u00e9ance
                 // est fra\u00eeche, plut\u00f4t que de la reconstituer \u00e0 la consultation suivante.
-                stageComplete(stage) && bilanOuvert !== key && entreeDuJour(key) && entreeDuJour(key).douleur === undefined && (React.createElement("div", { className: "mt-4" },
-                    React.createElement(BilanSeance, {
-                        // Les deux nombres doivent parler du même ensemble : les coches d'un
-                        // parcours par zone couvrent toutes ses étapes, pas la seule affichée.
-                        faits: doneSet.size,
-                        total: totalCount,
-                        valeurInitiale: undefined,
-                        accent: ACCENT,
-                        onValider: (n) => { setJournal((j) => noterDouleur(j, key, jour, n)); setBilanOuvert(key); },
-                        onIgnorer: () => setBilanOuvert(key),
-                    }))))));
+                // Les deux nombres doivent parler du même ensemble : les coches d'un parcours par
+                // zone couvrent toutes ses étapes, pas la seule affichée.
+                bilanDeFin(key, stage.exercises, doneSet, totalCount, ACCENT, false))));
     }
     if (view === "complete") {
         // Le nombre d'étapes varie selon le parcours : 2 pour les arthroses, 6 après une
