@@ -4648,10 +4648,12 @@ function GuidedJourney() {
                 // Identit\u00E9 d'abord : le patient doit savoir qui lui remet ce programme avant
                 // de lire trois avertissements. C'est le m\u00EAme dessin que l'ic\u00F4ne install\u00E9e sur
                 // son \u00E9cran d'accueil, pour qu'il retrouve l'application du regard.
-                React.createElement("div", { className: "flex items-center gap-4" },
+                React.createElement("div", { className: "flex items-center gap-3" },
                     // Le dessin a le même fond que la page : sans liseré, il flotterait au lieu de se
                     // lire comme l'icône que le patient a sur son écran d'accueil.
-                    React.createElement("img", { src: LOGO, alt: "", width: 60, height: 60, className: "rounded-2xl shrink-0", style: { border: "1px solid rgba(255,255,255,0.18)" } }),
+                    // 44 px, soit la hauteur exacte du nom et du titre côte à côte : le bloc se lit
+                    // alors d'un seul tenant, là où un carré plus grand dominait l'écran d'accueil.
+                    React.createElement("img", { src: LOGO, alt: "", width: 44, height: 44, className: "rounded-2xl shrink-0", style: { border: "1px solid rgba(255,255,255,0.18)" } }),
                     React.createElement("div", { className: "min-w-0" },
                         React.createElement("p", { className: "text-white font-medium leading-tight", style: { fontSize: "1.125rem" } }, PRATICIEN),
                         React.createElement("p", { className: "text-xs mt-0.5", style: { color: ACCENT_SOFT } }, PRATICIEN_TITRE))),
