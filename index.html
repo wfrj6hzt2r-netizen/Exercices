@@ -3428,12 +3428,14 @@ const PRATICIEN_EMAIL = "";
 // un intitulé sans réponse.
 const CABINET = {
     // Numéro RPPS. Son affichage est attendu d'un professionnel de santé qui publie un site.
-    rpps: "",
+    rpps: "10101025319",
     // Cabinet et commune, tels qu'ils doivent figurer dans les mentions légales.
-    adresse: "",
-    // Les mentions légales exigent un moyen de contact. C'est une ligne distincte de
-    // PRATICIEN_EMAIL, qui ne commande que le bouton d'écriture de l'écran d'accueil.
-    contact: "",
+    adresse: "9 rue Jean-Baptiste Say, Chevigny-Saint-Sauveur",
+    // Adresse exigée par les mentions légales, et rien d'autre : elle s'affiche en texte
+    // simple dans la dernière rubrique de l'écran « À propos », sans lien d'écriture.
+    // Le bouton « Écrire à mon kinésithérapeute » dépend de PRATICIEN_EMAIL, laissé vide
+    // exprès : ces deux lignes ne doivent pas être confondues.
+    contact: "maxime.chevallier21000@orange.fr",
     // À remonter à chaque révision du contenu : c'est ce qui distingue un programme
     // entretenu d'une page laissée en ligne et oubliée.
     revision: "septembre 2026",
@@ -4693,9 +4695,10 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
                     "Qui publie cette application, pour qui elle est écrite, et ce qu'elle fait de vos données.")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
+                // Le numéro RPPS n'est pas répété ici : c'est un identifiant administratif,
+                // sa place est dans les mentions légales, en bas d'écran.
                 bloc("Qui publie cette application", [
                     PRATICIEN + " — " + PRATICIEN_TITRE + ".",
-                    CABINET.rpps && "Numéro RPPS : " + CABINET.rpps + ".",
                     CABINET.adresse,
                 ]),
                 bloc("Pour qui elle est écrite", [
