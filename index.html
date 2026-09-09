@@ -3079,10 +3079,13 @@ const REALISTIC_MARKERS = [
 function RealisticSelector({ onSelect }) {
     // Marqueur actuellement touché, survolé ou au clavier, pour donner un retour visuel.
     const [active, setActive] = useState(null);
-    // Cadrage : le mannequin occupe x 63..237, les libellés vont de x≈6 à x≈331. La largeur
-    // est passée de 340 à 358 quand les libellés du rachis sont passés au pluriel :
-    // « Thoraciques » dépassait de 7 px et « Cervicales » frôlait le bord.
-    return (React.createElement("svg", { viewBox: "-16 18 358 570", className: "w-full max-w-[310px] mx-auto", role: "group", "aria-label": "S\u00E9lection de la zone du corps" },
+    // Cadrage : le mannequin occupe x 63..237, les libellés s'étendent de x≈-5 à x≈345.
+    // La largeur avait déjà dû passer de 340 à 358 quand les libellés du rachis sont passés
+    // au pluriel. Le passage à la police système l'a fait déborder à nouveau — SF Pro est
+    // plus large qu'Helvetica Neue au même corps — et « Thoraciques » sortait de 3,5 unités.
+    // Le cadre est décalé vers la gauche plutôt qu'élargi : la marge inutilisée de ce côté
+    // paie le débordement de l'autre, et le dessin garde sa taille, donc ses cibles tactiles.
+    return (React.createElement("svg", { viewBox: "-11 18 362 570", className: "w-full max-w-[310px] mx-auto", role: "group", "aria-label": "S\u00E9lection de la zone du corps" },
         React.createElement("defs", null,
             React.createElement("filter", { id: "corpsFlou", x: "-70%", y: "-70%", width: "240%", height: "240%" },
                 React.createElement("feGaussianBlur", { stdDeviation: "6" }))),
@@ -4904,7 +4907,7 @@ function GuidedJourney() {
             }
         };
         return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: HEADER, fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-10 pb-6" },
+            React.createElement("div", { className: "px-6 pt-8 pb-5" },
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours guid\u00E9"),
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quelle zone souhaitez-vous travailler ?"),
                 React.createElement("div", { className: "mt-5 relative" },
@@ -4953,28 +4956,32 @@ function GuidedJourney() {
                     " \u00BB"),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: INK_DOUX } }, "Essayez un autre mot, ou d\u00E9crivez plut\u00F4t l'endroit qui vous g\u00EAne. Toutes les pathologies ne sont pas encore couvertes : effacez la recherche pour parcourir les zones du corps, et demandez \u00E0 votre kin\u00E9sith\u00E9rapeute si vous ne trouvez pas votre situation."),
                 React.createElement("button", { onClick: () => setQuery(""), className: "mt-4 px-4 py-2 rounded-full text-xs font-medium text-white", style: { backgroundColor: ACCENT } }, "Parcourir les zones du corps"))))) : (React.createElement(React.Fragment, null,
-                React.createElement("div", { className: "px-4 pb-6 pt-2" },
-                    React.createElement("div", { className: "rounded-3xl px-3 py-5 bg-white" },
+                // Le dessin n'est pas réduit : ses zones sensibles font déjà 38 px de haut,
+                // sous le minimum tactile confortable. La place se gagne donc sur les marges,
+                // jamais sur la cible.
+                React.createElement("div", { className: "px-4 pb-4" },
+                    React.createElement("div", { className: "rounded-3xl px-3 py-3 bg-white" },
                         React.createElement(RealisticSelector, { onSelect: selectZone })),
-                    React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos pour commencer.")),
-                React.createElement("div", { className: "px-6 pb-3" },
-                    React.createElement("button", { onClick: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); }, className: "w-full rounded-2xl p-4 flex items-center justify-between bg-white" },
-                        React.createElement("div", { className: "text-left" },
-                            React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, "Vous \u00EAtes coureur ?"),
-                            React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, "Pathologies sp\u00E9cifiques de la course \u00E0 pied")),
-                        React.createElement(ChevronRight, { size: 18, style: { color: ACCENT } }))),
-                React.createElement("div", { className: "px-6 pb-3" },
-                    React.createElement("button", { onClick: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); }, className: "w-full rounded-2xl p-4 flex items-center justify-between bg-white" },
-                        React.createElement("div", { className: "text-left" },
-                            React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, "Vous avez moins de 16 ans ?"),
-                            React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, "Douleurs liées à la croissance")),
-                        React.createElement(ChevronRight, { size: 18, style: { color: CROISSANCE_ACCENT } }))),
-                React.createElement("div", { className: "px-6 pb-10" },
-                    React.createElement("button", { onClick: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); }, className: "w-full rounded-2xl p-4 flex items-center justify-between bg-white" },
-                        React.createElement("div", { className: "text-left" },
-                            React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, "\u00C9chauffement, \u00E9tirements & souplesse"),
-                            React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, "Pas de douleur, juste de la pr\u00E9vention")),
-                        React.createElement(ChevronRight, { size: 18, style: { color: ACCENT } }))),
+                    React.createElement("p", { className: "text-xs text-center mt-3", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos.")),
+                // Les trois voies d'accès n'étaient pas trois propositions concurrentes mais une
+                // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
+                // carte à trois rangs, elles disent cela, et rendent une centaine de pixels.
+                React.createElement("div", { className: "px-6 pb-8" },
+                    React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        [
+                            { id: "coureur", titre: "Vous êtes coureur ?", sous: "Pathologies spécifiques de la course à pied", teinte: ACCENT,
+                                aller: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); } },
+                            { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance", teinte: CROISSANCE_ACCENT,
+                                aller: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); } },
+                            { id: "prevention", titre: "Échauffement, étirements & souplesse", sous: "Pas de douleur, juste de la prévention", teinte: ACCENT,
+                                aller: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); } },
+                        ].map((voie, vi) => (React.createElement("button", { key: voie.id, onClick: voie.aller,
+                            className: "w-full p-4 flex items-center justify-between gap-3 text-left",
+                            style: vi ? { borderTop: `1px solid ${BORDURE}` } : undefined },
+                            React.createElement("div", { className: "min-w-0" },
+                                React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, voie.titre),
+                                React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
+                            React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: voie.teinte } })))))),
                 // Le réglage vit sur l'accueil plutôt que dans un menu : un patient qui peine à
                 // lire ne va pas chercher un engrenage.
                 React.createElement("div", { className: "px-6 pb-6" },
