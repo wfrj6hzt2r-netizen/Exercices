@@ -3420,6 +3420,32 @@ const PRATICIEN_ACCROCHE = "Votre programme d'exercices, à faire chez vous entr
 // est remis en consultation ont déjà les coordonnées du cabinet. Renseigner cette ligne
 // fait réapparaître le bouton de contact sur l'écran d'accueil, rien d'autre à toucher.
 const PRATICIEN_EMAIL = "";
+// --- Identité légale et provenance du contenu ----------------------------------------
+// Le fichier est publié en accès libre : quelqu'un qui n'est pas patient du cabinet peut
+// tomber sur l'adresse, par une recherche ou parce qu'un patient la transmet. L'écran
+// « À propos » est là pour lui dire à qui il a affaire, pour qui ce programme est écrit
+// et quand il a été revu. Une ligne laissée vide disparaît de l'écran au lieu d'afficher
+// un intitulé sans réponse.
+const CABINET = {
+    // Numéro RPPS. Son affichage est attendu d'un professionnel de santé qui publie un site.
+    rpps: "10101025319",
+    // Cabinet et commune, tels qu'ils doivent figurer dans les mentions légales.
+    adresse: "9 rue Jean-Baptiste Say, 21800 Chevigny-Saint-Sauveur",
+    // Adresse exigée par les mentions légales, et rien d'autre : elle s'affiche en texte
+    // simple dans la dernière rubrique de l'écran « À propos », sans lien d'écriture.
+    // Le bouton « Écrire à mon kinésithérapeute » dépend de PRATICIEN_EMAIL, laissé vide
+    // exprès : ces deux lignes ne doivent pas être confondues.
+    contact: "maxime.chevallier21000@orange.fr",
+    // À remonter à chaque révision du contenu : c'est ce qui distingue un programme
+    // entretenu d'une page laissée en ligne et oubliée.
+    revision: "septembre 2026",
+};
+// D'où viennent les consignes. À compléter pour citer des recommandations précises ;
+// la phrase par défaut ne promet que ce qui est vérifiable.
+const CONTENU_ORIGINE = "Les consignes ont été rédigées par " + PRATICIEN + ", "
+    + PRATICIEN_TITRE.toLowerCase() + ", à partir de sa pratique clinique.";
+// L'hébergeur doit être nommé dans les mentions légales. Le site est servi par GitHub Pages.
+const HEBERGEUR = "GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.";
 const LOGO = "data:image/png;base64,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";
 const LEVELS = [
     { id: "facile", label: "Facile", note: "Réduisez l'amplitude ou le nombre de répétitions si besoin, et accordez-vous plus de repos entre les séries. Adapté aux sportifs légers ou aux personnes âgées." },
@@ -3867,6 +3893,7 @@ function construireRoute(e) {
         case "runner-exercises": return r ? `#/coureur/${r}/e${(e.runnerStageIdx || 0) + 1}` : null;
         case "runner-complete": return r ? `#/coureur/${r}/fin` : null;
         case "recap": return "#/recap";
+        case "apropos": return "#/apropos";
         case "croissance-liste": return "#/croissance";
         case "croissance-checkin": return e.croissanceId ? `#/croissance/${e.croissanceId}` : null;
         case "croissance-exercices": return e.croissanceId ? `#/croissance/${e.croissanceId}/e${(e.croissanceStageIdx || 0) + 1}` : null;
@@ -3925,6 +3952,8 @@ function etatDepuisRoute(hash) {
     }
     if (p[0] === "recap")
         return fait({ view: "recap" });
+    if (p[0] === "apropos")
+        return fait({ view: "apropos" });
     if (p[0] === "croissance") {
         if (p.length === 1)
             return fait({ view: "croissance-liste" });
@@ -3970,6 +3999,9 @@ const RETOUR = {
     "runner-exercises": "runner-stage-select",
     "runner-complete": "zone",
     recap: "zone",
+    // Destination par défaut seulement : l'écran « À propos » s'ouvre aussi depuis
+    // l'introduction, et le retour est alors calculé par « cibleRetour ».
+    apropos: "zone",
     "croissance-liste": "zone",
     "croissance-checkin": "croissance-liste",
     "croissance-exercices": "croissance-checkin",
@@ -4407,6 +4439,10 @@ function GuidedJourney() {
     const [view, setView] = useState(() => (restored.introVu ? depart.view : "intro"));
     const [level, setLevel] = useState(() => restored.level || "moyen");
     const [tailleTexte, setTailleTexte] = useState(() => restored.tailleTexte || "normal");
+    // L'écran « À propos » s'atteint depuis l'introduction comme depuis l'accueil : on
+    // retient d'où l'on vient pour ne pas renvoyer sur l'accueil quelqu'un qui n'a pas
+    // encore validé les règles de prudence.
+    const [retourApropos, setRetourApropos] = useState("zone");
     const [pathId, setPathId] = useState(depart.pathId);
     const [injuryId, setInjuryId] = useState(depart.injuryId);
     const [stageIdx, setStageIdx] = useState(depart.stageIdx);
@@ -4635,7 +4671,60 @@ function GuidedJourney() {
                 // Le troisième encadré demande de contacter le kinésithérapeute : autant en
                 // donner le moyen, plutôt que de laisser le patient chercher ses coordonnées.
                 PRATICIEN_EMAIL && React.createElement("a", { href: `mailto:${PRATICIEN_EMAIL}?subject=${encodeURIComponent("Mes exercices — une question")}`, className: "w-full py-3.5 rounded-full text-sm font-medium text-center block", style: { border: "1px solid rgba(255,255,255,0.35)", color: "#FFFFFF" } }, "✉︎ Écrire à mon kinésithérapeute"),
-                React.createElement("button", { onClick: () => { setIntroVu(true); setView(depart.view); }, className: "w-full py-3.5 rounded-full text-sm font-medium text-white", style: { backgroundColor: ACCENT } }, "J'ai compris, continuer"))));
+                React.createElement("button", { onClick: () => { setIntroVu(true); setView(depart.view); }, className: "w-full py-3.5 rounded-full text-sm font-medium text-white", style: { backgroundColor: ACCENT } }, "J'ai compris, continuer"),
+                // Le premier écran est aussi celui que voit quelqu'un qui n'est pas patient
+                // du cabinet : il doit pouvoir savoir qui publie ceci avant d'aller plus loin.
+                React.createElement("button", { onClick: () => { setRetourApropos("intro"); setView("apropos"); }, className: "cible-44 text-[11px] underline underline-offset-2 text-center", style: { color: "rgba(255,255,255,0.6)" } }, "À propos et mentions légales"))));
+    }
+    if (view === "apropos") {
+        // Une ligne vide est retirée plutôt qu'affichée sans réponse : tant qu'un numéro
+        // ou une adresse n'est pas renseigné dans CABINET, la rubrique se referme dessus.
+        const bloc = (titre, lignes) => {
+            const utiles = lignes.filter(Boolean);
+            return utiles.length ? React.createElement("section", { className: "rounded-2xl p-5 bg-white", style: { border: "1px solid #E4E6F0" } },
+                React.createElement("h2", { className: "text-[11px] font-semibold uppercase", style: { color: "#6B7086", letterSpacing: "0.08em" } }, titre),
+                React.createElement("div", { className: "mt-3 flex flex-col gap-2" },
+                    utiles.map((t, i) => React.createElement("p", { key: i, className: "text-sm leading-relaxed", style: { color: INK } }, t)))) : null;
+        };
+        return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: "'Helvetica Neue', Arial, sans-serif" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+                    React.createElement(ChevronLeft, { size: 16 }),
+                    " Retour"),
+                React.createElement("h1", { className: "text-white text-2xl font-medium" }, "À propos"),
+                React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
+                    "Qui publie cette application, pour qui elle est écrite, et ce qu'elle fait de vos données.")),
+            React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
+                // Le numéro RPPS n'est pas répété ici : c'est un identifiant administratif,
+                // sa place est dans les mentions légales, en bas d'écran.
+                bloc("Qui publie cette application", [
+                    PRATICIEN + " — " + PRATICIEN_TITRE + ".",
+                    CABINET.adresse,
+                ]),
+                bloc("Pour qui elle est écrite", [
+                    "Ce programme est destiné aux personnes suivies en rééducation au cabinet. Il est remis en consultation, par un lien qui ouvre directement le parcours retenu pour la personne.",
+                    "Si vous êtes arrivé ici autrement, lisez-le comme une information générale. Il ne pose aucun diagnostic, il ne remplace ni une consultation ni un examen, et il ne connaît rien de votre situation. Demandez l'avis d'un professionnel de santé avant d'entreprendre ces exercices.",
+                ]),
+                bloc("D'où vient le contenu", [
+                    CONTENU_ORIGINE,
+                    "Dernière révision du contenu : " + CABINET.revision + ".",
+                    "Les doses et les seuils indiqués, comme la règle des 3 à 4 sur 10, sont des repères courants et non des règles valables pour tout le monde. Si votre kinésithérapeute vous a donné d'autres consignes, ce sont les siennes qui comptent.",
+                ]),
+                bloc("Vos données", [
+                    "Rien de ce que vous faites ici ne quitte votre téléphone. Il n'y a ni compte, ni inscription, ni mesure d'audience, ni service tiers.",
+                    "Vos exercices cochés, vos notes de douleur et vos charges sont enregistrés par votre navigateur, sur cet appareil seulement. Votre kinésithérapeute ne les reçoit pas : c'est vous qui les lui montrez, si vous le souhaitez.",
+                    "Le bouton « Effacer ma progression » en bas de l'accueil supprime tout définitivement. Vider les données du navigateur, ou désinstaller l'application, produit le même effet.",
+                    "Le récapitulatif en PDF est fabriqué par votre appareil au moment où vous l'enregistrez. Il n'est envoyé nulle part.",
+                ]),
+                bloc("Mentions légales", [
+                    "Éditeur et directeur de la publication : " + PRATICIEN + ", " + PRATICIEN_TITRE
+                        + (CABINET.rpps ? ", RPPS " + CABINET.rpps : "") + ".",
+                    CABINET.adresse && "Adresse : " + CABINET.adresse,
+                    CABINET.contact && "Contact : " + CABINET.contact,
+                    "Profession réglementée : l'exercice de la masso-kinésithérapie est régi par le code de la santé publique et par le code de déontologie de la profession.",
+                    "Hébergeur : " + HEBERGEUR,
+                    "Les textes, les schémas et le code de cette application sont l'œuvre de son éditeur.",
+                ]))));
     }
     if (view === "zone") {
         const selectZone = (id) => { setPathId(id); setInjuryId(null); setView("injury"); };
@@ -4749,7 +4838,8 @@ function GuidedJourney() {
                                 color: tailleTexte === id ? HEADER : "rgba(255,255,255,0.75)" } }, lettre))))),
                 React.createElement("div", { className: "px-6 pb-10" },
                     canSave ? (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
-                    (resumeInfo || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer, className: "mt-3 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "Effacer ma progression et repartir de z\u00E9ro")))))));
+                    (resumeInfo || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer, className: "mt-3 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "Effacer ma progression et repartir de z\u00E9ro")),
+                    React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 block mt-1 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales"))))));
     }
     if (view === "injury") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: "'Helvetica Neue', Arial, sans-serif" } },
@@ -5371,14 +5461,14 @@ function GuidedJourney() {
     // la dépile : le bouton retour du navigateur, la flèche de l'en-tête et le glissement
     // produisent alors exactement le même effet. Sinon — cas du patient arrivé directement
     // par un lien reçu — il n'y a rien à dépiler, et on remonte d'un cran par la carte.
+    const cibleRetour = view === "apropos" ? retourApropos : RETOUR[view];
     const retourEnArriere = () => {
         if (typeof window !== "undefined" && profondeur.current > 0) {
             window.history.back();
             return;
         }
-        const cible = RETOUR[view];
-        if (cible)
-            setView(cible);
+        if (cibleRetour)
+            setView(cibleRetour);
     };
     // Un repère de page unique, et le focus déplacé sur le titre à chaque changement d'écran :
     // sans cela, un lecteur d'écran restait silencieux en passant d'une étape à la suivante,
@@ -5396,7 +5486,7 @@ function GuidedJourney() {
         titre.setAttribute("tabindex", "-1");
         titre.focus({ preventScroll: true });
     }, [view, stageIdx, runnerStageIdx, croissanceStageIdx, preventionSub]);
-    return React.createElement(SwipeBack, { onBack: retourEnArriere, actif: RETOUR[view] !== undefined },
+    return React.createElement(SwipeBack, { onBack: retourEnArriere, actif: cibleRetour !== undefined },
         React.createElement("main", { ref: refEcran }, renderScreen()));
 }
 const root = ReactDOM.createRoot(document.getElementById("root"));
