@@ -325,6 +325,7 @@ const IconeEpingle = traitIcone(React.createElement(React.Fragment, null,
 const IconeLoupe = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "10.5", cy: "10.5", r: "6.5" }),
     React.createElement("path", { d: "M15.4 15.4 21 21" })));
+const IconeChevronBas = traitIcone(React.createElement("path", { d: "M6 9.5l6 6 6-6" }));
 // --- Pictogrammes détaillés : silhouettes schématiques en position d'exercice ---
 const poseWrap = (children) => ({ size = 24, color = "currentColor" }) => (React.createElement("svg", { width: size, height: size, viewBox: "0 0 48 48", fill: "none", stroke: color, strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round" }, children));
 const PoseSquat = poseWrap(React.createElement(React.Fragment, null,
@@ -4192,8 +4193,39 @@ function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accen
 }
 // Encadré identique d'un parcours à l'autre, placé sur l'écran de contexte : le patient
 // le lit avant de commencer, pas au milieu d'une série.
+// La règle de prudence occupait une bande framboise pleine largeur, identique sur les quatre
+// parcours et sur chaque écran d'exercices. L'élément le plus criard de l'interface était donc
+// celui qui ne changeait jamais : au troisième écran, il ne se lisait plus, et il coûtait une
+// centaine de pixels à chaque fois. Elle devient une note contenue dans la colonne de contenu,
+// en brique. Le patient peut la replier sur sa phrase essentielle ; elle se redéploie à chaque
+// arrivée sur un stade, les appels portant une clé liée au stade affiché.
+function NoteDePrudence({ texte }) {
+    const [replie, setReplie] = useState(false);
+    // Repliée, la note garde la première phrase : c'est celle qui porte le seuil de douleur,
+    // le reste dit où s'adresser. Une consigne d'une seule phrase n'a rien à replier.
+    const coupe = texte.indexOf(". ");
+    const pliable = coupe > 0 && coupe < texte.length - 2;
+    const visible = replie && pliable ? texte.slice(0, coupe + 1) : texte;
+    const corps = [
+        React.createElement(IconeAlerte, { key: "i", size: 16, className: "shrink-0", style: { color: PRUDENCE, marginTop: 1 } }),
+        React.createElement("p", { key: "t", className: "text-xs leading-relaxed flex-1", style: { color: PRUDENCE } }, visible),
+    ];
+    const habillage = { margin: "1rem 1.5rem -0.25rem", backgroundColor: PRUDENCE_VOILE,
+        border: `1px solid ${PRUDENCE_FILET}`, padding: "0.75rem", textAlign: "left", width: "auto" };
+    if (!pliable)
+        return React.createElement("div", { className: "rounded-2xl flex items-start gap-2.5", style: habillage }, corps);
+    // La note entière fait office de commande : un chevron seul serait une cible de quelques
+    // pixels, alors qu'une partie des patients a soixante-dix ans. Le chevron n'est donc que
+    // le signe visible du pli — il ne prend pas de mot, qui coûterait une colonne au texte.
+    return React.createElement("button", { type: "button", onClick: () => setReplie(!replie),
+        "aria-expanded": !replie, className: "rounded-2xl items-start gap-2.5",
+        style: Object.assign({ display: "flex" }, habillage) },
+        corps,
+        React.createElement(IconeChevronBas, { size: 16, className: "shrink-0",
+            style: { color: PRUDENCE, marginTop: 1, transform: replie ? "none" : "rotate(180deg)" } }));
+}
 function SignauxAlerte({ items }) {
-    return (React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: WARN_VOILE, border: "1px solid #F4B8C4" } },
+    return (React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: WARN_VOILE, border: `1px solid ${WARN_FILET}` } },
         React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Quand consulter sans attendre"),
         React.createElement("ul", { className: "mt-2 flex flex-col gap-1.5" }, items.map((t, i) => (React.createElement("li", { key: i, className: "text-xs leading-relaxed flex gap-2", style: { color: INK } },
             React.createElement("span", { style: { color: WARN } }, "\u2022"),
@@ -4265,6 +4297,14 @@ const POLICE = "-apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 
 // d'alerte, sous le minimum lisible — et c'est le message le plus important de l'écran.
 const WARN = "#9F1239";
 const WARN_VOILE = "#FDE4E9";
+const WARN_FILET = "#F4B8C4";
+// Deux registres, et non plus un seul. La framboise ci-dessus reste réservée à ce qui
+// envoie consulter sans attendre. La règle de prudence ordinaire — « arrêtez au-dessus de
+// 3 à 4 sur 10 » — passe en brique : une teinte de la même famille chaude que l'or du
+// parcours croissance, au lieu d'une troisième couleur sans parent dans la palette.
+const PRUDENCE = "#8F3517";
+const PRUDENCE_VOILE = "#FBEDE7";
+const PRUDENCE_FILET = "#F0CDBD";
 // --- Carte d'exercice --------------------------------------------------------------------
 // Écrite une fois, utilisée par les quatre parcours. Elle existait jusqu'ici en quatre copies
 // d'environ cent vingt lignes : toute correction devait être faite quatre fois, et les copies
@@ -5109,9 +5149,7 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-[11px] mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, age.note)),
-            React.createElement("div", { className: "px-6 py-2.5 flex items-start gap-2", style: { backgroundColor: WARN_VOILE } },
-                React.createElement("span", { className: "text-sm shrink-0", style: { color: WARN } }, "⚠️"),
-                React.createElement("p", { className: "text-xs leading-relaxed", style: { color: WARN } }, "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas.")),
+            React.createElement(NoteDePrudence, { key: croissanceStageIdx, texte: "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas." }),
             React.createElement("div", { className: "px-6 pt-5" },
                 React.createElement("p", { className: "text-[11px] mb-1.5", style: { color: INK_DOUX } }, "Ton sport"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_SPORTS.map((sp) => (React.createElement("button", { key: sp.id, onClick: () => setSportId(sportId === sp.id ? null : sp.id), className: "px-3 py-1.5 rounded-full text-xs font-medium", style: { backgroundColor: sportId === sp.id ? CROISSANCE_ACCENT : "#FFFFFF", color: sportId === sp.id ? "#FFFFFF" : INK, border: `1px solid ${BORDURE}` } }, sp.label)))),
@@ -5233,9 +5271,7 @@ function GuidedJourney() {
                     guidance.freq,
                     " \u00B7 ",
                     guidance.duration)),
-            React.createElement("div", { className: "px-6 py-2.5 flex items-start gap-2", style: { backgroundColor: WARN_VOILE } },
-                React.createElement(IconeAlerte, { size: 16, className: "shrink-0", style: { color: WARN, marginTop: 1 } }),
-                React.createElement("p", { className: "text-xs leading-relaxed", style: { color: WARN } }, RUNNER_PAIN_RULE)),
+            React.createElement(NoteDePrudence, { key: runnerStageIdx, texte: RUNNER_PAIN_RULE }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" },
                 runnerStage.exercises.map((ex, ei) => {
                     const exId = idExercice(ex);
@@ -5363,9 +5399,7 @@ function GuidedJourney() {
                     category.guidance.freq,
                     " \u00B7 ",
                     category.guidance.duration)),
-            React.createElement("div", { className: "px-6 py-2.5 flex items-start gap-2", style: { backgroundColor: WARN_VOILE } },
-                React.createElement(IconeAlerte, { size: 16, className: "shrink-0", style: { color: WARN, marginTop: 1 } }),
-                React.createElement("p", { className: "text-xs leading-relaxed", style: { color: WARN } }, "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure.")),
+            React.createElement(NoteDePrudence, { key: preventionSub, texte: "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure." }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, sub.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
@@ -5457,9 +5491,7 @@ function GuidedJourney() {
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
-            React.createElement("div", { className: "px-6 py-2.5 flex items-start gap-2", style: { backgroundColor: WARN_VOILE } },
-                React.createElement(IconeAlerte, { size: 16, className: "shrink-0", style: { color: WARN, marginTop: 1 } }),
-                React.createElement("p", { className: "text-xs leading-relaxed", style: { color: WARN } }, "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute.")),
+            React.createElement(NoteDePrudence, { key: stageIdx, texte: "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute." }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
