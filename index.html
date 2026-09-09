@@ -4199,8 +4199,12 @@ function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accen
 // centaine de pixels à chaque fois. Elle devient une note contenue dans la colonne de contenu,
 // en brique. Le patient peut la replier sur sa phrase essentielle ; elle se redéploie à chaque
 // arrivée sur un stade, les appels portant une clé liée au stade affiché.
-function NoteDePrudence({ texte }) {
-    const [replie, setReplie] = useState(false);
+function NoteDePrudence({ texte, deplier, onVue }) {
+    // L'état de départ est figé au montage : sans cela, marquer la note « vue » la refermerait
+    // sous les yeux du patient au rendu suivant. Chaque appel porte une clé liée au stade, donc
+    // un changement d'écran remonte le composant et relit la consigne du jour.
+    const [replie, setReplie] = useState(() => deplier === false);
+    useEffect(() => { if (deplier && onVue) onVue(); }, []);
     // Repliée, la note garde la première phrase : c'est celle qui porte le seuil de douleur,
     // le reste dit où s'adresser. Une consigne d'une seule phrase n'a rien à replier.
     const coupe = texte.indexOf(". ");
@@ -4562,6 +4566,10 @@ function GuidedJourney() {
     const [journal, setJournal] = useState(() => restored.journal || []);
     const [charges, setCharges] = useState(() => restored.charges || {});
     const [jour, setJour] = useState(() => aujourdHui());
+    // Date à laquelle la règle de prudence a été montrée en entier pour la dernière fois.
+    // Elle s'affiche dépliée au premier écran d'exercices de la journée, puis repliée sur
+    // sa phrase essentielle : au troisième écran, la version longue n'était plus lue.
+    const [prudenceVue, setPrudenceVue] = useState(() => restored.prudenceVue || "");
     // Écran de fin de séance, proposé une fois le stade du jour terminé.
     const [bilanOuvert, setBilanOuvert] = useState(null);
     const [openInfo, setOpenInfo] = useState(new Set());
@@ -4589,8 +4597,8 @@ function GuidedJourney() {
     }, [view, pathId, injuryId, stageIdx, runnerPathId, runnerStageIdx, preventionCategory, preventionSub]);
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
-        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte });
-    }, [done, level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte]);
+        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue });
+    }, [done, level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -5149,7 +5157,7 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-[11px] mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, age.note)),
-            React.createElement(NoteDePrudence, { key: croissanceStageIdx, texte: "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas." }),
+            React.createElement(NoteDePrudence, { key: croissanceStageIdx, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas." }),
             React.createElement("div", { className: "px-6 pt-5" },
                 React.createElement("p", { className: "text-[11px] mb-1.5", style: { color: INK_DOUX } }, "Ton sport"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_SPORTS.map((sp) => (React.createElement("button", { key: sp.id, onClick: () => setSportId(sportId === sp.id ? null : sp.id), className: "px-3 py-1.5 rounded-full text-xs font-medium", style: { backgroundColor: sportId === sp.id ? CROISSANCE_ACCENT : "#FFFFFF", color: sportId === sp.id ? "#FFFFFF" : INK, border: `1px solid ${BORDURE}` } }, sp.label)))),
@@ -5271,7 +5279,7 @@ function GuidedJourney() {
                     guidance.freq,
                     " \u00B7 ",
                     guidance.duration)),
-            React.createElement(NoteDePrudence, { key: runnerStageIdx, texte: RUNNER_PAIN_RULE }),
+            React.createElement(NoteDePrudence, { key: runnerStageIdx, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: RUNNER_PAIN_RULE }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" },
                 runnerStage.exercises.map((ex, ei) => {
                     const exId = idExercice(ex);
@@ -5399,7 +5407,7 @@ function GuidedJourney() {
                     category.guidance.freq,
                     " \u00B7 ",
                     category.guidance.duration)),
-            React.createElement(NoteDePrudence, { key: preventionSub, texte: "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure." }),
+            React.createElement(NoteDePrudence, { key: preventionSub, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure." }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, sub.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
@@ -5491,7 +5499,7 @@ function GuidedJourney() {
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
-            React.createElement(NoteDePrudence, { key: stageIdx, texte: "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute." }),
+            React.createElement(NoteDePrudence, { key: stageIdx, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute." }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
