@@ -3948,6 +3948,22 @@ function doneFromJSON(obj) {
     return out;
 }
 // Libellé du parcours à reprendre, affiché sur l'accueil.
+// Ce qui identifie un programme, indépendamment de l'étape où l'on se trouve dedans. Sert à
+// reconnaître qu'une adresse reçue du kinésithérapeute et l'endroit où le patient en est
+// désignent la même chose — auquel cas c'est sa progression qui prime sur le lien d'origine.
+function cleDuProgramme(route) {
+    if (!route)
+        return null;
+    if (route.pathId && route.injuryId)
+        return `z:${route.pathId}:${route.injuryId}`;
+    if (route.runnerPathId)
+        return `coureur:${route.runnerPathId}`;
+    if (route.croissanceId)
+        return `croissance:${route.croissanceId}`;
+    if (route.preventionCategory && route.preventionSub)
+        return `prevention:${route.preventionCategory}:${route.preventionSub}`;
+    return null;
+}
 function describeRoute(route) {
     if (!route)
         return null;
@@ -3964,12 +3980,34 @@ function describeRoute(route) {
             return null;
         return { title: r.label, detail: `Coureur · stade ${(route.runnerStageIdx || 0) + 1}` };
     }
-    if (route.view === "prevention-exercises") {
+    if (route.view === "prevention-exercises" || route.view === "prevention-sub") {
         const cat = PREVENTION_CATEGORIES.find((c) => c.id === route.preventionCategory);
         const sub = cat && cat.data[route.preventionSub];
         if (!cat || !sub)
             return null;
         return { title: `${cat.title} — ${sub.label}`, detail: "Prévention" };
+    }
+    // Les écrans de contexte, ceux qui précèdent les exercices. Le lien recommandé pour un
+    // patient pointe justement sur eux : c'est là qu'il choisit son stade selon ce qu'il
+    // ressent. Sans ces trois cas, un programme prescrit par le bon lien restait indescriptible.
+    if (route.view === "checkin") {
+        const zone = PATHOLOGIES.find((z) => z.id === route.pathId);
+        const inj = zone && zone.injuries.find((i) => i.id === route.injuryId);
+        if (!zone || !inj)
+            return null;
+        return { title: inj.label, detail: `${zone.label} · bilan de départ` };
+    }
+    if (route.view === "runner-stage-select") {
+        const r = RUNNER_DATA.find((x) => x.id === route.runnerPathId);
+        return r ? { title: r.label, detail: "Coureur · bilan de départ" } : null;
+    }
+    if (route.view === "croissance-checkin" || route.view === "croissance-exercices") {
+        const c = CROISSANCE_DATA.find((x) => x.id === route.croissanceId);
+        if (!c)
+            return null;
+        return { title: c.label, detail: route.view === "croissance-checkin"
+            ? "Croissance · bilan de départ"
+            : `Croissance · étape ${(route.croissanceStageIdx || 0) + 1}` };
     }
     return null;
 }
@@ -3994,6 +4032,7 @@ function construireRoute(e) {
         case "runner-complete": return r ? `#/coureur/${r}/fin` : null;
         case "recap": return "#/recap";
         case "apropos": return "#/apropos";
+        case "lien": return "#/lien";
         case "croissance-liste": return "#/croissance";
         case "croissance-checkin": return e.croissanceId ? `#/croissance/${e.croissanceId}` : null;
         case "croissance-exercices": return e.croissanceId ? `#/croissance/${e.croissanceId}/e${(e.croissanceStageIdx || 0) + 1}` : null;
@@ -4054,6 +4093,8 @@ function etatDepuisRoute(hash) {
         return fait({ view: "recap" });
     if (p[0] === "apropos")
         return fait({ view: "apropos" });
+    if (p[0] === "lien")
+        return fait({ view: "lien" });
     if (p[0] === "croissance") {
         if (p.length === 1)
             return fait({ view: "croissance-liste" });
@@ -4102,6 +4143,7 @@ const RETOUR = {
     // Destination par défaut seulement : l'écran « À propos » s'ouvre aussi depuis
     // l'introduction, et le retour est alors calculé par « cibleRetour ».
     apropos: "zone",
+    lien: "zone",
     "croissance-liste": "zone",
     "croissance-checkin": "croissance-liste",
     "croissance-exercices": "croissance-checkin",
@@ -4645,6 +4687,66 @@ function CarteExercice(props) {
                 React.createElement("span", { id: idEtat, style: { fontSize: 13, fontWeight: 600 } },
                     coche ? "Fait" : "À faire")))));
 }
+// --- Fabrique de liens, pour le cabinet ------------------------------------------------
+// Un écran que le patient ne voit jamais : il n'est référencé nulle part et ne s'atteint
+// qu'en tapant son adresse. Le kinésithérapeute y choisit le programme et obtient le lien
+// à envoyer. Il aurait pu naviguer dans l'application et copier la barre d'adresse ; cet
+// écran lui évite de se tromper d'étape et de recommencer.
+function ConstructeurDeLien({ onRetour }) {
+    const [zoneId, setZoneId] = useState(PATHOLOGIES[0].id);
+    const [blessureId, setBlessureId] = useState(PATHOLOGIES[0].injuries[0].id);
+    const [etape, setEtape] = useState("bilan");
+    const [copie, setCopie] = useState(false);
+    const zone = PATHOLOGIES.find((z) => z.id === zoneId) || PATHOLOGIES[0];
+    const blessure = zone.injuries.find((i) => i.id === blessureId) || zone.injuries[0];
+    const route = etape === "bilan"
+        ? construireRoute({ view: "checkin", pathId: zone.id, injuryId: blessure.id })
+        : construireRoute({ view: "stage", pathId: zone.id, injuryId: blessure.id, stageIdx: Number(etape) });
+    const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
+    const lien = base + route;
+    const choisirZone = (id) => {
+        const z = PATHOLOGIES.find((x) => x.id === id);
+        setZoneId(id);
+        setBlessureId(z.injuries[0].id);
+        setEtape("bilan");
+    };
+    const styleChamp = { backgroundColor: SURFACE, color: INK, border: `1px solid ${BORDURE}`,
+        borderRadius: 12, padding: "0.6rem 0.7rem", width: "100%", fontFamily: POLICE, fontSize: 14 };
+    const champ = (intitule, valeur, surChangement, options) => React.createElement("label", { className: "block mt-4" },
+        React.createElement("span", { className: "text-[11px] font-semibold uppercase block mb-1.5",
+            style: { color: INK_DOUX, letterSpacing: "0.08em" } }, intitule),
+        React.createElement("select", { value: valeur, onChange: (e) => surChangement(e.target.value), style: styleChamp },
+            options.map((o) => React.createElement("option", { key: o.v, value: o.v }, o.t))));
+    return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
+        React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+            React.createElement("button", { onClick: onRetour, className: "flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+                React.createElement(ChevronLeft, { size: 16 }),
+                " Retour"),
+            React.createElement("h1", { className: "text-white text-2xl font-medium" }, "Fabriquer un lien"),
+            React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
+                "À votre usage. Le lien ouvre directement le programme choisi, et l'application s'en souvient : le patient le retrouve à chaque ouverture, sans avoir à choisir sa blessure lui-même.")),
+        React.createElement("div", { className: "px-6 py-6" },
+            React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                champ("Zone", zone.id, choisirZone, PATHOLOGIES.map((z) => ({ v: z.id, t: z.label }))),
+                champ("Blessure", blessure.id, (v) => { setBlessureId(v); setEtape("bilan"); },
+                    injuriesOrdonnees(zone).map((i) => ({ v: i.id, t: i.label }))),
+                champ("Point de départ", etape, setEtape,
+                    [{ v: "bilan", t: "Le bilan de départ (recommandé)" }].concat(
+                        blessure.stages.map((st, k) => ({ v: String(k), t: `Étape ${k + 1} — ${st.label}` })))),
+                React.createElement("p", { className: "text-[11px] font-semibold uppercase block mt-5 mb-1.5",
+                    style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Lien à envoyer"),
+                React.createElement("p", { className: "text-xs leading-relaxed",
+                    style: { color: INK, backgroundColor: ACCENT_VOILE, borderRadius: 12, padding: "0.7rem", overflowWrap: "anywhere" } }, lien),
+                React.createElement("button", { onClick: () => {
+                        if (typeof navigator !== "undefined" && navigator.clipboard)
+                            navigator.clipboard.writeText(lien).then(() => setCopie(true), () => setCopie(false));
+                        setCopie(true);
+                    },
+                    className: "cible-44 w-full rounded-full text-sm font-medium text-white mt-3",
+                    style: { backgroundColor: ACCENT } }, copie ? "Lien copié" : "Copier le lien")),
+            React.createElement("p", { className: "text-xs mt-4 leading-relaxed", style: { color: INK_DOUX } },
+                "Le bilan de départ fait choisir au patient son stade en fonction de ce qu'il ressent le jour où il ouvre le lien ; c'est le point d'entrée le plus sûr. Ouvrir une étape précise court-circuite ce réglage."))));
+}
 function GuidedJourney() {
     // Lecture unique de la sauvegarde au montage.
     const [restored] = useState(() => readStore() || {});
@@ -4656,6 +4758,27 @@ function GuidedJourney() {
         ? etatDepuisRoute(window.location.hash)
         : null));
     const depart = arrivee || Object.assign({ view: "zone" }, ROUTE_VIDE);
+    // Le programme envoyé par le kinésithérapeute. Il se retient à la première ouverture du
+    // lien et survit aux suivantes : sans lui, un patient qui rouvre l'application depuis son
+    // écran d'accueil retombait sur le catalogue des quarante-deux blessures, c'est-à-dire sur
+    // une question à laquelle son kinésithérapeute avait déjà répondu.
+    //
+    // La capture se fait au chargement, et seulement là. On pourrait vouloir la refaire quand
+    // l'adresse change en cours de route — le patient touche un nouveau lien alors que
+    // l'application est déjà ouverte — mais c'est impossible de façon fiable : mesure faite,
+    // un lien reçu et le bouton retour du navigateur produisent exactement les mêmes
+    // évènements, « popstate » puis « hashchange ». Retenir l'un retiendrait l'autre, et un
+    // simple retour en arrière réécrirait la prescription. Un nouveau lien est donc pris en
+    // compte à la prochaine ouverture franche, ce qui est le cas courant.
+    const [prescrit, setPrescrit] = useState(() => restored.prescrit || null);
+    // Ouvert a la demande, le temps de la visite : rien n'est memorise, l'accueil retrouve
+    // son programme a la prochaine ouverture.
+    const [catalogueDeploye, setCatalogueOuvert] = useState(false);
+    useEffect(() => {
+        const cle = cleDuProgramme(arrivee);
+        if (cle && cle !== (prescrit && prescrit.cle))
+            setPrescrit({ cle, route: arrivee, date: aujourdHui() });
+    }, []);
     const [introVu, setIntroVu] = useState(() => !!restored.introVu);
     const [view, setView] = useState(() => (restored.introVu ? depart.view : "intro"));
     const [level, setLevel] = useState(() => restored.level || "moyen");
@@ -4703,8 +4826,8 @@ function GuidedJourney() {
     }, [view, pathId, injuryId, stageIdx, runnerPathId, runnerStageIdx, preventionCategory, preventionSub]);
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
-        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue });
-    }, [done, level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue]);
+        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit });
+    }, [done, level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -4787,19 +4910,24 @@ function GuidedJourney() {
             window.scrollTo(0, 0);
     }, [view, stageIdx, runnerStageIdx, preventionSub, preventionCategory, croissanceStageIdx]);
     const resumeInfo = describeRoute(lastRoute);
-    const reprendre = () => {
-        if (!lastRoute)
+    // Ouvrir une adresse quelconque : la reprise du parcours en cours et l'ouverture du
+    // programme prescrit font le meme geste, sur deux adresses differentes.
+    const ouvrirRoute = (route) => {
+        if (!route)
             return;
-        setPathId(lastRoute.pathId || null);
-        setInjuryId(lastRoute.injuryId || null);
-        setStageIdx(lastRoute.stageIdx || 0);
-        setRunnerPathId(lastRoute.runnerPathId || null);
-        setRunnerStageIdx(lastRoute.runnerStageIdx || 0);
-        setPreventionCategory(lastRoute.preventionCategory || null);
-        setPreventionSub(lastRoute.preventionSub || null);
+        setPathId(route.pathId || null);
+        setInjuryId(route.injuryId || null);
+        setStageIdx(route.stageIdx || 0);
+        setRunnerPathId(route.runnerPathId || null);
+        setRunnerStageIdx(route.runnerStageIdx || 0);
+        setCroissanceId(route.croissanceId || null);
+        setCroissanceStageIdx(route.croissanceStageIdx || 0);
+        setPreventionCategory(route.preventionCategory || null);
+        setPreventionSub(route.preventionSub || null);
         setQuery("");
-        setView(lastRoute.view);
+        setView(route.view);
     };
+    const reprendre = () => ouvrirRoute(lastRoute);
     const toutEffacer = () => {
         clearStore();
         setDone({});
@@ -4903,6 +5031,8 @@ function GuidedJourney() {
                 // du cabinet : il doit pouvoir savoir qui publie ceci avant d'aller plus loin.
                 React.createElement("button", { onClick: () => { setRetourApropos("intro"); setView("apropos"); }, className: "cible-44 text-[11px] underline underline-offset-2 text-center", style: { color: "rgba(255,255,255,0.6)" } }, "À propos et mentions légales"))));
     }
+    if (view === "lien")
+        return React.createElement(ConstructeurDeLien, { onRetour: retourEnArriere });
     if (view === "apropos") {
         // Une ligne vide est retirée plutôt qu'affichée sans réponse : tant qu'un numéro
         // ou une adresse n'est pas renseigné dans CABINET, la rubrique se referme dessus.
@@ -4962,6 +5092,11 @@ function GuidedJourney() {
         const results = searchEntries(query);
         const searching = normalizeSearch(query).length >= 2;
         const absence = joursDepuisDerniereSeance(journal, jour);
+        // Le programme prescrit, et l'endroit ou le rouvrir : la progression du patient si
+        // elle porte sur ce programme, sinon l'etape que le lien designait.
+        const routePrescrite = prescrit && (cleDuProgramme(lastRoute) === prescrit.cle ? lastRoute : prescrit.route);
+        const infoPrescrite = describeRoute(routePrescrite);
+        const catalogueOuvert = catalogueDeploye || !infoPrescrite;
         // Un résultat de recherche renvoie toujours vers l'écran de contexte du parcours
         // concerné, jamais directement sur une liste d'exercices.
         const openResult = (entry) => {
@@ -4985,8 +5120,13 @@ function GuidedJourney() {
         };
         return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5" },
-                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours guid\u00E9"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quelle zone souhaitez-vous travailler ?"),
+                // Deux accueils, selon que le kinesitherapeute a repondu ou non a la question.
+                // Pour un patient qui a recu un lien, demander « quelle zone ? » revient a lui
+                // faire refaire un choix qui n'est pas le sien.
+                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } },
+                    infoPrescrite ? "Votre programme" : "Parcours guid\u00E9"),
+                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" },
+                    infoPrescrite ? infoPrescrite.title : "Quelle zone souhaitez-vous travailler ?"),
                 React.createElement("div", { className: "mt-5 relative" },
                     React.createElement("input", { type: "text", value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Rechercher : sciatique\u2026", className: "w-full rounded-full py-3 pl-11 pr-10 text-sm", style: { backgroundColor: SURFACE, color: INK, border: "none",
                         // Aux plus grandes tailles de texte, la place disponible dans le champ
@@ -5008,12 +5148,18 @@ function GuidedJourney() {
                         absence >= 21
                             ? "Cela fait quelques semaines. Reprendre après une interruption est la règle, pas l'exception : recommencez à l'étape où vous vous sentez, quitte à revenir en arrière."
                             : "Pas d'exercices depuis " + absence + " jours. Ce n'est pas grave, et ce n'est pas perdu : dix minutes aujourd'hui valent mieux qu'une séance parfaite la semaine prochaine.")))),
-            !searching && resumeInfo && (React.createElement("div", { className: "px-6 pb-5" },
-                React.createElement("button", { onClick: reprendre, className: "w-full rounded-2xl p-4 flex items-center justify-between gap-3 text-left", style: { backgroundColor: ACCENT } },
+            // La meme carte sert dans les deux cas, mais elle ne dit pas la meme chose : « reprendre
+            // ou vous en etiez » pour un parcours choisi, « envoye par votre kinesitherapeute le … »
+            // pour un programme prescrit. La date evite qu'un programme ancien passe pour actuel.
+            !searching && (infoPrescrite || resumeInfo) && (React.createElement("div", { className: "px-6 pb-5" },
+                React.createElement("button", { onClick: () => (infoPrescrite ? ouvrirRoute(routePrescrite) : reprendre()), className: "w-full rounded-2xl p-4 flex items-center justify-between gap-3 text-left", style: { backgroundColor: ACCENT } },
                     React.createElement("div", { className: "min-w-0" },
-                        React.createElement("p", { className: "text-[11px] font-semibold text-white", style: { opacity: 0.85 } }, "REPRENDRE O\u00D9 VOUS EN \u00C9TIEZ"),
-                        React.createElement("p", { className: "text-sm font-medium text-white mt-0.5" }, resumeInfo.title),
-                        React.createElement("p", { className: "text-xs text-white mt-0.5", style: { opacity: 0.85 } }, resumeInfo.detail)),
+                        React.createElement("p", { className: "text-[11px] font-semibold text-white", style: { opacity: 0.85 } },
+                            infoPrescrite ? "ENVOY\u00C9 PAR VOTRE KIN\u00C9SITH\u00C9RAPEUTE" : "REPRENDRE O\u00D9 VOUS EN \u00C9TIEZ"),
+                        React.createElement("p", { className: "text-sm font-medium text-white mt-0.5" }, (infoPrescrite || resumeInfo).title),
+                        React.createElement("p", { className: "text-xs text-white mt-0.5", style: { opacity: 0.85 } },
+                            (infoPrescrite || resumeInfo).detail,
+                            infoPrescrite && prescrit.date ? " \u00B7 re\u00E7u le " + jjmm(prescrit.date) : "")),
                     React.createElement(ChevronRight, { size: 20, style: { color: "#FFFFFF" }, className: "shrink-0" })))),
             searching ? (React.createElement("div", { className: "px-6 pb-10" }, results.length > 0 ? (React.createElement(React.Fragment, null,
                 React.createElement("p", { className: "text-xs mb-3", style: { color: "rgba(255,255,255,0.7)" } },
@@ -5038,35 +5184,50 @@ function GuidedJourney() {
                     " \u00BB"),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: INK_DOUX } }, "Essayez un autre mot, ou d\u00E9crivez plut\u00F4t l'endroit qui vous g\u00EAne. Toutes les pathologies ne sont pas encore couvertes : effacez la recherche pour parcourir les zones du corps, et demandez \u00E0 votre kin\u00E9sith\u00E9rapeute si vous ne trouvez pas votre situation."),
                 React.createElement("button", { onClick: () => setQuery(""), className: "mt-4 px-4 py-2 rounded-full text-xs font-medium text-white", style: { backgroundColor: ACCENT } }, "Parcourir les zones du corps"))))) : (React.createElement(React.Fragment, null,
-                // Le dessin n'est pas réduit : ses zones sensibles font déjà 38 px de haut,
-                // sous le minimum tactile confortable. La place se gagne donc sur les marges,
-                // jamais sur la cible.
-                React.createElement("div", { className: "px-4 pb-4" },
-                    // Seule carte qui ne bascule pas : le mannequin est une image WebP sans
-                    // canal alpha, son fond clair est cuit dedans. Sur une carte sombre, il
-                    // apparaîtrait comme un rectangle blanc posé au milieu de l'écran.
-                    React.createElement("div", { className: "rounded-3xl px-3 py-3", style: { backgroundColor: "#FFFFFF" } },
-                        React.createElement(RealisticSelector, { onSelect: selectZone })),
-                    React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos.")),
-                // Les trois voies d'accès n'étaient pas trois propositions concurrentes mais une
-                // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
-                // carte à trois rangs, elles disent cela, et rendent une centaine de pixels.
-                React.createElement("div", { className: "px-6 pb-8" },
-                    React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
-                        [
-                            { id: "coureur", titre: "Vous êtes coureur ?", sous: "Pathologies spécifiques de la course à pied", teinte: ACCENT,
-                                aller: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); } },
-                            { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance", teinte: CROISSANCE_ACCENT,
-                                aller: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); } },
-                            { id: "prevention", titre: "Échauffement, étirements & souplesse", sous: "Pas de douleur, juste de la prévention", teinte: ACCENT,
-                                aller: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); } },
-                        ].map((voie, vi) => (React.createElement("button", { key: voie.id, onClick: voie.aller,
-                            className: "w-full p-4 flex items-center justify-between gap-3 text-left",
-                            style: vi ? { borderTop: `1px solid ${BORDURE}` } : undefined },
+                // Le catalogue du corps entier et les trois voies d'acces posent au patient une
+                // question a laquelle son kinesitherapeute a deja repondu. Quand un programme a
+                // ete prescrit, ils passent donc derriere une demande explicite — sans jamais
+                // devenir inaccessibles : une douleur nouvelle ne previent pas.
+                infoPrescrite && !catalogueOuvert
+                    ? React.createElement("div", { className: "px-6 pb-8" },
+                        React.createElement("button", { onClick: () => setCatalogueOuvert(true),
+                            className: "cible-44 w-full rounded-2xl px-4 flex items-center justify-between gap-3 text-left",
+                            style: { backgroundColor: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.22)" } },
                             React.createElement("div", { className: "min-w-0" },
-                                React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, voie.titre),
-                                React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
-                            React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: voie.teinte } })))))),
+                                React.createElement("p", { className: "text-sm font-medium text-white" }, "Voir tous les programmes"),
+                                React.createElement("p", { className: "text-xs mt-0.5", style: { color: "rgba(255,255,255,0.75)" } },
+                                    "Une autre douleur, la course \u00E0 pied, la pr\u00E9vention")),
+                            React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: ACCENT_SOFT } })))
+                    : React.createElement(React.Fragment, null,
+                    // Le dessin n'est pas réduit : ses zones sensibles font déjà 38 px de haut,
+                    // sous le minimum tactile confortable. La place se gagne donc sur les marges,
+                    // jamais sur la cible.
+                    React.createElement("div", { className: "px-4 pb-4" },
+                        // Seule carte qui ne bascule pas : le mannequin est une image WebP sans
+                        // canal alpha, son fond clair est cuit dedans. Sur une carte sombre, il
+                        // apparaîtrait comme un rectangle blanc posé au milieu de l'écran.
+                        React.createElement("div", { className: "rounded-3xl px-3 py-3", style: { backgroundColor: "#FFFFFF" } },
+                            React.createElement(RealisticSelector, { onSelect: selectZone })),
+                        React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos.")),
+                    // Les trois voies d'accès n'étaient pas trois propositions concurrentes mais une
+                    // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
+                    // carte à trois rangs, elles disent cela, et rendent une centaine de pixels.
+                    React.createElement("div", { className: "px-6 pb-8" },
+                        React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                            [
+                                { id: "coureur", titre: "Vous êtes coureur ?", sous: "Pathologies spécifiques de la course à pied", teinte: ACCENT,
+                                    aller: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); } },
+                                { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance", teinte: CROISSANCE_ACCENT,
+                                    aller: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); } },
+                                { id: "prevention", titre: "Échauffement, étirements & souplesse", sous: "Pas de douleur, juste de la prévention", teinte: ACCENT,
+                                    aller: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); } },
+                            ].map((voie, vi) => (React.createElement("button", { key: voie.id, onClick: voie.aller,
+                                className: "w-full p-4 flex items-center justify-between gap-3 text-left",
+                                style: vi ? { borderTop: `1px solid ${BORDURE}` } : undefined },
+                                React.createElement("div", { className: "min-w-0" },
+                                    React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, voie.titre),
+                                    React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
+                                React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: voie.teinte } }))))))),
                 // Le réglage vit sur l'accueil plutôt que dans un menu : un patient qui peine à
                 // lire ne va pas chercher un engrenage.
                 React.createElement("div", { className: "px-6 pb-6" },

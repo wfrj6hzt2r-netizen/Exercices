@@ -1,6 +1,6 @@
 # Vérification
 
-Treize contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
+Quatorze contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 ## Les lancer
@@ -40,6 +40,7 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur les dix premiers écrans |
 | L'application s'ouvre sans réseau | C'est sa promesse centrale, et un service worker cassé ne se voit pas tant qu'on a du réseau |
+| Le lien prescrit est retenu et n'enferme pas | Les sept formes de lien : l'accueil doit reconnaître le programme, ne pas afficher le catalogue, et laisser un moyen de l'atteindre |
 
 ## Deux tolérances assumées
 

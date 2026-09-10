@@ -34,7 +34,7 @@ const ROUTES = [
     ["coureur exercices", "#/coureur/essuie-glace/e1"], ["croissance", "#/croissance"],
     ["croissance exercices", "#/croissance/osgood/e1"], ["prévention", "#/prevention"],
     ["prévention exercices", "#/prevention/warmup/course"], ["récapitulatif", "#/recap"],
-    ["à propos", "#/apropos"], ["pied", "#/z/pied/coussinet/e1"],
+    ["à propos", "#/apropos"], ["fabrique de liens", "#/lien"], ["pied", "#/z/pied/coussinet/e1"],
     ["cervicalgie C5", "#/z/cervical/ncb-c5/e1"], ["coude lanceur", "#/croissance/coude-lanceur/e1"],
 ];
 
@@ -295,6 +295,51 @@ async function ouvrir(ctx, hash) {
         rmSync(profil, { recursive: true, force: true });
     }
     noter("l'application s'ouvre sans réseau", out);
+}
+
+// --- 6. Le lien prescrit tient dans le temps ------------------------------------------
+// Un lien reçu du kinésithérapeute doit être retenu : à la réouverture, l'accueil montre le
+// programme au lieu de redemander au patient de choisir sa blessure parmi quarante-deux.
+{
+    const out = [];
+    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+    // les sept formes de lien que la fabrique peut produire
+    for (const lien of ["#/z/hanche/moyen-fessier", "#/z/genou/entorse/e2", "#/coureur/essuie-glace",
+        "#/coureur/essuie-glace/e1", "#/croissance/osgood", "#/croissance/osgood/e1",
+        "#/prevention/warmup/course"]) {
+        const { p } = await ouvrir(ctx, lien);
+        await p.goto(BASE, { waitUntil: "load" });
+        await p.waitForTimeout(500);
+        const r = await p.evaluate(() => {
+            const surtitre = document.querySelector("main p");
+            const carte = [...document.querySelectorAll("main button")]
+                .find((x) => /ENVOY\u00c9 PAR VOTRE KIN/i.test(x.textContent));
+            return {
+                surtitre: surtitre ? surtitre.textContent.trim() : "",
+                carte: !!carte,
+                catalogue: !!document.querySelector('main svg[role="group"]'),
+                bouton: [...document.querySelectorAll("main button")]
+                    .some((x) => /Voir tous les programmes/.test(x.textContent)),
+            };
+        });
+        if (r.surtitre !== "Votre programme")
+            out.push(`${lien} — l'accueil ne reconna\u00eet pas le programme (« ${r.surtitre} »)`);
+        if (!r.carte)
+            out.push(`${lien} — la carte du programme prescrit manque`);
+        if (r.catalogue)
+            out.push(`${lien} — le catalogue s'affiche encore alors qu'un programme est prescrit`);
+        if (!r.bouton)
+            out.push(`${lien} — aucun moyen d'atteindre le catalogue`);
+        else {
+            await p.getByRole("button", { name: /Voir tous les programmes/ }).click();
+            await p.waitForTimeout(300);
+            if (!(await p.locator('main svg[role="group"]').count()))
+                out.push(`${lien} — le catalogue ne s'ouvre pas quand on le demande`);
+        }
+        await p.close();
+    }
+    await ctx.close();
+    noter("le lien prescrit est retenu et n'enferme pas", out);
 }
 
 await navigateur.close();
