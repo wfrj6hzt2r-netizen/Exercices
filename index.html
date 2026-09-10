@@ -389,6 +389,9 @@ const IconeLoupe = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "10.5", cy: "10.5", r: "6.5" }),
     React.createElement("path", { d: "M15.4 15.4 21 21" })));
 const IconeChevronBas = traitIcone(React.createElement("path", { d: "M6 9.5l6 6 6-6" }));
+const IconeRecommencer = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M20 12a8 8 0 1 1-2.6-5.9" }),
+    React.createElement("path", { d: "M20 3.5V8h-4.5" })));
 // --- Pictogrammes détaillés : silhouettes schématiques en position d'exercice ---
 const poseWrap = (children) => ({ size = 24, color = "currentColor" }) => (React.createElement("svg", { width: size, height: size, viewBox: "0 0 48 48", fill: "none", style: { stroke: color }, strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round" }, children));
 const PoseSquat = poseWrap(React.createElement(React.Fragment, null,
@@ -5242,8 +5245,17 @@ function GuidedJourney() {
                                 color: tailleTexte === id ? HEADER : "rgba(255,255,255,0.75)" } }, lettre))))),
                 React.createElement("div", { className: "px-6 pb-10" },
                     canSave ? (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
-                    (resumeInfo || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer, className: "mt-3 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "Effacer ma progression et repartir de z\u00E9ro")),
-                    React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 block mt-1 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales"))))));
+                    // Effacer sa progression est une action, pas une note de bas de page. Au même
+                    // corps et à la même encre que la phrase de confidentialité et le lien des
+                    // mentions légales, elle passait pour l'une d'elles : un patient qui reprend
+                    // une rééducation ne la trouvait pas. Encadrée et sans soulignement, elle se
+                    // lit comme un bouton — mais reste en retrait, car elle efface sans revenir.
+                    (resumeInfo || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer,
+                        className: "cible-44 mt-4 px-4 rounded-full text-xs font-medium inline-flex items-center gap-2",
+                        style: { color: "rgba(255,255,255,0.92)", border: "1px solid rgba(255,255,255,0.32)" } },
+                        React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
+                        "Effacer ma progression et repartir de z\u00E9ro")),
+                    React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 block mt-3 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales"))))));
     }
     if (view === "injury") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
