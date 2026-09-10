@@ -3239,29 +3239,6 @@ function RealisticSelector({ onSelect }) {
                 React.createElement("rect", { x: boxX, y: m.labelY - 16, width: larg, height: "26", fill: "transparent" })));
         })));
 }
-const TECHNIQUE_VARIANTS = [
-    { test: (n) => n.includes("squat"), facile: "Faites un simple assis-debout sur une chaise haute, appui des mains autorisé.", difficile: "Passez en squat unipodal, ou ajoutez une charge (haltères, sac lesté)." },
-    { test: (n) => n.includes("pont fessier"), facile: "Rapprochez les pieds des fessiers pour réduire l'effort.", difficile: "Réalisez le pont sur une seule jambe." },
-    { test: (n) => n.includes("équilibre") || n.includes("proprio") || n.includes("plateau"), facile: "Gardez un appui à portée de main (mur, chaise), yeux ouverts en permanence.", difficile: "Fermez les yeux, ou ajoutez un mouvement de bras ou de tête pendant l'exercice." },
-    { test: (n) => n.includes("gainage") || n.includes("planche"), facile: "Réalisez l'appui sur les genoux plutôt que sur les pieds.", difficile: "Levez un bras ou une jambe pendant le maintien, ou allongez la durée." },
-    { test: (n) => n.includes("fente"), facile: "Réduisez l'amplitude de la fente, ou tenez-vous à un appui.", difficile: "Ajoutez une charge, ou réalisez une fente sautée." },
-    { test: (n) => n.includes("étirement"), facile: "Réduisez l'intensité : une tension très légère suffit.", difficile: "Maintenez l'étirement plus longtemps, en approfondissant légèrement si aucune douleur." },
-    { test: (n) => n.includes("isométrique"), facile: "Réduisez l'intensité de la contraction, environ à moitié.", difficile: "Contractez à l'intensité maximale tolérable, ou en position plus exigeante." },
-    { test: (n) => n.includes("presse"), facile: "Réduisez la charge et l'amplitude du mouvement.", difficile: "Augmentez la charge progressivement, à chaque séance si bien toléré." },
-    { test: (n) => n.includes("marche"), facile: "Réduisez la distance ou la durée de marche.", difficile: "Augmentez l'allure, ou ajoutez une légère pente." },
-    { test: (n) => n.includes("course") || n.includes("sprint"), facile: "Alternez marche et course (fractionné doux).", difficile: "Augmentez la vitesse, ou ajoutez des changements de rythme." },
-    { test: (n) => n.includes("saut") || n.includes("pliométrie"), facile: "Remplacez par une simple montée sur la pointe des pieds, sans décoller.", difficile: "Augmentez la hauteur du saut ou la vitesse d'enchaînement." },
-    { test: (n) => n.includes("changement") && n.includes("direction"), facile: "Réalisez le mouvement à vitesse réduite, sans précipitation.", difficile: "Augmentez la vitesse d'exécution, à l'approche de l'intensité du terrain." },
-    { test: (n) => n.includes("élastique"), facile: "Utilisez un élastique de résistance plus faible.", difficile: "Utilisez un élastique de résistance plus forte." },
-    { test: (n) => n.includes("rotation") || n.includes("inclinaison"), facile: "Réduisez l'amplitude du mouvement.", difficile: "Augmentez légèrement l'amplitude si bien toléré, sans forcer." },
-    { test: (n) => n.includes("mobilisation") || n.includes("mobilité"), facile: "Réduisez l'amplitude, restez bien en dessous du seuil douloureux.", difficile: "Recherchez l'amplitude maximale tolérée, en fin de mouvement." },
-    { test: (n) => n.includes("activation") || n.includes("contraction"), facile: "Réduisez l'intensité de la contraction, environ à moitié.", difficile: "Recherchez une contraction maximale volontaire." },
-    { test: (n) => n.includes("chaîne postérieure") || n.includes("ischio"), facile: "Réduisez l'amplitude ou la charge.", difficile: "Ajoutez une charge, ou un appui instable." },
-    { test: (n) => n.includes("deltoïde") || n.includes("scapulaire") || n.includes("omoplate"), facile: "Réduisez la charge ou l'amplitude.", difficile: "Utilisez une résistance élastique plus forte." },
-    { test: (n) => n.includes("pendulaire"), facile: "Réalisez de tout petits cercles, sans forcer.", difficile: "Élargissez légèrement les cercles si aucune douleur." },
-    { test: (n) => n.includes("vélo"), facile: "Réduisez la durée ou la résistance.", difficile: "Augmentez la durée ou la résistance." },
-    { test: (n) => n.includes("adducteur") || n.includes("adduction"), facile: "Réduisez la résistance ou l'amplitude du mouvement.", difficile: "Augmentez la résistance, ou passez à un appui unipodal." },
-];
 const POSITION_LIBRARY = [
     { test: (n) => n.includes("pont fessier"), label: "Allongé sur le dos, genoux pliés" },
     { test: (n) => n.includes("dos rond") || n.includes("dos creux"), label: "À quatre pattes" },
@@ -3354,73 +3331,24 @@ function positionAffichable(nom, tip) {
         return position;
     return duRepere.some((p) => duTexte.indexOf(p) !== -1) ? position : null;
 }
-function getTechniqueVariant(name) {
-    const n = name.toLowerCase();
-    return TECHNIQUE_VARIANTS.find((v) => v.test(n)) || null;
-}
 function roundSecondsUp(n) {
     return Math.max(10, Math.ceil(n / 10) * 10);
 }
-function scaleDose(dose, level) {
-    // format "3 × 15-20 sec" ou "5 × 30-45 sec" : plage de répétitions/temps
-    const mRange = dose.match(/^(\d+)\s*×\s*(\d+)-(\d+)(.*)$/);
-    if (mRange) {
-        let sets = parseInt(mRange[1], 10);
-        let lo = parseInt(mRange[2], 10);
-        let hi = parseInt(mRange[3], 10);
-        const suffix = mRange[4];
-        if (level === "facile") {
-            sets = Math.max(2, sets - 1);
-            lo = Math.max(1, Math.round(lo * 0.7));
-            hi = Math.max(lo + 1, Math.round(hi * 0.7));
-        }
-        else if (level === "difficile") {
-            sets = sets + 1;
-            lo = Math.round(lo * 1.3);
-            hi = Math.round(hi * 1.3);
-        }
-        if (/^\s*sec\b/.test(suffix)) {
-            lo = roundSecondsUp(lo);
-            hi = Math.max(lo + 10, roundSecondsUp(hi));
-        }
-        return `${sets} × ${lo}-${hi}${suffix}`;
+function doseAffichee(dose) {
+    // Les secondes s'arrondissent à la dizaine supérieure : « 3 × 45 sec » se lit
+    // « 3 × 50 sec ». C'était la seule transformation que le niveau « moyen » appliquait —
+    // les deux autres niveaux, retirés, faisaient varier séries et répétitions autour
+    // d'elle. Équivalence vérifiée sur les 141 doses distinctes du contenu.
+    const plage = dose.match(/^(\d+)\s*×\s*(\d+)-(\d+)(.*)$/);
+    if (plage) {
+        if (!/^\s*sec\b/.test(plage[4]))
+            return dose;
+        const bas = roundSecondsUp(Number(plage[2]));
+        return `${plage[1]} × ${bas}-${Math.max(bas + 10, roundSecondsUp(Number(plage[3])))}${plage[4]}`;
     }
-    // format "3 × 15", "5 × 10 sec", "4 × 20 m"
-    const m = dose.match(/^(\d+)\s*×\s*(\d+)(.*)$/);
-    if (m) {
-        let sets = parseInt(m[1], 10);
-        let val = parseInt(m[2], 10);
-        const suffix = m[3];
-        if (level === "facile") {
-            sets = Math.max(2, sets - 1);
-            val = Math.max(1, Math.round(val * 0.7));
-        }
-        else if (level === "difficile") {
-            sets = sets + 1;
-            val = Math.round(val * 1.3);
-        }
-        if (/^\s*sec\b/.test(suffix))
-            val = roundSecondsUp(val);
-        return `${sets} × ${val}${suffix}`;
-    }
-    // format "10 min", "10-15 min"
-    const m2 = dose.match(/^(\d+)(-(\d+))?\s*min$/);
-    if (m2) {
-        let a = parseInt(m2[1], 10);
-        let b = m2[3] ? parseInt(m2[3], 10) : null;
-        if (level === "facile") {
-            a = Math.max(3, Math.round(a * 0.7));
-            if (b)
-                b = Math.max(a + 2, Math.round(b * 0.7));
-        }
-        else if (level === "difficile") {
-            a = Math.round(a * 1.3);
-            if (b)
-                b = Math.round(b * 1.3);
-        }
-        return b ? `${a}-${b} min` : `${a} min`;
-    }
-    // formats non chiffrés (séance, bilan, protocole, selon consignes...) : inchangés
+    const simple = dose.match(/^(\d+)\s*×\s*(\d+)(.*)$/);
+    if (simple && /^\s*sec\b/.test(simple[3]))
+        return `${simple[1]} × ${roundSecondsUp(Number(simple[2]))}${simple[3]}`;
     return dose;
 }
 // --- Minuteur intégré : détecte une durée dans le dosage affiché et propose de la lancer sans quitter l'écran ---
@@ -3602,11 +3530,6 @@ const CONTENU_ORIGINE = "Les consignes ont été rédigées par " + PRATICIEN + 
 // L'hébergeur doit être nommé dans les mentions légales. Le site est servi par GitHub Pages.
 const HEBERGEUR = "GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.";
 const LOGO = "data:image/png;base64,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";
-const LEVELS = [
-    { id: "facile", label: "Facile", note: "Réduisez l'amplitude ou le nombre de répétitions si besoin, et accordez-vous plus de repos entre les séries. Adapté aux sportifs légers ou aux personnes âgées." },
-    { id: "moyen", label: "Moyen", note: "Le niveau proposé par défaut." },
-    { id: "difficile", label: "Difficile", note: "Ajoutez une charge, de l'instabilité, ou réduisez le temps de repos. Adapté aux sportifs de bon niveau." },
-];
 // --- Persistance locale : la progression reste sur l'appareil du patient ---
 // Aucune donnée ne quitte le téléphone : pas de serveur, pas de compte.
 // Tout est encapsulé dans des try/catch car le stockage peut être refusé
@@ -4727,10 +4650,6 @@ function CarteExercice(props) {
             style: styleProse(12.5, INK_DOUX) },
             React.createElement("span", { className: "font-medium" }, "Sans élastique : "),
             "faites le même mouvement sans résistance. C'est la version plus facile, et le repli quand vous n'en avez pas avec vous."),
-        props.variantText && React.createElement("p", { lang: "fr", className: "mt-2",
-            style: styleProse(12.5, ACCENT) },
-            React.createElement("span", { className: "font-medium capitalize" }, props.niveau + " : "),
-            props.variantText),
         props.pourquoi && React.createElement("div", { className: "rounded-2xl p-3 mt-3",
             style: { backgroundColor: props.fondSecondaire } },
             React.createElement("p", { lang: "fr", style: styleProse(13, INK) },
@@ -4867,8 +4786,7 @@ function GuidedJourney() {
     }, []);
     const [introVu, setIntroVu] = useState(() => !!restored.introVu);
     const [view, setView] = useState(() => (restored.introVu ? depart.view : "intro"));
-    const [level, setLevel] = useState(() => restored.level || "moyen");
-    const [tailleTexte, setTailleTexte] = useState(() => restored.tailleTexte || "normal");
+        const [tailleTexte, setTailleTexte] = useState(() => restored.tailleTexte || "normal");
     // L'écran « À propos » s'atteint depuis l'introduction comme depuis l'accueil : on
     // retient d'où l'on vient pour ne pas renvoyer sur l'accueil quelqu'un qui n'a pas
     // encore validé les règles de prudence.
@@ -4926,8 +4844,8 @@ function GuidedJourney() {
     }, [view, pathId, injuryId, stageIdx, runnerPathId, runnerStageIdx, preventionCategory, preventionSub]);
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
-        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit });
-    }, [done, level, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit]);
+        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -5035,7 +4953,6 @@ function GuidedJourney() {
         setCharges({});
         setBilanOuvert(null);
         setLastRoute(null);
-        setLevel("moyen");
         setQuery("");
         setPathId(null);
         setInjuryId(null);
@@ -5335,18 +5252,6 @@ function GuidedJourney() {
                                     React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, voie.titre),
                                     React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
                                 React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: voie.teinte } }))))))),
-                // Le réglage vit sur l'accueil plutôt que dans un menu : un patient qui peine à
-                // lire ne va pas chercher un engrenage.
-                React.createElement("div", { className: "px-6 pb-6" },
-                    React.createElement("p", { className: "text-[11px] mb-2", style: { color: "rgba(255,255,255,0.6)" } }, "Taille du texte"),
-                    React.createElement("div", { className: "flex gap-1.5 p-1 rounded-full w-fit", style: { backgroundColor: "rgba(255,255,255,0.14)" } },
-                        [["normal", "A", 13], ["grand", "A", 15], ["tres-grand", "A", 17]].map(([id, lettre, px]) => (React.createElement("button", {
-                            key: id, onClick: () => setTailleTexte(id),
-                            "aria-pressed": tailleTexte === id,
-                            "aria-label": id === "normal" ? "Texte de taille normale" : id === "grand" ? "Texte agrandi" : "Texte très agrandi",
-                            className: "cible-44 px-4 rounded-full font-medium transition-colors",
-                            style: { fontSize: px, backgroundColor: tailleTexte === id ? "#FFFFFF" : "transparent",
-                                color: tailleTexte === id ? HEADER : "rgba(255,255,255,0.75)" } }, lettre))))),
                 React.createElement("div", { className: "px-6 pb-10" },
                     canSave ? (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
                     // Effacer sa progression est une action, pas une note de bas de page. Au même
@@ -5359,7 +5264,19 @@ function GuidedJourney() {
                         style: { color: "rgba(255,255,255,0.92)", border: "1px solid rgba(255,255,255,0.32)" } },
                         React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
                         "Effacer ma progression et repartir de z\u00E9ro")),
-                    React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 block mt-3 text-[11px] underline underline-offset-2", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales"))))));
+                    // Le réglage de taille vit en pied de page, en face des mentions légales :
+                    // il est cherché une fois, au début, puis plus jamais. Il gardait pourtant un
+                    // intitulé et une ligne à lui. Les trois A disent seuls ce qu'ils font.
+                    React.createElement("div", { className: "flex items-center justify-between gap-3 mt-3" },
+                        React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 text-[11px] underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales"),
+                        React.createElement("div", { className: "flex gap-1.5 p-1 rounded-full shrink-0", style: { backgroundColor: "rgba(255,255,255,0.14)" } },
+                            [["normal", 13], ["grand", 15], ["tres-grand", 17]].map(([id, px]) => (React.createElement("button", {
+                                key: id, onClick: () => setTailleTexte(id),
+                                "aria-pressed": tailleTexte === id,
+                                "aria-label": id === "normal" ? "Texte de taille normale" : id === "grand" ? "Texte agrandi" : "Texte tr\u00E8s agrandi",
+                                className: "cible-44 px-3 rounded-full font-medium transition-colors",
+                                style: { fontSize: px, backgroundColor: tailleTexte === id ? "#FFFFFF" : "transparent",
+                                    color: tailleTexte === id ? HEADER : "rgba(255,255,255,0.75)" } }, "A"))))))))));
     }
     if (view === "injury") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
@@ -5666,11 +5583,6 @@ function GuidedJourney() {
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < runnerStageIdx ? "100%" : si === runnerStageIdx ? "50%" : "0%", backgroundColor: ACCENT } }))))),
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, stageInfo.sub),
                 React.createElement("h1", { className: "text-white text-xl font-medium mt-1" }, stageInfo.label),
-                React.createElement("div", { className: "flex gap-1.5 mt-4 p-1 rounded-full w-fit", style: { backgroundColor: "rgba(255,255,255,0.14)" } }, LEVELS.map((lvl) => (React.createElement("button", { key: lvl.id, onClick: () => setLevel(lvl.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: {
-                        backgroundColor: level === lvl.id ? "#FFFFFF" : "transparent",
-                        color: level === lvl.id ? HEADER : "rgba(255,255,255,0.75)",
-                    } }, lvl.label)))),
-                React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, LEVELS.find((l) => l.id === level).note),
                 React.createElement("p", { className: "text-xs mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
                     totalDone,
                     " / ",
@@ -5686,19 +5598,16 @@ function GuidedJourney() {
                 runnerStage.exercises.map((ex, ei) => {
                     const exId = idExercice(ex);
                     const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
-                    const variant = getTechniqueVariant(ex.name);
-                    return React.createElement(CarteExercice, {
+                        return React.createElement(CarteExercice, {
                         key: exId, ex: ex, exId: exId, idBase: runnerKey,
                         coche: runnerDoneSet.has(exId),
                         onBascule: () => toggle(runnerKey, exId, runnerStage.exercises.length),
                         accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
-                        dose: scaleDose(ex.dose, level),
+                        dose: doseAffichee(ex.dose),
                         term: term,
                         infoOuvert: openInfo.has(`${runnerKey}-${exId}`),
                         onBasculerInfo: () => toggleInfo(`${runnerKey}-${exId}`),
                         position: positionAffichable(ex.name, ex.tip),
-                        variantText: variant && level !== "moyen" ? variant[level] : null,
-                        niveau: level,
                         avecCharge: doseNotable(ex.dose),
                         charge: chargeDuJour(charges, runnerKey, exId, jour),
                         chargePrecedente: chargePrecedente(charges, runnerKey, exId, jour),
@@ -5709,7 +5618,10 @@ function GuidedJourney() {
                     React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, "Plan de reprise de la course"),
                     React.createElement("p", { className: "text-xs mt-1 mb-3 leading-relaxed", style: { color: INK_DOUX } }, "Progression indicative. Ne passez \u00E0 la semaine suivante que si la douleur du lendemain reste stable \u2014 sinon, restez une semaine de plus au m\u00EAme palier."),
                     React.createElement("div", { className: "flex flex-col gap-2.5" }, runnerStage.plan.map((wk) => (React.createElement("div", { key: wk.week, className: "flex gap-3" },
-                        React.createElement("span", { className: "text-[11px] font-semibold shrink-0 w-24 pt-0.5", style: { color: HEADER } }, wk.week),
+                        // « HEADER » est une constante en dur, pas une variable : elle ne bascule pas.
+                        // Le bleu nuit du bandeau se retrouvait donc écrit sur le vert sombre du plan,
+                        // à 1,03 de contraste — invisible. L'accent d'encre, lui, suit le thème.
+                        React.createElement("span", { className: "text-[11px] font-semibold shrink-0 w-24 pt-0.5", style: { color: ACCENT_FORT } }, wk.week),
                         React.createElement("span", { className: "text-xs leading-relaxed", style: { color: INK_PROSE } }, wk.detail)))))))),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 // Même encadré que sur le parcours guidé, mais les critères sont propres à
@@ -5794,11 +5706,6 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, category.title),
                 React.createElement("h1", { className: "text-white text-xl font-medium" }, sub.label),
                 React.createElement("p", { className: "text-xs mt-1.5 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, sub.intro),
-                React.createElement("div", { className: "flex gap-1.5 mt-4 p-1 rounded-full w-fit", style: { backgroundColor: "rgba(255,255,255,0.14)" } }, LEVELS.map((lvl) => (React.createElement("button", { key: lvl.id, onClick: () => setLevel(lvl.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: {
-                        backgroundColor: level === lvl.id ? "#FFFFFF" : "transparent",
-                        color: level === lvl.id ? HEADER : "rgba(255,255,255,0.75)",
-                    } }, lvl.label)))),
-                React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, LEVELS.find((l) => l.id === level).note),
                 React.createElement("p", { className: "text-xs mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
                     totalDone,
                     " / ",
@@ -5813,19 +5720,16 @@ function GuidedJourney() {
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, sub.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
-                const variant = getTechniqueVariant(ex.name);
                 return React.createElement(CarteExercice, {
                     key: exId, ex: ex, exId: exId, idBase: prevKey,
                     coche: prevDoneSet.has(exId),
                     onBascule: () => toggle(prevKey, exId, sub.exercises.length),
                     accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
-                    dose: scaleDose(ex.dose, level),
+                    dose: doseAffichee(ex.dose),
                     term: term,
                     infoOuvert: openInfo.has(`${prevKey}-${exId}`),
                     onBasculerInfo: () => toggleInfo(`${prevKey}-${exId}`),
                     position: positionAffichable(ex.name, ex.tip),
-                    variantText: variant && level !== "moyen" ? variant[level] : null,
-                    niveau: level,
                     avecCharge: doseNotable(ex.dose),
                     charge: chargeDuJour(charges, prevKey, exId, jour),
                     chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
@@ -5886,11 +5790,6 @@ function GuidedJourney() {
                     stage.label),
                 stage.sub && React.createElement("p", { className: "text-xs mt-0.5", style: { color: "rgba(255,255,255,0.75)" } }, stage.sub),
                 (stage.pourquoi || POURQUOI_ETAPE[stage.label]) && React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: ACCENT_SOFT } }, stage.pourquoi || POURQUOI_ETAPE[stage.label]),
-                React.createElement("div", { className: "flex gap-1.5 mt-4 p-1 rounded-full w-fit", style: { backgroundColor: "rgba(255,255,255,0.14)" } }, LEVELS.map((lvl) => (React.createElement("button", { key: lvl.id, onClick: () => setLevel(lvl.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: {
-                        backgroundColor: level === lvl.id ? "#FFFFFF" : "transparent",
-                        color: level === lvl.id ? HEADER : "rgba(255,255,255,0.75)",
-                    } }, lvl.label)))),
-                React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, LEVELS.find((l) => l.id === level).note),
                 React.createElement("p", { className: "text-xs mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
                     totalDone,
                     " / ",
@@ -5908,19 +5807,16 @@ function GuidedJourney() {
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
-                const variant = getTechniqueVariant(ex.name);
                 return React.createElement(CarteExercice, {
                     key: exId, ex: ex, exId: exId, idBase: key,
                     coche: doneSet.has(exId),
                     onBascule: () => toggle(key, exId, totalCount),
                     accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
-                    dose: scaleDose(ex.dose, level),
+                    dose: doseAffichee(ex.dose),
                     term: term,
                     infoOuvert: openInfo.has(exId),
                     onBasculerInfo: () => toggleInfo(exId),
                     position: positionAffichable(ex.name, ex.tip),
-                    variantText: variant && level !== "moyen" ? variant[level] : null,
-                    niveau: level,
                     avecCharge: doseNotable(ex.dose),
                     charge: chargeDuJour(charges, key, exId, jour),
                     chargePrecedente: chargePrecedente(charges, key, exId, jour),
