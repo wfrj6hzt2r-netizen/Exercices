@@ -4300,6 +4300,9 @@ const ACCENT_VOILE = "#E4EEE6"; // pastille des pictogrammes
 const ACCENT_PALE = "#EDF2F0"; // encadré vert clair
 const ACCENT_ETEINT = "#9FB6A6"; // trait d'un pictogramme inactif
 const ACCENT_CALENDRIER = "#BBD3C2"; // palier intermédiaire du calendrier
+// Grille du récapitulatif tant qu'aucune séance n'est enregistrée : l'accent posé très bas,
+// pour que les cases se lisent comme une place réservée et non comme un tableau éteint.
+const ACCENT_ATTENTE = "rgba(79,122,94,0.14)";
 const INK = "#0F172A";
 const INK_PROSE = "#3F4759"; // prose secondaire des cartes
 const INK_DOUX = "#6B7086"; // légendes, texte de second plan
@@ -5077,6 +5080,9 @@ function GuidedJourney() {
         const resume = resumeParParcours(journal, FENETRE);
         const cal = calendrier(journal, 28);
         const joursTravailles = cal.filter((j) => j.faits > 0).length;
+        // Rien à montrer : ni jour travaillé sur la fenêtre, ni parcours résumé. L'écran
+        // change alors de rôle — il ne rend plus compte, il annonce ce qui viendra.
+        const vide = joursTravailles === 0 && resume.length === 0;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-6 bandeau-sombre", style: { backgroundColor: HEADER } },
                 React.createElement("button", { onClick: retourEnArriere, className: "sans-impression flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
@@ -5096,12 +5102,12 @@ function GuidedJourney() {
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Les 4 dernières semaines"),
                     React.createElement("div", { className: "flex flex-wrap gap-1 mt-3" }, cal.map((j) => (React.createElement("div", { key: j.jour, title: `${jjmm(j.jour)} — ${j.faits} exercice(s)`, style: {
                             width: "calc((100% - 1.5rem) / 7)", height: 22, borderRadius: 4,
-                            backgroundColor: j.faits === 0 ? BORDURE_DOUCE : j.faits < 3 ? ACCENT_CALENDRIER : ACCENT,
+                            backgroundColor: j.faits === 0 ? (vide ? ACCENT_ATTENTE : BORDURE_DOUCE) : j.faits < 3 ? ACCENT_CALENDRIER : ACCENT,
                         } })))),
-                    React.createElement("p", { className: "text-xs mt-3", style: { color: INK_DOUX } }, "Du plus ancien à gauche au jour même à droite. Plus la case est foncée, plus il y a eu d'exercices.")),
-                resume.length === 0
-                    ? React.createElement("p", { className: "text-sm leading-relaxed", style: { color: INK_DOUX } }, "Dès que vous cocherez des exercices, le détail par parcours apparaîtra ici.")
-                    : resume.map((g) => {
+                    React.createElement("p", { className: "text-xs mt-3", style: { color: INK_DOUX } }, vide
+                        ? "Chaque jour où vous cocherez un exercice colorera une case, et le détail par parcours s'ajoutera dessous."
+                        : "Du plus ancien à gauche au jour même à droite. Plus la case est foncée, plus il y a eu d'exercices.")),
+                vide ? null : resume.map((g) => {
                         const ch = charges[g.cle] || {};
                         const notes = Object.keys(ch).map((exId) => ({ exId, n: ch[exId][0] })).filter((x) => x.n);
                         return (React.createElement("div", { key: g.cle, className: "rounded-2xl p-4 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
@@ -5136,14 +5142,17 @@ function GuidedJourney() {
                 // Montrer l'écran suppose d'être en face de son kinésithérapeute. L'aperçu
                 // d'impression du navigateur sait enregistrer la page en PDF : c'est le chemin le
                 // plus court vers un fichier partageable, sans rien ajouter à l'application.
-                React.createElement("button", { onClick: () => window.print(),
-                    className: "sans-impression cible-44 w-full rounded-full text-sm font-medium text-white flex items-center justify-center gap-2",
-                    style: { backgroundColor: ACCENT } },
-                    React.createElement("span", { "aria-hidden": "true" }, "\u2913"),
-                    "Enregistrer en PDF ou partager"),
-                React.createElement("p", { className: "sans-impression text-xs leading-relaxed", style: { color: INK_DOUX } },
-                    "Ouvre l'aperçu d'impression : choisissez « PDF » pour l'enregistrer, l'envoyer par message ou par courriel."),
-                React.createElement("p", { className: "sans-impression text-xs leading-relaxed", style: { color: INK_DOUX } }, "Ces informations ne sortent pas de votre téléphone : rien n'est envoyé sans vous.")))); 
+                // Tant qu'il n'y a rien à montrer, le bouton disparaît : proposer d'exporter une
+                // feuille vide est une impasse, et l'en-tête dit déjà quoi faire pour la remplir.
+                !vide && React.createElement(React.Fragment, null,
+                    React.createElement("button", { onClick: () => window.print(),
+                        className: "sans-impression cible-44 w-full rounded-full text-sm font-medium text-white flex items-center justify-center gap-2",
+                        style: { backgroundColor: ACCENT } },
+                        React.createElement("span", { "aria-hidden": "true" }, "\u2913"),
+                        "Enregistrer en PDF ou partager"),
+                    React.createElement("p", { className: "sans-impression text-xs leading-relaxed", style: { color: INK_DOUX } },
+                        "Ouvre l'aperçu d'impression : choisissez « PDF » pour l'enregistrer, l'envoyer par message ou par courriel."),
+                    React.createElement("p", { className: "sans-impression text-xs leading-relaxed", style: { color: INK_DOUX } }, "Ces informations ne sortent pas de votre téléphone : rien n'est envoyé sans vous.")))));
     }
     if (view === "croissance-liste") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
