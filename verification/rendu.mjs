@@ -233,7 +233,15 @@ async function ouvrir(ctx, hash) {
         await p.addScriptTag({ content: axeSource });
         const r = await p.evaluate(async () => {
             const res = await window.axe.run(document, { resultTypes: ["violations"] });
-            return res.violations.map((v) => `${v.id} (${v.nodes.length}) : ${v.help}`);
+            // On rend l'élément fautif, pas seulement le nom de la règle : une violation
+            // de contraste vue une fois et non reproduite est restée indiagnosticable
+            // faute de savoir sur quoi elle portait.
+            return res.violations.map((v) => {
+                const n = v.nodes[0] || {};
+                const quoi = (n.html || "").replace(/\s+/g, " ").slice(0, 120);
+                const pourquoi = (n.any || []).map((c) => c.message).join(" ; ").slice(0, 160);
+                return `${v.id} (${v.nodes.length}) : ${v.help}\n        ${quoi}\n        ${pourquoi}`;
+            });
         });
         r.forEach((x) => out.push(`${nom} — ${x}`));
         await p.close();
@@ -340,6 +348,64 @@ async function ouvrir(ctx, hash) {
     }
     await ctx.close();
     noter("le lien prescrit est retenu et n'enferme pas", out);
+}
+
+// --- 7. Chaque règle de prudence paraît une fois par jour, sur son parcours -----------
+// Le premier contrôle qui porte sur un enchaînement d'écrans, et non sur un écran seul.
+// Il naît d'un défaut que rien ne surveillait : les quatre parcours portent quatre textes
+// différents mais partageaient une seule date « vue aujourd'hui », si bien qu'un patient
+// qui faisait son épaule puis ses étirements ne voyait jamais la règle de la prévention.
+// Un contrôle de rendu ne l'aurait pas vu : chaque écran, pris isolément, était correct.
+{
+    const out = [];
+    const REGLES = [
+        { nom: "blessure", route: "#/z/epaule/coiffe/e1", suivant: "#/z/epaule/coiffe/e2",
+            debut: "Arrêtez l'exercice si la douleur dépasse" },
+        { nom: "prévention", route: "#/prevention/stretch-post/inferieur", suivant: "#/prevention/flexibility/dos",
+            debut: "Ces exercices supposent l'absence de douleur" },
+        { nom: "coureur", route: "#/coureur/essuie-glace/e1", suivant: "#/coureur/essuie-glace/e2",
+            debut: "Repère de charge" },
+        { nom: "croissance", route: "#/croissance/osgood/e1", suivant: "#/croissance/osgood/e2",
+            debut: "Arrête si la douleur devient vive" },
+    ];
+    // Une navigation franche : un simple changement de dièse ne recharge pas la page, et
+    // la note ne se remonterait donc pas.
+    const ouvrirFranchement = async (p, hash) => {
+        await p.goto(BASE + hash, { waitUntil: "load" });
+        await p.reload({ waitUntil: "load" });
+        await p.waitForSelector("main");
+        await p.waitForTimeout(300);
+    };
+    const presente = (p, debut) => p.evaluate((d) => document.body.innerText.includes(d), debut);
+
+    // a. Chaque règle paraît sur son parcours, quel que soit ce qui a été vu avant.
+    for (const ordre of [REGLES, [...REGLES].reverse()]) {
+        const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+        // On passe par l'accueil pour écarter l'introduction : ouvrir directement le
+        // premier parcours consommerait la vue que le contrôle cherche justement à observer.
+        const { p } = await ouvrir(ctx, "#/");
+        const vues = [];
+        for (const r of ordre) {
+            await ouvrirFranchement(p, r.route);
+            if (!(await presente(p, r.debut)))
+                out.push(`après ${vues.join(", ") || "rien"} — la règle « ${r.nom} » ne paraît pas`);
+            vues.push(r.nom);
+        }
+        await p.close();
+        await ctx.close();
+    }
+    // b. Et elle ne reparaît pas au deuxième écran du même parcours.
+    for (const r of REGLES) {
+        const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+        const { p } = await ouvrir(ctx, "#/");
+        await ouvrirFranchement(p, r.route);
+        await ouvrirFranchement(p, r.suivant);
+        if (await presente(p, r.debut))
+            out.push(`« ${r.nom} » — la règle reparaît au deuxième écran de la journée`);
+        await p.close();
+        await ctx.close();
+    }
+    noter("chaque règle de prudence paraît une fois par jour, sur son parcours", out);
 }
 
 await navigateur.close();
