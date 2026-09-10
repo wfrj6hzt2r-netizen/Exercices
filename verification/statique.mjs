@@ -151,6 +151,27 @@ controle("tout exercice à élastique offre une version sans", () => {
         .map(({ ex, ou }) => `${ou} — « ${ex.name} »`);
 });
 
+// Les conseils des premiers jours sont du contenu clinique au même titre qu'une consigne :
+// ils se lisent tronqués sans leur point final, et une blessure qui n'en a aucun laisse
+// l'étape la plus décisive du parcours sans autre chose que des exercices.
+controle("chaque blessure a des conseils pour les premiers jours", () => {
+    const out = [];
+    D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => {
+        const l = i.premiersJours;
+        if (!Array.isArray(l) || !l.length) {
+            out.push(`${z.label} — « ${i.label} » : aucun conseil`);
+            return;
+        }
+        l.forEach((t) => {
+            if (typeof t !== "string" || t.trim().length < 20)
+                out.push(`${z.label} — « ${i.label} » : conseil vide ou trop court`);
+            else if (!/[.!?]$/.test(t.trim()))
+                out.push(`${z.label} — « ${i.label} » : « ${t.slice(-40)} » ne finit pas par un point`);
+        });
+    }));
+    return out;
+});
+
 // --- Restitution ----------------------------------------------------------------------
 const large = Math.max(...rapport.map((r) => r.nom.length));
 for (const r of rapport)
