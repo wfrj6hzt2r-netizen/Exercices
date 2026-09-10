@@ -4920,7 +4920,12 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours guid\u00E9"),
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quelle zone souhaitez-vous travailler ?"),
                 React.createElement("div", { className: "mt-5 relative" },
-                    React.createElement("input", { type: "text", value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Rechercher : sciatique, tennis elbow, talon\u2026", className: "w-full rounded-full py-3 pl-11 pr-10 text-sm", style: { backgroundColor: SURFACE, color: INK, border: "none" } }),
+                    React.createElement("input", { type: "text", value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Rechercher : sciatique\u2026", className: "w-full rounded-full py-3 pl-11 pr-10 text-sm", style: { backgroundColor: SURFACE, color: INK, border: "none",
+                        // Aux plus grandes tailles de texte, la place disponible dans le champ
+                        // diminue pendant que le texte grandit : aucune formulation ne tient aux
+                        // trois crans. Coupé proprement, le texte indicatif se lit comme abrégé
+                        // plutôt que comme cassé.
+                        textOverflow: "ellipsis" } }),
                     React.createElement(IconeLoupe, { size: 17, className: "absolute left-4 top-1/2 -translate-y-1/2", style: { color: INK_DOUX } }),
                     query && (React.createElement("button", { onClick: () => setQuery(""), className: "absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full text-xs", style: { backgroundColor: BORDURE, color: INK_DOUX } }, "\u2715")))),
             !searching && journal.length > 0 && (React.createElement("div", { className: "px-6 pb-5" },
@@ -5080,7 +5085,7 @@ function GuidedJourney() {
                 // Sur papier, la feuille doit dire de qui elle vient et de quand elle date.
                 React.createElement("p", { className: "pour-impression text-[11px] mb-2", style: { color: INK_DOUX } },
                     PRATICIEN + " \u00B7 " + PRATICIEN_TITRE + " \u2014 imprim\u00E9 le " + jjmm(aujourdHui())),
-                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "\u00C0 montrer \u00E0 votre kin\u00E9sith\u00E9rapeute"),
+                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Pour votre kin\u00E9sith\u00E9rapeute"),
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Ce que j'ai fait"),
                 React.createElement("p", { className: "text-sm mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } },
                     joursTravailles === 0
