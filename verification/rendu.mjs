@@ -368,15 +368,27 @@ async function ouvrir(ctx, hash) {
         { nom: "croissance", route: "#/croissance/osgood/e1", suivant: "#/croissance/osgood/e2",
             debut: "Arrête si la douleur devient vive" },
     ];
-    // Une navigation franche : un simple changement de dièse ne recharge pas la page, et
-    // la note ne se remonterait donc pas.
+    // Une navigation franche. « goto » sur une adresse qui ne diffère que par le dièse ne
+    // recharge pas le document : l'application affiche l'écran, la note s'y marque « vue »,
+    // et le rechargement qui suivait ne montrait donc plus rien. La sonde consommait la vue
+    // qu'elle mesurait. On passe par une page vierge pour forcer un vrai chargement.
     const ouvrirFranchement = async (p, hash) => {
+        await p.goto("about:blank");
         await p.goto(BASE + hash, { waitUntil: "load" });
-        await p.reload({ waitUntil: "load" });
         await p.waitForSelector("main");
-        await p.waitForTimeout(300);
     };
-    const presente = (p, debut) => p.evaluate((d) => document.body.innerText.includes(d), debut);
+    // On attend l'élément plutôt qu'un délai fixe : sous la charge de la suite entière, les
+    // 300 ms d'origine étaient parfois trop courts et le contrôle se déclarait en échec
+    // alors que la règle allait paraître. Une attente qui expire vaut « absente ».
+    const presente = async (p, debut) => {
+        try {
+            await p.getByText(debut, { exact: false }).first().waitFor({ state: "visible", timeout: 2500 });
+            return true;
+        }
+        catch {
+            return false;
+        }
+    };
 
     // a. Chaque règle paraît sur son parcours, quel que soit ce qui a été vu avant.
     for (const ordre of [REGLES, [...REGLES].reverse()]) {
@@ -389,6 +401,12 @@ async function ouvrir(ctx, hash) {
             await ouvrirFranchement(p, r.route);
             if (!(await presente(p, r.debut)))
                 out.push(`après ${vues.join(", ") || "rien"} — la règle « ${r.nom} » ne paraît pas`);
+            // L'application note « vue » dans un effet, et l'enregistre dans un second :
+            // partir avant que ce soit écrit ferait lire au prochain écran un état d'avant.
+            await p.waitForFunction((cle) => {
+                const st = JSON.parse(localStorage.getItem("kine-exercices-v1") || "{}");
+                return !!(st.prudenceVue && st.prudenceVue[cle]);
+            }, r.nom === "prévention" ? "prevention" : r.nom).catch(() => {});
             vues.push(r.nom);
         }
         await p.close();
@@ -406,6 +424,61 @@ async function ouvrir(ctx, hash) {
         await ctx.close();
     }
     noter("chaque règle de prudence paraît une fois par jour, sur son parcours", out);
+}
+
+// --- 8. Les signes d'alerte ne paraissent qu'à l'accueil, une fois par jour -----------
+// Ils ont vécu en pied de chaque écran d'exercices et sur chaque écran de bilan. À ce
+// rythme ils devenaient un décor. Une seule lecture par jour vaut mieux que dix qu'on ne
+// lit plus — encore faut-il qu'elle ait lieu, et qu'elle n'ait pas lieu ailleurs.
+{
+    const out = [];
+    const TITRE = "Quand consulter sans attendre";
+    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+    const { p } = await ouvrir(ctx, "#/");
+    // « innerText » rend le texte tel qu'il s'affiche : ce titre porte un text-transform
+    // en capitales, et une comparaison sensible à la casse ne le trouvait jamais.
+    // Même prudence qu'au contrôle précédent : on attend l'élément, pas un délai.
+    const presents = async () => {
+        try {
+            await p.getByText(TITRE, { exact: false }).first().waitFor({ state: "visible", timeout: 2500 });
+            return true;
+        }
+        catch {
+            return false;
+        }
+    };
+    // Même précaution qu'au contrôle précédent : sans passer par une page vierge, « goto »
+    // ne recharge pas quand seul le dièse change, et la sonde consomme la vue qu'elle mesure.
+    const ouvrirFranchement = async (hash) => {
+        await p.goto("about:blank");
+        await p.goto(BASE + hash, { waitUntil: "load" });
+        await p.waitForSelector("main");
+    };
+    if (!(await presents()))
+        out.push("accueil — les signes ne paraissent pas à la première ouverture du jour");
+    for (const [nom, hash] of [["bilan de départ", "#/z/genou/entorse"], ["exercices", "#/z/genou/entorse/e1"],
+        ["exercices tardifs", "#/z/genou/entorse/e4"], ["coureur", "#/coureur/essuie-glace/e1"],
+        ["croissance bilan", "#/croissance/osgood"], ["croissance exercices", "#/croissance/osgood/e1"],
+        ["prévention", "#/prevention/warmup/course"]]) {
+        await ouvrirFranchement(hash);
+        if (await presents())
+            out.push(`${nom} — les signes s'affichent alors qu'ils ne devraient paraître qu'à l'accueil`);
+    }
+    await ouvrirFranchement("#/");
+    if (await presents())
+        out.push("accueil — les signes reparaissent à la deuxième ouverture de la journée");
+    // Le lendemain : la date retenue est effacée, ils doivent revenir.
+    await p.evaluate(() => {
+        const st = JSON.parse(localStorage.getItem("kine-exercices-v1") || "{}");
+        st.prudenceVue = {};
+        localStorage.setItem("kine-exercices-v1", JSON.stringify(st));
+    });
+    await ouvrirFranchement("#/");
+    if (!(await presents()))
+        out.push("accueil — les signes ne reviennent pas le lendemain");
+    await p.close();
+    await ctx.close();
+    noter("les signes d'alerte ne paraissent qu'à l'accueil, une fois par jour", out);
 }
 
 await navigateur.close();

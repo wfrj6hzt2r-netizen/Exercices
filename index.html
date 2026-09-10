@@ -4419,6 +4419,21 @@ function NoteDePrudence({ texte, deplier, onVue }) {
         React.createElement(IconeAlerte, { size: 16, className: "shrink-0", style: { color: PRUDENCE, marginTop: 1 } }),
         React.createElement("p", { className: "text-xs leading-relaxed flex-1", style: { color: PRUDENCE } }, texte));
 }
+// Les signes d'alerte ne paraissent qu'une fois par jour, au premier passage par l'accueil.
+// Ils ont vécu en pied de chaque écran d'exercices, et sur chaque écran de bilan : à ce
+// rythme ils devenaient un décor. Une lecture par jour, au moment où le patient ouvre
+// l'application, vaut mieux que dix qu'on ne lit plus.
+//
+// La décision est figée au montage, comme pour la règle de prudence : sans cela, marquer
+// les signes « vus » les ferait disparaître sous les yeux du patient au rendu suivant.
+function SignauxDuJour({ items, montrer, onVue }) {
+    const [visible] = useState(() => !!montrer);
+    useEffect(() => { if (montrer && onVue) onVue(); }, []);
+    if (!visible)
+        return null;
+    return React.createElement("div", { className: "px-6 pb-5" },
+        React.createElement(SignauxAlerte, { items: items }));
+}
 function SignauxAlerte({ items }) {
     return (React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: WARN_VOILE, border: `1px solid ${WARN_FILET}` } },
         React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Quand consulter sans attendre"),
@@ -5221,6 +5236,13 @@ function GuidedJourney() {
                         textOverflow: "ellipsis" } }),
                     React.createElement(IconeLoupe, { size: 17, className: "absolute left-4 top-1/2 -translate-y-1/2", style: { color: INK_DOUX } }),
                     query && (React.createElement("button", { onClick: () => setQuery(""), className: "absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full text-xs", style: { backgroundColor: BORDURE, color: INK_DOUX } }, "\u2715")))),
+            // Les drapeaux du programme prescrit quand il y en a un, les repères communs sinon :
+            // sur l'accueil, aucune blessure n'est encore désignée.
+            !searching && React.createElement(SignauxDuJour, {
+                items: routePrescrite && routePrescrite.pathId && routePrescrite.injuryId
+                    ? drapeauxDe(`${routePrescrite.pathId}:${routePrescrite.injuryId}`)
+                    : DRAPEAUX_COMMUNS,
+                montrer: !regleVue("signaux"), onVue: () => marquerRegleVue("signaux") }),
             !searching && journal.length > 0 && (React.createElement("div", { className: "px-6 pb-5" },
                 React.createElement(BandeAssiduite, { journal: journal, jour: jour, accent: ACCENT_SOFT }),
                 React.createElement("button", { onClick: () => setView("recap"), className: "mt-3 text-xs underline underline-offset-2", style: { color: "rgba(255,255,255,0.75)" } }, "Voir le résumé à montrer à mon kinésithérapeute"))),
@@ -5378,7 +5400,6 @@ function GuidedJourney() {
                             : "Où en êtes-vous dans votre récupération ?"),
                 injury.context && (React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, injury.context))),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
-                React.createElement(SignauxAlerte, { items: drapeauxDe(`${pathId}:${injuryId}`) }),
                 injury.surgical || injury.checkinKind === "binary" || injury.checkinKind === "phase"
                     ? injury.stages.map((s, si) => (React.createElement("button", { key: s.label, onClick: () => { setStageIdx(si); setView("stage"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                         React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, s.sub),
@@ -5505,7 +5526,6 @@ function GuidedJourney() {
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Où en es-tu aujourd'hui ?"),
                 React.createElement("p", { className: "text-sm mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, croi.context)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
-                React.createElement(SignauxAlerte, { items: CROISSANCE_DRAPEAUX_COMMUNS.concat(croi.drapeaux || []) }),
                 CROISSANCE_PHASES.map((ph, si) => (React.createElement("button", { key: ph.label, onClick: () => { setCroissanceStageIdx(si); setView("croissance-exercices"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("p", { className: "text-base font-medium", style: { color: INK } }, ph.label),
                     React.createElement("p", { className: "text-xs mt-1", style: { color: INK_DOUX } }, ph.sub)))),
@@ -5557,12 +5577,6 @@ function GuidedJourney() {
                     pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
                 });
             })),
-            // Les signes qui imposent de consulter ne vivaient que sur l'écran de bilan de départ.
-            // Un patient à qui son kinésithérapeute envoie un lien pointant directement sur une étape
-            // ne les voyait donc jamais. Ils sont repris ici, en pied d'écran : sous les exercices ils
-            // ne leur disputent pas la place, et ils sont là au moment où l'on décide de continuer.
-            React.createElement("div", { className: "px-6 pb-6" },
-                React.createElement(SignauxAlerte, { items: CROISSANCE_DRAPEAUX_COMMUNS.concat(croi.drapeaux || []) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 st.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: CROISSANCE_FOND } },
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: CROISSANCE_ACCENT, letterSpacing: "0.08em" } }, "Tu peux passer à la suite quand"),
@@ -5623,7 +5637,6 @@ function GuidedJourney() {
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, path.label),
                 React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, path.context)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
-                React.createElement(SignauxAlerte, { items: drapeauxDe(runnerPathId, DRAPEAUX_COUREUR) }),
                 React.createElement("p", { className: "text-xs text-[#6B7086] px-1 leading-relaxed" }, "Ce parcours suit une progression en 4 stades. Commencez au stade qui correspond \u00E0 votre situation actuelle."),
                 RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("button", { key: st.label, onClick: () => { setRunnerStageIdx(si); setView("runner-exercises"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between gap-3", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("div", null,
@@ -5698,12 +5711,6 @@ function GuidedJourney() {
                     React.createElement("div", { className: "flex flex-col gap-2.5" }, runnerStage.plan.map((wk) => (React.createElement("div", { key: wk.week, className: "flex gap-3" },
                         React.createElement("span", { className: "text-[11px] font-semibold shrink-0 w-24 pt-0.5", style: { color: HEADER } }, wk.week),
                         React.createElement("span", { className: "text-xs leading-relaxed", style: { color: INK_PROSE } }, wk.detail)))))))),
-            // Les signes qui imposent de consulter ne vivaient que sur l'écran de bilan de départ.
-            // Un patient à qui son kinésithérapeute envoie un lien pointant directement sur une étape
-            // ne les voyait donc jamais. Ils sont repris ici, en pied d'écran : sous les exercices ils
-            // ne leur disputent pas la place, et ils sont là au moment où l'on décide de continuer.
-            React.createElement("div", { className: "px-6 pb-6" },
-                React.createElement(SignauxAlerte, { items: drapeauxDe(runnerPathId, DRAPEAUX_COUREUR) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 // Même encadré que sur le parcours guidé, mais les critères sont propres à
                 // chaque pathologie du coureur : les quatre stades sont communs, pas les repères.
@@ -5920,12 +5927,6 @@ function GuidedJourney() {
                     onNoterCharge: (v) => setCharges((c) => noterCharge(c, key, exId, jour, v)),
                 });
             })),
-            // Les signes qui imposent de consulter ne vivaient que sur l'écran de bilan de départ.
-            // Un patient à qui son kinésithérapeute envoie un lien pointant directement sur une étape
-            // ne les voyait donc jamais. Ils sont repris ici, en pied d'écran : sous les exercices ils
-            // ne leur disputent pas la place, et ils sont là au moment où l'on décide de continuer.
-            React.createElement("div", { className: "px-6 pb-6" },
-                React.createElement(SignauxAlerte, { items: drapeauxDe(`${pathId}:${injuryId}`) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 // Un stade sans critère de sortie mesurable n'est qu'un calendrier déguisé.
                 // Le critère s'affiche là où la décision se prend, au-dessus du bouton.
