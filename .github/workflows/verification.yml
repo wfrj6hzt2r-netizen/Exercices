@@ -1,0 +1,40 @@
+# Deux passes à chaque modification : ce qui se lit dans le fichier, et ce qui ne se voit
+# qu'à l'écran. La première dure quelques secondes et n'installe rien ; la seconde demande un
+# navigateur, et tourne donc à part pour que l'échec le plus courant remonte le plus vite.
+
+name: Vérification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  statique:
+    name: Contrôles statiques
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Le fichier et le contenu
+        run: node verification/statique.mjs
+
+  rendu:
+    name: Contrôles de rendu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Aucun package.json dans le dépôt : l'application n'a pas de dépendances, seuls les
+      # contrôles en ont. On les installe sans rien écrire dans le dépôt.
+      - name: Outils de contrôle
+        run: |
+          npm install --no-save --no-package-lock playwright@1.49.1 axe-core@4.10.2
+          npx playwright install --with-deps chromium
+      - name: L'écran, les deux thèmes, et le hors-ligne
+        run: node verification/rendu.mjs
