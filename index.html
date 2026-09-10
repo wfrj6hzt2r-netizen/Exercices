@@ -4866,10 +4866,24 @@ function GuidedJourney() {
     const [journal, setJournal] = useState(() => restored.journal || []);
     const [charges, setCharges] = useState(() => restored.charges || {});
     const [jour, setJour] = useState(() => aujourdHui());
-    // Date à laquelle la règle de prudence a été montrée en entier pour la dernière fois.
-    // Elle s'affiche dépliée au premier écran d'exercices de la journée, puis repliée sur
-    // sa phrase essentielle : au troisième écran, la version longue n'était plus lue.
-    const [prudenceVue, setPrudenceVue] = useState(() => restored.prudenceVue || "");
+    // Date à laquelle chaque règle de prudence a été montrée pour la dernière fois, par
+    // parcours. Une seule date pour les quatre ne convenait pas : les textes diffèrent
+    // — le seuil de 3 à 4 sur 10 pour une blessure, l'absence de douleur en prévention,
+    // et le tutoiement du parcours croissance — si bien qu'un patient qui faisait son
+    // épaule puis ses étirements ne voyait jamais la règle de la prévention ce jour-là.
+    // Mesuré avant correction, dans les deux sens.
+    const [prudenceVue, setPrudenceVue] = useState(() => {
+        const v = restored.prudenceVue;
+        // Sauvegarde d'avant ce découpage : la date valait pour tout. On la crédite au
+        // parcours par blessure, le plus fréquenté, plutôt que de la jeter.
+        if (typeof v === "string")
+            return v ? { blessure: v } : {};
+        return v || {};
+    });
+    // Vraie une fois par jour et par parcours. Le marquage se fait au montage de la note.
+    const regleVue = (parcours) => prudenceVue[parcours] === jour;
+    const marquerRegleVue = (parcours) =>
+        setPrudenceVue((v) => Object.assign({}, v, { [parcours]: jour }));
     // Écran de fin de séance, proposé une fois le stade du jour terminé.
     const [bilanOuvert, setBilanOuvert] = useState(null);
     const [openInfo, setOpenInfo] = useState(new Set());
@@ -5526,7 +5540,7 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-[11px] mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, age.note)),
-            React.createElement(NoteDePrudence, { key: croissanceStageIdx, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas." }),
+            React.createElement(NoteDePrudence, { key: croissanceStageIdx, deplier: !regleVue("croissance"), onVue: () => marquerRegleVue("croissance"), texte: "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas." }),
             React.createElement("div", { className: "px-6 pt-5" },
                 React.createElement("p", { className: "text-[11px] mb-1.5", style: { color: INK_DOUX } }, "Ton sport"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_SPORTS.map((sp) => (React.createElement("button", { key: sp.id, onClick: () => setSportId(sportId === sp.id ? null : sp.id), className: "px-3 py-1.5 rounded-full text-xs font-medium", style: { backgroundColor: sportId === sp.id ? CROISSANCE_ACCENT : SURFACE, color: sportId === sp.id ? CROISSANCE_SUR_ACCENT : INK, border: `1px solid ${BORDURE}` } }, sp.label)))),
@@ -5654,7 +5668,7 @@ function GuidedJourney() {
                     guidance.freq,
                     " \u00B7 ",
                     guidance.duration)),
-            React.createElement(NoteDePrudence, { key: runnerStageIdx, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: RUNNER_PAIN_RULE }),
+            React.createElement(NoteDePrudence, { key: runnerStageIdx, deplier: !regleVue("coureur"), onVue: () => marquerRegleVue("coureur"), texte: RUNNER_PAIN_RULE }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" },
                 runnerStage.exercises.map((ex, ei) => {
                     const exId = idExercice(ex);
@@ -5788,7 +5802,7 @@ function GuidedJourney() {
                     category.guidance.freq,
                     " \u00B7 ",
                     category.guidance.duration)),
-            React.createElement(NoteDePrudence, { key: preventionSub, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure." }),
+            React.createElement(NoteDePrudence, { key: preventionSub, deplier: !regleVue("prevention"), onVue: () => marquerRegleVue("prevention"), texte: "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure." }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, sub.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
                 const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
@@ -5882,7 +5896,7 @@ function GuidedJourney() {
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
-            React.createElement(NoteDePrudence, { key: stageIdx, deplier: prudenceVue !== jour, onVue: () => setPrudenceVue(jour), texte: "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute." }),
+            React.createElement(NoteDePrudence, { key: stageIdx, deplier: !regleVue("blessure"), onVue: () => marquerRegleVue("blessure"), texte: "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute." }),
             stageIdx === 0 && React.createElement(ConseilsPremiersJours, { lignes: injury.premiersJours }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
