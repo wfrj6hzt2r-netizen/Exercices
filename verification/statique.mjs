@@ -101,7 +101,7 @@ controle("aucun emoji couleur dans l'interface", () => {
 
 const D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
     "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
-    "getExerciseIcon", "POSES", "demandeUnElastique"]);
+    "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE"]);
 const exercices = tousLesExercices({
     blessure: D.PATHOLOGIES, coureur: D.RUNNER_DATA,
     croissance: D.CROISSANCE_DATA, prevention: D.PREVENTION_CATEGORIES,
@@ -172,6 +172,17 @@ controle("chaque blessure a des conseils pour les premiers jours", () => {
     return out;
 });
 
+// La table des « pourquoi » est indexée par libellé d'étape. Un libellé mal orthographié
+// n'afficherait rien du tout, sans la moindre erreur — le même genre de panne silencieuse
+// que les cinq classes d'espacement qui ne faisaient rien. On vérifie donc les deux sens :
+// chaque clé de la table désigne bien une étape existante, et on rapporte la couverture.
+controle("chaque « pourquoi » désigne une étape qui existe", () => {
+    const libelles = new Set();
+    D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => i.stages.forEach((s) => libelles.add(s.label))));
+    return Object.keys(D.POURQUOI_ETAPE).filter((k) => !libelles.has(k))
+        .map((k) => `« ${k} » ne correspond à aucune étape`);
+});
+
 // --- Restitution ----------------------------------------------------------------------
 const large = Math.max(...rapport.map((r) => r.nom.length));
 for (const r of rapport)
@@ -187,4 +198,12 @@ if (echecs.length) {
     }
     process.exit(1);
 }
-console.log(`\n${rapport.length} contrôles passés sur ${exercices.length} exercices.`);
+{
+    let total = 0, couverts = 0;
+    D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => i.stages.forEach((s) => {
+        total++;
+        if (s.pourquoi || D.POURQUOI_ETAPE[s.label]) couverts++;
+    })));
+    console.log(`\n${rapport.length} contrôles passés sur ${exercices.length} exercices.`);
+    console.log(`${couverts} étapes sur ${total} portent un « pourquoi » (${Math.round(couverts / total * 100)} %).`);
+}
