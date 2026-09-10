@@ -101,7 +101,8 @@ controle("aucun emoji couleur dans l'interface", () => {
 
 const D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
     "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
-    "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE"]);
+    "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
+    "positionAffichable"]);
 const exercices = tousLesExercices({
     blessure: D.PATHOLOGIES, coureur: D.RUNNER_DATA,
     croissance: D.CROISSANCE_DATA, prevention: D.PREVENTION_CATEGORIES,
@@ -169,6 +170,31 @@ controle("chaque blessure a des conseils pour les premiers jours", () => {
                 out.push(`${z.label} — « ${i.label} » : « ${t.slice(-40)} » ne finit pas par un point`);
         });
     }));
+    return out;
+});
+
+// « Mobilité complète en charge fonctionnelle » affichait l'étiquette « Debout » juste à
+// côté d'un dessin de silhouette allongée. Le contrôle précédent ne l'a pas vu : il compare
+// le dessin à la posture décrite dans la consigne, or celle-ci n'en nommait aucune. C'est
+// l'étiquette — ce que le patient lit, à deux centimètres du dessin — qu'il fallait aussi
+// comparer. Les deux contrôles sont gardés : ils lisent des sources différentes.
+controle("l'étiquette de position ne contredit pas le dessin", () => {
+    const MOT = { "Debout": "debout", "Assis": "assis", "Allongé": "allonge",
+        "À quatre pattes": "quatre", "Sur le ventre": "ventre" };
+    const cle = (icone) => (D.POSES.find((p) => p.icon === icone) || {}).key;
+    const vus = new Set();
+    const out = [];
+    for (const { ex, ou } of exercices) {
+        const etiquette = D.positionAffichable(ex.name, ex.tip);
+        if (!etiquette || vus.has(ex.name))
+            continue;
+        const dessin = D.POSTURE_DESSIN[cle(D.getExerciseIcon(ex.name, ex.tip))];
+        const attendu = MOT[etiquette];
+        if (dessin && attendu && dessin !== attendu) {
+            vus.add(ex.name);
+            out.push(`${ou} — « ${ex.name} » : étiquette « ${etiquette} », dessin « ${dessin} »`);
+        }
+    }
     return out;
 });
 

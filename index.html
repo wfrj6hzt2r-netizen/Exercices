@@ -520,6 +520,24 @@ const PoseShoulderRaise = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "28", x2: "19", y2: "42" }),
     React.createElement("line", { x1: "24", y1: "28", x2: "29", y2: "42" })));
 // Nuque : tête plus grande, tronc raccourci et bras plus courts, pour que les trois traits ne se confondent plus.
+// Deux silhouettes sans geste : elles ne disent que la position. Utiles là où l'exercice
+// est un maintien ou un mouvement du quotidien, et où un pictogramme de mouvement
+// suggérerait une consigne que la consigne ne donne pas.
+const PoseAssisChaise = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "14", y1: "11", x2: "14", y2: "40" }),
+    React.createElement("line", { x1: "14", y1: "28", x2: "30", y2: "28" }),
+    React.createElement("circle", { cx: "21", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "21", y1: "13", x2: "21", y2: "25" }),
+    React.createElement("line", { x1: "21", y1: "17", x2: "29", y2: "21" }),
+    React.createElement("line", { x1: "21", y1: "25", x2: "31", y2: "25" }),
+    React.createElement("line", { x1: "31", y1: "25", x2: "31", y2: "40" })));
+const PoseDebout = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "26" }),
+    React.createElement("line", { x1: "24", y1: "16", x2: "16", y2: "22" }),
+    React.createElement("line", { x1: "24", y1: "16", x2: "32", y2: "22" }),
+    React.createElement("line", { x1: "24", y1: "26", x2: "19", y2: "42" }),
+    React.createElement("line", { x1: "24", y1: "26", x2: "29", y2: "42" })));
 const PoseNeck = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "13", r: "6" }),
     React.createElement("line", { x1: "24", y1: "19", x2: "24", y2: "33" }),
@@ -815,6 +833,15 @@ const POSES = [
             || (n.includes("pompes") && !n.includes("cheville")) },
     { key: "thoracic-ext", icon: PoseThoracicExt, test: (n) => n.includes("haut du dos")
             || n.includes("rouleau") || n.includes("extension du haut") },
+    // Trois exercices cervicaux que des règles plus larges captaient de travers : une
+    // rotation du tronc pour un maintien assis, une épaule levée pour un renforcement
+    // assis, et surtout un dessin allongé pour un mouvement du quotidien dont l'étiquette
+    // affichait « Debout ». Les tests sont volontairement étroits : trois exercices voisins
+    // portent des noms proches (« Endurance posturale debout », « Charge fonctionnelle
+    // complète », « Endurance posturale prolongée ») et ne doivent pas être emportés.
+    { key: "assis-chaise", icon: PoseAssisChaise, test: (n) => n.includes("endurance posturale assise")
+            || n.includes("cervico-scapulaire") },
+    { key: "debout-simple", icon: PoseDebout, test: (n) => n.includes("mobilité complète en charge fonctionnelle") },
     // --- 1. Consignes et repères, qui ne sont pas des mouvements ---
     { key: "advice", icon: PoseAdvice, test: (n) => n.includes("validation") || n.includes("bilan") || n.startsWith("test") || n.includes("tests de")
             || n.includes("suivi") || n.includes("adaptation") || n.includes("éducation") || n.includes("quantification")
@@ -941,7 +968,7 @@ const POSES = [
 // consigne ; celles qui n'en ont pas besoin l'ignorent, et se lisent comme avant.
 // Chaque dessin qui montre une posture la déclare ici. Ceux qui n'en montrent pas — une main,
 // une chaussure, deux flèches opposées — n'y figurent pas et ne sont jamais remis en cause.
-const POSTURE_DESSIN = {
+const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "prone-extension": "ventre", plank: "ventre",
     "seated-flexion": "assis", "etirement-assis": "assis", "seated-hip-iso": "assis",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
@@ -1848,7 +1875,7 @@ const PATHOLOGIES = [
                     { label: "Douleur & mobilité", critere: "Vous tournez la tête des deux côtés sans blocage, et la douleur ne descend pas dans le bras.", exercises: [
                             { name: "Rotations cervicales douces", dose: "3 × 10", tip: "Assis ou debout, tournez lentement la tête d'un côté puis de l'autre sur l'amplitude confortable. Bouger tôt et régulièrement vaut mieux que d'immobiliser la nuque par crainte de la douleur." },
                             { name: "Inclinaisons latérales douces", dose: "3 × 10", tip: "Amenez doucement l'oreille vers l'épaule, sans hausser l'épaule ni forcer en fin de mouvement, puis revenez et changez de côté." },
-                            { name: "Rétraction du menton", dose: "3 × 10", tip: "Assis, regard droit devant, reculez le menton horizontalement comme pour faire un double menton, sans baisser la tête, puis relâchez. Active spécifiquement les muscles profonds stabilisateurs du cou." },
+                            { name: "Rétraction du menton", dose: "3 × 10", tip: "Assis, regard droit devant, reculez le menton horizontalement comme pour faire un double menton, sans baisser la tête, puis relâchez. Active spécifiquement les muscles profonds stabilisateurs du cou." },
                             { name: "Relâchement des trapèzes", dose: "3 × 1 min", tip: "Assis, épaules basses et relâchées. Respirez lentement en laissant consciemment se relâcher les muscles entre le cou et les épaules à chaque expiration." }
                         ] },
                     { label: "Renforcement", critere: "Vous tenez les exercices des fléchisseurs profonds sans réveil de la douleur, et une journée de travail ne raidit plus la nuque comme avant.", exercises: [
