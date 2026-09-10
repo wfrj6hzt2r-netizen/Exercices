@@ -1,6 +1,6 @@
 # Vérification
 
-Quatorze contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
+Dix-huit contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 ## Les lancer
@@ -30,6 +30,9 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Chaque consigne se termine par un point | Une consigne sans point se lit comme tronquée |
 | Le pictogramme ne contredit pas la consigne | Quarante-neuf pictogrammes montraient une posture que leur consigne démentait : un bonhomme allongé pour un exercice décrit assis |
 | Tout exercice à élastique offre une version sans | Un patient sans élastique ne doit pas rester bloqué |
+| Chaque blessure a des conseils pour les premiers jours | Une consigne sans point final se lit comme tronquée, et une blessure sans conseil laisse l'étape la plus décisive sans autre chose que des exercices |
+| L'étiquette de position ne contredit pas le dessin | « Mobilité complète en charge fonctionnelle » affichait « Debout » à deux centimètres d'une silhouette allongée. Le contrôle voisin ne l'a pas vue : il lit la consigne, qui ne nommait aucune posture |
+| Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
 
 ### Contrôles de rendu — `rendu.mjs`
 
@@ -38,9 +41,17 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Chaque écran s'affiche sans erreur | 21 écrans, console surveillée |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
-| Aucune violation d'accessibilité | axe-core sur les dix premiers écrans |
+| Aucune violation d'accessibilité | axe-core sur les dix premiers écrans. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
 | L'application s'ouvre sans réseau | C'est sa promesse centrale, et un service worker cassé ne se voit pas tant qu'on a du réseau |
 | Le lien prescrit est retenu et n'enferme pas | Les sept formes de lien : l'accueil doit reconnaître le programme, ne pas afficher le catalogue, et laisser un moyen de l'atteindre |
+| Chaque règle de prudence paraît une fois par jour, sur son parcours | Les quatre parcours portent quatre textes différents mais partageaient une seule date « vue aujourd'hui » : un patient qui faisait son épaule puis ses étirements ne voyait jamais la règle de la prévention |
+
+## Un contrôle à part
+
+Le dernier est le seul qui porte sur un **enchaînement d'écrans** et non sur un écran isolé.
+Le défaut qui l'a fait naître était invisible autrement : pris un par un, chaque écran était
+correct — c'est leur succession qui perdait une règle en route. Quand un défaut ne se voit
+qu'en passant d'un écran à l'autre, c'est ici qu'il faut écrire le contrôle.
 
 ## Deux tolérances assumées
 
