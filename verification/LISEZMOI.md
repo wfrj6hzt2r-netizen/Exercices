@@ -1,6 +1,6 @@
 # Vérification
 
-Dix-huit contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
+Dix-neuf contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 ## Les lancer
@@ -45,10 +45,19 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | L'application s'ouvre sans réseau | C'est sa promesse centrale, et un service worker cassé ne se voit pas tant qu'on a du réseau |
 | Le lien prescrit est retenu et n'enferme pas | Les sept formes de lien : l'accueil doit reconnaître le programme, ne pas afficher le catalogue, et laisser un moyen de l'atteindre |
 | Chaque règle de prudence paraît une fois par jour, sur son parcours | Les quatre parcours portent quatre textes différents mais partageaient une seule date « vue aujourd'hui » : un patient qui faisait son épaule puis ses étirements ne voyait jamais la règle de la prévention |
+| Les signes d'alerte ne paraissent qu'à l'accueil, une fois par jour | Ils ont vécu en pied de chaque écran d'exercices et sur chaque écran de bilan : à ce rythme ils devenaient un décor |
 
-## Un contrôle à part
+## Un piège de sonde, deux fois rencontré
 
-Le dernier est le seul qui porte sur un **enchaînement d'écrans** et non sur un écran isolé.
+Deux contrôles portent sur un enchaînement d'écrans. Tous deux ont d'abord échoué à cause
+de leur propre montage : `goto` sur une adresse qui ne diffère que par le dièse **ne
+recharge pas le document**. L'application affichait l'écran, la note s'y marquait « vue », et
+le rechargement qui suivait ne montrait plus rien — la sonde consommait la vue qu'elle
+mesurait. On passe désormais par une page vierge pour forcer un vrai chargement.
+
+## Deux contrôles à part
+
+Les deux derniers sont les seuls qui portent sur un **enchaînement d'écrans** et non sur un écran isolé.
 Le défaut qui l'a fait naître était invisible autrement : pris un par un, chaque écran était
 correct — c'est leur succession qui perdait une règle en route. Quand un défaut ne se voit
 qu'en passant d'un écran à l'autre, c'est ici qu'il faut écrire le contrôle.
