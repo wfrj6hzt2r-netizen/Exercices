@@ -4231,7 +4231,10 @@ function BandeAssiduite({ journal, jour, accent }) {
 // d'un relevé à la consultation suivante plutôt que d'un souvenir approximatif.
 function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accent, tutoie }) {
     const [note, setNote] = useState(valeurInitiale === undefined ? 2 : valeurInitiale);
-    const teinte = note <= 3 ? ACCENT : note <= 5 ? "#B4801F" : "#E11D48";
+    // Trois paliers, avec les mêmes jetons que les pastilles de douleur du récapitulatif :
+    // vert, or, framboise. Les deux derniers étaient écrits en dur et ne basculaient donc
+    // pas en thème sombre — un or foncé sur une carte sombre.
+    const teinte = note <= 3 ? ACCENT_FORT : note <= 5 ? CROISSANCE_ACCENT : WARN;
     // Le parcours croissance tutoie l'enfant d'un bout à l'autre : le bilan ne peut pas
     // être le seul écran à le vouvoyer, ni à le renvoyer seul vers son kinésithérapeute.
     const commentaire = tutoie
@@ -4908,7 +4911,11 @@ function GuidedJourney() {
             return utiles.length ? React.createElement("section", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                 React.createElement("h2", { className: "text-[11px] font-semibold uppercase", style: { color: INK_DOUX, letterSpacing: "0.08em" } }, titre),
                 React.createElement("div", { className: "mt-3 flex flex-col gap-2" },
-                    utiles.map((t, i) => React.createElement("p", { key: i, className: "text-sm leading-relaxed", style: { color: INK } }, t)))) : null;
+                    utiles.map((t, i) => React.createElement("p", { key: i, className: "text-sm leading-relaxed",
+                        // Une adresse de courriel est un mot insécable de quarante caractères :
+                        // aux grandes tailles de texte, elle sortait de la carte et se trouvait
+                        // rognée. On l'autorise à se couper n'importe où plutôt qu'à disparaître.
+                        style: { color: INK, overflowWrap: "anywhere" } }, t)))) : null;
         };
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
