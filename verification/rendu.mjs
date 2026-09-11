@@ -79,7 +79,16 @@ async function ouvrir(ctx, hash) {
     p.on("pageerror", (e) => erreurs.push("erreur de page : " + e.message));
     p.on("console", (m) => { if (m.type() === "error") erreurs.push("console : " + m.text()); });
     await p.goto(BASE + hash, { waitUntil: "load" });
-    await p.waitForSelector("main");
+    // Un écran qui ne s'affiche pas est un résultat, pas un incident : la suite entière
+    // s'arrêtait sur une exception de trente secondes, sans nommer l'écran ni la cause.
+    // Une constante supprimée par mégarde a coûté ce diagnostic une fois.
+    try {
+        await p.waitForSelector("main", { timeout: 8000 });
+    }
+    catch {
+        erreurs.push("l'écran ne s'affiche pas — aucun « main » après huit secondes");
+        return { p, erreurs };
+    }
     const bouton = p.getByRole("button", { name: /J'ai compris/ });
     if (await bouton.count()) {
         await bouton.click();
@@ -94,14 +103,30 @@ async function ouvrir(ctx, hash) {
     const out = [];
     for (const [nom, hash] of ROUTES) {
         const { p, erreurs } = await ouvrir(ctx, hash);
-        const vide = await p.evaluate(() => document.querySelector("main").innerText.trim().length < 40);
-        if (vide)
-            erreurs.push("écran vide");
+        // Inutile de mesurer le contenu d'un écran qui n'existe pas : « ouvrir » l'a déjà dit.
+        if (!erreurs.length) {
+            const vide = await p.evaluate(() => document.querySelector("main").innerText.trim().length < 40);
+            if (vide)
+                erreurs.push("écran vide");
+        }
         erreurs.forEach((e) => out.push(`${nom} — ${e}`));
         await p.close();
     }
     await ctx.close();
     noter("chaque écran s'affiche sans erreur", out);
+    // Gardien. Si un écran ne s'affiche pas du tout, les contrôles suivants mesureraient des
+    // couleurs et des débordements sur des pages vides, et finiraient par échouer sur une
+    // exception de trente secondes qui ne nomme ni l'écran ni la cause. On s'arrête ici,
+    // avec le diagnostic sous les yeux.
+    if (out.some((l) => l.includes("ne s'affiche pas"))) {
+        await navigateur.close();
+        serveur.close();
+        rapport.forEach((l) => console.log(l));
+        console.log(`\n--- chaque écran s'affiche sans erreur : ${out.length} cas ---`);
+        out.forEach((l) => console.log("    " + l));
+        console.log("\nLes contrôles suivants sont abandonnés : ils porteraient sur des écrans absents.");
+        process.exit(1);
+    }
 }
 
 // --- 2. Rien n'est coupé ni ne déborde ------------------------------------------------

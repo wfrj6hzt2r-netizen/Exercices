@@ -1,6 +1,6 @@
 # Vérification
 
-Dix-neuf contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
+Vingt contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 ## Les lancer
@@ -23,6 +23,7 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
 | Le script se compile | Trois parenthèses déséquilibrées en une semaine, chacune produisant un écran blanc |
+| Tout symbole majuscule employé est déclaré | En retirant un bloc de code, une constante voisine est partie avec. Le script compilait toujours et les contrôles de contenu passaient, mais cinq écrans ne s'affichaient plus : un identifiant absent n'est une erreur qu'à l'exécution, et seulement sur le chemin qui l'emprunte |
 | Toute classe employée est définie | `pb-4`, `pb-8`, `gap-5`, `mt-2.5`, `mt-3.5` n'existaient pas dans le Tailwind figé de la page : elles ne faisaient rien, sans le moindre signe |
 | Aucune couleur hors de la palette | Trente valeurs écrites en dur avaient divergé — sept verts pour trois rôles, deux gris de prose presque identiques |
 | Aucun emoji couleur | Quatre emoji système servaient d'icônes ; le dernier a survécu à une passe de remplacement parce qu'il était écrit en clair et non échappé |
@@ -38,7 +39,7 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 21 écrans, console surveillée |
+| Chaque écran s'affiche sans erreur | 22 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur les dix premiers écrans. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
@@ -46,6 +47,20 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Le lien prescrit est retenu et n'enferme pas | Les sept formes de lien : l'accueil doit reconnaître le programme, ne pas afficher le catalogue, et laisser un moyen de l'atteindre |
 | Chaque règle de prudence paraît une fois par jour, sur son parcours | Les quatre parcours portent quatre textes différents mais partageaient une seule date « vue aujourd'hui » : un patient qui faisait son épaule puis ses étirements ne voyait jamais la règle de la prévention |
 | Les signes d'alerte ne paraissent qu'à l'accueil, une fois par jour | Ils ont vécu en pied de chaque écran d'exercices et sur chaque écran de bilan : à ce rythme ils devenaient un décor |
+
+## Lire du JavaScript sans analyseur syntaxique
+
+Le contrôle des symboles doit distinguer le code du reste. Une expression régulière n'y
+suffit pas : celle qui tentait d'apparier les gabarits en avalait deux cent quarante mille
+caractères d'un seul tenant. Un lecteur caractère par caractère la remplace, et il a fallu
+quatre corrections avant qu'il soit juste — le guillemet oblique de fermeture pris pour une
+ouverture, le texte d'un gabarit analysé comme du code (une apostrophe française y ouvrait
+une chaîne), la barre oblique après `return` lue comme une division, et les jetons de
+substitution collés aux identifiants. Chacune faisait accuser des constantes parfaitement
+déclarées.
+
+La leçon tient en une ligne : **un contrôle qui signale un défaut inexistant est un défaut**,
+et se corrige avant d'être publié.
 
 ## Un piège de sonde, deux fois rencontré
 
