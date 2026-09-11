@@ -389,6 +389,9 @@ const IconeLoupe = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "10.5", cy: "10.5", r: "6.5" }),
     React.createElement("path", { d: "M15.4 15.4 21 21" })));
 const IconeChevronBas = traitIcone(React.createElement("path", { d: "M6 9.5l6 6 6-6" }));
+const IconeMaison = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M4 11.2 12 4.5l8 6.7" }),
+    React.createElement("path", { d: "M6.2 10.4V20h11.6v-9.6" })));
 const IconeRecommencer = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M20 12a8 8 0 1 1-2.6-5.9" }),
     React.createElement("path", { d: "M20 3.5V8h-4.5" })));
@@ -5464,10 +5467,19 @@ function GuidedJourney() {
         const fini = st.exercises.every((e) => faits.has(idExercice(e)));
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
-                    React.createElement(ChevronLeft, { size: 16 }),
-                    " ",
-                    croi.alias),
+                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
+                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
+                // demandait jusqu'à quatre retours successifs.
+                React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 text-sm min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                        React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
+                        " ",
+                        croi.alias),
+                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                        className: "cible-44 flex items-center gap-1.5 text-sm shrink-0 px-3 rounded-full",
+                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        React.createElement(IconeMaison, { size: 15 }),
+                        "Accueil")),
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, CROISSANCE_PHASES.map((p, si) => (React.createElement("div", { key: p.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < croissanceStageIdx ? "100%" : si === croissanceStageIdx ? "50%" : "0%", backgroundColor: CROISSANCE_CLAIR } }))))),
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } },
@@ -5575,10 +5587,19 @@ function GuidedJourney() {
         const isLast = runnerStageIdx === RUNNER_STAGE_LABELS.length - 1;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
-                    React.createElement(ChevronLeft, { size: 16 }),
-                    " ",
-                    path.label),
+                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
+                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
+                // demandait jusqu'à quatre retours successifs.
+                React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 text-sm min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                        React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
+                        " ",
+                        path.label),
+                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                        className: "cible-44 flex items-center gap-1.5 text-sm shrink-0 px-3 rounded-full",
+                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        React.createElement(IconeMaison, { size: 15 }),
+                        "Accueil")),
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("div", { key: st.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < runnerStageIdx ? "100%" : si === runnerStageIdx ? "50%" : "0%", backgroundColor: ACCENT } }))))),
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, stageInfo.sub),
@@ -5699,10 +5720,19 @@ function GuidedJourney() {
         const allDone = totalDone === totalCount;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
-                    React.createElement(ChevronLeft, { size: 16 }),
-                    " ",
-                    category.title),
+                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
+                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
+                // demandait jusqu'à quatre retours successifs.
+                React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 text-sm min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                        React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
+                        " ",
+                        category.title),
+                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                        className: "cible-44 flex items-center gap-1.5 text-sm shrink-0 px-3 rounded-full",
+                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        React.createElement(IconeMaison, { size: 15 }),
+                        "Accueil")),
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, category.title),
                 React.createElement("h1", { className: "text-white text-xl font-medium" }, sub.label),
                 React.createElement("p", { className: "text-xs mt-1.5 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, sub.intro),
@@ -5771,10 +5801,19 @@ function GuidedJourney() {
         const totalCount = injury.stages.reduce((a, s) => a + s.exercises.length, 0);
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 text-sm mb-4", style: { color: "rgba(255,255,255,0.75)" } },
-                    React.createElement(ChevronLeft, { size: 16 }),
-                    " ",
-                    injury.label),
+                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
+                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
+                // demandait jusqu'à quatre retours successifs.
+                React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 text-sm min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                        React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
+                        " ",
+                        injury.label),
+                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                        className: "cible-44 flex items-center gap-1.5 text-sm shrink-0 px-3 rounded-full",
+                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        React.createElement(IconeMaison, { size: 15 }),
+                        "Accueil")),
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, injury.stages.map((s, si) => (React.createElement("div", { key: s.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
                     React.createElement("div", { className: "h-full rounded-full", style: {
                             transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)",
