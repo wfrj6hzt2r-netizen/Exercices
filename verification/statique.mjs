@@ -42,6 +42,141 @@ controle("le script applicatif se compile", () => {
     }
 });
 
+// --- 1 bis. Tout symbole majuscule employé est déclaré ---------------------------------
+// En retirant un bloc de code, une constante voisine est partie avec — « DOSE_NON_REP ».
+// Le script compilait toujours, les onze contrôles de contenu passaient, et pourtant cinq
+// écrans d'exercices ne s'affichaient plus : un identifiant absent n'est une erreur qu'à
+// l'exécution, et seulement sur le chemin qui l'emprunte.
+//
+// On ne regarde que les identifiants commençant par une majuscule : dans ce fichier, ce
+// sont les constantes et les composants, c'est-à-dire ce qui se déclare au premier niveau.
+// Les variables locales, en minuscules, demanderaient un vrai analyseur syntaxique, alors
+// que l'accident porte toujours sur une déclaration de tête.
+const GLOBALES_CONNUES = new Set([
+    "React", "ReactDOM", "Math", "JSON", "Object", "Array", "String", "Number", "Boolean",
+    "Date", "Set", "Map", "WeakMap", "WeakSet", "Promise", "RegExp", "Error", "TypeError",
+    "Symbol", "Intl", "URL", "URLSearchParams", "Blob", "FileReader", "Image", "Infinity",
+    "NaN", "Function", "Proxy", "Reflect", "BigInt", "AbortController", "TextEncoder",
+    "TextDecoder", "Uint8Array", "ArrayBuffer", "DOMParser", "XMLSerializer", "Notification",
+    "ResizeObserver", "IntersectionObserver", "MutationObserver", "CustomEvent", "Event",
+]);
+/**
+ * Rend le script débarrassé de ce qui n'est pas du code : commentaires, chaînes, texte des
+ * gabarits, corps des expressions régulières. Les interpolations « ${…} » sont conservées,
+ * elles contiennent de vraies références.
+ *
+ * Écrit à la main, caractère par caractère. Une expression régulière ne suffit pas : celle
+ * qui tentait d'apparier les gabarits avalait deux cent quarante mille caractères de code
+ * d'un seul tenant, et le contrôle accusait alors des constantes parfaitement déclarées.
+ */
+function codeSeul(src) {
+    const out = [];
+    const pile = [];          // imbrication des gabarits et de leurs accolades
+    let i = 0;
+    let dernierUtile = "";    // dernier caractère de code, pour distinguer « / » d'une regex
+    const pousser = (c) => { out.push(c); if (!/\s/.test(c)) dernierUtile = c; };
+    // Une chaîne, un gabarit ou une expression régulière se réduit à un jeton neutre, isolé
+    // par des espaces : sans eux, « ${BORDURE} » se relisait « BORDURE00 » et le contrôle
+    // signalait un symbole qui n'a jamais existé.
+    const jeton = () => { out.push(" "); pousser("0"); out.push(" "); };
+    const MOTS_CLES = /^(?:return|typeof|instanceof|case|in|of|new|delete|void|do|else|yield|await|throw)$/;
+    // Le dernier caractère ne suffit pas à trancher : après « return », « typeof » ou
+    // « case », une barre oblique ouvre bien une expression régulière et non une division.
+    // C'est ce cas qui a d'abord fait lire « /\\d+…/ » comme un quotient, puis prendre sa
+    // barre de fermeture pour une ouverture — et avaler la suite du fichier.
+    const valeurAvant = () => {
+        if (!/[\w$)\]]/.test(dernierUtile))
+            return false;
+        if (!/[\w$]/.test(dernierUtile))
+            return true;
+        let k = out.length - 1;
+        while (k >= 0 && /\s/.test(out[k])) k--;
+        let mot = "";
+        while (k >= 0 && /[\w$]/.test(out[k])) { mot = out[k] + mot; k--; }
+        return !MOTS_CLES.test(mot);
+    };
+    while (i < src.length) {
+        const c = src[i], d = src[i + 1];
+        // Le texte d'un gabarit passe avant tout le reste. Sinon une apostrophe française
+        // y ouvrirait une chaîne, et « // » un commentaire : le lecteur perdait alors des
+        // milliers de caractères de code, et le contrôle accusait des constantes
+        // parfaitement déclarées d'être absentes.
+        if (pile[pile.length - 1] === "gabarit") {
+            if (c === "\\") { i += 2; continue; }
+            if (c === "`") { pile.pop(); i++; jeton(); continue; }
+            if (c === "$" && d === "{") { pile.push("expr"); i += 2; out.push(" "); continue; }
+            i++; continue;
+        }
+        if (c === "/" && d === "*") { const j = src.indexOf("*/", i + 2); out.push(" "); i = j < 0 ? src.length : j + 2; continue; }
+        if (c === "/" && d === "/") { const j = src.indexOf("\n", i); out.push(" "); i = j < 0 ? src.length : j; continue; }
+        if (c === '"' || c === "'") {
+            i++;
+            while (i < src.length && src[i] !== c) i += src[i] === "\\" ? 2 : 1;
+            i++; jeton(); continue;
+        }
+        if (c === "`") { pile.push("gabarit"); i++; continue; }
+        if (c === "{" && pile.length) { pile.push("accolade"); pousser(c); i++; continue; }
+        if (c === "}" && pile.length && pile[pile.length - 1] !== "gabarit") {
+            const quoi = pile.pop();
+            // Refermer une interpolation rend au gabarit son texte ; refermer une accolade
+            // ordinaire laisse l'expression en cours.
+            if (quoi === "expr") jeton();
+            else pousser(c);
+            i++; continue;
+        }
+        if (c === "/" && !valeurAvant()) {
+            i++;
+            let classe = false;
+            while (i < src.length) {
+                if (src[i] === "\\") { i += 2; continue; }
+                if (src[i] === "[") classe = true;
+                else if (src[i] === "]") classe = false;
+                else if (src[i] === "/" && !classe) break;
+                i++;
+            }
+            i++;
+            while (i < src.length && /[a-z]/.test(src[i])) i++;
+            jeton(); continue;
+        }
+        pousser(c); i++;
+    }
+    return out.join("");
+}
+controle("tout symbole majuscule employé est déclaré", () => {
+    const code = codeSeul(app)
+        .replace(/\.\s*[A-Za-z_$][\w$]*/g, ".x")            // accès à une propriété
+        .replace(/([{,]\s*)[A-Za-z_$][\w$]*(\s*:)/g, "$1k$2"); // clé d'objet littéral
+
+    const declares = new Set();
+    for (const re of [/\b(?:const|let|var)\s+([A-Z][\w$]*)/g, /\bfunction\s+([A-Z][\w$]*)/g,
+        /\bclass\s+([A-Z][\w$]*)/g]) {
+        let m;
+        while ((m = re.exec(code)))
+            declares.add(m[1]);
+    }
+    let g;
+    const groupe = /\b(?:const|let|var)\s*\{([^}]*)\}\s*=/g;
+    while ((g = groupe.exec(code)))
+        g[1].split(",").forEach((x) => {
+            const nom = x.split(":").pop().trim();
+            if (/^[A-Z][\w$]*$/.test(nom))
+                declares.add(nom);
+        });
+
+    const manquants = new Map();
+    const ref = /\b([A-Z][A-Za-z0-9_$]*)\b/g;
+    let m;
+    while ((m = ref.exec(code))) {
+        const nom = m[1];
+        if (declares.has(nom) || GLOBALES_CONNUES.has(nom) || manquants.has(nom))
+            continue;
+        const autour = code.slice(Math.max(0, m.index - 55), m.index + nom.length + 15)
+            .replace(/\s+/g, " ").trim();
+        manquants.set(nom, `« ${nom} » n'est déclaré nulle part — …${autour}…`);
+    }
+    return [...manquants.values()];
+});
+
 // --- 2. Toute classe employée est définie ---------------------------------------------
 // « pb-4 », « pb-8 », « gap-5 », « mt-2.5 » et « mt-3.5 » n'existaient pas dans le Tailwind
 // figé de cette page : elles ne faisaient rien, sans le moindre signe.
