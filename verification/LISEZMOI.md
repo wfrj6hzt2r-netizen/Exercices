@@ -1,6 +1,6 @@
 # Vérification
 
-Vingt contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
+Vingt-deux contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 ## Les lancer
@@ -33,6 +33,8 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Tout exercice à élastique offre une version sans | Un patient sans élastique ne doit pas rester bloqué |
 | Chaque blessure a des conseils pour les premiers jours | Une consigne sans point final se lit comme tronquée, et une blessure sans conseil laisse l'étape la plus décisive sans autre chose que des exercices |
 | L'étiquette de position ne contredit pas le dessin | « Mobilité complète en charge fonctionnelle » affichait « Debout » à deux centimètres d'une silhouette allongée. Le contrôle voisin ne l'a pas vue : il lit la consigne, qui ne nommait aucune posture |
+| Le repère d'effort ne contredit pas la consigne | Le repère se déduit du nom et de la consigne, et s'est trompé cinq fois : « Montée de marche » prise pour de la marche, « Balancers » pour un lancer, « Squat mural maintenu » pour de la charge lourde, « Extension sur rouleau » pour du renforcement, et la glace après le sport — dix minutes — pour des répétitions |
+| Les repères tutoyés couvrent les mêmes familles, sans charge inventée | Le parcours croissance affiche les mêmes repères à la deuxième personne. Une famille absente de la table tutoyée n'afficherait rien, sans erreur ; et « assez lourd » n'a de sens pour un enfant que si une charge est nommée quelque part |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
 
 ### Contrôles de rendu — `rendu.mjs`

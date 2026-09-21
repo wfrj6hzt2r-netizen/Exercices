@@ -237,7 +237,8 @@ controle("aucun emoji couleur dans l'interface", () => {
 const D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
     "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
     "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
-    "positionAffichable"]);
+    "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
+    "REPERE_EFFORT_TU"]);
 const exercices = tousLesExercices({
     blessure: D.PATHOLOGIES, coureur: D.RUNNER_DATA,
     croissance: D.CROISSANCE_DATA, prevention: D.PREVENTION_CATEGORIES,
@@ -329,6 +330,58 @@ controle("l'étiquette de position ne contredit pas le dessin", () => {
             vus.add(ex.name);
             out.push(`${ou} — « ${ex.name} » : étiquette « ${etiquette} », dessin « ${dessin} »`);
         }
+    }
+    return out;
+});
+
+// Le repère d'effort se déduit du nom et de la consigne. Cinq pièges rencontrés en
+// l'écrivant : « Montée de marche » pris pour de la marche, « Balancers » pour un lancer,
+// « Squat mural maintenu » pour de la charge lourde, « Extension sur rouleau » pour du
+// renforcement, et la glace après le sport — dix minutes — pour des répétitions. Le contrôle
+// vérifie donc les deux sens : tout exercice compté en répétitions reçoit un repère sauf
+// s'il est de mobilité, et aucun repère ne contredit sa consigne.
+controle("le repère d'effort ne contredit pas la consigne", () => {
+    const mobilite = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
+    const repetitions = /^\d+\s*×\s*\d+/;
+    const mou = /sans forcer|sans à-coup|doucement|sans r[ée]sistance/i;
+    const out = [];
+    const vus = new Set();
+    for (const { ex, ou } of exercices) {
+        if (vus.has(ex.name))
+            continue;
+        vus.add(ex.name);
+        const f = D.familleEffort(ex);
+        const doitAvoir = repetitions.test(ex.dose) && !mobilite.test(ex.name.toLowerCase());
+        if (doitAvoir && !f)
+            out.push(`${ou} — « ${ex.name} » (${ex.dose}) : aucun repère d'effort`);
+        if (!doitAvoir && f && mobilite.test(ex.name.toLowerCase()))
+            out.push(`${ou} — « ${ex.name} » : repère « ${f} » sur un exercice de mobilité`);
+        if ((f === "lourd" || f === "explosif") && mou.test(ex.tip))
+            out.push(`${ou} — « ${ex.name} » : repère « ${f} », consigne « ${ex.tip.match(mou)[0]} »`);
+    }
+    return out;
+});
+
+// Le parcours croissance affiche les mêmes repères, tutoyés. Deux pannes silencieuses sont
+// possibles : une table incomplète — le repère disparaîtrait sans erreur — et un « assez
+// lourd » adressé à un enfant dont le programme se fait au poids du corps.
+controle("les repères tutoyés couvrent les mêmes familles, sans charge inventée", () => {
+    const out = [];
+    for (const cle of Object.keys(D.REPERE_EFFORT))
+        if (!D.REPERE_EFFORT_TU[cle])
+            out.push(`la famille « ${cle} » n'a pas de formulation tutoyée`);
+    for (const cle of Object.keys(D.REPERE_EFFORT_TU))
+        if (!D.REPERE_EFFORT[cle])
+            out.push(`la famille tutoyée « ${cle} » n'existe pas dans la table vouvoyée`);
+    for (const { ex, ou } of tousLesExercices({ croissance: D.CROISSANCE_DATA })) {
+        const texte = D.repereEffort(ex, true);
+        if (!texte)
+            continue;
+        if (/vous|votre|contractez|arrêtez|cherchez|pourriez/i.test(texte))
+            out.push(`${ou} — « ${ex.name} » : repère vouvoyé « ${texte} »`);
+        if (D.familleEffort(ex, true) === "lourd"
+            && !/lest|charg|haltère|poulie|presse|sac à dos/.test(`${ex.name} ${ex.tip}`.toLowerCase()))
+            out.push(`${ou} — « ${ex.name} » : « assez lourd » sans charge nommée`);
     }
     return out;
 });

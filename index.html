@@ -389,6 +389,9 @@ const IconeLoupe = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "10.5", cy: "10.5", r: "6.5" }),
     React.createElement("path", { d: "M15.4 15.4 21 21" })));
 const IconeChevronBas = traitIcone(React.createElement("path", { d: "M6 9.5l6 6 6-6" }));
+const IconeJauge = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M4.5 17.5a9 9 0 1 1 15 0" }),
+    React.createElement("path", { d: "M12 17.5 16 11.5" })));
 const IconeMaison = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M4 11.2 12 4.5l8 6.7" }),
     React.createElement("path", { d: "M6.2 10.4V20h11.6v-9.6" })));
@@ -3361,6 +3364,86 @@ function doseAffichee(dose) {
 // mètres portent déjà leur unité, et les formats non chiffrés (« quotidien », « bilan »,
 // « selon plan ») sont laissés tels quels.
 const DOSE_NON_REP = /^(fois|par|séance|semaine|jour|lettre|position|direction)\b/;
+// Le repère d'effort. Une dose disait jusqu'ici un volume — « 3 × 12 » — et jamais une
+// intensité : douze répétitions avec quoi, et à quelle difficulté ? Or pour le renforcement
+// comme pour le tendon, c'est la charge qui est le principe actif, pas le nombre de
+// répétitions.
+//
+// Il se déduit de l'exercice plutôt que d'être écrit dans chaque fiche, comme le pictogramme
+// se déduit de la consigne : neuf cent cinquante-cinq champs à tenir à jour finiraient par
+// diverger du reste.
+//
+// Les exercices de mobilité et d'étirement n'en reçoivent pas : il n'y a pas de charge à
+// doser, et quatre-vingt-une consignes sur cent quarante et une disent déjà la douceur.
+//
+// Le parcours croissance tutoie : il reçoit les mêmes repères, dits à la deuxième personne.
+const REPERE_EFFORT = {
+    lourd: "Assez lourd pour que les deux dernières soient dures.",
+    renforcement: "La dernière répétition doit être difficile.",
+    maintien: "Contractez fort pendant tout le maintien.",
+    explosif: "Arrêtez dès que la réception se dégrade.",
+    controle: "Cherchez le déséquilibre, pas la durée.",
+    endurance: "Une allure où vous pourriez encore parler.",
+    technique: "La qualité du geste avant la vitesse.",
+};
+// Trois des sept repères ne portent ni verbe conjugué ni pronom : ils sont identiques dans
+// les deux tables. On les y répète quand même plutôt que de composer la table tutoyée à
+// partir de l'autre — une table lacunaire n'afficherait rien, sans la moindre erreur.
+const REPERE_EFFORT_TU = {
+    lourd: "Assez lourd pour que les deux dernières soient dures.",
+    renforcement: "La dernière répétition doit être difficile.",
+    maintien: "Contracte fort pendant tout le maintien.",
+    explosif: "Arrête dès que la réception se dégrade.",
+    controle: "Cherche le déséquilibre, pas la durée.",
+    endurance: "Une allure où tu pourrais encore parler.",
+    technique: "La qualité du geste avant la vitesse.",
+};
+function familleEffort(ex, croissance) {
+    const n = (ex.name || "").toLowerCase(), t = (ex.tip || "").toLowerCase(), dose = ex.dose || "";
+    // Une dose non chiffrée décrit un conseil, un bilan ou une adaptation : rien à doser.
+    if (!/^\d+\s*×\s*\d+|^\d+(-\d+)?\s*(min|m)\b/.test(dose))
+        return null;
+    const doux = /l[ée]g[èe]r|doux|douce|sans r[ée]sistance|faible intensit[ée]/.test(n);
+    // « Montée de marche » et « excentrique sur marche » sont des marches d'escalier, pas
+    // de la marche : sans cette garde, elles tombaient dans l'endurance.
+    const step = /mont[ée]e|step|escalier|sur marche|de marche/.test(n);
+    if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|position de soulagement|posture de soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
+        return null;
+    if (/[ée]quilibre|proprioception|plateau|instable|repositionnement|oculo|perturbation|coordination|stabilit[ée]/.test(n))
+        return "controle";
+    // « Balancers » contient « lancer » : la limite de mot est indispensable.
+    if (/saut|pliom[ée]tri|bond|rebond|acc[ée]l[ée]ration|d[ée]c[ée]l[ée]ration|changements? de direction|sprint|pivot|\blancers?\b|r[ée]ception|griff|foul[ée]/.test(n))
+        // Un lancer progressif et un travail de foulée ne sont pas de la pliométrie : le
+        // geste est volontairement sous-maximal, et leur consigne dit « sans forcer ».
+        return (doux || /sans forcer/.test(t)) ? "technique" : "explosif";
+    if (!step && /marche|v[ée]lo|natation|course|elliptique|rameur|cardio/.test(n))
+        return "endurance";
+    if (/isom[ée]trique|gainage|planche|maintien|maintenu|tenue|activation du|contractions?\b/.test(n + " " + dose))
+        return "maintien";
+    if (!doux && (/\(\s*\d+\s*sec\s*\/\s*\d+\s*sec\s*\)/.test(dose)
+        || /lourd|lest|charg[ée]|presse|squat|fente|soulev|step-up|mont[ée]e sur step|mont[ée]e sur marche|haltère|poulie/.test(n)
+        || /augmentez la charge|plus lourd|charge progressive/.test(t)))
+        // Les programmes de croissance se font au poids du corps : « assez lourd » n'y a de
+        // sens que si une charge est nommée quelque part. Un squat sur une chaise et une
+        // montée sur marche n'en portent aucune ; le squat lent, lui, dit « un sac à dos un
+        // peu lesté », et garde donc le repère de charge.
+        return (croissance && !/lest|charg|haltère|poulie|presse|sac à dos/.test(n + " " + t))
+            ? "renforcement" : "lourd";
+    // Le repli ne vaut que pour une dose en répétitions : « la dernière répétition doit être
+    // difficile » n'a aucun sens sur une durée. Sans cette garde, la glace après le sport,
+    // la chaleur du soir et l'échauffement d'avant-séance recevaient un repère de charge.
+    return /^\d+\s*×\s*\d+/.test(dose) ? "renforcement" : null;
+}
+// Vingt-huit consignes disent déjà l'intensité — « charge suffisante pour que la 8e
+// répétition soit difficile » sur le squat lourd et lent, par exemple. Le repère se tait
+// alors : il est là pour combler un manque, pas pour redire la consigne à dix lignes d'elle.
+const INTENSITE_DEJA_DITE = /difficile|charge suffisante|augmentez la charge|assez lourd|plus lourd|au maximum|maximal|jusqu'à ne plus pouvoir|dernière répétition|sans pouvoir en faire/i;
+function repereEffort(ex, croissance) {
+    const f = familleEffort(ex, croissance);
+    if (!f || INTENSITE_DEJA_DITE.test(ex.tip || ""))
+        return null;
+    return (croissance ? REPERE_EFFORT_TU : REPERE_EFFORT)[f];
+}
 function splitDose(doseText) {
     const m = doseText.match(/^(\d+\s*×\s*\d+(?:-\d+)?)(\s*(?:sec|min|m|km)\b)?(.*)$/);
     if (!m)
@@ -3524,7 +3607,7 @@ const CABINET = {
     // À remonter à chaque révision du contenu : c'est ce qui distingue un programme
     // entretenu d'une page laissée en ligne et oubliée. Au jour près, et non au mois :
     // le contenu a changé deux fois en septembre, et « septembre 2026 » ne le disait pas.
-    revision: "10 septembre 2026",
+    revision: "21 septembre 2026",
 };
 // D'où viennent les consignes. À compléter pour citer des recommandations précises ;
 // la phrase par défaut ne promet que ce qui est vérifiable.
@@ -4645,7 +4728,13 @@ function CarteExercice(props) {
                 props.position && React.createElement("p", { className: "text-[11px] mt-1 flex items-start gap-1",
                     style: { color: ACCENT_FORT } },
                     React.createElement(IconeEpingle, { size: 13, className: "shrink-0", style: { marginTop: 1 } }),
-                    React.createElement("span", null, positionPonctuee(props.position))))),
+                    React.createElement("span", null, positionPonctuee(props.position))),
+                // L'intensité vit sous la dose, qu'elle qualifie, et en encre secondaire :
+                // la dose reste le repère principal de la carte.
+                props.effort && React.createElement("p", { className: "text-[11px] mt-1 flex items-start gap-1",
+                    style: { color: INK_DOUX } },
+                    React.createElement(IconeJauge, { size: 13, className: "shrink-0", style: { marginTop: 1 } }),
+                    React.createElement("span", null, props.effort)))),
         // 3. La consigne. Justifiée et coupée en fin de ligne : sur une colonne étroite, le
         // drapeau à droite laissait des trous qui hachaient la lecture.
         React.createElement("p", { lang: "fr", className: "mt-3", style: styleProse(13.5, INK_PROSE) }, ex.tip),
@@ -5503,6 +5592,7 @@ function GuidedJourney() {
                     onBascule: () => toggle(cle, exId, st.exercises.length),
                     accent: CROISSANCE_ACCENT, accentTexte: CROISSANCE_ACCENT, fondIcone: CROISSANCE_FOND,
                     dose: e.dose,
+                    effort: repereEffort(e, true),
                     pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
                 });
             })),
@@ -5629,6 +5719,7 @@ function GuidedJourney() {
                         infoOuvert: openInfo.has(`${runnerKey}-${exId}`),
                         onBasculerInfo: () => toggleInfo(`${runnerKey}-${exId}`),
                         position: positionAffichable(ex.name, ex.tip),
+                        effort: repereEffort(ex),
                         avecCharge: doseNotable(ex.dose),
                         charge: chargeDuJour(charges, runnerKey, exId, jour),
                         chargePrecedente: chargePrecedente(charges, runnerKey, exId, jour),
@@ -5760,6 +5851,7 @@ function GuidedJourney() {
                     infoOuvert: openInfo.has(`${prevKey}-${exId}`),
                     onBasculerInfo: () => toggleInfo(`${prevKey}-${exId}`),
                     position: positionAffichable(ex.name, ex.tip),
+                    effort: repereEffort(ex),
                     avecCharge: doseNotable(ex.dose),
                     charge: chargeDuJour(charges, prevKey, exId, jour),
                     chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
@@ -5856,6 +5948,7 @@ function GuidedJourney() {
                     infoOuvert: openInfo.has(exId),
                     onBasculerInfo: () => toggleInfo(exId),
                     position: positionAffichable(ex.name, ex.tip),
+                    effort: repereEffort(ex),
                     avecCharge: doseNotable(ex.dose),
                     charge: chargeDuJour(charges, key, exId, jour),
                     chargePrecedente: chargePrecedente(charges, key, exId, jour),
