@@ -237,7 +237,7 @@ controle("aucun emoji couleur dans l'interface", () => {
 const D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
     "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
     "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
-    "positionAffichable"]);
+    "positionAffichable", "familleEffort", "REPERE_EFFORT"]);
 const exercices = tousLesExercices({
     blessure: D.PATHOLOGIES, coureur: D.RUNNER_DATA,
     croissance: D.CROISSANCE_DATA, prevention: D.PREVENTION_CATEGORIES,
@@ -329,6 +329,36 @@ controle("l'étiquette de position ne contredit pas le dessin", () => {
             vus.add(ex.name);
             out.push(`${ou} — « ${ex.name} » : étiquette « ${etiquette} », dessin « ${dessin} »`);
         }
+    }
+    return out;
+});
+
+// Le repère d'effort se déduit du nom et de la consigne. Trois pièges rencontrés en
+// l'écrivant : « Montée de marche » pris pour de la marche, « Balancers » pour un lancer,
+// et « Squat mural maintenu » pour de la charge lourde. Le contrôle vérifie donc les deux
+// sens : tout exercice chiffré reçoit un repère sauf s'il est de mobilité, et aucun repère
+// ne contredit sa consigne.
+controle("le repère d'effort ne contredit pas la consigne", () => {
+    const mobilite = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
+    const chiffree = /^\d+\s*×\s*\d+|^\d+(-\d+)?\s*(min|m)\b/;
+    const mou = /sans forcer|sans à-coup|doucement|sans r[ée]sistance/i;
+    const out = [];
+    const vus = new Set();
+    for (const { ex, ou } of exercices) {
+        if (vus.has(ex.name))
+            continue;
+        vus.add(ex.name);
+        const f = D.familleEffort(ex);
+        // Le repère se tait quand la consigne dit déjà l'intensité : on contrôle la famille,
+        // qui elle ne se tait pas, plutôt que le texte affiché.
+        const dejaDite = /difficile|charge suffisante|augmentez la charge|assez lourd|plus lourd|au maximum|maximal|jusqu'à ne plus pouvoir|dernière répétition|sans pouvoir en faire/i.test(ex.tip);
+        const doitAvoir = chiffree.test(ex.dose) && !mobilite.test(ex.name.toLowerCase());
+        if (doitAvoir && !f)
+            out.push(`${ou} — « ${ex.name} » (${ex.dose}) : aucun repère d'effort`);
+        if (!doitAvoir && f)
+            out.push(`${ou} — « ${ex.name} » : repère « ${f} » sur un exercice de mobilité`);
+        if ((f === "lourd" || f === "explosif") && mou.test(ex.tip))
+            out.push(`${ou} — « ${ex.name} » : repère « ${f} », consigne « ${ex.tip.match(mou)[0]} »`);
     }
     return out;
 });
