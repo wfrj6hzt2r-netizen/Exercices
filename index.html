@@ -3374,8 +3374,9 @@ const DOSE_NON_REP = /^(fois|par|séance|semaine|jour|lettre|position|direction)
 // diverger du reste.
 //
 // Les exercices de mobilité et d'étirement n'en reçoivent pas : il n'y a pas de charge à
-// doser, et quatre-vingt-une consignes sur cent quarante et une disent déjà la douceur. Le
-// parcours croissance non plus : il tutoie, et ces formulations s'adressent à des adultes.
+// doser, et quatre-vingt-une consignes sur cent quarante et une disent déjà la douceur.
+//
+// Le parcours croissance tutoie : il reçoit les mêmes repères, dits à la deuxième personne.
 const REPERE_EFFORT = {
     lourd: "Assez lourd pour que les deux dernières soient dures.",
     renforcement: "La dernière répétition doit être difficile.",
@@ -3385,7 +3386,19 @@ const REPERE_EFFORT = {
     endurance: "Une allure où vous pourriez encore parler.",
     technique: "La qualité du geste avant la vitesse.",
 };
-function familleEffort(ex) {
+// Trois des sept repères ne portent ni verbe conjugué ni pronom : ils sont identiques dans
+// les deux tables. On les y répète quand même plutôt que de composer la table tutoyée à
+// partir de l'autre — une table lacunaire n'afficherait rien, sans la moindre erreur.
+const REPERE_EFFORT_TU = {
+    lourd: "Assez lourd pour que les deux dernières soient dures.",
+    renforcement: "La dernière répétition doit être difficile.",
+    maintien: "Contracte fort pendant tout le maintien.",
+    explosif: "Arrête dès que la réception se dégrade.",
+    controle: "Cherche le déséquilibre, pas la durée.",
+    endurance: "Une allure où tu pourrais encore parler.",
+    technique: "La qualité du geste avant la vitesse.",
+};
+function familleEffort(ex, croissance) {
     const n = (ex.name || "").toLowerCase(), t = (ex.tip || "").toLowerCase(), dose = ex.dose || "";
     // Une dose non chiffrée décrit un conseil, un bilan ou une adaptation : rien à doser.
     if (!/^\d+\s*×\s*\d+|^\d+(-\d+)?\s*(min|m)\b/.test(dose))
@@ -3394,7 +3407,7 @@ function familleEffort(ex) {
     // « Montée de marche » et « excentrique sur marche » sont des marches d'escalier, pas
     // de la marche : sans cette garde, elles tombaient dans l'endurance.
     const step = /mont[ée]e|step|escalier|sur marche|de marche/.test(n);
-    if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|position de soulagement|posture de soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
+    if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|position de soulagement|posture de soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
         return null;
     if (/[ée]quilibre|proprioception|plateau|instable|repositionnement|oculo|perturbation|coordination|stabilit[ée]/.test(n))
         return "controle";
@@ -3410,18 +3423,26 @@ function familleEffort(ex) {
     if (!doux && (/\(\s*\d+\s*sec\s*\/\s*\d+\s*sec\s*\)/.test(dose)
         || /lourd|lest|charg[ée]|presse|squat|fente|soulev|step-up|mont[ée]e sur step|mont[ée]e sur marche|haltère|poulie/.test(n)
         || /augmentez la charge|plus lourd|charge progressive/.test(t)))
-        return "lourd";
-    return "renforcement";
+        // Les programmes de croissance se font au poids du corps : « assez lourd » n'y a de
+        // sens que si une charge est nommée quelque part. Un squat sur une chaise et une
+        // montée sur marche n'en portent aucune ; le squat lent, lui, dit « un sac à dos un
+        // peu lesté », et garde donc le repère de charge.
+        return (croissance && !/lest|charg|haltère|poulie|presse|sac à dos/.test(n + " " + t))
+            ? "renforcement" : "lourd";
+    // Le repli ne vaut que pour une dose en répétitions : « la dernière répétition doit être
+    // difficile » n'a aucun sens sur une durée. Sans cette garde, la glace après le sport,
+    // la chaleur du soir et l'échauffement d'avant-séance recevaient un repère de charge.
+    return /^\d+\s*×\s*\d+/.test(dose) ? "renforcement" : null;
 }
 // Vingt-huit consignes disent déjà l'intensité — « charge suffisante pour que la 8e
 // répétition soit difficile » sur le squat lourd et lent, par exemple. Le repère se tait
 // alors : il est là pour combler un manque, pas pour redire la consigne à dix lignes d'elle.
 const INTENSITE_DEJA_DITE = /difficile|charge suffisante|augmentez la charge|assez lourd|plus lourd|au maximum|maximal|jusqu'à ne plus pouvoir|dernière répétition|sans pouvoir en faire/i;
-function repereEffort(ex) {
-    const f = familleEffort(ex);
+function repereEffort(ex, croissance) {
+    const f = familleEffort(ex, croissance);
     if (!f || INTENSITE_DEJA_DITE.test(ex.tip || ""))
         return null;
-    return REPERE_EFFORT[f];
+    return (croissance ? REPERE_EFFORT_TU : REPERE_EFFORT)[f];
 }
 function splitDose(doseText) {
     const m = doseText.match(/^(\d+\s*×\s*\d+(?:-\d+)?)(\s*(?:sec|min|m|km)\b)?(.*)$/);
@@ -3586,7 +3607,7 @@ const CABINET = {
     // À remonter à chaque révision du contenu : c'est ce qui distingue un programme
     // entretenu d'une page laissée en ligne et oubliée. Au jour près, et non au mois :
     // le contenu a changé deux fois en septembre, et « septembre 2026 » ne le disait pas.
-    revision: "10 septembre 2026",
+    revision: "21 septembre 2026",
 };
 // D'où viennent les consignes. À compléter pour citer des recommandations précises ;
 // la phrase par défaut ne promet que ce qui est vérifiable.
@@ -5571,6 +5592,7 @@ function GuidedJourney() {
                     onBascule: () => toggle(cle, exId, st.exercises.length),
                     accent: CROISSANCE_ACCENT, accentTexte: CROISSANCE_ACCENT, fondIcone: CROISSANCE_FOND,
                     dose: e.dose,
+                    effort: repereEffort(e, true),
                     pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
                 });
             })),
