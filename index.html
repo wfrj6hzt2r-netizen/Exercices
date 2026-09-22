@@ -493,10 +493,10 @@ const PoseWalkRun = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
     React.createElement("circle", { cx: "27", cy: "8", r: "4" }),
     React.createElement("line", { x1: "27", y1: "12", x2: "24", y2: "26" }),
-    React.createElement("line", { x1: "27", y1: "16", x2: "33", y2: "19" }),
-    React.createElement("line", { x1: "33", y1: "19", x2: "36", y2: "14" }),
-    React.createElement("line", { x1: "27", y1: "16", x2: "20", y2: "19" }),
-    React.createElement("line", { x1: "20", y1: "19", x2: "17", y2: "14" }),
+    React.createElement("line", { x1: "27", y1: "16", x2: "33", y2: "20" }),
+    React.createElement("line", { x1: "33", y1: "20", x2: "31", y2: "12" }),
+    React.createElement("line", { x1: "27", y1: "16", x2: "21", y2: "20" }),
+    React.createElement("line", { x1: "21", y1: "20", x2: "17", y2: "27" }),
     React.createElement("line", { x1: "24", y1: "26", x2: "31", y2: "32" }),
     React.createElement("line", { x1: "31", y1: "32", x2: "33", y2: "43" }),
     React.createElement("line", { x1: "24", y1: "26", x2: "17", y2: "30" }),
@@ -686,16 +686,19 @@ const PoseNerveGlide = poseWrap(React.createElement(React.Fragment, null,
 // Bras au repos posé sur un appui, main plus haute que le coude : la position de soulagement.
 // Première version illisible : l'appui traversait le bras au lieu de le porter. Le coude
 // repose maintenant franchement sur le plan, et l'avant-bras remonte vers la main.
+// Le plan du coussin est incliné, l'avant-bras y repose au lieu de flotter au-dessus, et
+// le bras libre a son coude : sans lui, il paraissait deux fois plus court que l'autre.
 const PoseArmSupport = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "31", cy: "9", r: "4" }),
-    React.createElement("line", { x1: "31", y1: "13", x2: "31", y2: "31" }),
-    React.createElement("line", { x1: "31", y1: "18", x2: "23", y2: "28" }),
-    React.createElement("line", { x1: "23", y1: "28", x2: "12", y2: "21" }),
-    React.createElement("line", { x1: "31", y1: "18", x2: "37", y2: "28" }),
-    React.createElement("line", { x1: "31", y1: "31", x2: "27", y2: "44" }),
-    React.createElement("line", { x1: "31", y1: "31", x2: "35", y2: "44" }),
-    React.createElement("line", { x1: "5", y1: "30", x2: "25", y2: "30" }),
-    React.createElement("line", { x1: "9", y1: "30", x2: "9", y2: "36" })));
+    React.createElement("circle", { cx: "32", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "32", y1: "13", x2: "32", y2: "31" }),
+    React.createElement("line", { x1: "32", y1: "18", x2: "24", y2: "29" }),
+    React.createElement("line", { x1: "24", y1: "29", x2: "12", y2: "24" }),
+    React.createElement("line", { x1: "32", y1: "18", x2: "38", y2: "28" }),
+    React.createElement("line", { x1: "38", y1: "28", x2: "36", y2: "40" }),
+    React.createElement("line", { x1: "32", y1: "31", x2: "28", y2: "44" }),
+    React.createElement("line", { x1: "32", y1: "31", x2: "36", y2: "44" }),
+    React.createElement("line", { x1: "6", y1: "26", x2: "26", y2: "33" }),
+    React.createElement("line", { x1: "10", y1: "31", x2: "10", y2: "39" })));
 // Poussée contre un mur, les DEUX mains en appui : extension des coudes.
 const PoseTricepsPush = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "43", y1: "6", x2: "43", y2: "42" }),
@@ -818,6 +821,68 @@ const PoseFourPoint = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "16", y1: "23", x2: "15", y2: "43" }),
     React.createElement("line", { x1: "33", y1: "23", x2: "35", y2: "43" }),
     React.createElement("path", { d: "M19 18 Q25 14 31 18", strokeDasharray: "3 3" })));
+// La marche, distincte de la course : tronc droit, foulée courte, les deux pieds bas.
+const PoseWalk = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "28" }),
+    React.createElement("line", { x1: "24", y1: "17", x2: "30", y2: "23" }),
+    React.createElement("line", { x1: "30", y1: "23", x2: "32", y2: "19" }),
+    React.createElement("line", { x1: "24", y1: "17", x2: "18", y2: "23" }),
+    React.createElement("line", { x1: "18", y1: "23", x2: "15", y2: "27" }),
+    React.createElement("line", { x1: "24", y1: "28", x2: "31", y2: "35" }),
+    React.createElement("line", { x1: "31", y1: "35", x2: "35", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "28", x2: "17", y2: "35" }),
+    React.createElement("line", { x1: "17", y1: "35", x2: "13", y2: "44" })));
+// La tête vue de dessus, le nez marquant le regard, et la rotation d'un côté à l'autre.
+const PoseHeadRotation = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "34", r: "9" }),
+    React.createElement("path", { d: "M7 20 A 19 19 0 0 1 41 20" }),
+    React.createElement("path", { d: "M12 14 L6.5 20 L13.5 24" }),
+    React.createElement("path", { d: "M36 14 L41.5 20 L34.5 24" })));
+// Isométrique multidirectionnel : la main pousse sur les quatre faces du crâne, qui ne
+// bouge pas. Les flèches convergent, comme celles de l'isométrique générique.
+const PoseHeadIsoMulti = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "24", r: "8" }),
+    React.createElement("line", { x1: "24", y1: "4", x2: "24", y2: "11" }),
+    React.createElement("path", { d: "M20 7 L24 11 L28 7" }),
+    React.createElement("line", { x1: "24", y1: "44", x2: "24", y2: "37" }),
+    React.createElement("path", { d: "M20 41 L24 37 L28 41" }),
+    React.createElement("line", { x1: "4", y1: "24", x2: "11", y2: "24" }),
+    React.createElement("path", { d: "M7 20 L11 24 L7 28" }),
+    React.createElement("line", { x1: "44", y1: "24", x2: "37", y2: "24" }),
+    React.createElement("path", { d: "M41 20 L37 24 L41 28" })));
+// Extenseurs du cou : tête de profil regardant à droite, main en résistance derrière le
+// crâne, et la flèche du sens de poussée — la tête va vers l'arrière, contre la main.
+const PoseHeadExtension = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "27", cy: "17", r: "6" }),
+    React.createElement("path", { d: "M33 15 L36 17 L33 19" }),
+    React.createElement("line", { x1: "27", y1: "23", x2: "27", y2: "37" }),
+    React.createElement("line", { x1: "27", y1: "27", x2: "19", y2: "32" }),
+    React.createElement("line", { x1: "27", y1: "27", x2: "35", y2: "32" }),
+    React.createElement("line", { x1: "18", y1: "12", x2: "18", y2: "22" }),
+    React.createElement("line", { x1: "25", y1: "7", x2: "19", y2: "7" }),
+    React.createElement("path", { d: "M22 4 L18.5 7 L22 10" })));
+// Allongé sur le dos, menton rentré : la tête reste posée, seule la nuque s'allonge.
+const PoseChinTuckSupine = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "40", x2: "44", y2: "40" }),
+    React.createElement("circle", { cx: "15", cy: "30", r: "8" }),
+    React.createElement("line", { x1: "23", y1: "33", x2: "42", y2: "34" }),
+    React.createElement("path", { d: "M8 20 A 12 12 0 0 1 22 19" }),
+    React.createElement("path", { d: "M19 15 L22.5 19 L18.5 22" })));
+// Épaule contre le mur, genou du côté mur relevé et poussant contre lui : c'est la jambe
+// d'appui, au sol, qui travaille. De face, ce geste ne se lit pas ; de profil, si.
+const PoseWallHipIso = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "4", x2: "6", y2: "44" }),
+    React.createElement("line", { x1: "6", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("circle", { cx: "23", cy: "11", r: "4" }),
+    React.createElement("line", { x1: "23", y1: "15", x2: "23", y2: "29" }),
+    React.createElement("line", { x1: "23", y1: "19", x2: "28", y2: "28" }),
+    React.createElement("line", { x1: "23", y1: "29", x2: "28", y2: "44" }),
+    React.createElement("line", { x1: "23", y1: "29", x2: "16", y2: "29" }),
+    React.createElement("line", { x1: "16", y1: "29", x2: "16", y2: "40" }),
+    React.createElement("line", { x1: "13.5", y1: "29", x2: "9.5", y2: "29" }),
+    React.createElement("path", { d: "M12.5 26 L9 29 L12.5 32" })));
 const POSES = [
     // --- 0. Gestes que des règles plus générales captaient à tort ---
     // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
@@ -847,6 +912,27 @@ const POSES = [
     // complète », « Endurance posturale prolongée ») et ne doivent pas être emportés.
     { key: "assis-chaise", icon: PoseAssisChaise, test: (n) => n.includes("endurance posturale assise")
             || n.includes("cervico-scapulaire") },
+    // --- 0 bis. Douze dessins relevés un à un sur les écrans, que des règles plus larges
+    // captaient de travers : une silhouette allongée pour une rotation de la tête, un
+    // équilibre unipodal pour un exercice les deux pieds au sol, un coureur pour une marche
+    // de vingt minutes, un poignet pour des gestes de pince. Les tests sont étroits parce
+    // que les noms voisins ne doivent pas être emportés.
+    { key: "wall-hip-iso", icon: PoseWallHipIso, test: (n) => n.includes("appui unipodal (mur)") },
+    { key: "head-rotation", icon: PoseHeadRotation, test: (n) => n.includes("mobilisation très douce") },
+    { key: "head-iso-multi", icon: PoseHeadIsoMulti, test: (n) => n.includes("isométrique léger multidirectionnel") },
+    { key: "head-extension", icon: PoseHeadExtension, test: (n) => n.includes("extenseurs en amplitude progressive") },
+    { key: "chin-tuck-supine", icon: PoseChinTuckSupine, test: (n) => n.includes("fléchisseurs profonds du cou") },
+    // La marche n'est pas la course, et un coureur illustrait jusqu'ici vingt minutes de
+    // marche quotidienne. Le nom doit commencer par « marche » : « pompes de cheville et
+    // marche courte » garde sa pompe, « reprise de la course ou de la marche longue » son
+    // coureur, et les marches d'escalier leur step.
+    { key: "walk", icon: PoseWalk, test: (n) => /^marche\b/.test(n)
+            || n.includes("allongement progressif de la marche") },
+    { key: "hand", icon: PoseHand, test: (n) => n.includes("préhension et gestes fins") },
+    { key: "neck", icon: PoseNeck, test: (n) => n.includes("proprioception cervicale")
+            || n.includes("rééducation oculo") },
+    { key: "debout-simple", icon: PoseDebout, test: (n) => n.includes("équilibre postural global")
+            || n.includes("changements de position au travail") },
     { key: "debout-simple", icon: PoseDebout, test: (n) => n.includes("mobilité complète en charge fonctionnelle")
             // Les deux sœurs debout de « Endurance posturale assise » : l'une le dit dans son
             // nom et sa consigne, l'autre dans son étiquette de position. Toutes trois
@@ -880,7 +966,9 @@ const POSES = [
     { key: "etirement-debout", icon: PoseStretchStanding, test: (n) => n.includes("étirement") || n.includes("étirer") },
     // --- 4. Mouvements des membres inférieurs ---
     { key: "step", icon: PoseStep, test: (n) => n.includes("step") || n.includes("montée de marche") || n.includes("montées de marche")
-            || n.includes("marche dynamique") || n.includes("escalier") },
+            || n.includes("marche dynamique") || n.includes("escalier")
+            // Elles tombaient sur le coureur : « marche » y désigne une marche d'escalier.
+            || n.includes("montée sur marche") || n.includes("descente de marche") },
     { key: "calf", icon: PoseCalfRaise, test: (n) => n.includes("mollet") || n.includes("montée sur pointe") || n.includes("pointe des pieds")
             || n.includes("soléaire") || n.includes("sur pointe") },
     { key: "ankle-pump", icon: PoseAnklePump, test: (n) => n.includes("pompes de cheville") || n.includes("alphabet") || n.includes("mobilité de cheville")
@@ -987,6 +1075,9 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
     "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
     balance: "debout", jump: "debout", run: "debout",
+    // Les nouveaux venus : la marche et l'appui au mur se font debout, le menton rentré
+    // sur le dos. La tête seule n'a pas de posture, et n'entre donc pas ici.
+    walk: "debout", "wall-hip-iso": "debout", "chin-tuck-supine": "allonge",
 };
 // Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
 // dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
