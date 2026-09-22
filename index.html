@@ -1233,7 +1233,7 @@ const PATHOLOGIES = [
                             { name: "Maintien du renforcement d'entretien", dose: "2 × par semaine", tip: "Poursuivez le renforcement du quadriceps et de la chaîne postérieure plusieurs mois après la reprise. C'est l'arrêt précoce, une fois la douleur disparue, qui explique une bonne part des rechutes." }
                         ] }
                 ] },
-            { id: "arthrose-genou", label: "Arthrose", groupe: "Usure de l'articulation", desc: "Usure progressive du cartilage, douleur mécanique à l'effort ou raideur qui évolue avec le temps plutôt qu'après un traumatisme précis.", context: "Contrairement à une idée très répandue, bouger n'use pas davantage une articulation arthrosique : l'exercice est aujourd'hui le traitement de première intention recommandé, avant les médicaments et bien avant la chirurgie. Le renforcement du quadriceps est le levier le plus efficace sur la douleur et la fonction. L'intensité des douleurs et l'aspect des radiographies sont par ailleurs souvent mal corrélés : un genou très arthrosique à l'image peut fonctionner correctement s'il est bien musclé.", checkinKind: "binary", premiersJours: ["Une poussée douloureuse n'annule pas vos progrès, et ne signifie pas que l'arthrose s'aggrave.", "Ne vous arrêtez pas complètement : réduisez l'intensité quelques jours, gardez le mouvement. Une articulation qui ne bouge plus devient plus douloureuse, pas moins.", "La chaleur avant l'activité et le mouvement régulier soulagent plus durablement que le repos."], stages: [
+            { id: "arthrose-genou", label: "Arthrose", groupe: "Usure de l'articulation", desc: "Usure progressive du cartilage, douleur mécanique à l'effort ou raideur qui évolue avec le temps plutôt qu'après un traumatisme précis.", context: "Contrairement à une idée très répandue, bouger n'use pas davantage une articulation arthrosique : l'exercice est aujourd'hui le traitement de première intention recommandé, avant les médicaments et bien avant la chirurgie. Le renforcement du quadriceps est le levier le plus efficace sur la douleur et la fonction. L'intensité des douleurs et l'aspect des radiographies sont par ailleurs souvent mal corrélés : un genou très arthrosique à l'image peut fonctionner correctement s'il est bien musclé. Le poids porté compte lui aussi : il traverse le genou à chaque pas, et quelques kilos en moins agissent sur la douleur autant que les exercices. Si le sujet vous concerne, votre médecin saura vous orienter.", checkinKind: "binary", premiersJours: ["Une poussée douloureuse n'annule pas vos progrès, et ne signifie pas que l'arthrose s'aggrave.", "Ne vous arrêtez pas complètement : réduisez l'intensité quelques jours, gardez le mouvement. Une articulation qui ne bouge plus devient plus douloureuse, pas moins.", "La chaleur avant l'activité et le mouvement régulier soulagent plus durablement que le repos."], stages: [
                     { label: "Douleur & soulagement", critere: "La douleur du quotidien est redescendue et vous marchez plus longtemps sans devoir vous arrêter. Ce parcours n'est pas une ligne droite : en cas de poussée douloureuse, revenir à cette étape n'est pas un échec.", sub: "Oui, j'ai des douleurs aujourd'hui", exercises: [
                             { name: "Flexion-extension assise", dose: "3 × 10", tip: "Assis au bord d'une chaise, glissez lentement le talon vers vous en pliant le genou, puis tendez à nouveau. Restez dans une amplitude confortable, sans forcer sur la douleur." },
                             { name: "Pompes de cheville", dose: "3 × 15", tip: "Allongé ou assis, jambe surélevée. Montez et descendez la pointe du pied de façon répétée et rythmée : cela favorise la circulation et soulage l'articulation." },
@@ -1242,18 +1242,25 @@ const PATHOLOGIES = [
                             { name: "Étirement quadriceps doux", dose: "3 × 20 sec", tip: "Debout en appui, ou allongé sur le côté, ramenez doucement le talon vers la fesse jusqu'à sentir une tension légère à l'avant de la cuisse. Tension douce uniquement." },
                             { name: "Vélo sans résistance", dose: "5-10 min", tip: "Favorise la mobilité de l'articulation sans la charger. Réglez la selle pour que le genou reste peu fléchi en bas du pédalage." }
                         ] },
-                    { label: "Renforcement musculaire", critere: "Vous vous levez d'une chaise sans vous aider des bras, vous montez un étage sans douleur marquée, et vous marchez plus loin qu'il y a un mois. Il n'y a pas de fin à atteindre ici : c'est l'entretien du renforcement qui préserve les gains.", sub: "Non, peu ou pas de douleur", exercises: [
+                    { label: "Renforcement musculaire", critere: "Assis sur une chaise, bras croisés sur la poitrine, comptez vos levers en trente secondes. Deux ou trois de plus qu'au début du programme, un étage monté sans douleur marquée, et une marche plus longue qu'il y a un mois : la force est revenue.", sub: "Non, peu ou pas de douleur", exercises: [
                             { name: "Squat partiel contrôlé", dose: "3 × 12", tip: "Debout, pieds largeur du bassin, descendez en squat sur une amplitude modérée (0 à 60°), genou aligné avec le pied, puis remontez." },
                             { name: "Extension de jambe assise à l'élastique", dose: "3 × 12", tip: "Assis, élastique fixé au pied de la chaise et attaché à la cheville. Tendez le genou contre la résistance, lentement, puis revenez." },
                             { name: "Pont fessier", dose: "3 × 12", tip: "Allongé sur le dos, genoux pliés. Levez le bassin en gainant les abdominaux et en serrant les fessiers, puis redescendez lentement." },
                             { name: "Montée sur step", dose: "3 × 10 chaque jambe", tip: "Face à une marche ou un step bas, montez en poussant sur une jambe, sans élan, puis redescendez lentement du même côté." },
-                            { name: "Renforcement du mollet", dose: "3 × 15", tip: "Debout, en appui si besoin. Montez sur la pointe des pieds, lentement, puis redescendez sans à-coup." },
+                            { name: "Marche ou vélo à allure soutenue", dose: "15-20 min", tip: "Marche dehors ou vélo d'appartement, d'un seul tenant. L'endurance agit sur la douleur de l'arthrose au même titre que le renforcement, et c'est elle qui manque le plus souvent aux programmes." },
                             { name: "Équilibre unipodal", dose: "3 × 30 sec", tip: "Debout sur une jambe, l'autre légèrement fléchie devant vous, à proximité d'un appui si besoin. Restez stable, yeux ouverts puis fermés si bien toléré." }
+                        ] },
+                    { label: "Entretien", critere: "Il n'y a rien à valider ici, seulement un repère à reprendre de temps en temps : le compte de levers de chaise se maintient, et la distance de marche ne recule pas. S'ils baissent, c'est le signe de revenir aux deux séances hebdomadaires, pas celui d'une aggravation.", sub: "Plus de douleur, j'entretiens mes acquis", pourquoi: "Les bénéfices de l'exercice s'effacent en quelques mois quand on s'arrête, et reviennent quand on reprend. C'est la seule étape qui n'a pas de fin.", exercises: [
+                            { name: "Squat partiel lesté", dose: "2 × 12", tip: "Le squat de l'étape précédente, avec quelques kilos dans un sac à dos porté sur les épaules. C'est la charge, et non le nombre de répétitions, qui entretient la force du quadriceps." },
+                            { name: "Montée sur step lestée", dose: "2 × 10 chaque jambe", tip: "La même marche qu'avant, avec le même sac à dos. Montez en poussant sur la jambe du dessus, redescendez lentement : c'est la descente qui muscle le plus." },
+                            { name: "Marche rapide régulière", dose: "20-30 min", tip: "Trois sorties par semaine, d'un bon pas. C'est la dose d'endurance qui agit sur la douleur, et elle compte autant que le renforcement." },
+                            { name: "Reprise après une poussée", dose: "selon les jours", tip: "Quand une poussée arrive, réduisez de moitié pendant quelques jours et gardez la marche, puis remontez au rythme habituel. C'est l'arrêt prolongé qui fait perdre le terrain, pas la poussée elle-même." }
                         ] }
                 ],
                 stageGuidance: [
                     { freq: "Idéalement chaque jour, en douceur", duration: "Ces exercices doivent apaiser la douleur, jamais l'augmenter. Repassez en renforcement dès que l'articulation se calme." },
-                    { freq: "2 à 3 fois par semaine", duration: "Un rythme régulier, sans épuiser l'articulation, permet de construire la force progressivement." },
+                    { freq: "2 à 3 fois par semaine", duration: "Comptez six à douze semaines avant de sentir une vraie différence. C'est le délai habituel, et s'arrêter avant est la première cause d'échec." },
+                    { freq: "2 fois par semaine, toute l'année", duration: "Il n'y a pas de terme. Deux séances par semaine suffisent à tenir les gains, et c'est l'arrêt prolongé, bien plus que l'arthrose, qui les fait perdre." },
                 ] },
             { id: "femoro-patellaire-genou", label: "Syndrome fémoro-patellaire", groupe: "Par répétition ou surcharge", desc: "Douleur diffuse à l'avant du genou, autour ou derrière la rotule, typiquement déclenchée par les escaliers (surtout la descente), la position assise prolongée jambes pliées, ou l'accroupissement.", context: "L'élément le mieux établi ici est que le renforcement combiné hanche et genou donne de meilleurs résultats que le renforcement du genou seul, en particulier sur la douleur à court terme. Les exercices se réalisent dans une amplitude qui reste sous le seuil douloureux : on augmente la charge avant d'augmenter l'amplitude. Le terme ancien de « chondromalacie » est aujourd'hui abandonné, car la douleur n'est pas corrélée à l'état du cartilage.", premiersJours: ["Allégez ce qui comprime — escaliers, position assise prolongée genou plié, squats profonds, descentes — sans cesser de marcher à plat.", "Si vous restez assis longtemps, levez-vous et tendez la jambe toutes les demi-heures.", "La douleur vient d'une surcharge entre la rotule et le fémur, pas d'une lésion : rien n'est abîmé, et c'est une bonne nouvelle. Le repos complet, lui, n'arrange rien."], stages: [
                     { label: "Douleur & décharge", critere: "Rester assis longtemps ou descendre un escalier ne déclenche plus la douleur vive à l'avant du genou.", exercises: [
@@ -1315,7 +1322,7 @@ const PATHOLOGIES = [
                 ] }
         ] },
     { id: "hanche", label: "Hanche", injuries: [
-            { id: "arthrose-hanche", label: "Arthrose", groupe: "Usure de l'articulation", desc: "Usure progressive du cartilage, douleur mécanique à l'aine, à la fesse ou irradiant vers le genou, qui évolue avec le temps plutôt qu'après un traumatisme précis.", context: "Comme au genou, l'exercice est le traitement de première intention de l'arthrose de hanche, et bouger n'accélère pas l'usure. Une particularité fréquente : la douleur d'une hanche arthrosique se projette souvent vers l'aine ou même le genou plutôt que sur la hanche elle-même, ce qui retarde parfois le diagnostic. Le renforcement des fessiers et des abducteurs est ici le levier principal.", checkinKind: "binary", premiersJours: ["Une poussée douloureuse n'annule pas vos progrès, et ne signifie pas que l'arthrose s'aggrave.", "Ne vous arrêtez pas complètement : réduisez l'intensité quelques jours, gardez le mouvement. Une articulation qui ne bouge plus devient plus douloureuse, pas moins.", "La chaleur avant l'activité et le mouvement régulier soulagent plus durablement que le repos."], stages: [
+            { id: "arthrose-hanche", label: "Arthrose", groupe: "Usure de l'articulation", desc: "Usure progressive du cartilage, douleur mécanique à l'aine, à la fesse ou irradiant vers le genou, qui évolue avec le temps plutôt qu'après un traumatisme précis.", context: "Comme au genou, l'exercice est le traitement de première intention de l'arthrose de hanche, et bouger n'accélère pas l'usure. Une particularité fréquente : la douleur d'une hanche arthrosique se projette souvent vers l'aine ou même le genou plutôt que sur la hanche elle-même, ce qui retarde parfois le diagnostic. Le renforcement des fessiers et des abducteurs est ici le levier principal. Le poids porté compte lui aussi : il traverse la hanche à chaque pas, et quelques kilos en moins agissent sur la douleur autant que les exercices. Si le sujet vous concerne, votre médecin saura vous orienter.", checkinKind: "binary", premiersJours: ["Une poussée douloureuse n'annule pas vos progrès, et ne signifie pas que l'arthrose s'aggrave.", "Ne vous arrêtez pas complètement : réduisez l'intensité quelques jours, gardez le mouvement. Une articulation qui ne bouge plus devient plus douloureuse, pas moins.", "La chaleur avant l'activité et le mouvement régulier soulagent plus durablement que le repos."], stages: [
                     { label: "Douleur & soulagement", critere: "La douleur de l'aine ou de la fesse est redescendue et vous marchez plus longtemps sans devoir vous arrêter. Ce parcours n'est pas une ligne droite : en cas de poussée, revenir à cette étape n'est pas un échec.", sub: "Oui, j'ai des douleurs aujourd'hui", exercises: [
                             { name: "Mobilisation de hanche en flexion assistée", dose: "3 × 10", tip: "Allongé sur le dos, ramenez doucement un genou vers la poitrine à l'aide de vos mains, jusqu'à la limite confortable, puis relâchez." },
                             { name: "Bascules de hanche allongé", dose: "3 × 10 chaque côté", tip: "Allongé sur le dos, genoux pliés, pieds au sol. Laissez doucement les genoux basculer d'un côté puis de l'autre, sur une amplitude confortable, bassin relâché." },
@@ -1324,18 +1331,25 @@ const PATHOLOGIES = [
                             { name: "Marche courte régulière", dose: "10 min", tip: "Allure confortable, plusieurs fois par jour plutôt qu'une longue séance : cela entretient la mobilité sans irriter l'articulation." },
                             { name: "Vélo sans résistance", dose: "5-10 min", tip: "Vélo d'appartement, selle réglée haut pour limiter la flexion de hanche, résistance minimale. Pédalage souple et régulier : la hanche bouge sur toute son amplitude sans supporter le poids du corps." }
                         ] },
-                    { label: "Renforcement musculaire", critere: "Vous vous levez d'une chaise sans vous aider des bras, vous enfilez chaussettes et chaussures plus facilement, et vous marchez plus loin qu'il y a un mois. Il n'y a pas de fin à atteindre ici : c'est l'entretien du renforcement qui préserve les gains.", sub: "Non, peu ou pas de douleur", exercises: [
+                    { label: "Renforcement musculaire", critere: "Assis sur une chaise, bras croisés sur la poitrine, comptez vos levers en trente secondes. Deux ou trois de plus qu'au début du programme, chaussettes et chaussures enfilées plus facilement, et une marche plus longue qu'il y a un mois : la force est revenue.", sub: "Non, peu ou pas de douleur", exercises: [
                             { name: "Abduction de hanche à l'élastique", dose: "3 × 15", tip: "Debout, élastique placé juste au-dessus des chevilles. Écartez la jambe sur le côté contre la résistance, en gardant le buste stable, puis revenez lentement." },
                             { name: "Pont fessier", dose: "3 × 12", tip: "Allongé sur le dos, genoux pliés. Levez le bassin en gainant les abdominaux et en serrant les fessiers, puis redescendez lentement." },
-                            { name: "Renforcement fessiers léger (coquille)", dose: "3 × 12", tip: "Allongé sur le côté, jambes légèrement pliées l'une sur l'autre. Levez le genou du dessus vers le plafond en gardant les pieds joints, sans faire rouler le bassin vers l'arrière." },
+                            { name: "Marche ou vélo à allure soutenue", dose: "15-20 min", tip: "Marche dehors ou vélo d'appartement, d'un seul tenant. L'endurance agit sur la douleur de l'arthrose au même titre que le renforcement, et c'est elle qui manque le plus souvent aux programmes." },
                             { name: "Squat fonctionnel (assis-debout)", dose: "3 × 12", tip: "Debout devant une chaise, descendez lentement jusqu'à effleurer l'assise, puis repoussez pour vous relever, sans vous laisser tomber." },
                             { name: "Montée sur step", dose: "3 × 10 chaque jambe", tip: "Face à une marche ou un step bas, montez en poussant sur une jambe, sans élan, puis redescendez lentement du même côté." },
                             { name: "Équilibre unipodal", dose: "3 × 30 sec", tip: "Debout sur une jambe, l'autre légèrement fléchie devant vous, à proximité d'un appui si besoin. Restez stable, yeux ouverts puis fermés si bien toléré." }
+                        ] },
+                    { label: "Entretien", critere: "Il n'y a rien à valider ici, seulement un repère à reprendre de temps en temps : le compte de levers de chaise se maintient, et la distance de marche ne recule pas. S'ils baissent, c'est le signe de revenir aux deux séances hebdomadaires, pas celui d'une aggravation.", sub: "Plus de douleur, j'entretiens mes acquis", pourquoi: "Les bénéfices de l'exercice s'effacent en quelques mois quand on s'arrête, et reviennent quand on reprend. C'est la seule étape qui n'a pas de fin.", exercises: [
+                            { name: "Squat fonctionnel lesté", dose: "2 × 12", tip: "Debout devant une chaise, le même lever qu'à l'étape précédente, avec quelques kilos dans un sac à dos porté sur les épaules. C'est la charge, et non le nombre de répétitions, qui entretient la force des fessiers." },
+                            { name: "Abduction de hanche debout, lestée", dose: "2 × 15 chaque côté", tip: "Debout près d'un appui, une charge légère à la cheville. Écartez la jambe sur le côté sans pencher le buste, puis revenez lentement." },
+                            { name: "Marche rapide régulière", dose: "20-30 min", tip: "Trois sorties par semaine, d'un bon pas. C'est la dose d'endurance qui agit sur la douleur, et elle compte autant que le renforcement." },
+                            { name: "Reprise après une poussée", dose: "selon les jours", tip: "Quand une poussée arrive, réduisez de moitié pendant quelques jours et gardez la marche, puis remontez au rythme habituel. C'est l'arrêt prolongé qui fait perdre le terrain, pas la poussée elle-même." }
                         ] }
                 ],
                 stageGuidance: [
                     { freq: "Idéalement chaque jour, en douceur", duration: "Ces exercices doivent apaiser la douleur, jamais l'augmenter. Repassez en renforcement dès que l'articulation se calme." },
-                    { freq: "2 à 3 fois par semaine", duration: "Un rythme régulier, sans épuiser l'articulation, permet de construire la force progressivement." },
+                    { freq: "2 à 3 fois par semaine", duration: "Comptez six à douze semaines avant de sentir une vraie différence. C'est le délai habituel, et s'arrêter avant est la première cause d'échec." },
+                    { freq: "2 fois par semaine, toute l'année", duration: "Il n'y a pas de terme. Deux séances par semaine suffisent à tenir les gains, et c'est l'arrêt prolongé, bien plus que l'arthrose, qui les fait perdre." },
                 ] },
             { id: "moyen-fessier", label: "Tendinopathie du moyen fessier", groupe: "Par répétition ou surcharge", desc: "Douleur sur le côté de la hanche, au niveau de l'os saillant, plus marquée en position allongée sur ce côté, en montant les escaliers ou en appui prolongé sur une jambe.", context: "Le mécanisme clé est la compression du tendon contre l'os saillant de la hanche, et non un simple frottement. Cela explique que certaines positions très banales — croiser les jambes, dormir sur le côté douloureux, se tenir debout en appui sur une hanche — entretiennent les symptômes plus que l'activité elle-même. La prise en charge combine donc l'adaptation de ces positions et un renforcement progressif en évitant les amplitudes qui compriment.", premiersJours: ["Ce tendon souffre de compression : les positions qui l'écrasent entretiennent la douleur — jambes croisées, appui sur une hanche, dormir sur le côté douloureux.", "La nuit, un coussin entre les genoux évite que la jambe du dessus vienne comprimer le tendon.", "Gardez ce qui vous soulage. Ce qui fait évoluer les choses ici, c'est de retirer la compression, puis de charger progressivement."], stages: [
                     { label: "Douleur & décharge", critere: "Vous dormez sans être réveillé par la douleur sur le côté de la hanche, et rester debout en appui sur une jambe ne la réveille plus. Vous avez pris l'habitude d'éviter les positions qui compriment le tendon : jambes croisées, appui sur une hanche.", exercises: [
@@ -3265,6 +3279,8 @@ const POSITION_LIBRARY = [
     { test: (n) => n.includes("étirement") && n.includes("mollet"), label: "Debout, face à un mur" },
     { test: (n) => n.includes("étirement") && n.includes("adducteur"), label: "Debout ou assis, jambe tendue sur le côté" },
     { test: (n) => n.includes("étirement"), label: "Debout ou assis" },
+    // « Marche ou vélo » laisse le choix : l'étiquette ne peut pas asseoir le patient.
+    { test: (n) => n.includes("marche") && n.includes("vélo"), label: "Dehors, ou assis sur le vélo" },
     { test: (n) => n.includes("vélo"), label: "Assis, sur le vélo" },
     { test: (n) => n.includes("cervical") || n.includes("menton") || n.includes("nuque") || n.includes("trapèze") || n.includes("oculo") || n.includes("visuel"), label: "Assis ou debout" },
     { test: (n) => n.includes("poignet") || n.includes("préhension") || n.includes("grip"), label: "Assis, avant-bras posé sur une table" },
@@ -3438,9 +3454,15 @@ function familleEffort(ex, croissance) {
 // répétition soit difficile » sur le squat lourd et lent, par exemple. Le repère se tait
 // alors : il est là pour combler un manque, pas pour redire la consigne à dix lignes d'elle.
 const INTENSITE_DEJA_DITE = /difficile|charge suffisante|augmentez la charge|assez lourd|plus lourd|au maximum|maximal|jusqu'à ne plus pouvoir|dernière répétition|sans pouvoir en faire/i;
+// Le symétrique du précédent. Certaines consignes prescrivent délibérément une intensité
+// basse — « contractez doucement », « à faible intensité », « sur l'amplitude confortable » —
+// parce que c'est là tout leur intérêt : une isométrique antalgique en phase douloureuse, une
+// activation du transverse, une mobilité cervicale douce. Le repère les contredisait mot pour
+// mot, « contractez fort » sous « contractez doucement », seize fois.
+const INTENSITE_VOULUE_BASSE = /faible intensit[ée]|doucement|amplitude confortable|tension l[ée]g[èe]re|sans forcer sur la douleur/i;
 function repereEffort(ex, croissance) {
     const f = familleEffort(ex, croissance);
-    if (!f || INTENSITE_DEJA_DITE.test(ex.tip || ""))
+    if (!f || INTENSITE_DEJA_DITE.test(ex.tip || "") || INTENSITE_VOULUE_BASSE.test(ex.tip || ""))
         return null;
     return (croissance ? REPERE_EFFORT_TU : REPERE_EFFORT)[f];
 }
@@ -3607,7 +3629,7 @@ const CABINET = {
     // À remonter à chaque révision du contenu : c'est ce qui distingue un programme
     // entretenu d'une page laissée en ligne et oubliée. Au jour près, et non au mois :
     // le contenu a changé deux fois en septembre, et « septembre 2026 » ne le disait pas.
-    revision: "21 septembre 2026",
+    revision: "22 septembre 2026",
 };
 // D'où viennent les consignes. À compléter pour citer des recommandations précises ;
 // la phrase par défaut ne promet que ce qui est vérifiable.
@@ -5423,7 +5445,7 @@ function GuidedJourney() {
                 React.createElement("p", { className: "text-xs text-[#6B7086] px-1 mt-2 leading-relaxed" }, injury.surgical
                     ? "Pas sûr de la période exacte ? Choisissez celle qui s'en rapproche le plus, ou demandez à votre chirurgien / kinésithérapeute."
                     : injury.checkinKind === "binary"
-                        ? "En cas de doute, choisissez « J'ai des douleurs » : mieux vaut commencer en douceur. Vous pourrez repasser sur l'autre option dès que l'articulation se calme."
+                        ? "En cas de doute, choisissez « J'ai des douleurs » : mieux vaut commencer en douceur. Vous pourrez changer dès que l'articulation se calme."
                         : injury.checkinKind === "phase"
                             ? "Les durées indiquées sont des ordres de grandeur : chacun avance à son rythme. Fiez-vous à ce que vous ressentez plutôt qu'au calendrier, et changez de phase quand la description correspond mieux."
                             : "Pas sûr ? Commencez par la première étape — vous pourrez toujours avancer plus vite si elle vous semble trop simple."))));
@@ -5739,9 +5761,9 @@ function GuidedJourney() {
                 // Même encadré que sur le parcours guidé, mais les critères sont propres à
                 // chaque pathologie du coureur : les quatre stades sont communs, pas les repères.
                 runnerStage.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: ACCENT_VOILE } },
-                    React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: ACCENT_FORT, letterSpacing: "0.08em" } }, "Prêt pour l'étape suivante ?"),
+                    React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: ACCENT_FORT, letterSpacing: "0.08em" } }, runnerStageIdx === path.stages.length - 1 ? "Le repère à garder" : "Prêt pour l'étape suivante ?"),
                     React.createElement("p", { className: "text-sm mt-1.5 leading-relaxed", style: { color: INK } }, runnerStage.critere),
-                    React.createElement("p", { className: "text-xs mt-2", style: { color: ACCENT_FORT } }, "Si ce n'est pas encore le cas, restez à cette étape : c'est elle qui prépare la suivante."))),
+                    !(runnerStageIdx === path.stages.length - 1) && React.createElement("p", { className: "text-xs mt-2", style: { color: ACCENT_FORT } }, "Si ce n'est pas encore le cas, restez à cette étape : c'est elle qui prépare la suivante."))),
                 bilanDeFin(runnerKey, runnerStage.exercises, runnerDoneSet, totalCount, ACCENT, false),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { disabled: runnerStageIdx === 0, onClick: () => setRunnerStageIdx((i) => Math.max(0, i - 1)), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
@@ -5959,9 +5981,9 @@ function GuidedJourney() {
                 // Un stade sans critère de sortie mesurable n'est qu'un calendrier déguisé.
                 // Le critère s'affiche là où la décision se prend, au-dessus du bouton.
                 stage.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: ACCENT_VOILE } },
-                    React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: ACCENT_FORT, letterSpacing: "0.08em" } }, "Prêt pour l'étape suivante ?"),
+                    React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: ACCENT_FORT, letterSpacing: "0.08em" } }, stageIdx === injury.stages.length - 1 ? "Le repère à garder" : "Prêt pour l'étape suivante ?"),
                     React.createElement("p", { className: "text-sm mt-1.5 leading-relaxed", style: { color: INK } }, stage.critere),
-                    React.createElement("p", { className: "text-xs mt-2", style: { color: ACCENT_FORT } }, "Si ce n'est pas encore le cas, restez à cette étape : c'est elle qui prépare la suivante."))),
+                    !(stageIdx === injury.stages.length - 1) && React.createElement("p", { className: "text-xs mt-2", style: { color: ACCENT_FORT } }, "Si ce n'est pas encore le cas, restez à cette étape : c'est elle qui prépare la suivante."))),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { disabled: stageIdx === 0, onClick: () => setStageIdx((i) => Math.max(0, i - 1)), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -5986,7 +6008,7 @@ function GuidedJourney() {
                 bilanDeFin(key, stage.exercises, doneSet, totalCount, ACCENT, false))));
     }
     if (view === "complete") {
-        // Le nombre d'étapes varie selon le parcours : 2 pour les arthroses, 6 après une
+        // Le nombre d'étapes varie selon le parcours : 3 pour les arthroses, 6 après une
         // reconstruction du croisé ou une suture méniscale. Il ne peut pas être écrit en dur.
         const nbEtapes = (injury === null || injury === void 0 ? void 0 : injury.stages.length) || 0;
         return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
