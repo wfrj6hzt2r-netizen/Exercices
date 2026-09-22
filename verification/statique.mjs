@@ -341,8 +341,11 @@ controle("l'étiquette de position ne contredit pas le dessin", () => {
 // vérifie donc les deux sens : tout exercice compté en répétitions reçoit un repère sauf
 // s'il est de mobilité, et aucun repère ne contredit sa consigne.
 controle("le repère d'effort ne contredit pas la consigne", () => {
-    const mobilite = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
+    const mobilite = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|^position|^posture|bascule|press-up|soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
     const repetitions = /^\d+\s*×\s*\d+/;
+    // Une série comptée en minutes est une position tenue, pas un effort : cinq fois deux
+    // minutes de sphinx ne se dosent pas. L'application les écarte aussi.
+    const minutes = /^\d+\s*×\s*\d+(-\d+)?\s*min\b/;
     const mou = /sans forcer|sans à-coup|doucement|sans r[ée]sistance/i;
     const basse = /faible intensit[ée]|doucement|amplitude confortable|tension l[ée]g[èe]re|sans forcer sur la douleur/i;
     const out = [];
@@ -352,7 +355,8 @@ controle("le repère d'effort ne contredit pas la consigne", () => {
             continue;
         vus.add(ex.name);
         const f = D.familleEffort(ex);
-        const doitAvoir = repetitions.test(ex.dose) && !mobilite.test(ex.name.toLowerCase());
+        const doitAvoir = repetitions.test(ex.dose) && !minutes.test(ex.dose)
+            && !mobilite.test(ex.name.toLowerCase());
         if (doitAvoir && !f)
             out.push(`${ou} — « ${ex.name} » (${ex.dose}) : aucun repère d'effort`);
         if (!doitAvoir && f && mobilite.test(ex.name.toLowerCase()))

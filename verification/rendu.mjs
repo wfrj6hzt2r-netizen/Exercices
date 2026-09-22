@@ -29,6 +29,7 @@ const ROUTES = [
     ["accueil", "#/"], ["blessures", "#/z/genou"], ["check-in", "#/z/genou/entorse"],
     ["exercices", "#/z/genou/entorse/e1"], ["exercices tardifs", "#/z/genou/entorse/e4"],
     ["fin de parcours", "#/z/genou/entorse/fin"], ["lombaires", "#/z/lombaire/hernie-discale"],
+    ["hernie positions", "#/z/lombaire/hernie-discale/e1"],
     ["cheville", "#/z/cheville/achille-insertion/e4"], ["cervicales", "#/z/cervical/cervicalgie"],
     ["hanche", "#/z/hanche/arthrose-hanche"], ["coureur", "#/coureur"],
     ["arthrose entretien", "#/z/genou/arthrose-genou/e3"],
