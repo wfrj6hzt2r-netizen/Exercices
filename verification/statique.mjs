@@ -395,6 +395,24 @@ controle("les repères tutoyés couvrent les mêmes familles, sans charge invent
     return out;
 });
 
+// Six parcours remplacent le rythme par défaut par le leur. Une entrée manquante ne se
+// verrait pas en lisant le fichier : l'écran lit « guidance[stageIdx].freq » et se rendrait
+// vide sur la dernière étape, celle qu'on ouvre le moins souvent en vérifiant.
+controle("chaque rythme propre couvre toutes ses étapes", () => {
+    const out = [];
+    D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => {
+        if (!i.stageGuidance)
+            return;
+        if (i.stageGuidance.length !== i.stages.length)
+            out.push(`${z.label} — « ${i.label} » : ${i.stageGuidance.length} rythmes pour ${i.stages.length} étapes`);
+        i.stageGuidance.forEach((g, k) => {
+            if (!g || !g.freq || !g.duration)
+                out.push(`${z.label} — « ${i.label} », étape ${k + 1} : rythme incomplet`);
+        });
+    }));
+    return out;
+});
+
 // La table des « pourquoi » est indexée par libellé d'étape. Un libellé mal orthographié
 // n'afficherait rien du tout, sans la moindre erreur — le même genre de panne silencieuse
 // que les cinq classes d'espacement qui ne faisaient rien. On vérifie donc les deux sens :
