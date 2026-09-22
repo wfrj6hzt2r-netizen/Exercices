@@ -344,6 +344,7 @@ controle("le repère d'effort ne contredit pas la consigne", () => {
     const mobilite = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
     const repetitions = /^\d+\s*×\s*\d+/;
     const mou = /sans forcer|sans à-coup|doucement|sans r[ée]sistance/i;
+    const basse = /faible intensit[ée]|doucement|amplitude confortable|tension l[ée]g[èe]re|sans forcer sur la douleur/i;
     const out = [];
     const vus = new Set();
     for (const { ex, ou } of exercices) {
@@ -358,6 +359,10 @@ controle("le repère d'effort ne contredit pas la consigne", () => {
             out.push(`${ou} — « ${ex.name} » : repère « ${f} » sur un exercice de mobilité`);
         if ((f === "lourd" || f === "explosif") && mou.test(ex.tip))
             out.push(`${ou} — « ${ex.name} » : repère « ${f} », consigne « ${ex.tip.match(mou)[0]} »`);
+        // Une consigne qui prescrit volontairement une intensité basse ne peut pas porter de
+        // repère : « contractez fort » sous « contractez doucement » se lisait mot pour mot.
+        if (D.repereEffort(ex) && basse.test(ex.tip))
+            out.push(`${ou} — « ${ex.name} » : repère affiché, consigne « ${ex.tip.match(basse)[0]} »`);
     }
     return out;
 });

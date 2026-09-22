@@ -31,6 +31,7 @@ const ROUTES = [
     ["fin de parcours", "#/z/genou/entorse/fin"], ["lombaires", "#/z/lombaire/hernie-discale"],
     ["cheville", "#/z/cheville/achille-insertion/e4"], ["cervicales", "#/z/cervical/cervicalgie"],
     ["hanche", "#/z/hanche/arthrose-hanche"], ["coureur", "#/coureur"],
+    ["arthrose entretien", "#/z/genou/arthrose-genou/e3"],
     ["coureur exercices", "#/coureur/essuie-glace/e1"], ["croissance", "#/croissance"],
     ["croissance exercices", "#/croissance/osgood/e1"], ["prévention", "#/prevention"],
     ["prévention exercices", "#/prevention/warmup/course"], ["récapitulatif", "#/recap"],
