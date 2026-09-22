@@ -908,7 +908,7 @@ const POSES = [
     { key: "side-lying", icon: PoseSideLying, test: (n) => n.includes("abducteur") || n.includes("abduction") || n.includes("moyen fessier") || n.includes("coquille") || n.includes("copenhague")
             || n.includes("rotateurs profonds") || n.includes("adduction") || n.includes("adducteur") },
     { key: "bridge", icon: PoseBridge, test: (n) => n.includes("pont fessier") || n.includes("pont ") || n.includes("fessier") },
-    { key: "squat", icon: PoseSquat, test: (n) => n.includes("squat") || n.includes("presse") || n.includes("assis-debout") || n.includes("levez-assis")
+    { key: "squat", icon: PoseSquat, test: (n) => n.includes("squat") || n.includes("presse à") || n.includes("assis-debout") || n.includes("levez-assis")
             || n.includes("extension de jambe") || n.includes("chaise") || n.includes("excentrique du quadriceps")
             || n.includes("renforcement des jambes") || n.includes("chaîne complète") || n.includes("excentrique léger")
             // « Renforcement complet des jambes » décrit des squats et des fentes : il tombait
@@ -2118,13 +2118,13 @@ const PATHOLOGIES = [
                             { name: "Gainage abdominal (planche modifiée)", dose: "3 × 20 sec", tip: "À plat ventre, en appui sur les avant-bras, coudes sous les épaules, et sur les genoux plutôt que sur les pieds pour commencer. Alignez épaules, bassin et genoux, serrez les abdominaux sans creuser ni arrondir le bas du dos, et respirez normalement. Allongez la durée d'une séance à l'autre plutôt que de chercher à tenir longtemps d'emblée." },
                             { name: "Pont fessier", dose: "3 × 12", tip: "Allongé sur le dos, genoux pliés. Levez le bassin en serrant les fessiers et en gainant les abdominaux, puis redescendez lentement." },
                             { name: "Renforcement para-vertébral léger", dose: "3 × 12", tip: "Allongé sur le ventre, front sur les mains. Décollez légèrement la poitrine de quelques centimètres, maintenez un instant, puis reposez. Petit mouvement, pas une grande cambrure." },
-                            { name: "Renforcement du transverse abdominal", dose: "3 × 15", tip: "Allongé sur le dos, genoux pliés. Rentrez doucement le nombril comme pour resserrer une ceinture, sans bloquer la respiration ni serrer les fessiers, et maintenez quelques secondes." }
+                            { name: "Marche progressive", dose: "20-30 min", tip: "Allongez la sortie de cinq minutes par semaine, d'un pas régulier. Le mouvement général fait partie du traitement au même titre que les exercices ciblés, et c'est lui qui protège le mieux de la récidive." }
                         ] },
                     { label: "Contrôle moteur", critere: "Vous soulevez une charge légère du sol en gardant le contrôle et sans appréhension, et les gestes du quotidien — courses, ménage, voiture — ne réveillent plus la douleur au-delà de 3/10.", exercises: [
                             { name: "Gainage dynamique", dose: "3 × 10", tip: "En planche ou à quatre pattes, ajoutez un mouvement de bras ou de jambe en gardant le dos parfaitement stable." },
                             { name: "Stabilité lombo-pelvienne", dose: "3 × 10", tip: "Allongé sur le dos, genoux pliés. Gardez le bas du dos immobile pendant que vous glissez lentement un talon puis l'autre vers l'avant, sans que le bassin ne bouge." },
-                            { name: "Squat fonctionnel contrôlé", dose: "3 × 10", tip: "Debout, pieds largeur du bassin, descendez en gardant le dos neutre, mouvement lent, puis remontez en poussant sur les jambes." },
-                            { name: "Hanche en charnière", dose: "3 × 10", tip: "Debout, jambes presque tendues, poussez les fesses vers l'arrière en penchant le buste dos neutre, puis redressez-vous. Apprendre à plier depuis la hanche plutôt qu'en arrondissant le dos est la base du geste de soulevé sécurisé." }
+                            { name: "Squat fonctionnel contrôlé", dose: "3 × 10", tip: "Debout, pieds largeur du bassin, descendez en gardant le dos neutre, mouvement lent, puis remontez en poussant sur les jambes. Une fois le mouvement propre, ajoutez du poids — un sac à dos chargé, une bouteille dans chaque main — plutôt que des répétitions." },
+                            { name: "Hanche en charnière", dose: "3 × 10", tip: "Debout, jambes presque tendues, poussez les fesses vers l'arrière en penchant le buste dos neutre, puis redressez-vous. Apprendre à plier depuis la hanche plutôt qu'en arrondissant le dos est la base du geste de soulevé sécurisé. Tenez une charge légère devant vous dès que le geste est net : c'est ce qui prépare le port de charge du stade suivant." }
                         ] },
                     { label: "Retour à l'activité", critere: "Vous avez repris vos activités habituelles, y compris celles que vous évitiez, et une journée chargée ne laisse qu'une fatigue passagère. À ce stade l'objectif n'est plus l'absence de douleur, mais votre capacité à traverser un épisode sans tout arrêter.", exercises: [
                             { name: "Renforcement fonctionnel progressif", dose: "3 × 12", tip: "Debout, un objet léger posé au sol devant vous. Fléchissez genoux et hanches pour descendre, dos neutre, saisissez l'objet en le gardant près du corps, puis remontez en poussant sur les jambes. Alourdissez l'objet au fil des séances." },
@@ -2143,12 +2143,12 @@ const PATHOLOGIES = [
                     { label: "Renforcement", critere: "Vous tenez le gainage et le renforcement sans que la douleur redescende dans la jambe.", exercises: [
                             { name: "Gainage doux progressif", dose: "3 × 20 sec", tip: "Planche sur les genoux ou gainage allongé, en augmentant la durée d'une séance à l'autre selon la tolérance." },
                             { name: "Renforcement fessiers léger", dose: "3 × 12", tip: "Allongé sur le côté, jambes légèrement pliées l'une sur l'autre. Levez le genou du dessus vers le plafond en gardant les pieds joints, sans faire rouler le bassin vers l'arrière." },
-                            { name: "Renforcement abdominal profond", dose: "3 × 15", tip: "Allongé sur le dos, genoux pliés. Rentrez doucement le nombril comme pour resserrer une ceinture, sans bloquer la respiration, et maintenez quelques secondes." },
+                            { name: "Marche progressive", dose: "15-20 min", tip: "Allongez la sortie progressivement, en gardant le repère de la jambe : tant que rien ne redescend dedans, la distance peut monter." },
                             { name: "Pont fessier", dose: "3 × 12", tip: "Allongé sur le dos, genoux pliés, pieds à plat. Serrez les fessiers, puis montez le bassin en vous arrêtant à la hauteur qui ne réveille pas la douleur descendant dans la jambe, et redescendez lentement. Ici l'amplitude compte moins que l'absence de symptôme dans la jambe." }
                         ] },
                     { label: "Contrôle moteur", critere: "Vous vous penchez et soulevez une charge légère sans appréhension ni retour des symptômes dans la jambe.", exercises: [
                             { name: "Stabilité lombo-pelvienne dynamique", dose: "3 × 10", tip: "À quatre pattes, dos plat. Tendez un bras devant vous en même temps que la jambe opposée derrière, sans que le bassin ne bascule, puis changez de côté." },
-                            { name: "Squat contrôlé, hanche en charnière", dose: "3 × 10", tip: "Debout, poussez les fesses vers l'arrière comme pour vous asseoir sur une chaise derrière vous, dos neutre, genoux qui se plient légèrement. Le mouvement part de la hanche, pas du dos." },
+                            { name: "Squat contrôlé, hanche en charnière", dose: "3 × 10", tip: "Debout, poussez les fesses vers l'arrière comme pour vous asseoir sur une chaise derrière vous, dos neutre, genoux qui se plient légèrement. Le mouvement part de la hanche, pas du dos. Ajoutez une charge légère tenue devant vous quand le geste est net et que rien ne redescend dans la jambe." },
                             { name: "Gainage multidirectionnel", dose: "3 × 10", tip: "Enchaînez gainage de face, gainage sur le côté droit, puis sur le côté gauche. À chaque variante, le dos reste neutre — ni creusé ni arrondi — et la respiration continue." },
                             { name: "Glissements du nerf sciatique", dose: "3 × 10", tip: "Assis, tendez le genou en relevant la tête, puis pliez le genou en baissant le menton, dans un mouvement alterné et fluide. On cherche un glissement du nerf, pas un étirement maintenu." }
                         ] },
@@ -2173,8 +2173,8 @@ const PATHOLOGIES = [
                             { name: "Marche courte régulière", dose: "10 min", tip: "La marche est généralement bien tolérée et même recommandée à ce stade, contrairement à un repos strict prolongé qui n'apporte pas de bénéfice démontré." }
                         ] },
                     { label: "Charge fonctionnelle sans flexion excessive", critere: "Vous soulevez une charge légère en gardant le dos neutre, sans que rien ne redescende dans la jambe.", exercises: [
-                            { name: "Hanche en charnière (soulevé sécurisé)", dose: "3 × 10", tip: "Debout, jambes presque tendues, poussez les fesses vers l'arrière en penchant le buste, dos neutre, genoux qui plient légèrement, puis redressez-vous en poussant sur les jambes. Le mouvement part de la hanche, pas d'un arrondi du dos." },
-                            { name: "Squat fonctionnel dos neutre", dose: "3 × 12", tip: "Debout, pieds largeur du bassin, pointes légèrement ouvertes. Descendez en poussant les fesses vers l'arrière comme pour s'asseoir, dos neutre, talons au sol, puis remontez. Descendez seulement aussi bas que le dos reste droit." },
+                            { name: "Hanche en charnière (soulevé sécurisé)", dose: "3 × 10", tip: "Debout, jambes presque tendues, poussez les fesses vers l'arrière en penchant le buste, dos neutre, genoux qui plient légèrement, puis redressez-vous en poussant sur les jambes. Le mouvement part de la hanche, pas d'un arrondi du dos. Tenez une charge légère devant vous dès que le geste est net, et alourdissez-la d'une semaine à l'autre tant que la jambe reste calme." },
+                            { name: "Squat fonctionnel dos neutre", dose: "3 × 12", tip: "Debout, pieds largeur du bassin, pointes légèrement ouvertes. Descendez en poussant les fesses vers l'arrière comme pour s'asseoir, dos neutre, talons au sol, puis remontez. Descendez seulement aussi bas que le dos reste droit. Ajoutez du poids plutôt que de la profondeur." },
                             { name: "Gainage dynamique", dose: "3 × 10", tip: "En planche ou à quatre pattes, ajoutez un léger mouvement de bras ou de jambe en gardant le dos stable, sans partir en flexion." },
                             { name: "Marche prolongée", dose: "20 min", tip: "Augmentez progressivement la durée, en restant attentif à la centralisation plutôt qu'à la seule intensité de la douleur." }
                         ] },
@@ -3286,7 +3286,7 @@ const POSITION_LIBRARY = [
     { test: (n) => n.includes("poignet") || n.includes("préhension") || n.includes("grip"), label: "Assis, avant-bras posé sur une table" },
     { test: (n) => n.includes("élévation") || n.includes("rotation externe") || n.includes("rotation interne") || n.includes("rétraction des omoplates") || n.includes("scapulaire") || n.includes("stabilité en appui mural") || n.includes("deltoïde"), label: "Debout" },
     { test: (n) => n.includes("presse latérale"), label: "Sur le côté, genou en appui sur un banc" },
-    { test: (n) => n.includes("presse"), label: "Assis ou allongé, selon l'équipement disponible" },
+    { test: (n) => n.includes("presse à"), label: "Assis ou allongé, selon l'équipement disponible" },
     { test: (n) => n.includes("pompes de cheville"), label: "Allongé ou assis, jambe surélevée" },
     { test: (n) => n.includes("isométrique en charge") || n.includes("isométrique quadriceps en charge"), label: "Debout, dos contre le mur" },
     { test: (n) => n.includes("accélération") || n.includes("décélération"), label: "Debout, en mouvement" },
@@ -3423,7 +3423,7 @@ function familleEffort(ex, croissance) {
     // « Montée de marche » et « excentrique sur marche » sont des marches d'escalier, pas
     // de la marche : sans cette garde, elles tombaient dans l'endurance.
     const step = /mont[ée]e|step|escalier|sur marche|de marche/.test(n);
-    if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|position de soulagement|posture de soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
+    if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|^position|^posture|bascule|press-up|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
         return null;
     if (/[ée]quilibre|proprioception|plateau|instable|repositionnement|oculo|perturbation|coordination|stabilit[ée]/.test(n))
         return "controle";
@@ -3437,7 +3437,7 @@ function familleEffort(ex, croissance) {
     if (/isom[ée]trique|gainage|planche|maintien|maintenu|tenue|activation du|contractions?\b/.test(n + " " + dose))
         return "maintien";
     if (!doux && (/\(\s*\d+\s*sec\s*\/\s*\d+\s*sec\s*\)/.test(dose)
-        || /lourd|lest|charg[ée]|presse|squat|fente|soulev|step-up|mont[ée]e sur step|mont[ée]e sur marche|haltère|poulie/.test(n)
+        || /lourd|lest|charg[ée]|presse à|squat|fente|soulev|step-up|mont[ée]e sur step|mont[ée]e sur marche|haltère|poulie/.test(n)
         || /augmentez la charge|plus lourd|charge progressive/.test(t)))
         // Les programmes de croissance se font au poids du corps : « assez lourd » n'y a de
         // sens que si une charge est nommée quelque part. Un squat sur une chaise et une
@@ -3445,9 +3445,15 @@ function familleEffort(ex, croissance) {
         // peu lesté », et garde donc le repère de charge.
         return (croissance && !/lest|charg|haltère|poulie|presse|sac à dos/.test(n + " " + t))
             ? "renforcement" : "lourd";
-    // Le repli ne vaut que pour une dose en répétitions : « la dernière répétition doit être
-    // difficile » n'a aucun sens sur une durée. Sans cette garde, la glace après le sport,
-    // la chaleur du soir et l'échauffement d'avant-séance recevaient un repère de charge.
+    // Le repli dépend de l'unité de la dose. « La dernière répétition doit être difficile »
+    // n'a de sens que sur des répétitions : sans cette garde, la glace après le sport et la
+    // chaleur du soir recevaient un repère de charge. Une série comptée en secondes est un
+    // maintien ; une série comptée en minutes est une position tenue pour le confort — le
+    // sphinx du protocole d'extension, cinq fois deux minutes — et ne se dose pas.
+    if (/^\d+\s*×\s*\d+(-\d+)?\s*min\b/.test(dose))
+        return null;
+    if (/^\d+\s*×\s*\d+(-\d+)?\s*sec\b/.test(dose))
+        return "maintien";
     return /^\d+\s*×\s*\d+/.test(dose) ? "renforcement" : null;
 }
 // Vingt-huit consignes disent déjà l'intensité — « charge suffisante pour que la 8e
