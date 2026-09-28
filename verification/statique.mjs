@@ -6,6 +6,9 @@
 //   node verification/statique.mjs
 
 import { lireFichier, blocsStyle, scriptApplicatif, donnees, tousLesExercices } from "./lire.mjs";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { RACINE } from "./lire.mjs";
 
 const html = lireFichier();
 const app = scriptApplicatif(html);
@@ -422,6 +425,21 @@ controle("chaque « pourquoi » désigne une étape qui existe", () => {
     D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => i.stages.forEach((s) => libelles.add(s.label))));
     return Object.keys(D.POURQUOI_ETAPE).filter((k) => !libelles.has(k))
         .map((k) => `« ${k} » ne correspond à aucune étape`);
+});
+
+// La vignette de 44 px sur l'écran d'accueil est une copie du PNG, collée dans le fichier.
+// Elle a divergé sans bruit : l'icône installée sur le téléphone est passée au marine sur
+// voile, la vignette est restée verte sur marine, et le commentaire au-dessus continuait
+// d'affirmer que c'était le même dessin. Rien ne l'aurait signalé — ni le navigateur, ni un
+// contrôle de rendu, qui ne sait pas à quoi l'image devrait ressembler. On compare donc les
+// octets : la vignette doit être icon-192.png, pas une image qui lui ressemble.
+controle("la vignette de l'accueil est bien l'icône installée", () => {
+    const m = html.match(/const LOGO = "data:image\/png;base64,([A-Za-z0-9+/=]+)"/);
+    if (!m) return ["la vignette LOGO est introuvable, ou n'est plus un PNG en base64"];
+    const embarquee = Buffer.from(m[1], "base64");
+    const fichier = readFileSync(join(RACINE, "icon-192.png"));
+    if (embarquee.equals(fichier)) return [];
+    return [`la vignette (${embarquee.length} octets) diffère de icon-192.png (${fichier.length} octets)`];
 });
 
 // --- Restitution ----------------------------------------------------------------------
