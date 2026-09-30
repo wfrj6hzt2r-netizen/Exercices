@@ -3272,41 +3272,6 @@ const CROISSANCE_DATA = [
         ],
     },
     {
-        id: "bassin",
-        label: "Apophysite du bassin",
-        alias: "La douleur à l'aine ou sous la fesse",
-        desc: "Une douleur à l'avant de la hanche, dans l'aine ou juste sous la fesse, qui arrive quand tu sprintes, quand tu tires dans un ballon ou quand tu fais le grand écart.",
-        context: "Sur ton bassin, il y a plusieurs zones d'os encore en construction, et c'est exactement là que s'accrochent les gros muscles de la cuisse. Quand tu sprintes ou que tu frappes, ces muscles tirent très fort sur une zone qui n'est pas encore soudée : elle s'irrite. C'est le même mécanisme que la bosse sous le genou, mais plus haut. Ça ne casse rien et ça guérit toujours. Une précision importante : si la douleur est arrivée d'un coup, très fort, pendant un sprint ou une frappe, et que tu as du mal à marcher, il faut consulter — le morceau d'os peut s'être décollé, et ça se soigne, mais pas avec ces exercices.",
-        parent: "Les apophysites du bassin touchent surtout les footballeurs et les athlètes entre 13 et 17 ans. Deux situations doivent sortir du programme. Un arrachement apophysaire aigu, sur douleur brutale en sprint ou en frappe avec impotence : il relève d'un avis et d'imagerie. Et surtout une épiphysiolyse fémorale supérieure devant toute douleur de hanche, d'aine ou de genou chez un préadolescent, avec boiterie et rotation externe du pied : c'est une urgence chirurgicale, aucun exercice ne doit être proposé. En dehors de ces cas, l'évolution est bénigne, longue de quelques mois, et l'aménagement de la charge suffit.",
-        drapeaux: ["Une douleur arrivée d'un coup pendant un sprint ou une frappe, avec du mal à marcher ensuite.", "Une hanche qui te fait boiter tous les jours, avec le pied qui part vers l'extérieur quand tu marches : dans ce cas, ne fais aucun exercice et va voir un médecin rapidement."],
-        stages: [
-            { critere: "Tu marches et tu montes un escalier sans douleur, et lever le genou pour enfiler un pantalon ne te fait plus mal.", exercises: [
-                    { name: "Contraction sans bouger", dose: "5 × 20 sec", tip: "Allongé sur le dos, pousse ton talon dans le sol ou serre un coussin entre tes genoux, selon l'endroit qui te fait mal. Tiens sans bouger, puis relâche.", pourquoi: "Tu gardes tes muscles actifs sans les faire glisser sur la zone irritée. C'est le seul renforcement possible tant que ça tire." },
-                    { name: "Étirement très doux", dose: "3 × 20 sec", tip: "Étire doucement l'avant de la cuisse et l'intérieur, sans jamais aller chercher la position qui pique.", pourquoi: "Un muscle trop court tire davantage sur l'os. Mais ici on y va tout doux : trop étirer une zone irritée l'irrite encore plus." },
-                    { name: "Mettre les sprints de côté", dose: "cette semaine", tip: "Arrête les sprints, les frappes et les grands écarts. Tu peux continuer à courir tranquillement, faire des passes et travailler la technique.", pourquoi: "C'est l'accélération et la frappe qui tirent le plus fort. En les enlevant, tu enlèves l'essentiel du problème sans arrêter ton sport." },
-                    { name: "Marche et vélo", dose: "20 min", tip: "Garde une activité tous les jours : marche, vélo tranquille, natation.", pourquoi: "Bouger doucement amène du sang à la zone et l'aide à récupérer. Rester assis à ne rien faire ralentit la guérison." }
-                ] },
-            { critere: "Tu cours tranquillement sans douleur, et les étirements ne piquent plus.", exercises: [
-                    { name: "Étirement de l'avant de la cuisse et de l'intérieur", dose: "3 × 30 sec", tip: "Fente avant genou arrière au sol pour l'avant de la hanche ; assis plante contre plante pour l'intérieur.", pourquoi: "Tes muscles se sont raccourcis avec la poussée : les rallonger réduit ce qu'ils tirent à chaque foulée." },
-                    { name: "Pont fessier", dose: "3 × 12", tip: "Sur le dos, genoux pliés, lève les fesses en serrant, puis redescends lentement.", pourquoi: "Des fessiers forts prennent le relais des muscles qui tirent sur ton bassin." },
-                    { name: "Serrer un coussin entre les genoux", dose: "3 × 12", tip: "Allongé, genoux pliés, serre un coussin 5 secondes puis relâche.", pourquoi: "Tu remuscles l'intérieur de la cuisse progressivement, sans mouvement brusque." },
-                    { name: "Gainage sur les coudes", dose: "3 × 20 sec", tip: "En appui sur les coudes et les pointes de pieds, corps aligné, sans creuser le dos.", pourquoi: "Un ventre solide stabilise ton bassin. Quand il bouge moins, les muscles tirent moins fort dessus." }
-                ] },
-            { critere: "Tu accélères et tu frappes doucement dans un ballon sans douleur pendant ni le lendemain. C'est la fenêtre pour te renforcer avant la prochaine poussée.", exercises: [
-                    { name: "Fentes contrôlées", dose: "3 × 10 de chaque côté", tip: "Grand pas en avant, descends le genou arrière vers le sol, puis repousse pour revenir.", pourquoi: "Tu muscles la hanche dans la position où elle travaille en courant." },
-                    { name: "Pont fessier sur une jambe", dose: "3 × 10 de chaque côté", tip: "Sur le dos, un pied au sol genou plié, l'autre jambe tendue en l'air. Monte les fesses en gardant le bassin bien horizontal — il ne doit pas pencher du côté de la jambe levée — puis redescends lentement.", pourquoi: "En course, tu es toujours sur une seule jambe : c'est comme ça qu'il faut muscler." },
-                    { name: "Renforcement des adducteurs", dose: "3 × 12", tip: "Allongé sur le côté, jambe du dessous tendue, lève-la vers le plafond.", pourquoi: "L'intérieur de la cuisse est le muscle le plus sollicité quand tu frappes : il doit être fort avant que tu recommences à tirer." },
-                    { name: "Accélérations progressives", dose: "4 × 30 m", tip: "Pars tranquillement et monte en vitesse sur trente mètres, sans jamais partir à fond d'un coup.", pourquoi: "Tu réhabitues ton bassin à la vitesse petit à petit, ce qui est exactement ce qui l'avait irrité." }
-                ] },
-            { critere: "Tu sprintes et tu frappes à pleine intensité sans douleur, et tu as fait plusieurs entraînements complets. Garde les étirements : tant que tu grandis, ça peut revenir, et ce ne sera pas un échec.", exercises: [
-                    { name: "Retour aux sprints", dose: "selon ton plan", tip: "Réintroduis la vitesse maximale en dernier, après les accélérations progressives.", pourquoi: "Le sprint est le geste qui tire le plus fort : il revient quand tout le reste passe déjà." },
-                    { name: "Retour aux frappes", dose: "selon ton plan", tip: "Commence par des passes courtes, puis longues, puis les frappes au but.", pourquoi: "Plus la frappe est longue, plus l'intérieur de la cuisse tire fort sur ton bassin." },
-                    { name: "Étirements d'entretien", dose: "3 × par semaine", tip: "Avant de la hanche : en fente, genou arrière au sol, avance le bassin sans cambrer. Intérieur de la cuisse : assis, plantes de pieds jointes, laisse les genoux descendre vers le sol. Trente secondes chacun, même sans douleur.", pourquoi: "Tant que tu grandis, tes muscles se raccourcissent : les étirements gardent de l'avance." },
-                    { name: "Échauffement avant chaque séance", dose: "10 min", tip: "Ne saute jamais l'échauffement, surtout avant un match ou une séance de vitesse.", pourquoi: "Un muscle froid tire plus fort sur l'os qu'un muscle chaud. C'est la mesure la plus simple pour éviter la rechute." }
-                ] }
-        ],
-    },
-    {
         id: "scoliose",
         label: "Scoliose",
         alias: "Le dos qui se courbe sur le côté",
@@ -3350,6 +3315,41 @@ const CROISSANCE_DATA = [
                     { name: "Renforcement global d'entretien", dose: "2 à 3 × par semaine", tip: "Gainages, tirages et extensions du dos, en gardant la correction pendant l'effort.", pourquoi: "Un tronc endurant est ce qui te permet de tenir la position toute la journée sans fatiguer." },
                     { name: "Activité physique régulière", dose: "2 à 3 × par semaine", tip: "Choisis un sport qui te plaît, sans restriction.", pourquoi: "Aucun sport ne provoque ni n'aggrave une scoliose, et aucun n'est à éviter pour cette raison. Bouger entretient mieux ton dos que n'importe quel exercice isolé." },
                     { name: "Maintien de la mobilité thoracique", dose: "2 à 3 × par semaine", tip: "Continue les rotations et les extensions du haut du dos, ainsi que la respiration dirigée.", pourquoi: "Ta cage thoracique se raidit vite quand le travail s'arrête, et c'est elle qui porte la rotation." }
+                ] }
+        ],
+    },
+    {
+        id: "bassin",
+        label: "Apophysite du bassin",
+        alias: "La douleur à l'aine ou sous la fesse",
+        desc: "Une douleur à l'avant de la hanche, dans l'aine ou juste sous la fesse, qui arrive quand tu sprintes, quand tu tires dans un ballon ou quand tu fais le grand écart.",
+        context: "Sur ton bassin, il y a plusieurs zones d'os encore en construction, et c'est exactement là que s'accrochent les gros muscles de la cuisse. Quand tu sprintes ou que tu frappes, ces muscles tirent très fort sur une zone qui n'est pas encore soudée : elle s'irrite. C'est le même mécanisme que la bosse sous le genou, mais plus haut. Ça ne casse rien et ça guérit toujours. Une précision importante : si la douleur est arrivée d'un coup, très fort, pendant un sprint ou une frappe, et que tu as du mal à marcher, il faut consulter — le morceau d'os peut s'être décollé, et ça se soigne, mais pas avec ces exercices.",
+        parent: "Les apophysites du bassin touchent surtout les footballeurs et les athlètes entre 13 et 17 ans. Deux situations doivent sortir du programme. Un arrachement apophysaire aigu, sur douleur brutale en sprint ou en frappe avec impotence : il relève d'un avis et d'imagerie. Et surtout une épiphysiolyse fémorale supérieure devant toute douleur de hanche, d'aine ou de genou chez un préadolescent, avec boiterie et rotation externe du pied : c'est une urgence chirurgicale, aucun exercice ne doit être proposé. En dehors de ces cas, l'évolution est bénigne, longue de quelques mois, et l'aménagement de la charge suffit.",
+        drapeaux: ["Une douleur arrivée d'un coup pendant un sprint ou une frappe, avec du mal à marcher ensuite.", "Une hanche qui te fait boiter tous les jours, avec le pied qui part vers l'extérieur quand tu marches : dans ce cas, ne fais aucun exercice et va voir un médecin rapidement."],
+        stages: [
+            { critere: "Tu marches et tu montes un escalier sans douleur, et lever le genou pour enfiler un pantalon ne te fait plus mal.", exercises: [
+                    { name: "Contraction sans bouger", dose: "5 × 20 sec", tip: "Allongé sur le dos, pousse ton talon dans le sol ou serre un coussin entre tes genoux, selon l'endroit qui te fait mal. Tiens sans bouger, puis relâche.", pourquoi: "Tu gardes tes muscles actifs sans les faire glisser sur la zone irritée. C'est le seul renforcement possible tant que ça tire." },
+                    { name: "Étirement très doux", dose: "3 × 20 sec", tip: "Étire doucement l'avant de la cuisse et l'intérieur, sans jamais aller chercher la position qui pique.", pourquoi: "Un muscle trop court tire davantage sur l'os. Mais ici on y va tout doux : trop étirer une zone irritée l'irrite encore plus." },
+                    { name: "Mettre les sprints de côté", dose: "cette semaine", tip: "Arrête les sprints, les frappes et les grands écarts. Tu peux continuer à courir tranquillement, faire des passes et travailler la technique.", pourquoi: "C'est l'accélération et la frappe qui tirent le plus fort. En les enlevant, tu enlèves l'essentiel du problème sans arrêter ton sport." },
+                    { name: "Marche et vélo", dose: "20 min", tip: "Garde une activité tous les jours : marche, vélo tranquille, natation.", pourquoi: "Bouger doucement amène du sang à la zone et l'aide à récupérer. Rester assis à ne rien faire ralentit la guérison." }
+                ] },
+            { critere: "Tu cours tranquillement sans douleur, et les étirements ne piquent plus.", exercises: [
+                    { name: "Étirement de l'avant de la cuisse et de l'intérieur", dose: "3 × 30 sec", tip: "Fente avant genou arrière au sol pour l'avant de la hanche ; assis plante contre plante pour l'intérieur.", pourquoi: "Tes muscles se sont raccourcis avec la poussée : les rallonger réduit ce qu'ils tirent à chaque foulée." },
+                    { name: "Pont fessier", dose: "3 × 12", tip: "Sur le dos, genoux pliés, lève les fesses en serrant, puis redescends lentement.", pourquoi: "Des fessiers forts prennent le relais des muscles qui tirent sur ton bassin." },
+                    { name: "Serrer un coussin entre les genoux", dose: "3 × 12", tip: "Allongé, genoux pliés, serre un coussin 5 secondes puis relâche.", pourquoi: "Tu remuscles l'intérieur de la cuisse progressivement, sans mouvement brusque." },
+                    { name: "Gainage sur les coudes", dose: "3 × 20 sec", tip: "En appui sur les coudes et les pointes de pieds, corps aligné, sans creuser le dos.", pourquoi: "Un ventre solide stabilise ton bassin. Quand il bouge moins, les muscles tirent moins fort dessus." }
+                ] },
+            { critere: "Tu accélères et tu frappes doucement dans un ballon sans douleur pendant ni le lendemain. C'est la fenêtre pour te renforcer avant la prochaine poussée.", exercises: [
+                    { name: "Fentes contrôlées", dose: "3 × 10 de chaque côté", tip: "Grand pas en avant, descends le genou arrière vers le sol, puis repousse pour revenir.", pourquoi: "Tu muscles la hanche dans la position où elle travaille en courant." },
+                    { name: "Pont fessier sur une jambe", dose: "3 × 10 de chaque côté", tip: "Sur le dos, un pied au sol genou plié, l'autre jambe tendue en l'air. Monte les fesses en gardant le bassin bien horizontal — il ne doit pas pencher du côté de la jambe levée — puis redescends lentement.", pourquoi: "En course, tu es toujours sur une seule jambe : c'est comme ça qu'il faut muscler." },
+                    { name: "Renforcement des adducteurs", dose: "3 × 12", tip: "Allongé sur le côté, jambe du dessous tendue, lève-la vers le plafond.", pourquoi: "L'intérieur de la cuisse est le muscle le plus sollicité quand tu frappes : il doit être fort avant que tu recommences à tirer." },
+                    { name: "Accélérations progressives", dose: "4 × 30 m", tip: "Pars tranquillement et monte en vitesse sur trente mètres, sans jamais partir à fond d'un coup.", pourquoi: "Tu réhabitues ton bassin à la vitesse petit à petit, ce qui est exactement ce qui l'avait irrité." }
+                ] },
+            { critere: "Tu sprintes et tu frappes à pleine intensité sans douleur, et tu as fait plusieurs entraînements complets. Garde les étirements : tant que tu grandis, ça peut revenir, et ce ne sera pas un échec.", exercises: [
+                    { name: "Retour aux sprints", dose: "selon ton plan", tip: "Réintroduis la vitesse maximale en dernier, après les accélérations progressives.", pourquoi: "Le sprint est le geste qui tire le plus fort : il revient quand tout le reste passe déjà." },
+                    { name: "Retour aux frappes", dose: "selon ton plan", tip: "Commence par des passes courtes, puis longues, puis les frappes au but.", pourquoi: "Plus la frappe est longue, plus l'intérieur de la cuisse tire fort sur ton bassin." },
+                    { name: "Étirements d'entretien", dose: "3 × par semaine", tip: "Avant de la hanche : en fente, genou arrière au sol, avance le bassin sans cambrer. Intérieur de la cuisse : assis, plantes de pieds jointes, laisse les genoux descendre vers le sol. Trente secondes chacun, même sans douleur.", pourquoi: "Tant que tu grandis, tes muscles se raccourcissent : les étirements gardent de l'avance." },
+                    { name: "Échauffement avant chaque séance", dose: "10 min", tip: "Ne saute jamais l'échauffement, surtout avant un match ou une séance de vitesse.", pourquoi: "Un muscle froid tire plus fort sur l'os qu'un muscle chaud. C'est la mesure la plus simple pour éviter la rechute." }
                 ] }
         ],
     },
