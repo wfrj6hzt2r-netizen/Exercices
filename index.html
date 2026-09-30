@@ -857,14 +857,22 @@ const PoseSidePlank = poseWrap(React.createElement(React.Fragment, null,
 // L'extension debout, mains au creux des reins. Elle se distingue du sphinx, qui se fait au
 // sol, et de la rotation du tronc, qui était jusqu'ici le dessin rendu — le patient voyait
 // un buste qui tourne là où sa consigne lui demande de se pencher en arrière.
+//
+// La flèche n'est pas un ornement. Un bonhomme de profil qui se penche en arrière se lit
+// aussi bien comme un bonhomme qui se penche en avant : rien, sur une silhouette sans
+// visage ni pieds, ne dit de quel côté il regarde. L'arc part de l'épaule et passe
+// au-dessus de la tête, seul tracé qui reste de l'encre nettement séparée du corps : plus
+// bas, derrière le dos, il se lisait comme un second bras.
 const PoseStandingExtension = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
-    React.createElement("circle", { cx: "17", cy: "11", r: "4" }),
-    React.createElement("path", { d: "M26 30 Q28 21 20 15" }),
-    React.createElement("line", { x1: "21", y1: "17", x2: "15", y2: "21" }),
-    React.createElement("line", { x1: "15", y1: "21", x2: "22", y2: "25" }),
-    React.createElement("line", { x1: "26", y1: "30", x2: "23", y2: "44" }),
-    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" })));
+    React.createElement("circle", { cx: "19", cy: "14.5", r: "4" }),
+    React.createElement("path", { d: "M27 32 Q29 25 22.5 18" }),
+    React.createElement("line", { x1: "23", y1: "20", x2: "17", y2: "24" }),
+    React.createElement("line", { x1: "17", y1: "24", x2: "24", y2: "28" }),
+    React.createElement("line", { x1: "27", y1: "32", x2: "24", y2: "44" }),
+    React.createElement("line", { x1: "27", y1: "32", x2: "30", y2: "44" }),
+    React.createElement("path", { d: "M32 12.5 Q27 3.5 16 3.5" }),
+    React.createElement("path", { d: "M18.8 1.2 15.5 3.5 18.8 5.8" })));
 // Quatre pattes, bras et jambe opposés tendus. La tête est basse et le bras passe au-dessus
 // d'elle : à vingt-quatre pixels, un bras qui traverse le crâne ne se lit plus.
 const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
