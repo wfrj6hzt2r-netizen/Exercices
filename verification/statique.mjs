@@ -282,13 +282,45 @@ controle("le pictogramme ne contredit pas la consigne", () => {
 });
 
 // --- 8. L'élastique a toujours un repli -----------------------------------------------
-// Demandé lors de la relecture : un patient sans élastique ne doit pas rester bloqué.
+// Demandé lors de la relecture : un patient sans élastique ne doit pas rester bloqué.
+//
+// Ce contrôle a passé des mois à ne rien vérifier. Il appelait « demandeUnElastique(ex.tip) »
+// en lui passant une chaîne là où la fonction attend l'exercice : « ex.name » et « ex.tip »
+// y valaient undefined, la recherche portait donc sur une chaîne vide et ne trouvait jamais
+// rien. Il exigeait par ailleurs un champ « sansElastique » qui n'existe dans aucun exercice
+// — l'application a cessé de porter le repli à la main et le déduit désormais du texte. Un
+// contrôle vert qui ne peut pas rougir est pire que pas de contrôle : il rassure.
+//
+// Trois choses sont donc vérifiées, dont la première garde contre cette panne-là.
+const ACCESSOIRE_ELASTIQUE = /th[ée]ra-?band|[ée]lastiband|bande de r[ée]sistance|tube de r[ée]sistance|bande de tirage/i;
+const REPLI_DEJA_DIT = /sans\s+[ée]lastique|[ée]lastique\s+n'est pas|si vous n'avez pas d'[ée]lastique|à défaut d'[ée]lastique/i;
 controle("tout exercice à élastique offre une version sans", () => {
     if (!D.demandeUnElastique)
         throw new Error("le repérage des élastiques n'est pas exposé");
-    return exercices
-        .filter(({ ex }) => D.demandeUnElastique(ex.tip) && !ex.sansElastique)
-        .map(({ ex, ou }) => `${ou} — « ${ex.name} »`);
+    const out = [];
+    const vus = new Set();
+    let reperes = 0;
+    for (const { ex, ou } of exercices) {
+        if (D.demandeUnElastique(ex))
+            reperes++;
+        if (vus.has(ex.name))
+            continue;
+        vus.add(ex.name);
+        const texte = ex.name + " " + (ex.tip || "");
+        // Le repli ne s'affiche que si le mot « élastique » paraît. Nommer l'accessoire
+        // autrement le ferait disparaître sans bruit, et le patient resterait bloqué.
+        if (!D.demandeUnElastique(ex) && ACCESSOIRE_ELASTIQUE.test(texte))
+            out.push(`${ou} — « ${ex.name} » nomme un élastique sans employer le mot : aucun repli ne sera proposé`);
+        // L'inverse : une consigne qui dit déjà quoi faire sans élastique se verrait doubler
+        // par le paragraphe ajouté.
+        if (D.demandeUnElastique(ex) && REPLI_DEJA_DIT.test(ex.tip || ""))
+            out.push(`${ou} — « ${ex.name} » : la consigne dit déjà le repli, qui sera répété dessous`);
+    }
+    // La panne d'origine, rendue impossible : si plus aucun exercice n'est repéré, c'est le
+    // repérage lui-même qui est cassé, non le contenu qui s'est assagi.
+    if (!reperes)
+        out.push("aucun exercice à élastique repéré sur " + exercices.length + " : le repérage ne fonctionne plus");
+    return out;
 });
 
 // Les conseils des premiers jours sont du contenu clinique au même titre qu'une consigne :
