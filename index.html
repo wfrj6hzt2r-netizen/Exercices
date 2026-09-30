@@ -2596,38 +2596,6 @@ const PATHOLOGIES = [
                             { name: "Reprise d'une activité physique régulière", dose: "2 à 3 × par semaine", tip: "Marche rapide, natation, renforcement : l'activité physique régulière est ce qui entretient le mieux la mobilité du dos sur le long terme, davantage que les exercices isolés." },
                             { name: "Maintien du travail de mobilité", dose: "2 à 3 × par semaine", tip: "Poursuivez rotations et extensions thoraciques dans la durée : sans entretien, la raideur revient en quelques semaines." }
                         ] }
-                ] },
-            { id: "scoliose", label: "Scoliose", checkinKind: "phase", desc: "Courbure et rotation de la colonne installées pendant la croissance, le plus souvent indolores, repérées sur une bosse du dos quand on se penche en avant, ou sur une asymétrie des épaules et de la taille.", context: "La rééducation de la scoliose repose sur les exercices spécifiques — méthodes Schroth, SEAS, Lyon, BSPTS —, dont le principe commun est l'autocorrection en trois dimensions : allonger la colonne, la décaler et la dérouler dans le sens opposé à la courbure, puis apprendre à tenir cette correction dans les gestes de tous les jours. Cette correction dépend du dessin exact de votre courbure ; elle ne s'invente pas. Votre kinésithérapeute vous la montre, et ce programme la reprend et l'entretient. Les séances qui donnent les meilleurs résultats sont longues et régulières : trois à quatre fois par semaine, de quarante-cinq minutes à une heure quinze, et l'effet se mesure sur plusieurs mois. Les exercices ne remplacent ni le corset ni la surveillance : pendant la croissance, au-delà de 25°, c'est le corset qui tient la courbure, et les exercices l'accompagnent.", premiersJours: ["Une scoliose ne fait en général pas mal, surtout à l'adolescence. L'absence de douleur ne dit rien de son évolution : c'est la surveillance régulière qui le dit, pas les sensations.", "Ces exercices ne remplacent ni le corset ni le suivi. Si un corset vous a été prescrit, il se porte comme indiqué : les exercices l'accompagnent, ils ne s'y substituent pas.", "Aucun sport n'est interdit, et aucun n'est responsable de la courbure. L'activité physique est recommandée : c'est l'immobilité qui dessert le dos, pas le mouvement.", "Une douleur qui réveille la nuit, qui s'installe, ou des fourmillements dans les jambes ne font pas partie du tableau. Parlez-en avant de poursuivre le programme."], stageGuidance: [
-                    { freq: "Chaque jour, en séance courte", duration: "Deux à quatre semaines : le temps d'apprendre à sentir la correction et à la tenir. Tout le reste du programme s'appuie dessus." },
-                    { freq: "3 à 4 fois par semaine", duration: "Les protocoles qui ont fait leurs preuves tiennent des séances de quarante-cinq minutes à une heure quinze, sur plusieurs mois. Ne jugez pas l'effet avant six mois." },
-                    { freq: "3 à 4 fois par semaine, plus les rappels dans la journée", duration: "Cette étape ne se termine pas : elle se fond dans les gestes quotidiens, qui sont le vrai terrain de la correction." },
-                    { freq: "3 fois par semaine, sans terme", duration: "Pendant toute la croissance au minimum. L'arrêt fait perdre les gains en quelques mois, et la croissance est justement la période où la courbure peut encore évoluer." },
-                ],
-                stages: [
-                    { label: "Mobilité & correction", sub: "au début, ou après une longue interruption", pourquoi: "La correction ne sert à rien si le dos est trop raide pour la prendre. On délie d'abord, puis on apprend à sentir la position juste.", critere: "Vous retrouvez seul la position corrigée que votre kinésithérapeute vous a montrée, et vous la tenez une dizaine de secondes en respirant normalement.", exercises: [
-                            { name: "Autocorrection devant un miroir", dose: "3 × 10", tip: "Debout face à un miroir, reprenez la correction que votre kinésithérapeute vous a montrée : grandissez-vous vers le haut, puis décalez le tronc dans le sens qu'il vous a indiqué. Tenez 5 à 10 secondes en respirant, puis relâchez. La correction dépend du dessin de votre courbure : ne l'inventez pas, c'est celle-là qu'on répète ici." },
-                            { name: "Respiration dirigée assise", dose: "3 × 2 min", tip: "Assis, dos droit, mains posées à plat sur les côtes du côté que votre kinésithérapeute vous a indiqué. Inspirez lentement en cherchant à écarter les côtes sous vos mains, puis expirez longuement. La respiration est le seul moyen d'agir de l'intérieur sur la cage thoracique, là où la rotation s'installe." },
-                            { name: "Mobilisation chat-vache", dose: "2 × 10", tip: "À quatre pattes, alternez lentement dos rond menton rentré et dos creux poitrine ouverte. Mouvement fluide et sans forcer : il s'agit de délier la colonne avant de la corriger, pas de gagner de l'amplitude." },
-                            { name: "Autograndissement allongé", dose: "3 × 30 sec", tip: "Allongé sur le dos, genoux pliés, pieds à plat. Poussez le sommet du crâne vers le haut comme pour vous allonger, menton légèrement rentré, sans décoller les épaules du sol. Couché, le poids du corps ne gêne plus : c'est la position la plus facile pour sentir la colonne s'allonger." }
-                        ] },
-                    { label: "Renforcement", sub: "quand la correction est acquise", pourquoi: "Tenir une correction demande de l'endurance plutôt que de la force : sans elle, la position se défait au bout de quelques minutes.", critere: "Vous tenez les gainages jusqu'au bout sans que la position corrigée se défasse en fin de série.", exercises: [
-                            { name: "Gainage ventral", dose: "3 × 30 sec", tip: "À plat ventre, en appui sur les avant-bras et la pointe des pieds. Chevilles, bassin et épaules alignés, abdominaux serrés, bas du dos ni creusé ni arrondi. Respirez normalement : bloquer le souffle est une erreur fréquente." },
-                            { name: "Gainage latéral", dose: "3 × 20 sec chaque côté", tip: "Allongé sur le côté, en appui sur l'avant-bras, coude sous l'épaule. Décollez le bassin jusqu'à aligner chevilles, hanches et épaules, sans le laisser partir en arrière. Commencez par le côté que votre kinésithérapeute vous a indiqué." },
-                            { name: "Renforcement des extenseurs du dos en position corrigée", dose: "3 × 12", tip: "Allongé sur le ventre, bras le long du corps. Allongez d'abord la colonne, puis décollez la poitrine de quelques centimètres, regard vers le sol pour ne pas casser la nuque. C'est la correction tenue pendant l'effort qui compte, pas la hauteur atteinte." },
-                            { name: "Tirage en position corrigée", dose: "3 × 12", tip: "Élastique fixé devant vous à hauteur de poitrine. Grandissez-vous d'abord, puis tirez les coudes vers l'arrière en serrant les omoplates, sans laisser le tronc se replier. La force en tirage est ce qui permet de tenir la correction sans y penser." }
-                        ] },
-                    { label: "Contrôle moteur", sub: "quand la correction tient pendant l'effort", pourquoi: "Une correction qui ne tient que devant le miroir ne sert à rien. C'est dans le mouvement, et quand vous n'y pensez pas, qu'elle doit résister.", critere: "Vous retrouvez la position corrigée sans miroir, et vous la gardez en marchant et en portant un sac.", exercises: [
-                            { name: "Autocorrection sans repère visuel", dose: "3 × 10", tip: "Debout, dos au miroir ou yeux fermés, reprenez la correction, puis vérifiez dans le miroir. L'écart entre ce que vous sentez et ce que vous voyez se réduit avec les répétitions, et c'est exactement ce qu'on cherche." },
-                            { name: "Quadrupédie bras et jambe opposés", dose: "3 × 10 chaque côté", tip: "À quatre pattes, tendez un bras devant et la jambe opposée derrière, sans que le bassin bascule ni que le dos se creuse. Reprenez l'allongement de la colonne avant chaque répétition." },
-                            { name: "Marche en position corrigée", dose: "3 × 2 min", tip: "Marchez lentement en tenant la correction, bras relâchés. Dès qu'elle se défait, arrêtez-vous, reprenez-la, repartez. Tenir la correction en mouvement est plus difficile qu'à l'arrêt, et c'est ce qui sert dans la vie courante." },
-                            { name: "Autocorrection dans les gestes du quotidien", dose: "quotidien", tip: "Choisissez trois moments répétés de votre journée — attendre le bus, vous brosser les dents, être assis en cours ou au bureau — et reprenez-y la correction. Cette application dans la vie courante pèse davantage, à long terme, que la séance elle-même." }
-                        ] },
-                    { label: "Entretien au long cours", sub: "pendant toute la croissance", pourquoi: "Il n'y a pas de guérison à atteindre ici. La courbure peut évoluer tant que la croissance dure, et les gains se perdent en quelques mois d'arrêt.", critere: "La correction tient sans que vous y pensiez dans la plupart de vos activités, et votre courbure est stable au dernier contrôle.", exercises: [
-                            { name: "Entretien de l'autocorrection", dose: "3 × par semaine", tip: "Reprenez en entier la séance d'autocorrection et de respiration dirigée. Il n'y a pas de terme à cette étape : pendant toute la croissance, l'arrêt fait perdre les gains en quelques mois." },
-                            { name: "Renforcement global d'entretien", dose: "2 à 3 × par semaine", tip: "Gainages, tirages et extensions du dos, en gardant la correction pendant l'effort. Un tronc endurant est ce qui permet de tenir la position sans fatigue le reste de la journée." },
-                            { name: "Activité physique régulière", dose: "2 à 3 × par semaine", tip: "Choisissez un sport qui vous plaît, sans restriction : aucun sport ne provoque ni n'aggrave une scoliose, et aucun n'est à éviter pour cette raison. L'activité régulière entretient mieux la mobilité et la force du dos que les exercices isolés." },
-                            { name: "Maintien de la mobilité thoracique", dose: "2 à 3 × par semaine", tip: "Poursuivez les rotations et les extensions du haut du dos, ainsi que la respiration dirigée. La cage thoracique se raidit vite quand le travail s'arrête, et c'est elle qui porte la rotation." }
-                        ] }
                 ] }
         ] },
     { id: "lombaire", label: "Rachis lombaire", injuries: [
@@ -3165,6 +3133,12 @@ const CROISSANCE_PHASE_INFO = [
     "C'est la meilleure fenêtre pour se renforcer et s'assouplir, parce que la prochaine poussée arrivera.",
     "On revient à tout, et on garde quelques exercices d'entretien pour la suite.",
 ];
+// Les quatre phases ci-dessus sont dites en termes de douleur, ce qui convient aux huit
+// premières entrées : elles font mal. La scoliose, elle, est presque toujours indolore, et
+// « Ça fait vraiment mal » ou « Je n'ai plus mal » n'y veulent rien dire. Une entrée peut
+// donc porter ses propres libellés, comme une blessure porte son propre rythme.
+const phasesDe = (croi) => (croi && croi.phases) || CROISSANCE_PHASES;
+const phaseInfoDe = (croi) => (croi && croi.phasesInfo) || CROISSANCE_PHASE_INFO;
 const CROISSANCE_AGES = [
     { id: "petit", label: "8-11 ans", note: "Fais les exercices avec un adulte à côté, et arrête dès que ça tire vraiment. Le nombre de répétitions compte moins que de les faire régulièrement." },
     { id: "moyen", label: "12-14 ans", note: "C'est souvent la période où ça fait le plus mal, parce que tu grandis vite. Sois patient : ce n'est pas de ta faute et ça finit toujours par passer." },
@@ -3323,6 +3297,53 @@ const CROISSANCE_DATA = [
                     { name: "Retour aux frappes", dose: "selon ton plan", tip: "Commence par des passes courtes, puis longues, puis les frappes au but.", pourquoi: "Plus la frappe est longue, plus l'intérieur de la cuisse tire fort sur ton bassin." },
                     { name: "Étirements d'entretien", dose: "3 × par semaine", tip: "Avant de la hanche : en fente, genou arrière au sol, avance le bassin sans cambrer. Intérieur de la cuisse : assis, plantes de pieds jointes, laisse les genoux descendre vers le sol. Trente secondes chacun, même sans douleur.", pourquoi: "Tant que tu grandis, tes muscles se raccourcissent : les étirements gardent de l'avance." },
                     { name: "Échauffement avant chaque séance", dose: "10 min", tip: "Ne saute jamais l'échauffement, surtout avant un match ou une séance de vitesse.", pourquoi: "Un muscle froid tire plus fort sur l'os qu'un muscle chaud. C'est la mesure la plus simple pour éviter la rechute." }
+                ] }
+        ],
+    },
+    {
+        id: "scoliose",
+        label: "Scoliose",
+        alias: "Le dos qui se courbe sur le côté",
+        phases: [
+            { label: "Je commence", sub: "J'apprends la position" },
+            { label: "Je la tiens", sub: "La correction vient plus facilement" },
+            { label: "Elle tient en bougeant", sub: "Même sans le miroir" },
+            { label: "J'entretiens", sub: "Pendant toute la croissance" },
+        ],
+        phasesInfo: [
+            "On apprend d'abord à sentir la position et à la retrouver seul. Tout le reste s'appuie dessus.",
+            "On construit l'endurance qui permet de tenir la correction plus de quelques minutes.",
+            "La correction doit résister au mouvement et à l'inattention, pas seulement au miroir.",
+            "Il n'y a pas de fin : tant que tu grandis, la courbure peut bouger, et les gains se perdent à l'arrêt.",
+        ],
+        desc: "Ta colonne ne monte pas tout droit : elle dessine une courbe sur le côté et tourne un peu sur elle-même. Le plus souvent ça ne fait pas mal, et ça se remarque à une bosse dans le dos quand tu te penches en avant, ou à une épaule plus haute que l'autre.",
+        context: "Personne ne sait pourquoi une colonne se met à tourner pendant la croissance. Ce qu'on sait, c'est que ce n'est pas de ta faute : ni ton cartable, ni ta façon de t'asseoir, ni le sport que tu fais n'y sont pour quelque chose. Le travail consiste à apprendre à te replacer dans le sens opposé à ta courbe — c'est ce qu'on appelle l'autocorrection — puis à tenir cette position de plus en plus longtemps, jusqu'à ce qu'elle vienne toute seule. Cette correction dépend du dessin exact de ta courbe : elle ne s'invente pas, c'est ton kiné qui te la montre, et ce programme la reprend. Les séances utiles sont longues et régulières, et les effets se voient sur plusieurs mois, pas en quinze jours. Si on t'a prescrit un corset, c'est lui qui tient la courbure : les exercices l'accompagnent, ils ne le remplacent pas.",
+        parent: "La scoliose idiopathique de l'adolescent se surveille sur l'angle de Cobb et la maturité osseuse, non sur la douleur — elle est le plus souvent indolore, et l'absence de gêne ne dit rien de l'évolution. Les seuils usuels : surveillance en dessous de 20°, corset au-delà de 25° pendant la croissance, chirurgie discutée au-delà de 45 à 50°. Les exercices spécifiques — Schroth, SEAS, Lyon, BSPTS — reposent sur l'autocorrection en trois dimensions, son transfert dans les gestes quotidiens et l'éducation ; les méta-analyses récentes retiennent trois à quatre séances hebdomadaires de quarante-cinq minutes à une heure quinze. Deux points méritent d'être dits aux parents. L'autocorrection dépend du dessin de la courbure et se prescrit après examen : ce programme la reprend, il ne la remplace pas. Et les exercices ne se substituent ni au corset ni au suivi radiologique, dont le rythme revient au médecin. Aucun sport n'est à interdire.",
+        drapeaux: ["Une douleur qui te réveille la nuit, ou qui s'installe alors qu'elle n'était pas là avant.", "Des fourmillements, une faiblesse dans une jambe, ou une courbure qui change vite en quelques mois."],
+        stages: [
+            { critere: "Tu retrouves seul la position corrigée que ton kiné t'a montrée, et tu la tiens une dizaine de secondes en respirant normalement.", exercises: [
+                    { name: "Autocorrection devant un miroir", dose: "3 × 10", tip: "Debout face au miroir, reprends la position que ton kiné t'a montrée : grandis-toi vers le haut, puis décale ton buste du côté qu'il t'a indiqué. Tiens 5 à 10 secondes en respirant, puis relâche.", pourquoi: "C'est le geste central de tout le programme. Le miroir te sert de juge : au début tu crois être droit alors que tu ne l'es pas encore." },
+                    { name: "Respiration dirigée assise", dose: "3 × 2 min", tip: "Assis bien droit, pose tes mains à plat sur les côtes du côté que ton kiné t'a indiqué. Inspire lentement en cherchant à écarter tes côtes sous tes mains, puis souffle longuement.", pourquoi: "Ta cage thoracique tourne avec ta colonne. La respiration est le seul moyen d'agir dessus de l'intérieur, là où aucun muscle ne va." },
+                    { name: "Mobilisation chat-vache", dose: "2 × 10", tip: "À quatre pattes, alterne lentement dos rond menton rentré et dos creux poitrine ouverte. Mouvement fluide, sans forcer.", pourquoi: "On délie la colonne avant de la corriger. Un dos raide ne peut pas prendre la position qu'on lui demande." },
+                    { name: "Autograndissement allongé", dose: "3 × 30 sec", tip: "Allongé sur le dos, genoux pliés, pieds à plat. Pousse le sommet de ton crâne vers le haut comme pour t'allonger, menton légèrement rentré, sans décoller les épaules.", pourquoi: "Couché, le poids de ton corps ne gêne plus : c'est la position la plus facile pour sentir ta colonne s'allonger." }
+                ] },
+            { critere: "Tu tiens les gainages jusqu'au bout sans que ta position corrigée se défasse en fin de série.", exercises: [
+                    { name: "Gainage ventral", dose: "3 × 30 sec", tip: "En appui sur les avant-bras et la pointe des pieds, coudes sous les épaules, corps en ligne droite, ventre serré. Si tu ne tiens pas, pose les genoux au sol.", pourquoi: "Tenir une correction demande de l'endurance, pas de la force pure. C'est ce tronc solide qui t'évite de t'affaisser au bout de cinq minutes." },
+                    { name: "Gainage latéral", dose: "3 × 20 sec chaque côté", tip: "Allongé sur le côté, en appui sur l'avant-bras, coude sous l'épaule. Décolle le bassin jusqu'à aligner chevilles, hanches et épaules. Commence par le côté que ton kiné t'a indiqué.", pourquoi: "Ta courbe te fait travailler différemment à droite et à gauche. Ce gainage-là rattrape le côté qui se laisse aller." },
+                    { name: "Renforcement des extenseurs du dos en position corrigée", dose: "3 × 12", tip: "Allongé sur le ventre, bras le long du corps. Allonge d'abord ta colonne, puis décolle la poitrine de quelques centimètres, regard vers le sol.", pourquoi: "Ce qui compte n'est pas de monter haut, mais de garder la correction pendant l'effort. Monter plus haut en la perdant ne sert à rien." },
+                    { name: "Tirage en position corrigée", dose: "3 × 12", tip: "Élastique fixé devant toi à hauteur de poitrine. Grandis-toi d'abord, puis tire les coudes vers l'arrière en serrant les omoplates, sans laisser le buste se replier.", pourquoi: "La force en tirage est ce qui te permettra un jour de tenir la position sans y penser." }
+                ] },
+            { critere: "Tu retrouves ta position corrigée sans miroir, et tu la gardes en marchant et en portant ton sac.", exercises: [
+                    { name: "Autocorrection sans repère visuel", dose: "3 × 10", tip: "Debout, dos au miroir ou yeux fermés, reprends la correction, puis vérifie dans le miroir.", pourquoi: "L'écart entre ce que tu sens et ce que tu vois se réduit à force de répéter. C'est exactement ce qu'on cherche : que ton corps sache où il est." },
+                    { name: "Quadrupédie bras et jambe opposés", dose: "3 × 10 chaque côté", tip: "À quatre pattes, tends un bras devant et la jambe opposée derrière, sans que ton bassin bascule ni que ton dos se creuse.", pourquoi: "Tu apprends à garder ta colonne immobile pendant que tes bras et tes jambes bougent — ce que demande la vie de tous les jours." },
+                    { name: "Marche en position corrigée", dose: "3 × 2 min", tip: "Marche lentement en tenant la correction, bras relâchés. Dès qu'elle se défait, arrête-toi, reprends-la, repars.", pourquoi: "Tenir la position à l'arrêt est facile. En mouvement, c'est autre chose — et c'est en mouvement que tu passes tes journées." },
+                    { name: "Autocorrection dans les gestes du quotidien", dose: "quotidien", tip: "Choisis trois moments qui reviennent chaque jour — attendre le bus, te brosser les dents, être assis en cours — et reprends-y la correction.", pourquoi: "Trois minutes par jour dans la vraie vie pèsent plus lourd, au bout d'un an, qu'une séance parfaite par semaine." }
+                ] },
+            { critere: "Ta correction tient sans que tu y penses la plupart du temps, et ta courbure est stable au dernier contrôle.", exercises: [
+                    { name: "Entretien de l'autocorrection", dose: "3 × par semaine", tip: "Reprends en entier la séance d'autocorrection et de respiration dirigée.", pourquoi: "Il n'y a pas de fin à atteindre ici : tant que tu grandis, la courbure peut encore bouger, et les gains se perdent en quelques mois d'arrêt." },
+                    { name: "Renforcement global d'entretien", dose: "2 à 3 × par semaine", tip: "Gainages, tirages et extensions du dos, en gardant la correction pendant l'effort.", pourquoi: "Un tronc endurant est ce qui te permet de tenir la position toute la journée sans fatiguer." },
+                    { name: "Activité physique régulière", dose: "2 à 3 × par semaine", tip: "Choisis un sport qui te plaît, sans restriction.", pourquoi: "Aucun sport ne provoque ni n'aggrave une scoliose, et aucun n'est à éviter pour cette raison. Bouger entretient mieux ton dos que n'importe quel exercice isolé." },
+                    { name: "Maintien de la mobilité thoracique", dose: "2 à 3 × par semaine", tip: "Continue les rotations et les extensions du haut du dos, ainsi que la respiration dirigée.", pourquoi: "Ta cage thoracique se raidit vite quand le travail s'arrête, et c'est elle qui porte la rotation." }
                 ] }
         ],
     },
@@ -4218,7 +4239,9 @@ const idExercice = (ex) => slug(ex.name);
 // Clés de rangement. Elles ne contiennent plus aucun indice de position.
 const cleParcours = (pathId, injuryId) => `${pathId}:${injuryId}`;
 const cleCroissance = (croissanceId, stageIdx) => {
-    const ph = CROISSANCE_PHASES[stageIdx];
+    // La clé se construit sur le libellé de la phase, qui peut être propre à l'entrée.
+    const croi = CROISSANCE_DATA.find((c) => c.id === croissanceId);
+    const ph = phasesDe(croi)[stageIdx];
     return `croissance:${croissanceId}:${slug(ph && ph.label)}`;
 };
 const cleCoureur = (runnerPathId, stageIdx) => {
@@ -6119,7 +6142,7 @@ function GuidedJourney() {
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Où en es-tu aujourd'hui ?"),
                 React.createElement("p", { className: "text-sm mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, croi.context)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
-                CROISSANCE_PHASES.map((ph, si) => (React.createElement("button", { key: ph.label, onClick: () => { setCroissanceStageIdx(si); setView("croissance-exercices"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                phasesDe(croi).map((ph, si) => (React.createElement("button", { key: ph.label, onClick: () => { setCroissanceStageIdx(si); setView("croissance-exercices"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("p", { className: "text-base font-medium", style: { color: INK } }, ph.label),
                     React.createElement("p", { className: "text-xs mt-1", style: { color: INK_DOUX } }, ph.sub)))),
                 React.createElement("p", { className: "text-xs px-1 mt-1 leading-relaxed", style: { color: INK_DOUX } }, "Choisis ce qui te correspond aujourd'hui. Tu pourras changer quand ça ira mieux — ou revenir en arrière si ça recommence, ce qui arrive souvent quand on grandit."),
@@ -6131,7 +6154,7 @@ function GuidedJourney() {
         const croi = CROISSANCE_DATA.find((c) => c.id === croissanceId);
         if (!croi)
             return null;
-        const ph = CROISSANCE_PHASES[croissanceStageIdx];
+        const ph = phasesDe(croi)[croissanceStageIdx];
         const st = croi.stages[croissanceStageIdx];
         const cle = cleCroissance(croi.id, croissanceStageIdx);
         const faits = done[cle] || new Set();
@@ -6153,12 +6176,12 @@ function GuidedJourney() {
                         style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
                         React.createElement(IconeMaison, { size: 15 }),
                         "Accueil")),
-                React.createElement("div", { className: "flex gap-1.5 mb-3" }, CROISSANCE_PHASES.map((p, si) => (React.createElement("div", { key: p.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
+                React.createElement("div", { className: "flex gap-1.5 mb-3" }, phasesDe(croi).map((p, si) => (React.createElement("div", { key: p.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < croissanceStageIdx ? "100%" : si === croissanceStageIdx ? "50%" : "0%", backgroundColor: CROISSANCE_CLAIR } }))))),
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } },
-                    "Étape ", croissanceStageIdx + 1, " sur ", CROISSANCE_PHASES.length),
+                    "Étape ", croissanceStageIdx + 1, " sur ", phasesDe(croi).length),
                 React.createElement("h1", { className: "text-white text-2xl mt-1 font-medium" }, ph.label),
-                React.createElement("p", { className: "text-sm mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, CROISSANCE_PHASE_INFO[croissanceStageIdx]),
+                React.createElement("p", { className: "text-sm mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, phaseInfoDe(croi)[croissanceStageIdx]),
                 React.createElement("p", { className: "text-[11px] mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, age.note)),
@@ -6190,12 +6213,12 @@ function GuidedJourney() {
                         React.createElement(ChevronLeft, { size: 16 }),
                         " Avant"),
                     React.createElement("button", { onClick: () => {
-                            if (croissanceStageIdx === CROISSANCE_PHASES.length - 1)
+                            if (croissanceStageIdx === phasesDe(croi).length - 1)
                                 setView("croissance-fin");
                             else
                                 setCroissanceStageIdx((i) => i + 1);
                         }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm", style: { backgroundColor: CROISSANCE_ACCENT, color: CROISSANCE_SUR_ACCENT } },
-                        croissanceStageIdx === CROISSANCE_PHASES.length - 1 ? "J'ai fini" : "Étape suivante",
+                        croissanceStageIdx === phasesDe(croi).length - 1 ? "J'ai fini" : "Étape suivante",
                         " ",
                         React.createElement(ChevronRight, { size: 16 }))),
                 !fini && React.createElement("p", { className: "text-xs mt-3", style: { color: INK_DOUX } }, "Tu peux avancer même si tu n'as pas tout coché."))));
