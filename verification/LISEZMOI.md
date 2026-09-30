@@ -1,7 +1,9 @@
 # Vérification
 
-Vingt-trois contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
+Vingt-quatre contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
+
+Un troisième script, `mutation.mjs`, vérifie que les contrôles eux-mêmes mordent encore.
 
 ## Les lancer
 
@@ -11,6 +13,8 @@ node verification/statique.mjs          # quelques secondes, rien à installer
 npm install --no-save playwright axe-core
 npx playwright install --with-deps chromium
 node verification/rendu.mjs             # deux à trois minutes
+
+node verification/mutation.mjs          # une vingtaine de secondes
 ```
 
 Les deux tournent aussi à chaque `push` et à chaque proposition de modification, via
@@ -29,8 +33,8 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Aucun emoji couleur | Quatre emoji système servaient d'icônes ; le dernier a survécu à une passe de remplacement parce qu'il était écrit en clair et non échappé |
 | Chaque exercice est complet | — |
 | Chaque consigne se termine par un point | Une consigne sans point se lit comme tronquée |
-| Le pictogramme ne contredit pas la consigne | Quarante-neuf pictogrammes montraient une posture que leur consigne démentait : un bonhomme allongé pour un exercice décrit assis |
-| Tout exercice à élastique offre une version sans | Un patient sans élastique ne doit pas rester bloqué |
+| Le pictogramme ne contredit pas la consigne | Quarante-neuf pictogrammes montraient une posture que leur consigne démentait : un bonhomme allongé pour un exercice décrit assis. Depuis, l'application bascule d'elle-même sur un dessin de remplacement, et le contrôle ne pouvait plus rien trouver puisqu'il lisait le dessin d'après la bascule. Il vérifie maintenant que la bascule aboutit : un remplaçant qui contredit à son tour, ou l'absence de remplaçant, restent des défauts |
+| Tout exercice à élastique offre une version sans | Un patient sans élastique ne doit pas rester bloqué. Le contrôle lui-même est tombé en panne : il appelait sa fonction avec le mauvais argument et ne voyait plus aucun des soixante exercices concernés. Il vérifie désormais qu'aucun élastique n'est nommé par un autre mot, qu'aucune consigne ne dise déjà le repli, et que le repérage voie encore quelque chose |
 | Chaque blessure a des conseils pour les premiers jours | Une consigne sans point final se lit comme tronquée, et une blessure sans conseil laisse l'étape la plus décisive sans autre chose que des exercices |
 | L'étiquette de position ne contredit pas le dessin | « Mobilité complète en charge fonctionnelle » affichait « Debout » à deux centimètres d'une silhouette allongée. Le contrôle voisin ne l'a pas vue : il lit la consigne, qui ne nommait aucune posture |
 | Le repère d'effort ne contredit pas la consigne | Le repère se déduit du nom et de la consigne, et s'est trompé cinq fois : « Montée de marche » prise pour de la marche, « Balancers » pour un lancer, « Squat mural maintenu » pour de la charge lourde, « Extension sur rouleau » pour du renforcement, et la glace après le sport — dix minutes — pour des répétitions |
@@ -42,7 +46,7 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 22 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
+| Chaque écran s'affiche sans erreur | 26 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur les dix premiers écrans. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
@@ -102,6 +106,26 @@ Chaque contrôle nomme les cas plutôt que de compter. Un échec ressemble à ce
     Renforcement — « Isométrique des fléchisseurs » : dessin « allonge », consigne « assis »
 ```
 
+## Le banc de mutation — `mutation.mjs`
+
+Deux contrôles de cette suite ont passé des mois à ne rien vérifier. Celui des élastiques
+appelait sa fonction avec le mauvais argument ; celui des pictogrammes lisait le dessin
+après une bascule qui résout déjà toute contradiction. Les deux passaient au vert. **Un
+contrôle vert qui ne peut pas rougir est pire que pas de contrôle : il rassure.**
+
+Le banc empêche cette panne de revenir. Pour chaque contrôle, il injecte dans une copie du
+fichier le défaut que ce contrôle prétend attraper, relance la suite statique, et vérifie
+que c'est bien celui-là qui échoue. Le vrai `index.html` n'est jamais touché : la copie
+trafiquée passe par la variable `EXERCICES_SOURCE`, car une sauvegarde suivie d'une
+restauration laisserait le dépôt abîmé au moindre plantage en cours de route.
+
+Deux issues sont rapportées. Un contrôle **muet** n'a pas vu son défaut. Une mutation
+**ratée** ne s'applique plus, le fichier ayant changé sous elle : il faut alors la réécrire,
+et surtout pas la supprimer.
+
+La mutation doit viser un texte **unique** dans le fichier. Une consigne partagée par deux
+exercices a fait déclarer un contrôle muet à tort, la mutation frappant un homonyme.
+
 ## Ajouter un contrôle
 
 Dans `statique.mjs` ou `rendu.mjs`, appelez `controle(nom, fn)` ou `noter(nom, lignes)` : la
@@ -110,3 +134,6 @@ l'a motivé — c'est ce qui permet, plus tard, de décider si une tolérance es
 
 Vérifiez qu'un nouveau contrôle **échoue** sur un défaut introduit exprès avant de le
 considérer comme acquis. Un contrôle qui passe toujours ne prouve rien.
+
+Ajoutez la mutation correspondante dans `mutation.mjs` : c'est ce qui transforme cette
+consigne en garantie, plutôt qu'en intention.

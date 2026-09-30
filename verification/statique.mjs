@@ -237,11 +237,34 @@ controle("aucun emoji couleur dans l'interface", () => {
     return out;
 });
 
-const D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
-    "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
-    "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
-    "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
-    "REPERE_EFFORT_TU"]);
+// Exécuter le script pour en extraire les données, c'est le compiler une seconde fois. Une
+// parenthèse manquante ou un symbole non déclaré jetait ici, avant que le rapport ne soit
+// imprimé : les deux premiers contrôles avaient beau voir le défaut, leur message n'arrivait
+// jamais à l'écran, remplacé par une trace de pile. On rattrape donc, on dit lequel des deux
+// l'a vu, et on s'arrête proprement.
+let D;
+let panne = null;
+try {
+    D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
+        "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
+        "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
+        "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
+        "REPERE_EFFORT_TU"]);
+} catch (e) {
+    panne = e.message;
+}
+// Une erreur pendant le rendu ne remonte pas jusqu'ici : React l'attrape, l'écrit sur la
+// sortie d'erreur et laisse « donnees » rendre undefined. Le symptôme n'est alors pas une
+// exception mais une absence, qu'il faut traiter pareil.
+if (!panne && (!D || !D.PATHOLOGIES))
+    panne = "le script s'est interrompu sans livrer ses données — voir l'erreur au-dessus";
+if (panne) {
+    for (const r of rapport)
+        console.log(`${r.etat === "ok" ? "  ok  " : "ÉCHEC "} ${r.nom}  ${r.note}`);
+    console.log(`\nÉCHEC  le script ne s'exécute pas : ${panne}`);
+    console.log("Les contrôles qui lisent le contenu n'ont pas pu être menés.");
+    process.exit(1);
+}
 const exercices = tousLesExercices({
     blessure: D.PATHOLOGIES, coureur: D.RUNNER_DATA,
     croissance: D.CROISSANCE_DATA, prevention: D.PREVENTION_CATEGORIES,
@@ -263,20 +286,43 @@ controle("chaque consigne se termine par un point", () => exercices
 // --- 7. Le pictogramme ne contredit pas la consigne -----------------------------------
 // Quarante-neuf pictogrammes montraient une posture que leur consigne contredisait — un
 // bonhomme allongé pour un exercice décrit assis.
+//
+// Ce contrôle a lui aussi cessé de pouvoir échouer. Il lisait « getExerciseIcon », qui
+// résout déjà les contradictions : quand la règle choisit une pose que la consigne dément,
+// la fonction bascule sur « DESSIN_AUTRE_POSTURE », et à défaut sur le pictogramme neutre.
+// Le dessin rendu était donc toujours d'accord avec la consigne, ou muet. Quarante exercices
+// passent aujourd'hui par cette bascule, et elle fait bien son travail.
+//
+// On vérifie donc ce que la bascule ne garantit pas : qu'elle aboutisse. Deux issues restent
+// des défauts — un remplaçant qui contredit à son tour la consigne, et l'absence de tout
+// remplaçant, qui laisse l'exercice sans dessin propre.
 controle("le pictogramme ne contredit pas la consigne", () => {
-    if (!D.getExerciseIcon || !D.postureDecrite || !D.POSTURE_DESSIN)
+    if (!D.getExerciseIcon || !D.postureDecrite || !D.POSTURE_DESSIN)
         throw new Error("les fonctions de pictogramme ne sont pas exposées");
     const clePose = new Map((D.POSES || []).map((p) => [p.icon, p.key]));
+    const NEUTRES = new Set((D.POSES || []).filter((p) => p.key.startsWith("advice")).map((p) => p.icon));
     const out = [];
+    const vus = new Set();
     for (const { ex, ou } of exercices) {
-        const icone = D.getExerciseIcon(ex.name, ex.tip);
-        const cle = clePose.get(icone);
-        if (!cle)
-            continue; // pictogramme neutre : il ne prétend rien
-        const montree = D.POSTURE_DESSIN[cle];
+        if (vus.has(ex.name))
+            continue;
+        vus.add(ex.name);
         const decrite = D.postureDecrite(ex.tip);
-        if (montree && decrite && montree !== decrite)
-            out.push(`${ou} — « ${ex.name} » : dessin « ${montree} », consigne « ${decrite} »`);
+        if (!decrite)
+            continue; // la consigne ne dit pas la posture : rien à contredire
+        const rendue = D.getExerciseIcon(ex.name, ex.tip);
+        const cle = clePose.get(rendue);
+        // Le pictogramme neutre porte une clé comme les autres — « advice » —, si bien que
+        // le reconnaître à l'absence de clé ne marchait pas. On le reconnaît à son icône.
+        if (!cle || NEUTRES.has(rendue)) {
+            const choisie = (D.POSES || []).find((p) => p.test(ex.name.toLowerCase(), (ex.tip || "").toLowerCase()));
+            if (choisie && !NEUTRES.has(choisie.icon) && D.POSTURE_DESSIN[choisie.key])
+                out.push(`${ou} — « ${ex.name} » : la pose « ${choisie.key} » contredit « ${decrite} » sans remplaçant, le dessin retombe sur le pictogramme neutre`);
+            continue;
+        }
+        const montree = D.POSTURE_DESSIN[cle];
+        if (montree && montree !== decrite)
+            out.push(`${ou} — « ${ex.name} » : dessin « ${montree} », consigne « ${decrite} »`);
     }
     return out;
 });

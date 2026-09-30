@@ -1,6 +1,8 @@
-# Deux passes à chaque modification : ce qui se lit dans le fichier, et ce qui ne se voit
-# qu'à l'écran. La première dure quelques secondes et n'installe rien ; la seconde demande un
-# navigateur, et tourne donc à part pour que l'échec le plus courant remonte le plus vite.
+# Trois passes à chaque modification : ce qui se lit dans le fichier, ce qui ne se voit qu'à
+# l'écran, et l'état des contrôles eux-mêmes. La première dure quelques secondes et
+# n'installe rien ; la deuxième demande un navigateur, et tourne donc à part pour que l'échec
+# le plus courant remonte le plus vite. La troisième met chaque contrôle en défaut : deux
+# d'entre eux avaient cessé de vérifier quoi que ce soit sans que rien ne le signale.
 
 name: Vérification
 
@@ -21,6 +23,19 @@ jobs:
           node-version: '22'
       - name: Le fichier et le contenu
         run: node verification/statique.mjs
+
+  mutation:
+    name: Les contrôles mordent-ils encore
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # Aucun navigateur ici : le banc ne relance que la suite statique, une fois par
+      # contrôle, sur une copie trafiquée du fichier.
+      - name: Chaque contrôle voit-il son défaut
+        run: node verification/mutation.mjs
 
   rendu:
     name: Contrôles de rendu
