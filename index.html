@@ -854,6 +854,17 @@ const PoseSidePlank = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "14", y1: "30", x2: "13", y2: "44" }),
     React.createElement("line", { x1: "13", y1: "44", x2: "20", y2: "44" }),
     React.createElement("line", { x1: "15", y1: "29", x2: "17", y2: "16" })));
+// L'extension debout, mains au creux des reins. Elle se distingue du sphinx, qui se fait au
+// sol, et de la rotation du tronc, qui était jusqu'ici le dessin rendu — le patient voyait
+// un buste qui tourne là où sa consigne lui demande de se pencher en arrière.
+const PoseStandingExtension = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
+    React.createElement("circle", { cx: "17", cy: "11", r: "4" }),
+    React.createElement("path", { d: "M26 30 Q28 21 20 15" }),
+    React.createElement("line", { x1: "21", y1: "17", x2: "15", y2: "21" }),
+    React.createElement("line", { x1: "15", y1: "21", x2: "22", y2: "25" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "23", y2: "44" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" })));
 // Quatre pattes, bras et jambe opposés tendus. La tête est basse et le bras passe au-dessus
 // d'elle : à vingt-quatre pixels, un bras qui traverse le crâne ne se lit plus.
 const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
@@ -1266,6 +1277,17 @@ const POSES = [
             || n.includes("augmentation prudente") || n.includes("augmentation progressive de la distance")
             || n.includes("réintroduire") || n.includes("aménagement") || n.includes("alternance de positions") },
     // --- 2. Rachis : positions directionnelles (McKenzie et apparentés) ---
+    // --- Deux dessins qui n'arrivaient que par ricochet -------------------------------
+    // Tous deux étaient attrapés par une règle dont la posture les contredisait — le
+    // mannequin couché pour l'un, le sphinx pour l'autre —, puis rattrapés par la bascule
+    // de secours, qui rendait dans les deux cas un buste qui tourne. Juste pour la mobilité
+    // en charge, faux pour l'extension debout. Ces deux règles passent donc avant celles qui
+    // les captaient, « prone-extension » comprise.
+    // « fonctionnelle » est écarté : cet exercice-là, au rachis cervical, est déjà servi par
+    // la silhouette debout. La clé « trunk » est reprise telle quelle, le dessin étant le
+    // même : inventer un second nom pour une même icône brouillerait les diagnostics.
+    { key: "trunk", icon: PoseTrunkRotation, test: (n) => n.includes("mobilité complète en charge") && !n.includes("fonctionnelle") },
+    { key: "standing-extension", icon: PoseStandingExtension, test: (n) => n.includes("extension complète debout") },
     { key: "prone-extension", icon: PoseProneExtension, test: (n) => n.includes("presses en extension") || n.includes("extension en appui") || n.includes("sphinx")
             || n.includes("position allongée sur le ventre") || n.includes("extension complète debout")
             || n.includes("extenseurs du dos") || n.includes("extenseurs dorsaux") || n.includes("para-vertébral")
@@ -1422,6 +1444,9 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     // gainage latéral sur le côté, la quadrupédie à quatre pattes.
     autocorrection: "debout", "axial-supine": "allonge", "side-plank": "allonge",
     "bird-dog": "quatre",
+    // L'extension debout se fait debout ; la mobilité en charge garde le dessin de rotation
+    // du tronc, qui sert aussi assis et n'annonce donc aucune posture.
+    "standing-extension": "debout",
 };
 // Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
 // dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
