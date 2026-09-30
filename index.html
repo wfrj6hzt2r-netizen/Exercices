@@ -821,6 +821,49 @@ const PoseFourPoint = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "16", y1: "23", x2: "15", y2: "43" }),
     React.createElement("line", { x1: "33", y1: "23", x2: "35", y2: "43" }),
     React.createElement("path", { d: "M19 18 Q25 14 31 18", strokeDasharray: "3 3" })));
+// Les quatre gestes de la scoliose. L'autocorrection n'est pas une posture de plus : la
+// flèche au-dessus du crâne dit l'allongement, qui est le geste lui-même. Sans elle, le
+// dessin serait celui d'un patient debout, indistinct de dix autres.
+const PoseAutocorrection = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "9", x2: "24", y2: "3" }),
+    React.createElement("path", { d: "M21 5.5 24 2.5 27 5.5" }),
+    React.createElement("circle", { cx: "24", cy: "15", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "19", x2: "24", y2: "32" }),
+    React.createElement("line", { x1: "24", y1: "22", x2: "18", y2: "28" }),
+    React.createElement("line", { x1: "24", y1: "22", x2: "30", y2: "28" }),
+    React.createElement("line", { x1: "24", y1: "32", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "32", x2: "28", y2: "44" })));
+// Le même allongement, mais couché : la flèche part du crâne vers la gauche, dans l'axe du
+// corps, puisque c'est la colonne qu'on étire et non le regard qu'on lève.
+const PoseAxialSupine = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
+    React.createElement("line", { x1: "14", y1: "26", x2: "6", y2: "26" }),
+    React.createElement("path", { d: "M8.5 23.5 6 26 8.5 28.5" }),
+    React.createElement("circle", { cx: "15", cy: "33", r: "4" }),
+    React.createElement("line", { x1: "19", y1: "34", x2: "30", y2: "34" }),
+    React.createElement("line", { x1: "30", y1: "34", x2: "35", y2: "28" }),
+    React.createElement("line", { x1: "35", y1: "28", x2: "40", y2: "39" })));
+// Le gainage latéral : le corps en diagonale, l'avant-bras seul au sol. Le gainage ventral
+// existait déjà, mais sa posture déclarée — sur le ventre — faisait retomber celui-ci sur
+// le pictogramme neutre.
+const PoseSidePlank = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "9", cy: "26", r: "3.6" }),
+    React.createElement("line", { x1: "14", y1: "30", x2: "41", y2: "41" }),
+    React.createElement("line", { x1: "14", y1: "30", x2: "13", y2: "44" }),
+    React.createElement("line", { x1: "13", y1: "44", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "15", y1: "29", x2: "17", y2: "16" })));
+// Quatre pattes, bras et jambe opposés tendus. La tête est basse et le bras passe au-dessus
+// d'elle : à vingt-quatre pixels, un bras qui traverse le crâne ne se lit plus.
+const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "43", x2: "44", y2: "43" }),
+    React.createElement("circle", { cx: "10", cy: "29", r: "3.5" }),
+    React.createElement("line", { x1: "16", y1: "25", x2: "34", y2: "25" }),
+    React.createElement("line", { x1: "16", y1: "25", x2: "5", y2: "17" }),
+    React.createElement("line", { x1: "17", y1: "25", x2: "16", y2: "43" }),
+    React.createElement("line", { x1: "33", y1: "25", x2: "35", y2: "43" }),
+    React.createElement("line", { x1: "34", y1: "25", x2: "45", y2: "17" })));
 // La marche, distincte de la course : tronc droit, foulée courte, les deux pieds bas.
 const PoseWalk = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
@@ -1166,7 +1209,7 @@ const POSES = [
             || n.includes("rotation interne")) && n.includes("élastique")
             || n.includes("rotateurs à l'élastique") || n.includes("rotateurs externes")
             || n.includes("lent des rotateurs") },
-    { key: "band-row", icon: PoseBandRow, test: (n) => n.includes("scapulaire en charge")
+    { key: "band-row", icon: PoseBandRow, test: (n) => n.includes("tirage") || n.includes("scapulaire en charge")
             || n.includes("rétraction des omoplates") || n.includes("stabilisateurs de l'omoplate")
             || n.includes("tirage bas") },
     { key: "front-raise", icon: PoseFrontRaise, test: (n) => n.includes("deltoïde antérieur") },
@@ -1291,7 +1334,20 @@ const POSES = [
             || n.includes("pas chassés") || n.includes("gamme") },
     { key: "bike", icon: PoseBike, test: (n) => n.includes("vélo") || n.includes("pédal") || n.includes("elliptique") },
     // --- 6. Membre supérieur ---
-    { key: "throw", icon: PoseThrow, test: (n) => n.includes("lancer") || n.includes("lancers") || n.includes("tir") || n.includes("geste raquette")
+    // --- Scoliose : quatre gestes qu'aucune règle générale ne savait dessiner ----------
+    // Sans elles, l'autocorrection tombait sur le pictogramme de nuque (« repère visuel »),
+    // le gainage latéral sur celui du gainage ventral — donc sur le repli neutre, leurs
+    // postures se contredisant —, et les deux autres n'avaient aucune règle du tout.
+    // « quotidien » est écarté : cet exercice-là est un rappel dans la journée, pas une
+    // séance, et son pictogramme de conseil est le bon.
+    { key: "autocorrection", icon: PoseAutocorrection, test: (n) => n.includes("autocorrection") && !n.includes("quotidien") },
+    { key: "axial-supine", icon: PoseAxialSupine, test: (n) => n.includes("autograndissement") },
+    { key: "side-plank", icon: PoseSidePlank, test: (n) => n.includes("gainage latéral") },
+    { key: "bird-dog", icon: PoseBirdDog, test: (n) => n.includes("quadrupédie") },
+    { key: "throw", icon: PoseThrow, test: (n) => n.includes("lancer") || n.includes("lancers")
+            // « tir » attrapait « tirage » : le renforcement en tirage du haut du dos était
+            // illustré par un lancer de handball. Le mot est désormais pris entier.
+            || /\btirs?\b/.test(n) || n.includes("geste raquette")
             || n.includes("diagonal") || n.includes("handball") || n.includes("frappe") },
     { key: "pendulum", icon: PoseShoulderPendulum, test: (n) => n.includes("pendulaire") || n.includes("codman") },
     { key: "shoulder-raise", icon: PoseShoulderRaise, test: (n) => n.includes("élévation") || n.includes("rotation externe") || n.includes("rotation interne")
@@ -1362,6 +1418,10 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     sleeper: "allonge", "supine-punch": "allonge",
     "night-arm": "allonge", "prone-ytw": "ventre", "floor-pushup": "ventre",
     "seated-twist": "assis",
+    // La scoliose : l'autocorrection se fait debout, l'autograndissement sur le dos, le
+    // gainage latéral sur le côté, la quadrupédie à quatre pattes.
+    autocorrection: "debout", "axial-supine": "allonge", "side-plank": "allonge",
+    "bird-dog": "quatre",
 };
 // Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
 // dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
@@ -2502,6 +2562,38 @@ const PATHOLOGIES = [
                             { name: "Renforcement global de la chaîne postérieure", dose: "3 × 15", tip: "Hanche en charnière : debout, jambes presque tendues, poussez les fesses vers l'arrière en penchant le buste dos neutre, puis redressez-vous en contractant fessiers et dos. Une charge légère peut être ajoutée progressivement." },
                             { name: "Reprise d'une activité physique régulière", dose: "2 à 3 × par semaine", tip: "Marche rapide, natation, renforcement : l'activité physique régulière est ce qui entretient le mieux la mobilité du dos sur le long terme, davantage que les exercices isolés." },
                             { name: "Maintien du travail de mobilité", dose: "2 à 3 × par semaine", tip: "Poursuivez rotations et extensions thoraciques dans la durée : sans entretien, la raideur revient en quelques semaines." }
+                        ] }
+                ] },
+            { id: "scoliose", label: "Scoliose", checkinKind: "phase", desc: "Courbure et rotation de la colonne installées pendant la croissance, le plus souvent indolores, repérées sur une bosse du dos quand on se penche en avant, ou sur une asymétrie des épaules et de la taille.", context: "La rééducation de la scoliose repose sur les exercices spécifiques — méthodes Schroth, SEAS, Lyon, BSPTS —, dont le principe commun est l'autocorrection en trois dimensions : allonger la colonne, la décaler et la dérouler dans le sens opposé à la courbure, puis apprendre à tenir cette correction dans les gestes de tous les jours. Cette correction dépend du dessin exact de votre courbure ; elle ne s'invente pas. Votre kinésithérapeute vous la montre, et ce programme la reprend et l'entretient. Les séances qui donnent les meilleurs résultats sont longues et régulières : trois à quatre fois par semaine, de quarante-cinq minutes à une heure quinze, et l'effet se mesure sur plusieurs mois. Les exercices ne remplacent ni le corset ni la surveillance : pendant la croissance, au-delà de 25°, c'est le corset qui tient la courbure, et les exercices l'accompagnent.", premiersJours: ["Une scoliose ne fait en général pas mal, surtout à l'adolescence. L'absence de douleur ne dit rien de son évolution : c'est la surveillance régulière qui le dit, pas les sensations.", "Ces exercices ne remplacent ni le corset ni le suivi. Si un corset vous a été prescrit, il se porte comme indiqué : les exercices l'accompagnent, ils ne s'y substituent pas.", "Aucun sport n'est interdit, et aucun n'est responsable de la courbure. L'activité physique est recommandée : c'est l'immobilité qui dessert le dos, pas le mouvement.", "Une douleur qui réveille la nuit, qui s'installe, ou des fourmillements dans les jambes ne font pas partie du tableau. Parlez-en avant de poursuivre le programme."], stageGuidance: [
+                    { freq: "Chaque jour, en séance courte", duration: "Deux à quatre semaines : le temps d'apprendre à sentir la correction et à la tenir. Tout le reste du programme s'appuie dessus." },
+                    { freq: "3 à 4 fois par semaine", duration: "Les protocoles qui ont fait leurs preuves tiennent des séances de quarante-cinq minutes à une heure quinze, sur plusieurs mois. Ne jugez pas l'effet avant six mois." },
+                    { freq: "3 à 4 fois par semaine, plus les rappels dans la journée", duration: "Cette étape ne se termine pas : elle se fond dans les gestes quotidiens, qui sont le vrai terrain de la correction." },
+                    { freq: "3 fois par semaine, sans terme", duration: "Pendant toute la croissance au minimum. L'arrêt fait perdre les gains en quelques mois, et la croissance est justement la période où la courbure peut encore évoluer." },
+                ],
+                stages: [
+                    { label: "Mobilité & correction", sub: "au début, ou après une longue interruption", pourquoi: "La correction ne sert à rien si le dos est trop raide pour la prendre. On délie d'abord, puis on apprend à sentir la position juste.", critere: "Vous retrouvez seul la position corrigée que votre kinésithérapeute vous a montrée, et vous la tenez une dizaine de secondes en respirant normalement.", exercises: [
+                            { name: "Autocorrection devant un miroir", dose: "3 × 10", tip: "Debout face à un miroir, reprenez la correction que votre kinésithérapeute vous a montrée : grandissez-vous vers le haut, puis décalez le tronc dans le sens qu'il vous a indiqué. Tenez 5 à 10 secondes en respirant, puis relâchez. La correction dépend du dessin de votre courbure : ne l'inventez pas, c'est celle-là qu'on répète ici." },
+                            { name: "Respiration dirigée assise", dose: "3 × 2 min", tip: "Assis, dos droit, mains posées à plat sur les côtes du côté que votre kinésithérapeute vous a indiqué. Inspirez lentement en cherchant à écarter les côtes sous vos mains, puis expirez longuement. La respiration est le seul moyen d'agir de l'intérieur sur la cage thoracique, là où la rotation s'installe." },
+                            { name: "Mobilisation chat-vache", dose: "2 × 10", tip: "À quatre pattes, alternez lentement dos rond menton rentré et dos creux poitrine ouverte. Mouvement fluide et sans forcer : il s'agit de délier la colonne avant de la corriger, pas de gagner de l'amplitude." },
+                            { name: "Autograndissement allongé", dose: "3 × 30 sec", tip: "Allongé sur le dos, genoux pliés, pieds à plat. Poussez le sommet du crâne vers le haut comme pour vous allonger, menton légèrement rentré, sans décoller les épaules du sol. Couché, le poids du corps ne gêne plus : c'est la position la plus facile pour sentir la colonne s'allonger." }
+                        ] },
+                    { label: "Renforcement", sub: "quand la correction est acquise", pourquoi: "Tenir une correction demande de l'endurance plutôt que de la force : sans elle, la position se défait au bout de quelques minutes.", critere: "Vous tenez les gainages jusqu'au bout sans que la position corrigée se défasse en fin de série.", exercises: [
+                            { name: "Gainage ventral", dose: "3 × 30 sec", tip: "À plat ventre, en appui sur les avant-bras et la pointe des pieds. Chevilles, bassin et épaules alignés, abdominaux serrés, bas du dos ni creusé ni arrondi. Respirez normalement : bloquer le souffle est une erreur fréquente." },
+                            { name: "Gainage latéral", dose: "3 × 20 sec chaque côté", tip: "Allongé sur le côté, en appui sur l'avant-bras, coude sous l'épaule. Décollez le bassin jusqu'à aligner chevilles, hanches et épaules, sans le laisser partir en arrière. Commencez par le côté que votre kinésithérapeute vous a indiqué." },
+                            { name: "Renforcement des extenseurs du dos en position corrigée", dose: "3 × 12", tip: "Allongé sur le ventre, bras le long du corps. Allongez d'abord la colonne, puis décollez la poitrine de quelques centimètres, regard vers le sol pour ne pas casser la nuque. C'est la correction tenue pendant l'effort qui compte, pas la hauteur atteinte." },
+                            { name: "Tirage en position corrigée", dose: "3 × 12", tip: "Élastique fixé devant vous à hauteur de poitrine. Grandissez-vous d'abord, puis tirez les coudes vers l'arrière en serrant les omoplates, sans laisser le tronc se replier. La force en tirage est ce qui permet de tenir la correction sans y penser." }
+                        ] },
+                    { label: "Contrôle moteur", sub: "quand la correction tient pendant l'effort", pourquoi: "Une correction qui ne tient que devant le miroir ne sert à rien. C'est dans le mouvement, et quand vous n'y pensez pas, qu'elle doit résister.", critere: "Vous retrouvez la position corrigée sans miroir, et vous la gardez en marchant et en portant un sac.", exercises: [
+                            { name: "Autocorrection sans repère visuel", dose: "3 × 10", tip: "Debout, dos au miroir ou yeux fermés, reprenez la correction, puis vérifiez dans le miroir. L'écart entre ce que vous sentez et ce que vous voyez se réduit avec les répétitions, et c'est exactement ce qu'on cherche." },
+                            { name: "Quadrupédie bras et jambe opposés", dose: "3 × 10 chaque côté", tip: "À quatre pattes, tendez un bras devant et la jambe opposée derrière, sans que le bassin bascule ni que le dos se creuse. Reprenez l'allongement de la colonne avant chaque répétition." },
+                            { name: "Marche en position corrigée", dose: "3 × 2 min", tip: "Marchez lentement en tenant la correction, bras relâchés. Dès qu'elle se défait, arrêtez-vous, reprenez-la, repartez. Tenir la correction en mouvement est plus difficile qu'à l'arrêt, et c'est ce qui sert dans la vie courante." },
+                            { name: "Autocorrection dans les gestes du quotidien", dose: "quotidien", tip: "Choisissez trois moments répétés de votre journée — attendre le bus, vous brosser les dents, être assis en cours ou au bureau — et reprenez-y la correction. Cette application dans la vie courante pèse davantage, à long terme, que la séance elle-même." }
+                        ] },
+                    { label: "Entretien au long cours", sub: "pendant toute la croissance", pourquoi: "Il n'y a pas de guérison à atteindre ici. La courbure peut évoluer tant que la croissance dure, et les gains se perdent en quelques mois d'arrêt.", critere: "La correction tient sans que vous y pensiez dans la plupart de vos activités, et votre courbure est stable au dernier contrôle.", exercises: [
+                            { name: "Entretien de l'autocorrection", dose: "3 × par semaine", tip: "Reprenez en entier la séance d'autocorrection et de respiration dirigée. Il n'y a pas de terme à cette étape : pendant toute la croissance, l'arrêt fait perdre les gains en quelques mois." },
+                            { name: "Renforcement global d'entretien", dose: "2 à 3 × par semaine", tip: "Gainages, tirages et extensions du dos, en gardant la correction pendant l'effort. Un tronc endurant est ce qui permet de tenir la position sans fatigue le reste de la journée." },
+                            { name: "Activité physique régulière", dose: "2 à 3 × par semaine", tip: "Choisissez un sport qui vous plaît, sans restriction : aucun sport ne provoque ni n'aggrave une scoliose, et aucun n'est à éviter pour cette raison. L'activité régulière entretient mieux la mobilité et la force du dos que les exercices isolés." },
+                            { name: "Maintien de la mobilité thoracique", dose: "2 à 3 × par semaine", tip: "Poursuivez les rotations et les extensions du haut du dos, ainsi que la respiration dirigée. La cage thoracique se raidit vite quand le travail s'arrête, et c'est elle qui porte la rotation." }
                         ] }
                 ] }
         ] },
@@ -3665,6 +3757,9 @@ const POSITION_LIBRARY = [
     { test: (n) => n.includes("pont fessier"), label: "Allongé sur le dos, genoux pliés" },
     { test: (n) => n.includes("dos rond") || n.includes("dos creux"), label: "À quatre pattes" },
     { test: (n) => n.includes("bascule") && n.includes("bassin"), label: "Allongé sur le dos, genoux pliés" },
+    // Avant la règle générale : le gainage latéral se fait sur le côté, et l'annoncer à plat
+    // ventre contredisait sa propre consigne.
+    { test: (n) => n.includes("gainage latéral"), label: "Allongé sur le côté, en appui sur l'avant-bras" },
     { test: (n) => n.includes("gainage") || n.includes("planche"), label: "À plat ventre, en appui sur les avant-bras" },
     { test: (n) => n.includes("respiration"), label: "Allongé sur le dos" },
     { test: (n) => n.includes("extension thoracique"), label: "Allongé sur le dos" },
@@ -3684,6 +3779,10 @@ const POSITION_LIBRARY = [
     // « Marche ou vélo » laisse le choix : l'étiquette ne peut pas asseoir le patient.
     { test: (n) => n.includes("marche") && n.includes("vélo"), label: "Dehors, ou assis sur le vélo" },
     { test: (n) => n.includes("vélo"), label: "Assis, sur le vélo" },
+    // Avant la règle du rachis cervical : « sans repère visuel » y tombait, et l'autocorrection
+    // était annoncée « assis ou debout » quand sa consigne dit debout. Le rappel dans la
+    // journée, lui, se fait dans toutes les positions et n'a donc pas d'étiquette.
+    { test: (n) => n.includes("autocorrection") && !n.includes("quotidien") && !n.includes("entretien"), label: "Debout" },
     { test: (n) => n.includes("cervical") || n.includes("menton") || n.includes("nuque") || n.includes("trapèze") || n.includes("oculo") || n.includes("visuel"), label: "Assis ou debout" },
     { test: (n) => n.includes("poignet") || n.includes("préhension") || n.includes("grip"), label: "Assis, avant-bras posé sur une table" },
     { test: (n) => n.includes("élévation") || n.includes("rotation externe") || n.includes("rotation interne") || n.includes("rétraction des omoplates") || n.includes("scapulaire") || n.includes("stabilité en appui mural") || n.includes("deltoïde"), label: "Debout" },
@@ -3803,6 +3902,7 @@ const REPERE_EFFORT = {
     controle: "Cherchez le déséquilibre, pas la durée.",
     endurance: "Une allure où vous pourriez encore parler.",
     technique: "La qualité du geste avant la vitesse.",
+    correction: "La position juste avant l'effort.",
 };
 // Trois des sept repères ne portent ni verbe conjugué ni pronom : ils sont identiques dans
 // les deux tables. On les y répète quand même plutôt que de composer la table tutoyée à
@@ -3815,6 +3915,7 @@ const REPERE_EFFORT_TU = {
     controle: "Cherche le déséquilibre, pas la durée.",
     endurance: "Une allure où tu pourrais encore parler.",
     technique: "La qualité du geste avant la vitesse.",
+    correction: "La position juste avant l'effort.",
 };
 function familleEffort(ex, croissance) {
     const n = (ex.name || "").toLowerCase(), t = (ex.tip || "").toLowerCase(), dose = ex.dose || "";
@@ -3827,6 +3928,12 @@ function familleEffort(ex, croissance) {
     const step = /mont[ée]e|step|escalier|sur marche|de marche/.test(n);
     if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|^position|^posture|bascule|press-up|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
         return null;
+    // Corriger sa posture n'est ni de la mobilité — il y a bien un effort, tenu et répété —
+    // ni du renforcement : chercher la difficulté fait perdre la position, qui est le seul
+    // objet de l'exercice. Sans cette famille, ces gestes recevaient « la dernière
+    // répétition doit être difficile », qui dit exactement le contraire de leur consigne.
+    if (/autocorrection|autograndissement|quadrup[ée]die/.test(n))
+        return "correction";
     if (/[ée]quilibre|proprioception|plateau|instable|repositionnement|oculo|perturbation|coordination|stabilit[ée]/.test(n))
         return "controle";
     // « Balancers » contient « lancer » : la limite de mot est indispensable.
@@ -3834,7 +3941,10 @@ function familleEffort(ex, croissance) {
         // Un lancer progressif et un travail de foulée ne sont pas de la pliométrie : le
         // geste est volontairement sous-maximal, et leur consigne dit « sans forcer ».
         return (doux || /sans forcer/.test(t)) ? "technique" : "explosif";
-    if (!step && /marche|v[ée]lo|natation|course|elliptique|rameur|cardio/.test(n))
+    // Marcher « en position corrigée » n'est pas du cardio : ce qui se travaille est la
+    // tenue de la correction en mouvement, pas l'allure. Sans cette garde, l'exercice
+    // recevait « une allure où vous pourriez encore parler », qui dit le contraire.
+    if (!step && !/position corrig[ée]e/.test(n) && /marche|v[ée]lo|natation|course|elliptique|rameur|cardio/.test(n))
         return "endurance";
     if (/isom[ée]trique|gainage|planche|maintien|maintenu|tenue|activation du|contractions?\b/.test(n + " " + dose))
         return "maintien";
