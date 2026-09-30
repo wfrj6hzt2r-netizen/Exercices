@@ -14,7 +14,12 @@ import { dirname, join } from "node:path";
 const ICI = dirname(fileURLToPath(import.meta.url));
 export const RACINE = join(ICI, "..");
 
+// Le banc de mutation a besoin de faire lire un fichier trafiqué aux contrôles, sans jamais
+// toucher au vrai : « EXERCICES_SOURCE » substitue index.html le temps d'une exécution. Une
+// sauvegarde suivie d'une restauration laisserait le dépôt abîmé au moindre plantage.
 export function lireFichier(nom = "index.html") {
+    if (nom === "index.html" && process.env.EXERCICES_SOURCE)
+        return readFileSync(process.env.EXERCICES_SOURCE, "utf8");
     return readFileSync(join(RACINE, nom), "utf8");
 }
 
