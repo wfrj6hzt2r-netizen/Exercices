@@ -1307,6 +1307,12 @@ const POSES = [
     { key: "etirement-epaule", icon: PoseShoulderStretch, test: (n) => n.includes("étirement") && (n.includes("épaule") || n.includes("pectoraux") || n.includes("capsule")
             || n.includes("triceps") || n.includes("dorsal") || n.includes("croisé") || n.includes("sommeil")
             || n.includes("cross-body") || n.includes("sleeper")) },
+    // Trois étirements de poignet tombaient sur la silhouette assise qui attrape sa jambe :
+    // la règle suivante teste « extenseurs » et « fléchisseurs », qui désignent aussi bien
+    // les ischio-jambiers que l'avant-bras. Celle-ci passe avant, et ne prend que ce qui
+    // parle de poignet ou de doigts. Elle est en revanche placée après les règles du mur et
+    // de la serviette, qui servent deux étirements d'épaule nommant eux aussi les doigts.
+    { key: "wrist", icon: PoseWrist, test: (n, t) => n.includes("étirement") && /poignet|doigts/.test(n + " " + t) },
     { key: "etirement-assis", icon: PoseStretchSeated, test: (n) => n.includes("étirement") && (n.includes("ischio") || n.includes("extenseurs") || n.includes("fléchisseurs")
             || n.includes("adducteurs") || n.includes("fessiers") || n.includes("grenouille") || n.includes("plantaire")) },
     { key: "etirement-debout", icon: PoseStretchStanding, test: (n) => n.includes("étirement") || n.includes("étirer") },
