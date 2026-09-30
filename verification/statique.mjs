@@ -249,6 +249,7 @@ try {
         "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
         "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
         "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
+        "SANS_REPERE_EFFORT",
         "REPERE_EFFORT_TU"]);
 } catch (e) {
     panne = e.message;
@@ -422,7 +423,14 @@ controle("l'étiquette de position ne contredit pas le dessin", () => {
 // vérifie donc les deux sens : tout exercice compté en répétitions reçoit un repère sauf
 // s'il est de mobilité, et aucun repère ne contredit sa consigne.
 controle("le repère d'effort ne contredit pas la consigne", () => {
-    const mobilite = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|^position|^posture|bascule|press-up|soulagement|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
+    // La liste des exercices dispensés de repère est lue dans l'application, et non recopiée
+    // ici : les deux copies avaient divergé d'un motif — « soulagement », sans effet puisque
+    // les deux exercices concernés commencent par « Position ». Le contrôle ne vérifie donc
+    // plus l'accord entre deux listes, mais que la seule façon de se passer de repère est
+    // d'y figurer : toute autre sortie à vide ajoutée à « familleEffort » sera signalée.
+    const mobilite = D.SANS_REPERE_EFFORT;
+    if (!(mobilite instanceof RegExp))
+        throw new Error("la liste des exercices sans repère n'est pas exposée");
     const repetitions = /^\d+\s*×\s*\d+/;
     // Une série comptée en minutes est une position tenue, pas un effort : cinq fois deux
     // minutes de sphinx ne se dosent pas. L'application les écarte aussi.

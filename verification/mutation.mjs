@@ -80,11 +80,12 @@ const MUTATIONS = [
         (s) => rem(s, "const POSITION_LIBRARY = [\n",
                       "const POSITION_LIBRARY = [\n    { test: (n) => n.includes(\"fentes lentes\"), label: \"Allongé\" },\n")],
 
-    // Les deux listes d'exercices « de mobilité » — celle de l'application et celle du
-    // contrôle — sont des copies. Les faire diverger est exactement ce que le contrôle garde.
+    // La liste des dispenses n'est plus écrite qu'une fois : on ne peut plus la faire
+    // diverger. Reste ce que le contrôle garde désormais — une sortie à vide ajoutée à
+    // « familleEffort » en dehors de cette liste, qui priverait l'exercice de son repère.
     ["le repère d'effort ne contredit pas la consigne",
-        (s) => rem(s, "|press-up|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))",
-                      "|press-up|ouverture|assist[ée]e|gainage|r[ée]cup[ée]ration de l'extension/.test(n))")],
+        (s) => rem(s, "function familleEffort(ex, croissance) {\n",
+                      "function familleEffort(ex, croissance) {\n    if (/gainage/.test((ex.name || \"\").toLowerCase())) return null;\n")],
 
     ["les repères tutoyés couvrent les mêmes familles, sans charge inventée",
         (s) => {
