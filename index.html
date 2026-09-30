@@ -3917,6 +3917,12 @@ const REPERE_EFFORT_TU = {
     technique: "La qualité du geste avant la vitesse.",
     correction: "La position juste avant l'effort.",
 };
+// Les exercices qui ne portent pas de repère d'effort : leur enjeu est l'amplitude ou le
+// relâchement, pas l'intensité. Cette liste était écrite deux fois — ici et dans le contrôle
+// qui la vérifie — et les deux copies avaient déjà divergé d'un motif. Le contrôle lit
+// maintenant celle-ci, ce qui rend la divergence impossible et fait de cette ligne la seule
+// façon sanctionnée de se passer de repère.
+const SANS_REPERE_EFFORT = /[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|^position|^posture|bascule|press-up|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/;
 function familleEffort(ex, croissance) {
     const n = (ex.name || "").toLowerCase(), t = (ex.tip || "").toLowerCase(), dose = ex.dose || "";
     // Une dose non chiffrée décrit un conseil, un bilan ou une adaptation : rien à doser.
@@ -3926,7 +3932,7 @@ function familleEffort(ex, croissance) {
     // « Montée de marche » et « excentrique sur marche » sont des marches d'escalier, pas
     // de la marche : sans cette garde, elles tombaient dans l'endurance.
     const step = /mont[ée]e|step|escalier|sur marche|de marche/.test(n);
-    if (/[ée]tirement|assouplis|mobilit[ée]|mobilisation|pendulaire|automassage|massage|relâchement|respiration|glissement|alphabet|pompes de cheville|d[ée]roul|rouleau|^position|^posture|bascule|press-up|ouverture|assist[ée]e|r[ée]cup[ée]ration de l'extension/.test(n))
+    if (SANS_REPERE_EFFORT.test(n))
         return null;
     // Corriger sa posture n'est ni de la mobilité — il y a bien un effort, tenu et répété —
     // ni du renforcement : chercher la difficulté fait perdre la position, qui est le seul
