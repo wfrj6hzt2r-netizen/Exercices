@@ -34,6 +34,12 @@ function rem(s, a, b) {
 }
 
 // Une mutation par contrôle. Le libellé doit être exactement celui du contrôle visé.
+//
+// Le texte visé doit être unique dans le fichier — sans quoi la mutation frappe un homonyme
+// et le contrôle est déclaré muet à tort — et aussi stable que possible. Deux mutations
+// étaient ancrées sur la scoliose : en la déplaçant vers la partie enfant, elles se sont
+// retrouvées sans cible. Le banc l'a dit, ce qui est son travail ; il vaut mieux néanmoins
+// viser un contenu ancien qu'un contenu qu'on vient d'écrire.
 const MUTATIONS = [
     ["le script applicatif se compile",
         (s) => rem(s, "const POSES = [", "const casse = (;\nconst POSES = [")],
@@ -71,8 +77,8 @@ const MUTATIONS = [
                       '{ name: "Tirage au Theraband", dose: "3 × 12", tip: "Tirez les coudes vers l\'arrière contre la bande de résistance." },\n                            { name: "Gainage ventral"')],
 
     ["chaque blessure a des conseils pour les premiers jours",
-        (s) => rem(s, 'premiersJours: ["Une scoliose ne fait en général pas mal',
-                      'premiersJours: [], ignore: ["Une scoliose ne fait en général pas mal')],
+        (s) => rem(s, 'premiersJours: ["Une dorsalgie mécanique est bénigne',
+                      'premiersJours: [], ignore: ["Une dorsalgie mécanique est bénigne')],
 
     // « Fentes lentes » ne nomme aucune posture dans sa consigne : son étiquette s'affiche
     // donc telle quelle, et peut contredire le dessin sans que rien ne la filtre.
@@ -99,8 +105,8 @@ const MUTATIONS = [
         }],
 
     ["chaque rythme propre couvre toutes ses étapes",
-        (s) => rem(s, '{ freq: "3 fois par semaine, sans terme", duration: "Pendant toute la croissance au minimum.',
-                      '{ freq: "", duration: "Pendant toute la croissance au minimum.')],
+        (s) => rem(s, '{ freq: "Une à deux fois par jour", duration: "Une à deux semaines suffisent souvent',
+                      '{ freq: "", duration: "Une à deux semaines suffisent souvent')],
 
     ["chaque « pourquoi » désigne une étape qui existe",
         (s) => rem(s, "const POURQUOI_ETAPE = {\n",
