@@ -854,6 +854,47 @@ const PoseSidePlank = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "14", y1: "30", x2: "13", y2: "44" }),
     React.createElement("line", { x1: "13", y1: "44", x2: "20", y2: "44" }),
     React.createElement("line", { x1: "15", y1: "29", x2: "17", y2: "16" })));
+// L'étirement du mollet contre un mur. La silhouette debout générique montrait une jambe
+// levée devant, quand la consigne demande la jambe arrière tendue, talon au sol, face à
+// une paroi : c'est le mur et le talon qui font tout le sens du geste.
+const PoseCalfWall = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "42", y2: "44" }),
+    React.createElement("line", { x1: "42", y1: "6", x2: "42", y2: "44" }),
+    React.createElement("circle", { cx: "31", cy: "11", r: "4" }),
+    React.createElement("line", { x1: "20", y1: "28", x2: "28", y2: "16" }),
+    React.createElement("line", { x1: "28", y1: "17", x2: "41", y2: "21" }),
+    React.createElement("line", { x1: "20", y1: "28", x2: "10", y2: "44" }),
+    React.createElement("line", { x1: "20", y1: "28", x2: "29", y2: "36" }),
+    React.createElement("line", { x1: "29", y1: "36", x2: "30", y2: "44" })));
+// L'étirement du triceps : coude en l'air, main derrière la nuque, l'autre main qui pousse
+// le coude. Le dessin précédent montrait deux bras tendus contre une paroi.
+const PoseTricepsStretch = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
+    React.createElement("circle", { cx: "21", cy: "15", r: "4" }),
+    React.createElement("line", { x1: "21", y1: "19", x2: "22", y2: "33" }),
+    React.createElement("line", { x1: "21", y1: "21", x2: "31", y2: "8" }),
+    React.createElement("line", { x1: "31", y1: "8", x2: "20", y2: "6" }),
+    React.createElement("line", { x1: "37", y1: "13", x2: "32", y2: "9" }),
+    React.createElement("line", { x1: "22", y1: "33", x2: "18", y2: "44" }),
+    React.createElement("line", { x1: "22", y1: "33", x2: "26", y2: "44" })));
+// La posture de l'enfant : à genoux, assis sur les talons, buste plié vers l'avant et bras
+// allongés devant. Elle était dessinée en flexion assise, jambe tendue.
+const PoseChildPose = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("line", { x1: "23", y1: "42", x2: "38", y2: "42" }),
+    React.createElement("line", { x1: "23", y1: "42", x2: "33", y2: "32" }),
+    React.createElement("line", { x1: "33", y1: "32", x2: "37", y2: "41" }),
+    React.createElement("line", { x1: "33", y1: "32", x2: "15", y2: "38" }),
+    React.createElement("circle", { cx: "11", cy: "37.5", r: "3.5" }),
+    React.createElement("line", { x1: "16", y1: "41", x2: "6", y2: "43.5" })));
+// Le relevé de buste à plat ventre, bras le long du corps. Le sphinx, lui, prend appui sur
+// les avant-bras : c'est un autre exercice, et il garde son dessin.
+const PoseProneLift = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "43", x2: "43", y2: "43" }),
+    React.createElement("line", { x1: "40", y1: "41", x2: "27", y2: "41" }),
+    React.createElement("line", { x1: "27", y1: "41", x2: "16", y2: "33" }),
+    React.createElement("circle", { cx: "12", cy: "31", r: "3.5" }),
+    React.createElement("line", { x1: "17", y1: "35", x2: "26", y2: "40" })));
 // L'extension debout, mains au creux des reins. Elle se distingue du sphinx, qui se fait au
 // sol, et de la rotation du tronc, qui était jusqu'ici le dessin rendu — le patient voyait
 // un buste qui tourne là où sa consigne lui demande de se pencher en arrière.
@@ -882,7 +923,7 @@ const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "16", y1: "25", x2: "5", y2: "17" }),
     React.createElement("line", { x1: "17", y1: "25", x2: "16", y2: "43" }),
     React.createElement("line", { x1: "33", y1: "25", x2: "35", y2: "43" }),
-    React.createElement("line", { x1: "34", y1: "25", x2: "45", y2: "17" })));
+    React.createElement("line", { x1: "34", y1: "25", x2: "45", y2: "25" })));
 // La marche, distincte de la course : tronc droit, foulée courte, les deux pieds bas.
 const PoseWalk = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
@@ -1179,6 +1220,23 @@ const PoseArmCircle = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "19", y1: "31", x2: "15", y2: "44" }),
     React.createElement("line", { x1: "19", y1: "31", x2: "23", y2: "44" })));
 const POSES = [
+    // --- 0 bis. Cinq gestes relevés à l'écran, chacun dessiné par une règle trop large ---
+    // Le chat-vache tombait sur la rotation du tronc debout, le relevé de buste à plat
+    // ventre sur le sphinx — qui prend appui sur les avant-bras et reste juste pour les
+    // press-up —, l'étirement du mollet au mur sur une silhouette jambe levée devant, celui
+    // du triceps sur deux bras tendus contre une paroi, et la posture de l'enfant sur une
+    // flexion assise jambe tendue.
+    //
+    // Ces règles passent en tête parce qu'elles sont nommées étroitement. Le mollet exige
+    // le mur dans son texte et le mot « étirement » dans son nom. « Étirement des mollets
+    // et des cuisses », au coucher, n'a pas de mur et garde la silhouette debout ; les
+    // renforcements du mollet en citent un pour l'équilibre et gardent le leur.
+    { key: "four-point", icon: PoseFourPoint, test: (n) => n.includes("chat-vache") || (n.includes("dos rond") && n.includes("dos creux")) },
+    { key: "prone-lift", icon: PoseProneLift, test: (n) => n.includes("extenseurs du dos") || n.includes("extenseurs dorsaux") },
+    { key: "calf-wall", icon: PoseCalfWall, test: (n, t) => n.includes("étirement") && n.includes("mollet") && /\bmur\b/.test(n + " " + t) },
+    { key: "triceps-stretch", icon: PoseTricepsStretch, test: (n) => n.includes("étirement") && n.includes("triceps") },
+    { key: "child-pose", icon: PoseChildPose, test: (n) => n.includes("posture de l'enfant") },
+
     // --- 0. Gestes que des règles plus générales captaient à tort ---
     // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
     { key: "nerve", icon: PoseNerveGlide, test: (n) => n.includes("nerf") || n.includes("glissement nerveux")
@@ -1461,6 +1519,10 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     // L'extension debout se fait debout ; la mobilité en charge garde le dessin de rotation
     // du tronc, qui sert aussi assis et n'annonce donc aucune posture.
     "standing-extension": "debout",
+    // Le mollet au mur et l'étirement du triceps se font debout, le relevé de buste à plat
+    // ventre. La posture de l'enfant est à genoux, que la table ne connaît pas : elle ne
+    // déclare donc rien, et aucune étiquette ne peut la contredire.
+    "calf-wall": "debout", "triceps-stretch": "debout", "prone-lift": "ventre",
 };
 // Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
 // dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
@@ -3835,6 +3897,9 @@ const POSITION_LIBRARY = [
     { test: (n) => n.includes("étirement") && n.includes("quadriceps"), label: "Debout (appui possible), ou allongé sur le côté" },
     { test: (n) => n.includes("étirement") && n.includes("mollet"), label: "Debout, face à un mur" },
     { test: (n) => n.includes("étirement") && n.includes("adducteur"), label: "Debout ou assis, jambe tendue sur le côté" },
+    // Avant la règle générale des étirements : la posture de l'enfant se fait à genoux, et
+    // était annoncée « Debout ou assis ».
+    { test: (n) => n.includes("posture de l'enfant"), label: "À genoux, assis sur les talons" },
     { test: (n) => n.includes("étirement"), label: "Debout ou assis" },
     // « Marche ou vélo » laisse le choix : l'étiquette ne peut pas asseoir le patient.
     { test: (n) => n.includes("marche") && n.includes("vélo"), label: "Dehors, ou assis sur le vélo" },
@@ -5486,7 +5551,6 @@ function GuidedJourney() {
     }, []);
     const [introVu, setIntroVu] = useState(() => !!restored.introVu);
     const [view, setView] = useState(() => (restored.introVu ? depart.view : "intro"));
-        const [tailleTexte, setTailleTexte] = useState(() => restored.tailleTexte || "normal");
     // L'écran « À propos » s'atteint depuis l'introduction comme depuis l'accueil : on
     // retient d'où l'on vient pour ne pas renvoyer sur l'accueil quelqu'un qui n'a pas
     // encore validé les règles de prudence.
@@ -5544,8 +5608,8 @@ function GuidedJourney() {
     }, [view, pathId, injuryId, stageIdx, runnerPathId, runnerStageIdx, preventionCategory, preventionSub]);
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
-        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit });
-    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, tailleTexte, prudenceVue, prescrit]);
+        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -5594,13 +5658,10 @@ function GuidedJourney() {
         window.addEventListener("popstate", surRetour);
         return () => window.removeEventListener("popstate", surRetour);
     }, []);
-    // La taille choisie s'applique à la racine du document : les classes en rem suivent
-    // d'elles-mêmes, et les tailles en pixels des cartes lisent le même facteur.
-    const TAILLES_TEXTE = { normal: "106.25%", grand: "118.75%", "tres-grand": "131.25%" };
-    useEffect(() => {
-        if (typeof document !== "undefined")
-            document.documentElement.style.fontSize = TAILLES_TEXTE[tailleTexte] || TAILLES_TEXTE.normal;
-    }, [tailleTexte]);
+    // Le réglage de taille de texte a été retiré. La taille de base reste celle de la
+    // feuille de style, 106,25 %, et rien ne la touche plus à l'exécution. Un patient qui
+    // veut plus gros agrandit la police de son navigateur : la page suit, tout y étant
+    // exprimé en rem.
     // Passage de minuit. La remise à zéro des coches n'avait lieu qu'à la lecture du stockage :
     // une application installée sur l'écran d'accueil, laissée ouverte, créditait la séance du
     // lendemain à la veille et rouvrait sur des cases déjà cochées.
@@ -5969,19 +6030,10 @@ function GuidedJourney() {
                         style: { color: "rgba(255,255,255,0.92)", border: "1px solid rgba(255,255,255,0.32)" } },
                         React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
                         "Effacer ma progression et repartir de z\u00E9ro")),
-                    // Le réglage de taille vit en pied de page, en face des mentions légales :
-                    // il est cherché une fois, au début, puis plus jamais. Il gardait pourtant un
-                    // intitulé et une ligne à lui. Les trois A disent seuls ce qu'ils font.
-                    React.createElement("div", { className: "flex items-center justify-between gap-3 mt-3" },
-                        React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 text-[11px] underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales"),
-                        React.createElement("div", { className: "flex gap-1.5 p-1 rounded-full shrink-0", style: { backgroundColor: "rgba(255,255,255,0.14)" } },
-                            [["normal", 13], ["grand", 15], ["tres-grand", 17]].map(([id, px]) => (React.createElement("button", {
-                                key: id, onClick: () => setTailleTexte(id),
-                                "aria-pressed": tailleTexte === id,
-                                "aria-label": id === "normal" ? "Texte de taille normale" : id === "grand" ? "Texte agrandi" : "Texte tr\u00E8s agrandi",
-                                className: "cible-44 px-3 rounded-full font-medium transition-colors",
-                                style: { fontSize: px, backgroundColor: tailleTexte === id ? "#FFFFFF" : "transparent",
-                                    color: tailleTexte === id ? HEADER : "rgba(255,255,255,0.75)" } }, "A"))))))))));
+                    // Les mentions légales. Le réglage de taille de texte qui leur faisait face a
+                    // été retiré : il était cherché une fois, au début, puis plus jamais.
+                    React.createElement("div", { className: "mt-3" },
+                        React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 text-[11px] underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales")))))));
     }
     if (view === "injury") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
