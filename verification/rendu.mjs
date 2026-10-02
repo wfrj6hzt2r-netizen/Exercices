@@ -138,17 +138,25 @@ async function ouvrir(ctx, hash) {
 // rogné en plein mot, et le surtitre du récapitulatif passait à deux lignes.
 {
     const out = [];
+    // Les trois tailles étaient pilotées par un réglage de l'application, retiré depuis :
+    // le laisser aurait rendu ce contrôle vide — trois passes identiques qui se seraient
+    // dites trois tailles. Elles sont désormais imposées à la racine du document, ce qui
+    // reproduit la situation qui reste réelle : un patient qui agrandit la police de son
+    // navigateur. Les trois valeurs sont celles que l'application proposait.
+    const RACINE_TEXTE = { normal: "106.25%", grand: "118.75%", "tres-grand": "131.25%" };
     for (const taille of ["normal", "grand", "tres-grand"]) {
         const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
         for (const [nom, hash] of ROUTES) {
             const { p } = await ouvrir(ctx, hash);
-            await p.evaluate((t) => {
+            await p.evaluate(() => {
                 const s = JSON.parse(localStorage.getItem("kine-exercices-v1") || "{}");
-                s.version = 3; s.introVu = true; s.tailleTexte = t;
+                s.version = 3; s.introVu = true;
                 localStorage.setItem("kine-exercices-v1", JSON.stringify(s));
-            }, taille);
+            });
             await p.reload({ waitUntil: "load" });
             await p.waitForSelector("main");
+            await p.evaluate((px) => { document.documentElement.style.fontSize = px; }, RACINE_TEXTE[taille]);
+            await p.waitForTimeout(120);
             const r = await p.evaluate((grandMaximum) => {
                 const out = [];
                 if (document.documentElement.scrollWidth > window.innerWidth + 1)
