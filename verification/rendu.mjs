@@ -74,7 +74,14 @@ const serveur = createServer((req, res) => {
 });
 await new Promise((r) => serveur.listen(PORT, "127.0.0.1", r));
 
-const navigateur = await chromium.launch();
+// Certains conteneurs embarquent déjà un Chromium mais interdisent d'en télécharger un
+// autre : la suite refusait alors de démarrer, faute de la version exacte attendue par le
+// paquet installé. « CHROMIUM_EXECUTABLE » lui dit lequel utiliser. Sans la variable, rien
+// ne change et Playwright choisit le sien.
+const LANCEMENT = process.env.CHROMIUM_EXECUTABLE
+    ? { executablePath: process.env.CHROMIUM_EXECUTABLE }
+    : {};
+const navigateur = await chromium.launch(LANCEMENT);
 
 /** Ouvre un écran, passe l'introduction, et rend la page prête. */
 async function ouvrir(ctx, hash) {
@@ -294,7 +301,7 @@ async function ouvrir(ctx, hash) {
     const out = [];
     const profil = mkdtempSync(join(tmpdir(), "verif-hors-ligne-"));
     // un service worker ne survit qu'à un profil persistant
-    const ctx = await chromium.launchPersistentContext(profil, { viewport: { width: 390, height: 844 } });
+    const ctx = await chromium.launchPersistentContext(profil, { ...LANCEMENT, viewport: { width: 390, height: 844 } });
     try {
         const p = ctx.pages()[0] || await ctx.newPage();
         await p.goto(BASE, { waitUntil: "networkidle" });
