@@ -4,7 +4,7 @@
 // L'application est un fichier unique, sans étape de compilation. Il n'y a donc pas de module
 // à importer : on découpe le HTML, et pour atteindre les données on exécute le script dans un
 // environnement où React et le document sont remplacés par des leurres. C'est le seul moyen
-// d'inspecter les 955 exercices sans les recopier ailleurs — une copie finirait par diverger,
+// d'inspecter les 979 exercices sans les recopier ailleurs — une copie finirait par diverger,
 // ce qui est précisément le défaut que ces contrôles cherchent.
 
 import { readFileSync } from "node:fs";
