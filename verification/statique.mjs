@@ -564,7 +564,10 @@ if (echecs.length) {
             if (!n || typeof n !== "object") return;
             if (Array.isArray(n.exercises)) {
                 t++;
-                if (n.pourquoi || D.POURQUOI_ETAPE[n.label]) c++;
+                // La prévention porte le sien sous le nom « intro », et l'affiche en tête
+                // d'écran comme les autres. Ne chercher que « pourquoi » la donnait à zéro,
+                // et m'a fait proposer d'écrire neuf textes qui existaient déjà.
+                if (n.pourquoi || n.intro || D.POURQUOI_ETAPE[n.label]) c++;
                 n.exercises.forEach((e) => { te++; if (e.pourquoi) ce++; });
             }
             Object.values(n).forEach((v) => { if (v && typeof v === "object") descendre(v); });
