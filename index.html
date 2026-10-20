@@ -895,6 +895,22 @@ const PoseProneLift = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "27", y1: "41", x2: "16", y2: "33" }),
     React.createElement("circle", { cx: "12", cy: "31", r: "3.5" }),
     React.createElement("line", { x1: "17", y1: "35", x2: "26", y2: "40" })));
+// La rotation du tronc en appui sur une jambe. Le dessin de rotation ordinaire montre les
+// deux pieds au sol : il ne disait pas l'essentiel, qui est l'appui unipodal pied fixe. Ici
+// la jambe d'appui est seule au sol, l'autre relevée, et l'anneau fléché fait le tour du
+// tronc — c'est le buste qui tourne, pas le genou. Les bras sont écartés haut pour que
+// l'anneau reste lisible à vingt-quatre pixels, la taille à laquelle il est rendu.
+const PoseStandingTwist = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "7", r: "3.8" }),
+    React.createElement("line", { x1: "24", y1: "10.8", x2: "24", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "12", y2: "12" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "36", y2: "12" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "24", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "31", y2: "35" }),
+    React.createElement("line", { x1: "31", y1: "35", x2: "28", y2: "41" }),
+    React.createElement("line", { x1: "8", y1: "44", x2: "40", y2: "44" }),
+    React.createElement("path", { d: "M14 25 Q24 20 34 25 Q24 30 14 25" }),
+    React.createElement("path", { d: "M31.5 22.3 34.6 24.9 31.4 27" })));
 // L'ouverture des bras, de face : coudes à hauteur d'épaule, mains vers le haut, et deux
 // arcs qui disent le départ vers l'arrière. Aucun dessin ne portait ce geste — l'étirement
 // des pectoraux se fait contre un montant de porte, et la mobilité du haut du dos sur un
@@ -1352,7 +1368,7 @@ const POSES = [
     // un mouvement précis. Chaque test se cale donc sur la consigne, seule fiable : deux de
     // ces titres portent ailleurs un texte qui, lui, est bien un conseil.
     { key: "seated-leg", icon: PoseSeatedLeg, test: (n) => n.includes("flexion limitée à 90") },
-    { key: "trunk", icon: PoseTrunkRotation, test: (n) => n.includes("rotation contrôlée du genou") },
+    { key: "standing-twist", icon: PoseStandingTwist, test: (n) => n.includes("rotation contrôlée du genou") },
     // Le poignet posé au bord d'une table et la rotation de l'avant-bras au marteau : quatre
     // exercices de coude qui montraient un presse-papier.
     { key: "wrist", icon: PoseWrist, test: (n) => n.includes("excentrique progressif chargé")
@@ -1574,7 +1590,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "calf-wall": "debout", "triceps-stretch": "debout", "prone-lift": "ventre",
     // L'ouverture des bras se fait debout ou à genoux : la consigne dit les deux, et c'est
     // debout qu'elle nomme en premier.
-    "chest-open": "debout",
+    "chest-open": "debout", "standing-twist": "debout",
 };
 // Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
 // dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
@@ -1650,11 +1666,15 @@ function getExerciseIcon(name, tip) {
         return PoseAdvice;
     const montree = POSTURE_DESSIN[match.key];
     const decrites = posturesAcceptables(postureDecrite(tip));
-    if (!montree || !decrites.length || decrites.includes(montree))
+    if (!montree || !decrites.length)
         return match.icon;
-    // Devant un choix, on prend le premier remplaçant disponible : la consigne accepte l'un
-    // comme l'autre, et le dessin n'a qu'une posture à montrer.
+    // Les postures sont examinées dans l'ordre où la consigne les nomme : « Assis ou
+    // allongé » appelle le dessin assis s'il existe, parce que c'est l'assise que le patient
+    // lit en premier. Le dessin n'est gardé que lorsque aucune posture mieux placée n'a de
+    // remplaçant, et le pictogramme neutre reste le dernier recours.
     for (const decrite of decrites) {
+        if (montree === decrite)
+            return match.icon;
         const remplacant = (DESSIN_AUTRE_POSTURE[match.key] || {})[decrite];
         const pose = remplacant && POSES.find((p) => p.key === remplacant);
         if (pose)
