@@ -308,8 +308,11 @@ controle("le pictogramme ne contredit pas la consigne", () => {
         if (vus.has(ex.name))
             continue;
         vus.add(ex.name);
-        const decrite = D.postureDecrite(ex.tip);
-        if (!decrite)
+        // La consigne nomme une posture, parfois deux quand elle laisse le choix — « Assis
+        // ou allongé ». Aucune : rien à contredire.
+        const decrites = [].concat(D.postureDecrite(ex.tip) || []);
+        const decrite = decrites.join(" ou ");
+        if (!decrites.length)
             continue; // la consigne ne dit pas la posture : rien à contredire
         const rendue = D.getExerciseIcon(ex.name, ex.tip);
         const cle = clePose.get(rendue);
@@ -322,7 +325,7 @@ controle("le pictogramme ne contredit pas la consigne", () => {
             continue;
         }
         const montree = D.POSTURE_DESSIN[cle];
-        if (montree && montree !== decrite)
+        if (montree && !decrites.includes(montree))
             out.push(`${ou} — « ${ex.name} » : dessin « ${montree} », consigne « ${decrite} »`);
     }
     return out;

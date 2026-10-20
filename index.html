@@ -895,6 +895,37 @@ const PoseProneLift = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "27", y1: "41", x2: "16", y2: "33" }),
     React.createElement("circle", { cx: "12", cy: "31", r: "3.5" }),
     React.createElement("line", { x1: "17", y1: "35", x2: "26", y2: "40" })));
+// La rotation du tronc en appui sur une jambe. Le dessin de rotation ordinaire montre les
+// deux pieds au sol : il ne disait pas l'essentiel, qui est l'appui unipodal pied fixe. Ici
+// la jambe d'appui est seule au sol, l'autre relevée, et l'anneau fléché fait le tour du
+// tronc — c'est le buste qui tourne, pas le genou. Les bras sont écartés haut pour que
+// l'anneau reste lisible à vingt-quatre pixels, la taille à laquelle il est rendu.
+const PoseStandingTwist = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "7", r: "3.8" }),
+    React.createElement("line", { x1: "24", y1: "10.8", x2: "24", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "12", y2: "12" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "36", y2: "12" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "24", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "31", y2: "35" }),
+    React.createElement("line", { x1: "31", y1: "35", x2: "28", y2: "41" }),
+    React.createElement("line", { x1: "8", y1: "44", x2: "40", y2: "44" }),
+    React.createElement("path", { d: "M14 25 Q24 20 34 25 Q24 30 14 25" }),
+    React.createElement("path", { d: "M31.5 22.3 34.6 24.9 31.4 27" })));
+// L'ouverture des bras, de face : coudes à hauteur d'épaule, mains vers le haut, et deux
+// arcs qui disent le départ vers l'arrière. Aucun dessin ne portait ce geste — l'étirement
+// des pectoraux se fait contre un montant de porte, et la mobilité du haut du dos sur un
+// rouleau, au sol. Les deux « ouverture thoracique dynamique » restaient donc sans dessin.
+const PoseChestOpen = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "18", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "30", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "18", x2: "15", y2: "16" }),
+    React.createElement("line", { x1: "15", y1: "16", x2: "12", y2: "8" }),
+    React.createElement("line", { x1: "24", y1: "18", x2: "33", y2: "16" }),
+    React.createElement("line", { x1: "33", y1: "16", x2: "36", y2: "8" }),
+    React.createElement("path", { d: "M8 13 Q5 10 7 6" }),
+    React.createElement("path", { d: "M40 13 Q43 10 41 6" })));
 // L'extension debout, mains au creux des reins. Elle se distingue du sphinx, qui se fait au
 // sol, et de la rotation du tronc, qui était jusqu'ici le dessin rendu — le patient voyait
 // un buste qui tourne là où sa consigne lui demande de se pencher en arrière.
@@ -1331,6 +1362,40 @@ const POSES = [
             // nom et sa consigne, l'autre dans son étiquette de position. Toutes trois
             // portaient jusqu'ici une rotation du tronc, qui n'est pas ce qu'elles demandent.
             || n.includes("endurance posturale debout") || n.includes("endurance posturale prolongée") },
+    // --- 0 ter. Dix-huit exercices qui n'affichaient aucun geste. Les uns ne déclenchaient
+    // aucune règle, les autres étaient pris pour des conseils par leur titre — « Renforcement
+    // fonctionnel progressif », « Tests de saut unipodal » — alors que leur consigne décrit
+    // un mouvement précis. Chaque test se cale donc sur la consigne, seule fiable : deux de
+    // ces titres portent ailleurs un texte qui, lui, est bien un conseil.
+    { key: "seated-leg", icon: PoseSeatedLeg, test: (n) => n.includes("flexion limitée à 90") },
+    { key: "standing-twist", icon: PoseStandingTwist, test: (n) => n.includes("rotation contrôlée du genou") },
+    // Le poignet posé au bord d'une table et la rotation de l'avant-bras au marteau : quatre
+    // exercices de coude qui montraient un presse-papier.
+    { key: "wrist", icon: PoseWrist, test: (n) => n.includes("excentrique progressif chargé")
+            || n.includes("rotation de l'avant-bras") },
+    // Le titre ne dit que la méthode, la consigne dit le geste. Les quinze autres « lourd et
+    // lent » du fichier nomment leur exercice et gardent le leur.
+    { key: "calf", icon: PoseCalfRaise, test: (n, t) => n.startsWith("renforcement lourd et lent")
+            && t.includes("montée sur pointe") },
+    { key: "bridge", icon: PoseBridge, test: (n, t) => n.includes("arrière de la cuisse")
+            && t.includes("pont fessier") },
+    { key: "supine-core", icon: PoseSupineCore, test: (n) => n.includes("serrer un coussin entre les genoux") },
+    // Deux relevés de buste à plat ventre : l'un n'avait pas de dessin, l'autre portait une
+    // planche, qui est un appui tenu et non un décollé du buste.
+    { key: "prone-lift", icon: PoseProneLift, test: (n) => n.includes("renforcement complet du dos")
+            || n.includes("gainage postérieur") },
+    { key: "band-row", icon: PoseBandRow, test: (n) => n.includes("travail avec charge légère") },
+    { key: "chest-open", icon: PoseChestOpen, test: (n) => n.includes("ouverture thoracique dynamique") },
+    { key: "run", icon: PoseWalkRun, test: (n) => n.includes("travail de foulée") },
+    { key: "jump", icon: PoseJump, test: (n, t) => n.includes("renforcement en jouant")
+            || (n.includes("tests de saut unipodal") && t.includes("série de sauts")) },
+    { key: "squat", icon: PoseSquat, test: (n, t) => n.includes("renforcement fonctionnel global")
+            || (n.includes("réintroduction progressive de la flexion profonde") && t.includes("debout, descendez")) },
+    // Les quatre « renforcement fonctionnel » du rachis : leur titre les faisait passer pour
+    // des reprises d'activité, alors que chacun installe le patient et décrit son geste.
+    { key: "head-iso-multi", icon: PoseHeadIsoMulti, test: (n) => n.includes("renforcement fonctionnel complet") },
+    { key: "walk", icon: PoseWalk, test: (n) => n.includes("renforcement fonctionnel porté") },
+    { key: "hip-hinge", icon: PosePendulumHip, test: (n) => n.includes("renforcement fonctionnel progressif") },
     // --- 1. Consignes et repères, qui ne sont pas des mouvements ---
     { key: "advice", icon: PoseAdvice, test: (n) => n.includes("validation") || n.includes("bilan") || n.startsWith("test") || n.includes("tests de")
             || n.includes("suivi") || n.includes("adaptation") || n.includes("éducation") || n.includes("quantification")
@@ -1493,14 +1558,14 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "prone-extension": "ventre", plank: "ventre",
     "seated-flexion": "assis", "etirement-assis": "assis", "seated-hip-iso": "assis",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
-    "side-lying": "allonge", bridge: "allonge", "lying-mobilise": "allonge",
-    "supine-core": "allonge", "four-point": "quatre",
+    "side-lying": "cote", bridge: "dos", "lying-mobilise": "dos",
+    "supine-core": "dos", "four-point": "quatre",
     "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
     "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
     balance: "debout", jump: "debout", run: "debout",
     // Les nouveaux venus : la marche et l'appui au mur se font debout, le menton rentré
     // sur le dos. La tête seule n'a pas de posture, et n'entre donc pas ici.
-    walk: "debout", "wall-hip-iso": "debout", "chin-tuck-supine": "allonge",
+    walk: "debout", "wall-hip-iso": "debout", "chin-tuck-supine": "dos",
     "wall-hands": "debout", "wall-ball": "debout", "doorway-pec": "debout",
     "wall-walk": "debout", "towel-behind": "debout", "stick-rotation": "debout",
     // Ni le tirage ni le bâton n'entrent ici : leurs consignes disent « assis ou debout » et
@@ -1509,12 +1574,12 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "band-rotators": "debout", "front-raise": "debout",
     "overhead-raise": "debout", "iso-rot-wall": "debout", "arm-9090": "debout",
     "arm-circle": "debout", "assisted-elevation": "debout", "arm-decel": "debout",
-    sleeper: "allonge", "supine-punch": "allonge",
-    "night-arm": "allonge", "prone-ytw": "ventre", "floor-pushup": "ventre",
+    sleeper: "cote", "supine-punch": "dos",
+    "night-arm": "dos", "prone-ytw": "ventre", "floor-pushup": "ventre",
     "seated-twist": "assis",
     // La scoliose : l'autocorrection se fait debout, l'autograndissement sur le dos, le
     // gainage latéral sur le côté, la quadrupédie à quatre pattes.
-    autocorrection: "debout", "axial-supine": "allonge", "side-plank": "allonge",
+    autocorrection: "debout", "axial-supine": "dos", "side-plank": "cote",
     "bird-dog": "quatre",
     // L'extension debout se fait debout ; la mobilité en charge garde le dessin de rotation
     // du tronc, qui sert aussi assis et n'annonce donc aucune posture.
@@ -1523,22 +1588,28 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     // ventre. La posture de l'enfant est à genoux, que la table ne connaît pas : elle ne
     // déclare donc rien, et aucune étiquette ne peut la contredire.
     "calf-wall": "debout", "triceps-stretch": "debout", "prone-lift": "ventre",
+    // L'ouverture des bras se fait debout ou à genoux : la consigne dit les deux, et c'est
+    // debout qu'elle nomme en premier.
+    "chest-open": "debout", "standing-twist": "debout",
 };
 // Quand la consigne installe le patient autrement que le dessin, on cherche le même geste
 // dans la bonne posture. Faute de quoi, mieux vaut le pictogramme neutre qu'une position que
 // le texte contredit : le patient regarde le dessin avant de lire.
 const DESSIN_AUTRE_POSTURE = {
-    "etirement-debout": { assis: "etirement-assis", allonge: "lying-mobilise", quatre: "four-point" },
-    "lying-mobilise": { assis: "seated-leg", debout: "trunk" },
-    "hip-hinge": { allonge: "lying-mobilise", ventre: "prone-extension" },
+    "etirement-debout": { assis: "etirement-assis", dos: "lying-mobilise", cote: "side-lying", quatre: "four-point" },
+    "lying-mobilise": { assis: "seated-leg", debout: "trunk", cote: "side-lying" },
+    "hip-hinge": { dos: "lying-mobilise", ventre: "prone-extension" },
     squat: { assis: "seated-leg" },
-    "side-lying": { debout: "standing-abduction" },
-    balance: { allonge: "lying-mobilise", quatre: "four-point" },
-    plank: { allonge: "supine-core", quatre: "four-point" },
-    "seated-flexion": { allonge: "lying-mobilise" },
+    // Le renforcement de hanche s'écrit tantôt sur le flanc, tantôt sur le dos, tantôt
+    // debout : le même geste existe dans les trois postures, et c'est la consigne qui tranche.
+    "side-lying": { debout: "standing-abduction", dos: "supine-core" },
+    "supine-core": { cote: "side-lying", debout: "standing-abduction" },
+    balance: { dos: "lying-mobilise", quatre: "four-point" },
+    plank: { dos: "supine-core", cote: "side-plank", quatre: "four-point" },
+    "seated-flexion": { dos: "lying-mobilise" },
     "prone-extension": { debout: "trunk" },
-    bridge: { assis: "seated-leg", debout: "standing-abduction" },
-    "etirement-assis": { debout: "etirement-debout", allonge: "lying-mobilise" },
+    bridge: { assis: "seated-leg", debout: "standing-abduction", cote: "side-lying" },
+    "etirement-assis": { debout: "etirement-debout", dos: "lying-mobilise", cote: "side-lying" },
 };
 // La consigne ouvre presque toujours en installant le patient : « Assis au bord d'un lit… »,
 // « Debout, élastique au-dessus des chevilles… ». C'est ce début-là qui fait foi.
@@ -1551,22 +1622,40 @@ function postureDecrite(tip) {
     if (/a quatre pattes/.test(t))
         return "quatre";
     const trouves = [];
-    const noter = (cle, re) => { const m = t.match(re); if (m) trouves.push([m.index, cle]); };
-    noter("allonge", /sur le dos|\ballonge\b|\bcouche\b|semi allonge/);
+    const noter = (cle, re) => { const m = t.match(re); if (m) trouves.push([m.index, cle, m[0].length]); };
+    // Sur le dos et sur le côté sont deux postures, pas une. Les confondre sous un même
+    // « allongé » laissait passer la faute la plus fréquente de ce fichier : une silhouette
+    // couchée sur le flanc pour un exercice qui commence par « Allongé sur le dos ».
+    // Le « allongé » de « allongé sur le côté » appartient au côté, pas au dos : sans cette
+    // exclusion les deux se déclarent au même endroit du texte et le dos l'emporte au tri.
+    noter("dos", /sur le dos|\ballonge\b(?! sur le cote)|\bcouche\b(?! sur le cote)|semi allonge/);
     // « sur le côté » est le plus souvent une direction — « grand pas sur le côté », « bras
     // levé sur le côté ». Ce n'est une posture que dit explicitement, ou en tête de consigne.
     const couche = t.match(/(allonge|couche)e? sur le cote/);
     const brut = t.match(/^sur le cote/);
     if (couche)
-        trouves.push([couche.index, "allonge"]);
+        trouves.push([couche.index, "cote", couche[0].length]);
     else if (brut)
-        trouves.push([0, "allonge"]);
+        trouves.push([0, "cote", brut[0].length]);
     noter("debout", /\bdebout\b/);
     noter("assis", /\bassis\b|\bassise\b/);
     if (!trouves.length)
         return null;
     trouves.sort((a, b) => a[0] - b[0]);
+    // Une consigne qui s'ouvre sur « Assis ou allongé » n'installe pas le patient, elle lui
+    // laisse le choix : les deux postures conviennent alors, et aucune troisième. Rendre
+    // simplement « rien à vérifier » laisserait passer un étirement debout pour une consigne
+    // qui ne propose que l'assise et le décubitus. Le choix doit ouvrir la consigne : « Sur
+    // une presse, assis ou semi-allongé » installe bien le patient, et garde son assise.
+    if (trouves[0][0] === 0 && trouves.length > 1
+        && /^ ou (bien )?$/.test(t.slice(trouves[0][2], trouves[1][0])))
+        return [trouves[0][1], trouves[1][1]];
     return trouves[0][1];
+}
+// La posture décrite est tantôt unique, tantôt un choix laissé au patient : les deux
+// lecteurs du résultat raisonnent sur une liste.
+function posturesAcceptables(decrite) {
+    return decrite == null ? [] : [].concat(decrite);
 }
 function getExerciseIcon(name, tip) {
     const n = (name || "").toLowerCase();
@@ -1576,12 +1665,18 @@ function getExerciseIcon(name, tip) {
     if (!match)
         return PoseAdvice;
     const montree = POSTURE_DESSIN[match.key];
-    const decrite = postureDecrite(tip);
-    if (!montree || !decrite || montree === decrite)
+    const decrites = posturesAcceptables(postureDecrite(tip));
+    if (!montree || !decrites.length)
         return match.icon;
-    const remplacant = (DESSIN_AUTRE_POSTURE[match.key] || {})[decrite];
-    if (remplacant) {
-        const pose = POSES.find((p) => p.key === remplacant);
+    // Les postures sont examinées dans l'ordre où la consigne les nomme : « Assis ou
+    // allongé » appelle le dessin assis s'il existe, parce que c'est l'assise que le patient
+    // lit en premier. Le dessin n'est gardé que lorsque aucune posture mieux placée n'a de
+    // remplaçant, et le pictogramme neutre reste le dernier recours.
+    for (const decrite of decrites) {
+        if (montree === decrite)
+            return match.icon;
+        const remplacant = (DESSIN_AUTRE_POSTURE[match.key] || {})[decrite];
+        const pose = remplacant && POSES.find((p) => p.key === remplacant);
         if (pose)
             return pose.icon;
     }
