@@ -547,11 +547,39 @@ if (echecs.length) {
     process.exit(1);
 }
 {
+    // La couverture des « pourquoi », parcours par parcours. Elle ne fait échouer personne :
+    // c'est un chiffre à regarder, pas une règle. Il ne portait longtemps que sur les
+    // pathologies et annonçait 63 % de couverture, alors que deux parcours entiers n'en
+    // avaient aucun.
     let total = 0, couverts = 0;
-    D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => i.stages.forEach((s) => {
-        total++;
-        if (s.pourquoi || D.POURQUOI_ETAPE[s.label]) couverts++;
-    })));
+    // Deux niveaux, parce que les parcours ne portent pas le « pourquoi » au même endroit :
+    // par étape côté pathologies et coureur, par exercice côté croissance. Ne compter que
+    // les étapes ferait passer la croissance pour dépourvue alors qu'elle est la mieux
+    // fournie du fichier.
+    const parEtape = [], parExercice = [];
+    const compter = (nom, racine) => {
+        let t = 0, c = 0, te = 0, ce = 0;
+        const descendre = (n) => {
+            if (Array.isArray(n)) return n.forEach(descendre);
+            if (!n || typeof n !== "object") return;
+            if (Array.isArray(n.exercises)) {
+                t++;
+                if (n.pourquoi || D.POURQUOI_ETAPE[n.label]) c++;
+                n.exercises.forEach((e) => { te++; if (e.pourquoi) ce++; });
+            }
+            Object.values(n).forEach((v) => { if (v && typeof v === "object") descendre(v); });
+        };
+        descendre(racine);
+        total += t; couverts += c;
+        parEtape.push(`${nom} ${c}/${t}`);
+        parExercice.push(`${nom} ${ce}/${te}`);
+    };
+    compter("pathologies", D.PATHOLOGIES);
+    compter("coureur", D.RUNNER_DATA);
+    compter("croissance", D.CROISSANCE_DATA);
+    compter("prévention", D.PREVENTION_CATEGORIES);
     console.log(`\n${rapport.length} contrôles passés sur ${exercices.length} exercices.`);
     console.log(`${couverts} étapes sur ${total} portent un « pourquoi » (${Math.round(couverts / total * 100)} %).`);
+    console.log(`   par étape    ${parEtape.join("   ")}`);
+    console.log(`   par exercice ${parExercice.join("   ")}`);
 }
