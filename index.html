@@ -4546,12 +4546,15 @@ function chargePrecedente(charges, cle, exId, date) {
     const l = (charges[cle] && charges[cle][exId]) || [];
     return l.find((n) => n.d !== date) || null;
 }
-// Une dose « quotidien » ou « selon plan » ne se note pas : seuls les exercices réellement
-// dosés reçoivent le champ, pour ne pas encombrer les consignes qui n'en sont pas.
-function doseNotable(dose) {
-    // « 4 × 8 » ou « 5 × 45 sec » : oui. « 3 × par semaine » est une fréquence, pas une
-    // charge, et « quotidien » ou « selon plan » sont des consignes : on les écarte.
-    return /\d+\s*[×x]\s*\d+/.test(String(dose || ""));
+// Le bouton « Noter ma charge » ne vaut que pour un exercice qu'on charge. Il suffisait
+// jusqu'ici que la dose s'écrive « n × m » : les pompes de cheville, l'équilibre unipodal,
+// le gainage et les sauts l'affichaient aussi, soit 377 cartes sur 662 où il n'y avait rien
+// à noter. La famille d'effort, déjà calculée pour chaque exercice, tranche mieux que la
+// forme de la dose — elle écarte d'elle-même les fréquences et les consignes, qui n'ont pas
+// de famille.
+function doseNotable(ex) {
+    const f = familleEffort(ex);
+    return f === "lourd" || f === "renforcement";
 }
 function jjmm(d) {
     const p = String(d || "").split("-");
@@ -6517,7 +6520,7 @@ function GuidedJourney() {
                         onBasculerInfo: () => toggleInfo(`${runnerKey}-${exId}`),
                         position: positionAffichable(ex.name, ex.tip),
                         effort: repereEffort(ex),
-                        avecCharge: doseNotable(ex.dose),
+                        avecCharge: doseNotable(ex),
                         charge: chargeDuJour(charges, runnerKey, exId, jour),
                         chargePrecedente: chargePrecedente(charges, runnerKey, exId, jour),
                         onNoterCharge: (v) => setCharges((c) => noterCharge(c, runnerKey, exId, jour, v)),
@@ -6649,7 +6652,7 @@ function GuidedJourney() {
                     onBasculerInfo: () => toggleInfo(`${prevKey}-${exId}`),
                     position: positionAffichable(ex.name, ex.tip),
                     effort: repereEffort(ex),
-                    avecCharge: doseNotable(ex.dose),
+                    avecCharge: doseNotable(ex),
                     charge: chargeDuJour(charges, prevKey, exId, jour),
                     chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
                     onNoterCharge: (v) => setCharges((c) => noterCharge(c, prevKey, exId, jour, v)),
@@ -6746,7 +6749,7 @@ function GuidedJourney() {
                     onBasculerInfo: () => toggleInfo(exId),
                     position: positionAffichable(ex.name, ex.tip),
                     effort: repereEffort(ex),
-                    avecCharge: doseNotable(ex.dose),
+                    avecCharge: doseNotable(ex),
                     charge: chargeDuJour(charges, key, exId, jour),
                     chargePrecedente: chargePrecedente(charges, key, exId, jour),
                     onNoterCharge: (v) => setCharges((c) => noterCharge(c, key, exId, jour, v)),
