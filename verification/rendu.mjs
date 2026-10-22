@@ -58,7 +58,13 @@ const serveur = createServer((req, res) => {
     if (chemin.endsWith("/"))
         chemin += "index.html";
     try {
-        const corps = readFileSync(join(RACINE, chemin));
+        // Comme pour les contrôles statiques, « EXERCICES_SOURCE » substitue un fichier
+        // trafiqué le temps d'une exécution, sans jamais toucher au vrai : c'est le seul
+        // moyen de vérifier que ces contrôles-ci mordent encore.
+        const source = chemin === "/index.html" && process.env.EXERCICES_SOURCE
+            ? process.env.EXERCICES_SOURCE
+            : join(RACINE, chemin);
+        const corps = readFileSync(source);
         // GitHub Pages pose un ETag : le service worker s'en sert pour repérer une nouvelle
         // version. Sans lui, la bannière de mise à jour ne peut pas être contrôlée.
         res.writeHead(200, {
@@ -272,7 +278,9 @@ async function ouvrir(ctx, hash) {
 {
     const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
     const out = [];
-    for (const [nom, hash] of ROUTES.slice(0, 10)) {
+    // Les seize écrans suivants n'étaient pas examinés : la scoliose, la croissance, le
+    // récapitulatif et la fabrique de liens sont tous arrivés après cette limite de dix.
+    for (const [nom, hash] of ROUTES) {
         const { p } = await ouvrir(ctx, hash);
         await p.addScriptTag({ content: axeSource });
         const r = await p.evaluate(async () => {
