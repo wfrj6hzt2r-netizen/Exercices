@@ -3014,7 +3014,7 @@ const RUNNER_STAGE_GUIDANCE = [
     { freq: "2 à 3 fois par semaine", duration: "N'introduisez ce stade que si le stade 2 est confortable et que la douleur du lendemain reste faible. C'est ici que le tendon réapprend à restituer l'énergie." },
     { freq: "Selon le plan de reprise ci-dessous", duration: "La reprise se décide sur des critères objectifs et sur la douleur du lendemain, pas sur un délai calendaire." },
 ];
-const RUNNER_PAIN_RULE = "Repère de charge : une douleur jusqu'à 3-4/10 pendant l'effort est acceptable si elle redescend sous 3 sur 10 dans les 24 h et si elle n'augmente pas de séance en séance. Au-delà, réduisez la charge d'un cran.";
+const RUNNER_PAIN_RULE = "Repère de charge : une douleur jusqu'à 3 à 4 sur 10 pendant l'effort est acceptable si elle redescend sous 3 sur 10 dans les 24 h et si elle n'augmente pas de séance en séance. Au-delà, réduisez la charge d'un cran.";
 const RUNNER_DATA = [
     {
         id: "essuie-glace",
@@ -5733,7 +5733,7 @@ function GuidedJourney() {
     const [jour, setJour] = useState(() => aujourdHui());
     // Date à laquelle chaque règle de prudence a été montrée pour la dernière fois, par
     // parcours. Une seule date pour les quatre ne convenait pas : les textes diffèrent
-    // — le seuil de 3 à 4 sur 10 pour une blessure, l'absence de douleur en prévention,
+    // — la comparaison à la veille pour une blessure, l'absence de douleur en prévention,
     // et le tutoiement du parcours croissance — si bien qu'un patient qui faisait son
     // épaule puis ses étirements ne voyait jamais la règle de la prévention ce jour-là.
     // Mesuré avant correction, dans les deux sens.
@@ -5966,7 +5966,7 @@ function GuidedJourney() {
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium mb-6" }, "Quelques r\u00E8gles simples"),
                 React.createElement("div", { className: "flex flex-col gap-4" }, [
                     "Ce programme complète le suivi de votre kinésithérapeute, il ne le remplace pas.",
-                    "Une gêne légère peut être normale. Arrêtez l'exercice si la douleur dépasse 3 à 4 sur 10, ou si elle persiste après.",
+                    "Une gêne légère peut être normale. Arrêtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et prévenez votre kinésithérapeute.",
                     "En cas de doute, de douleur inhabituelle ou d'aggravation, contactez votre kinésithérapeute avant de continuer.",
                 ].map((txt, i) => (React.createElement("div", { key: i, className: "rounded-2xl p-4", style: { backgroundColor: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.2)" } },
                     React.createElement("p", { className: "text-sm text-white leading-relaxed" }, txt)))))),
@@ -6017,7 +6017,7 @@ function GuidedJourney() {
                 bloc("D'où vient le contenu", [
                     CONTENU_ORIGINE,
                     "Dernière révision du contenu : " + CABINET.revision + ".",
-                    "Les doses et les seuils indiqués, comme la règle des 3 à 4 sur 10, sont des repères courants et non des règles valables pour tout le monde. Si votre kinésithérapeute vous a donné d'autres consignes, ce sont les siennes qui comptent.",
+                    "Les doses et les seuils indiqués, comme le repère de douleur, sont des repères courants et non des règles valables pour tout le monde. Si votre kinésithérapeute vous a donné d'autres consignes, ce sont les siennes qui comptent.",
                 ]),
                 bloc("Vos données", [
                     "Rien de ce que vous faites ici ne quitte votre téléphone. Il n'y a ni compte, ni inscription, ni mesure d'audience, ni service tiers.",
@@ -6771,7 +6771,7 @@ function GuidedJourney() {
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
-            React.createElement(NoteDePrudence, { key: stageIdx, deplier: !regleVue("blessure"), onVue: () => marquerRegleVue("blessure"), texte: "Arr\u00EAtez l'exercice si la douleur d\u00E9passe 3 \u00E0 4 sur 10. En cas de doute, contactez votre kin\u00E9sith\u00E9rapeute." }),
+            React.createElement(NoteDePrudence, { key: stageIdx, deplier: !regleVue("blessure"), onVue: () => marquerRegleVue("blessure"), texte: "Une g\u00EAne l\u00E9g\u00E8re peut \u00EAtre normale. Arr\u00EAtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et pr\u00E9venez votre kin\u00E9sith\u00E9rapeute." }),
             stageIdx === 0 && React.createElement(ConseilsPremiersJours, { lignes: injury.premiersJours }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
                 const exId = idExercice(ex);
