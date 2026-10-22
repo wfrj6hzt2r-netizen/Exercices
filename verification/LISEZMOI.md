@@ -3,7 +3,9 @@
 Vingt-quatre contrôles automatiques. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
-Un troisième script, `mutation.mjs`, vérifie que les contrôles eux-mêmes mordent encore.
+Un troisième script, `mutation.mjs`, introduit seize défauts un par un et vérifie que le
+contrôle concerné les voit. Deux d'entre eux avaient cessé de vérifier quoi que ce soit sans
+que rien ne le signale.
 
 ## Les lancer
 
@@ -17,8 +19,15 @@ node verification/rendu.mjs             # deux à trois minutes
 node verification/mutation.mjs          # une vingtaine de secondes
 ```
 
-Les deux tournent aussi à chaque `push` et à chaque proposition de modification, via
-`.github/workflows/verification.yml`.
+Les trois tournent aussi à chaque `push` et à chaque proposition de modification, via
+`.github/workflows/verification.yml`, en trois tâches séparées : l'échec le plus courant
+remonte ainsi sans attendre le navigateur.
+
+Sur une machine qui a déjà Chromium mais pas la version attendue par Playwright,
+`CHROMIUM_EXECUTABLE=/chemin/vers/chrome` évite le téléchargement. Et comme pour les
+contrôles statiques, `EXERCICES_SOURCE` substitue à `index.html` un fichier trafiqué le
+temps d'une exécution, sans jamais toucher au vrai : c'est ainsi qu'on vérifie que ces
+contrôles-ci mordent encore.
 
 ## Ce qu'ils surveillent, et pourquoi
 
@@ -42,6 +51,8 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Chaque rythme propre couvre toutes ses étapes | Six parcours remplacent le rythme par défaut par le leur. Une entrée manquante ne se verrait pas en lisant le fichier : l'écran lit le rythme par index et se rendrait vide sur la dernière étape, celle qu'on ouvre le moins souvent en vérifiant |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
 
+| La vignette de l'accueil est bien l'icône installée | Le logo encastré dans la page et le fichier `icon-192.png` avaient divergé : l'accueil montrait un dessin que l'icône posée sur l'écran d'accueil ne montrait plus. Le contrôle compare les octets |
+
 ### Contrôles de rendu — `rendu.mjs`
 
 | Contrôle | Le défaut qui l'a fait naître |
@@ -49,7 +60,7 @@ Les deux tournent aussi à chaque `push` et à chaque proposition de modificatio
 | Chaque écran s'affiche sans erreur | 26 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
-| Aucune violation d'accessibilité | axe-core sur les dix premiers écrans. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
+| Aucune violation d'accessibilité | axe-core sur les 26 écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
 | L'application s'ouvre sans réseau | C'est sa promesse centrale, et un service worker cassé ne se voit pas tant qu'on a du réseau |
 | Le lien prescrit est retenu et n'enferme pas | Les sept formes de lien : l'accueil doit reconnaître le programme, ne pas afficher le catalogue, et laisser un moyen de l'atteindre |
 | Chaque règle de prudence paraît une fois par jour, sur son parcours | Les quatre parcours portent quatre textes différents mais partageaient une seule date « vue aujourd'hui » : un patient qui faisait son épaule puis ses étirements ne voyait jamais la règle de la prévention |

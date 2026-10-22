@@ -3,7 +3,7 @@
 Programme d'exercices de rééducation, remis en consultation par
 **Maxime Chevallier, masseur-kinésithérapeute**, et destiné à ses patients entre deux séances.
 
-955 exercices, 42 blessures sur 10 zones, plus trois parcours à part : coureur, croissance,
+979 exercices, 42 blessures sur 10 zones, plus trois parcours à part : coureur, croissance,
 prévention. L'application s'ouvre sans réseau une fois ajoutée à l'écran d'accueil, ne demande
 aucun compte, et rien de ce que le patient coche ne quitte son téléphone.
 
@@ -32,7 +32,7 @@ Envoyer un nouveau lien remplace le précédent.
 | `index.html` | Toute l'application : contenu, écrans, styles, React inclus. Aucune étape de compilation |
 | `sw.js` | Le service worker, qui rend l'ouverture possible sans réseau |
 | `manifest.webmanifest`, `*.png` | L'installation sur l'écran d'accueil |
-| `verification/` | Vingt-trois contrôles automatiques — voir son [mode d'emploi](verification/LISEZMOI.md) |
+| `verification/` | Vingt-quatre contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
 | `.github/workflows/` | Les mêmes contrôles, à chaque modification |
 
 ## Modifier le contenu
