@@ -247,6 +247,7 @@ let panne = null;
 try {
     D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
         "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
+        "posturesFines",
         "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
         "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
         "SANS_REPERE_EFFORT",
@@ -405,8 +406,23 @@ controle("l'étiquette de position ne contredit pas le dessin", () => {
     const cle = (icone) => (D.POSES.find((p) => p.icon === icone) || {}).key;
     const vus = new Set();
     const out = [];
+    // Une consigne qui ouvre sur un choix — « En planche ou à quatre pattes » — ne peut pas
+    // être résumée par une étiquette qui n'en nomme qu'une : elle contredit l'autre moitié des
+    // lecteurs. Le gainage dynamique annonçait « À plat ventre ».
+    const choix = /\bou\b/;
     for (const { ex, ou } of exercices) {
         const etiquette = D.positionAffichable(ex.name, ex.tip);
+        const ouverture = (ex.tip || "").slice(0, 90);
+        const offertes = D.posturesFines(ouverture);
+        const nommees = D.posturesFines(etiquette || "");
+        if (etiquette && choix.test(ouverture) && offertes.length > 1
+            && offertes.some((x) => nommees.indexOf(x) === -1)) {
+            if (!vus.has(ex.name)) {
+                vus.add(ex.name);
+                out.push(`${ou} — « ${ex.name} » : étiquette « ${etiquette} », mais la consigne laisse le choix`);
+            }
+            continue;
+        }
         if (!etiquette || vus.has(ex.name))
             continue;
         const dessin = D.POSTURE_DESSIN[cle(D.getExerciseIcon(ex.name, ex.tip))];
@@ -440,6 +456,7 @@ controle("le repère d'effort ne contredit pas la consigne", () => {
     const minutes = /^\d+\s*×\s*\d+(-\d+)?\s*min\b/;
     const mou = /sans forcer|sans à-coup|doucement|sans r[ée]sistance/i;
     const basse = /faible intensit[ée]|doucement|amplitude confortable|tension l[ée]g[èe]re|sans forcer sur la douleur/i;
+    const immobile = /gardez? le (?:bas du dos|dos|bassin)[^.]{0,40}immobile|sans que le (?:bassin|bas du dos|dos)[^.]{0,30}bouge|en gardant le dos (?:parfaitement )?stable/i;
     const out = [];
     const vus = new Set();
     for (const { ex, ou } of exercices) {
@@ -453,6 +470,12 @@ controle("le repère d'effort ne contredit pas la consigne", () => {
             out.push(`${ou} — « ${ex.name} » (${ex.dose}) : aucun repère d'effort`);
         if (!doitAvoir && f && mobilite.test(ex.name.toLowerCase()))
             out.push(`${ou} — « ${ex.name} » : repère « ${f} » sur un exercice de mobilité`);
+        // Un tronc qu'on doit garder immobile ne se dose ni par le déséquilibre ni par la
+        // durée d'un maintien. « Stabilité lombo-pelvienne » affichait « cherchez le
+        // déséquilibre » sous une consigne disant « gardez le bas du dos immobile », et
+        // « Gainage dynamique », compté en répétitions, « pendant tout le maintien ».
+        if (immobile.test(ex.tip) && (f === "controle" || f === "maintien"))
+            out.push(`${ou} — « ${ex.name} » : repère « ${f} », consigne « ${ex.tip.match(immobile)[0]} »`);
         if ((f === "lourd" || f === "explosif") && mou.test(ex.tip))
             out.push(`${ou} — « ${ex.name} » : repère « ${f} », consigne « ${ex.tip.match(mou)[0]} »`);
         // Une consigne qui prescrit volontairement une intensité basse ne peut pas porter de
