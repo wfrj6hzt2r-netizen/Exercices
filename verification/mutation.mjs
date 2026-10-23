@@ -18,7 +18,7 @@
 //   node verification/mutation.mjs
 
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { lireFichier, RACINE } from "./lire.mjs";
@@ -112,6 +112,10 @@ const MUTATIONS = [
         (s) => rem(s, "const POURQUOI_ETAPE = {\n",
                       "const POURQUOI_ETAPE = {\n    \"Étape absente\": \"Texte orphelin.\",\n")],
 
+    ["chaque terme du glossaire est atteignable",
+        (s) => rem(s, "const GLOSSARY = {\n",
+                      "const GLOSSARY = {\n    \"sous-acromial\": \"Sous l'arche osseuse de l'épaule.\",\n")],
+
     ["la vignette de l'accueil est bien l'icône installée",
         (s) => {
             const marque = 'const LOGO = "data:image/png;base64,';
@@ -174,7 +178,20 @@ try {
     rmSync(dossier, { recursive: true, force: true });
 }
 
+// Le banc ne couvrait pas forcément tous les contrôles : un dix-septième pouvait naître
+// sans mutation, et n'être jamais éprouvé — exactement le genre d'angle mort que ce banc
+// existe pour supprimer. On lit les libellés déclarés dans la suite statique et on exige
+// qu'aucun ne manque ici.
+const declares = [...readFileSync(join(RACINE, "verification/statique.mjs"), "utf8")
+    .matchAll(/^controle\("((?:[^"\\]|\\.)*)"/gm)].map((m) => m[1]);
+const couverts = new Set(MUTATIONS.map(([n]) => n));
+const oublies = declares.filter((n) => !couverts.has(n));
+
 console.log(`\n${MUTATIONS.length} contrôles mis en défaut.`);
+if (oublies.length) {
+    console.log("\nContrôles sans mutation — rien ne dit qu'ils mordent encore :");
+    oublies.forEach((n) => console.log("   " + n));
+}
 if (rates.length) {
     console.log("\nMutations qui ne s'appliquent plus — le fichier a changé sous elles :");
     rates.forEach((l) => console.log("   " + l));
@@ -183,6 +200,6 @@ if (muets.length) {
     console.log("\nContrôles muets : ils n'ont pas vu le défaut qu'ils prétendent attraper.");
     muets.forEach((n) => console.log("   " + n));
 }
-if (muets.length || rates.length)
+if (muets.length || rates.length || oublies.length)
     process.exit(1);
 console.log("Chacun a vu son défaut.");
