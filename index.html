@@ -3812,6 +3812,10 @@ const DRAPEAUX_COMMUNS = [
 // l'accueil. Une compression de la queue de cheval se récupère en heures, et « consultez
 // sans attendre » se lit comme « je prends rendez-vous ».
 const URGENCES = {
+    "cervical:ncb-c5": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    "cervical:ncb-c6": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    "cervical:ncb-c7": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    "cervical:ncb-c8": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
     lombaire: "Appelez le 15 ou allez aux urgences le jour même, même la nuit ou le week-end, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur qui descend dans les deux jambes, ou jambe qui faiblit de jour en jour.",
 };
 const DRAPEAUX = {
@@ -3841,10 +3845,10 @@ const DRAPEAUX = {
     "lombaire:lombosciatique": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
     "lombaire:hernie-discale": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
     "lombaire:stenose-spinale": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
-    "cervical:ncb-c5": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
-    "cervical:ncb-c6": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
-    "cervical:ncb-c7": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
-    "cervical:ncb-c8": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c5": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c6": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c7": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c8": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:whiplash": ["Des troubles de la vision, des vertiges, des difficultés à avaler ou à parler, ou une douleur intense après un choc violent."],
     "cervical:cervicalgie": ["Des troubles de la vision, des vertiges, ou une douleur qui descend dans le bras avec perte de force."],
 };
@@ -5325,6 +5329,12 @@ function SignauxDuJour({ items, montrer, onVue }) {
     return React.createElement("div", { className: "px-6 pb-5" },
         React.createElement(SignauxAlerte, { items: items }));
 }
+// La zone suffit au rachis lombaire, où les quatre parcours partagent le même risque. Au
+// rachis cervical non : seules les quatre névralgies cervico-brachiales exposent à une
+// myélopathie, et la cervicalgie commune n'a rien à faire sous ce bandeau.
+function urgenceDe(zone, blessure) {
+    return URGENCES[zone + ":" + blessure] || URGENCES[zone];
+}
 function BandeauUrgence({ texte }) {
     if (!texte)
         return null;
@@ -6294,7 +6304,7 @@ function GuidedJourney() {
                             ? "Où en êtes-vous dans l'évolution ?"
                             : "Où en êtes-vous dans votre récupération ?"),
                 injury.context && (React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, injury.context))),
-            React.createElement(BandeauUrgence, { texte: URGENCES[pathId] }),
+            React.createElement(BandeauUrgence, { texte: urgenceDe(pathId, injuryId) }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 injury.surgical || injury.checkinKind === "binary" || injury.checkinKind === "phase"
                     ? injury.stages.map((s, si) => (React.createElement("button", { key: s.label, onClick: () => { setStageIdx(si); setView("stage"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
@@ -6831,7 +6841,7 @@ function GuidedJourney() {
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
-            React.createElement(BandeauUrgence, { texte: URGENCES[pathId] }),
+            React.createElement(BandeauUrgence, { texte: urgenceDe(pathId, injuryId) }),
             React.createElement(NoteDePrudence, { key: stageIdx, deplier: !regleVue("blessure"), onVue: () => marquerRegleVue("blessure"), texte: "Une g\u00EAne l\u00E9g\u00E8re peut \u00EAtre normale. Arr\u00EAtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et pr\u00E9venez votre kin\u00E9sith\u00E9rapeute." }),
             stageIdx === 0 && React.createElement(ConseilsPremiersJours, { lignes: injury.premiersJours }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
