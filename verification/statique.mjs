@@ -248,6 +248,7 @@ try {
     D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
         "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
         "posturesFines",
+        "GLOSSARY", "findGlossaryTerm",
         "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
         "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
         "SANS_REPERE_EFFORT",
@@ -532,6 +533,20 @@ controle("chaque rythme propre couvre toutes ses étapes", () => {
 // n'afficherait rien du tout, sans la moindre erreur — le même genre de panne silencieuse
 // que les cinq classes d'espacement qui ne faisaient rien. On vérifie donc les deux sens :
 // chaque clé de la table désigne bien une étape existante, et on rapporte la couverture.
+controle("chaque terme du glossaire est atteignable", () => {
+    // Une définition ne s'affiche que si une carte contient le mot : la pastille naît de
+    // « findGlossaryTerm », qui cherche le terme dans le nom puis dans la consigne. Un terme
+    // qu'aucune carte ne porte est une définition que personne ne verra jamais, et que
+    // personne ne corrigera donc non plus. « scapulo » vivait ainsi depuis sa création.
+    const out = [];
+    for (const terme of Object.keys(D.GLOSSARY || {})) {
+        const porte = exercices.some(({ ex }) =>
+            (ex.name + " " + ex.tip).toLowerCase().includes(terme));
+        if (!porte)
+            out.push(`« ${terme} » : aucune carte ne contient ce mot, la définition est inatteignable`);
+    }
+    return out;
+});
 controle("chaque « pourquoi » désigne une étape qui existe", () => {
     const libelles = new Set();
     D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => i.stages.forEach((s) => libelles.add(s.label))));

@@ -2814,8 +2814,8 @@ const PATHOLOGIES = [
                             { name: "Surveillance de la centralisation", dose: "quotidien", tip: "Gardez ce repère au long cours : tant que la douleur reste centrée sur le bas du dos, la progression est bonne. Si elle recommence à descendre dans la jambe, revenez à l'étape précédente." }
                         ] }
                 ] },
-            { id: "hernie-discale", label: "Hernie discale", groupe: "Douleur qui descend dans la jambe", desc: "Douleur lombaire qui descend souvent dans la jambe, généralement soulagée en position debout ou cambrée (extension) et aggravée en position assise prolongée ou penchée en avant (flexion).", context: "Deux faits rassurants et bien établis : la majorité des hernies discales évoluent favorablement sans chirurgie, et beaucoup se résorbent spontanément avec le temps. Le repère qui guide toute la rééducation est la centralisation — une douleur de jambe qui remonte vers le bas du dos est un signe favorable. Une perte de force franche, un engourdissement de la région génitale ou des troubles pour uriner imposent en revanche un avis médical urgent.", premiersJours: ["Une hernie visible à l'imagerie n'annonce ni la douleur ni son évolution : beaucoup de gens sans aucun symptôme en ont une.", "La grande majorité des hernies évoluent bien sans chirurgie, en quelques semaines à quelques mois.", "Restez actif dans ce qui reste supportable, et cherchez les positions qui font remonter la douleur vers le dos."], stages: [
-                    { label: "Centralisation en extension", pourquoi: "La plupart des hernies se résorbent seules. L'extension n'y change rien directement : elle sert à faire remonter la douleur de la jambe vers le dos, et c'est ce signe qu'on suit.", critere: "Les symptômes remontent vers le dos et quittent la jambe pendant les exercices en extension. C'est ce déplacement vers le centre, et non la disparition de la douleur, qui autorise la suite.", exercises: [
+            { id: "hernie-discale", label: "Hernie discale", groupe: "Douleur qui descend dans la jambe", desc: "Douleur du bas du dos qui descend dans la jambe. Ce parcours est construit pour les personnes chez qui votre kinésithérapeute a constaté que l'extension soulage la jambe.", context: "Deux faits rassurants et bien établis : la majorité des hernies discales évoluent favorablement sans chirurgie, et beaucoup se résorbent spontanément avec le temps. Le repère qui guide toute la rééducation est la centralisation — une douleur de jambe qui remonte vers le bas du dos est un signe favorable. Une perte de force franche, un engourdissement de la région génitale ou des troubles pour uriner imposent en revanche un avis médical urgent.", premiersJours: ["Une hernie visible à l'imagerie n'annonce ni la douleur ni son évolution : beaucoup de gens sans aucun symptôme en ont une.", "La grande majorité des hernies évoluent bien sans chirurgie, en quelques semaines à quelques mois.", "Restez actif dans ce qui reste supportable, et cherchez les positions qui font remonter la douleur vers le dos."], stages: [
+                    { label: "Centralisation en extension", pourquoi: "La plupart des hernies se résorbent seules. L'extension n'y change rien directement : elle sert à faire remonter la douleur de la jambe vers le dos, et c'est ce signe qu'on suit. Le repère est donc la jambe, pas l'intensité : un dos qui tire un peu plus pendant que la jambe se libère est attendu.", critere: "Les symptômes remontent vers le dos et quittent la jambe pendant les exercices en extension. C'est ce déplacement vers le centre, et non la disparition de la douleur, qui autorise la suite.", exercises: [
                             { name: "Position allongée sur le ventre", dose: "3 × 5 min", tip: "Allongé sur le ventre, bras le long du corps ou sous le front, relâchez complètement. Première étape simple du protocole d'extension : elle amorce souvent, à elle seule, un début de soulagement de la douleur qui descend dans la jambe." },
                             { name: "Extension en appui sur les avant-bras (sphinx)", dose: "5 × 2 min", tip: "Allongé sur le ventre, redressez le buste en appui sur les avant-bras, coudes sous les épaules, bassin qui reste au sol. Maintenez la position en respirant normalement." },
                             { name: "Presses en extension (press-ups)", dose: "3 × 10", tip: "Allongé sur le ventre, mains à plat sous les épaules. Poussez pour redresser le buste, bras qui se tendent progressivement, bassin qui reste posé au sol, puis redescendez. Répétez en allant un peu plus loin à chaque fois si la douleur de la jambe remonte vers le dos." },
@@ -2824,7 +2824,7 @@ const PATHOLOGIES = [
                     { label: "Renforcement en extension contrôlée", pourquoi: "La douleur de jambe a reculé, le dos est resté peu sollicité. On reconstruit la force dans la direction qui soulage, avant d'élargir.", critere: "Vous tenez les exercices en extension contrôlée sans retour des symptômes dans la jambe.", exercises: [
                             { name: "Extension complète debout", dose: "3 × 10", tip: "Debout, mains posées dans le bas du dos, penchez-vous doucement en arrière sur une amplitude confortable, puis revenez. Permet de maintenir l'effet de soulagement obtenu au sol, en position debout du quotidien." },
                             { name: "Renforcement des extenseurs du dos", dose: "3 × 12", tip: "Allongé sur le ventre, front posé sur les mains. Décollez légèrement la poitrine du sol, quelques centimètres seulement, maintenez un instant, puis reposez-vous, sans forcer sur la nuque." },
-                            { name: "Gainage en position neutre à légèrement cambrée", dose: "3 × 20 sec", tip: "Planche sur les avant-bras, genoux au sol si besoin, dos neutre à légèrement creusé — pas de dos rond ici, contrairement à d'autres formes de mal de dos." },
+                            { name: "Gainage en position neutre à légèrement cambrée", dose: "3 × 20 sec", tip: "Planche sur les avant-bras, genoux au sol si besoin, dos neutre à légèrement creusé." },
                             { name: "Marche courte régulière", dose: "10 min", tip: "La marche est généralement bien tolérée et même recommandée à ce stade, contrairement à un repos strict prolongé qui n'apporte pas de bénéfice démontré." }
                         ] },
                     { label: "Charge fonctionnelle sans flexion excessive", pourquoi: "Se pencher et porter redeviennent possibles, à condition de le faire avec les hanches plutôt qu'avec le dos. C'est le geste, pas la charge, qui se réapprend ici.", critere: "Vous soulevez une charge légère en gardant le dos neutre, sans que rien ne redescende dans la jambe.", exercises: [
@@ -2834,7 +2834,7 @@ const PATHOLOGIES = [
                             { name: "Marche prolongée", dose: "20 min", tip: "Augmentez progressivement la durée, en restant attentif à la centralisation plutôt qu'à la seule intensité de la douleur." }
                         ] },
                     { label: "Retour à l'activité", critere: "Vous vous penchez et restez assis longtemps sans retour des symptômes, et vous avez repris vos activités. La flexion se réintroduit progressivement, en surveillant que rien ne redescende dans la jambe.", exercises: [
-                            { name: "Réintroduction progressive de la flexion", dose: "chaque semaine", tip: "Une fois la phase centrée sur l'extension bien tolérée, une flexion mesurée et progressive (se pencher, s'asseoir longtemps) peut généralement être réintroduite sans risque, sous contrôle des symptômes." },
+                            { name: "Réintroduction progressive de la flexion", dose: "chaque semaine", tip: "Une fois la phase centrée sur l'extension bien tolérée, la flexion revient. Elle n'abîme pas votre dos : on l'a mise de côté le temps que la jambe se calme, et on la reprend maintenant, progressivement et sous contrôle des symptômes." },
                             { name: "Reprise du port de charge", dose: "3 × 10", tip: "Debout face à la charge, pieds de part et d'autre, dos neutre. Reprenez la technique de l'étape précédente — flexion des hanches et des genoux, charge collée au corps — avec un poids un peu plus lourd chaque semaine, à condition que le lendemain reste calme." },
                             { name: "Maintien des extensions d'entretien", dose: "2 × par semaine", tip: "Continuez ponctuellement les presses en extension en prévention, notamment après une position assise prolongée, même une fois les symptômes calmés." },
                             { name: "Reprise activité / sport", dose: "1 séance", tip: "Progressive et encadrée, en gardant à l'esprit le repère de centralisation en cas de réapparition de symptômes." }
@@ -2875,7 +2875,6 @@ const GLOSSARY = {
     "proprioception": "La capacité à sentir la position de son corps, pour mieux stabiliser une articulation.",
     "proprioceptif": "Qui entraîne la capacité à sentir la position de son corps, pour mieux stabiliser une articulation.",
     "scapulaire": "Qui concerne l'omoplate.",
-    "scapulo": "Qui concerne l'omoplate.",
     "pliométrie": "Un enchaînement rapide d'étirement puis de contraction du muscle, comme dans un saut.",
     "chaîne postérieure": "L'ensemble des muscles à l'arrière du corps : fessiers, ischio-jambiers, mollets, dos.",
     "chaîne fermée": "Un exercice où la main ou le pied restent fixes au sol ou au mur pendant le mouvement.",
@@ -2888,6 +2887,31 @@ const GLOSSARY = {
     "abdomino-adducteurs": "Qui concerne à la fois les muscles abdominaux et les adducteurs, souvent liés dans la pubalgie.",
     "hanche en charnière": "Un mouvement où l'on plie au niveau des hanches en poussant les fesses vers l'arrière, dos neutre, plutôt que de plier les genoux vers l'avant comme dans un squat classique.",
     "arthrose": "Une usure progressive du cartilage de l'articulation. Contrairement à une idée reçue, bouger et renforcer les muscles autour ne l'aggrave pas : c'est au contraire le traitement de première intention recommandé.",
+    // Vingt-et-un mots relevés par un patient qui a lu son parcours à voix haute : il n'en
+    // comprenait aucun, et quatre décident de l'exécution du geste. Les plus précis sont
+    // placés en tête : le premier terme contenu dans la carte l'emporte, et un mot courant
+    // comme « quadriceps » masquerait sinon ceux qui en ont vraiment besoin.
+    "dos neutre": "La position naturelle du dos, ni creusé ni arrondi : celle qu'il a quand vous êtes debout, détendu. C'est elle qu'on garde en se penchant ou en soulevant, plutôt que d'arrondir le bas du dos.",
+    "amplitude confortable": "Allez jusqu'où le mouvement reste facile, et pas plus loin. Cette limite change d'un jour à l'autre, et c'est normal : c'est elle qui décide, pas un nombre de centimètres.",
+    "tempo": "Le rythme du mouvement, écrit en secondes : « 3 sec / 3 sec » veut dire trois secondes pour descendre et trois pour remonter. Ralentir est une façon d'augmenter la difficulté sans ajouter de poids.",
+    "gainage": "Tenir le tronc immobile en serrant les muscles du ventre et du dos. La planche — à plat ventre, en appui sur les avant-bras et la pointe des pieds — en est la forme la plus connue.",
+    "centralisation": "Le fait que la douleur remonte de la jambe vers le bas du dos. C'est un signe favorable, et on poursuit dans la direction qui le produit.",
+    "fléchisseurs profonds": "Les petits muscles situés à l'avant de la colonne cervicale, sous la gorge, qui tiennent la tête dans l'axe. On les sollicite en rentrant le menton, pas en baissant la tête.",
+    "coiffe des rotateurs": "Les quatre muscles profonds qui entourent l'épaule et la maintiennent centrée pendant le mouvement.",
+    "rotation externe": "Coude au corps et plié à angle droit, on écarte l'avant-bras vers l'extérieur. C'est le mouvement principal de la coiffe des rotateurs.",
+    "rotation interne": "Coude au corps et plié à angle droit, on ramène l'avant-bras vers le ventre.",
+    "fascia": "Une membrane fibreuse qui enveloppe les muscles et relie les structures entre elles. Sous le pied, le fascia plantaire tend la voûte comme la corde d'un arc.",
+    "intrinsèques": "Les petits muscles situés entièrement à l'intérieur du pied, qui soutiennent la voûte plantaire.",
+    "éverseurs": "Les muscles sur le côté externe de la cheville, qui retiennent le pied quand il part vers l'intérieur.",
+    "tibial postérieur": "Un muscle profond de la jambe, qui passe derrière la cheville côté intérieur et soutient la voûte du pied.",
+    "stabilisateurs": "Les muscles dont le rôle est de tenir une articulation en place pendant que d'autres produisent le mouvement.",
+    "nordic hamstring": "Un exercice à genoux où quelqu'un tient vos chevilles pendant que vous vous penchez en avant le plus lentement possible. C'est la mesure dont l'effet protecteur est le mieux démontré sur les lésions d'ischio-jambiers.",
+    "step-down": "Descendre lentement d'une marche sur une seule jambe, en contrôlant la descente. C'est la phase de freinage qui travaille.",
+    "cadence": "Le nombre de pas par minute en courant. L'augmenter légèrement raccourcit la foulée et réduit les contraintes sur le genou.",
+    "unipodal": "Sur une seule jambe.",
+    "bipodal": "Sur les deux jambes.",
+    "quadriceps": "Le muscle à l'avant de la cuisse, qui tend le genou. C'est le premier à perdre du volume après une blessure ou une opération du genou, et le plus long à revenir.",
+    "ischio-jambiers": "Les muscles à l'arrière de la cuisse, qui plient le genou et freinent la jambe à chaque foulée.",
 };
 function findGlossaryTerm(name) {
     const n = name.toLowerCase();
@@ -3325,6 +3349,7 @@ const CROISSANCE_DRAPEAUX_COMMUNS = [
 const CROISSANCE_DATA = [
     {
         id: "osgood",
+        rythme: "Chaque jour tant que ça tire, puis 3 fois par semaine.",
         label: "Osgood-Schlatter",
         alias: "La bosse sous le genou",
         desc: "Une bosse dure et douloureuse juste sous le genou, sur le devant du tibia, qui fait mal quand tu cours, quand tu sautes et quand tu t'agenouilles.",
@@ -3360,6 +3385,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "sever",
+        rythme: "Chaque jour tant que ça tire, puis 3 fois par semaine.",
         label: "Sever",
         alias: "La douleur au talon",
         desc: "Une douleur au talon, souvent des deux côtés, qui arrive quand tu cours ou tu sautes, et qui te fait parfois boiter en fin de journée.",
@@ -3395,6 +3421,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "sinding",
+        rythme: "Chaque jour tant que ça tire, puis 3 fois par semaine.",
         label: "Sinding-Larsen-Johansson",
         alias: "La douleur à la pointe de la rotule",
         desc: "Une douleur juste sous la rotule, à sa pointe, quand tu sautes, quand tu cours et quand tu montes les escaliers.",
@@ -3430,6 +3457,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "scoliose",
+        rythme: "Celui que ton kiné a fixé, souvent 3 à 4 fois par semaine.",
         label: "Scoliose",
         alias: "Le dos qui se courbe sur le côté",
         phases: [
@@ -3446,7 +3474,7 @@ const CROISSANCE_DATA = [
         ],
         desc: "Ta colonne ne monte pas tout droit : elle dessine une courbe sur le côté et tourne un peu sur elle-même. Le plus souvent ça ne fait pas mal, et ça se remarque à une bosse dans le dos quand tu te penches en avant, ou à une épaule plus haute que l'autre.",
         context: "Personne ne sait pourquoi une colonne se met à tourner pendant la croissance. Ce qu'on sait, c'est que ce n'est pas de ta faute : ni ton cartable, ni ta façon de t'asseoir, ni le sport que tu fais n'y sont pour quelque chose. Le travail consiste à apprendre à te replacer dans le sens opposé à ta courbe — c'est ce qu'on appelle l'autocorrection — puis à tenir cette position de plus en plus longtemps, jusqu'à ce qu'elle vienne toute seule. Cette correction dépend du dessin exact de ta courbe : elle ne s'invente pas, c'est ton kiné qui te la montre, et ce programme la reprend. Les séances utiles sont longues et régulières, et les effets se voient sur plusieurs mois, pas en quinze jours. Si on t'a prescrit un corset, c'est lui qui tient la courbure : les exercices l'accompagnent, ils ne le remplacent pas.",
-        parent: "La scoliose idiopathique de l'adolescent se surveille sur l'angle de Cobb et la maturité osseuse, non sur la douleur — elle est le plus souvent indolore, et l'absence de gêne ne dit rien de l'évolution. Les seuils usuels : surveillance en dessous de 20°, corset au-delà de 25° pendant la croissance, chirurgie discutée au-delà de 45 à 50°. Les exercices spécifiques — Schroth, SEAS, Lyon, BSPTS — reposent sur l'autocorrection en trois dimensions, son transfert dans les gestes quotidiens et l'éducation ; les méta-analyses récentes retiennent trois à quatre séances hebdomadaires de quarante-cinq minutes à une heure quinze. Deux points méritent d'être dits aux parents. L'autocorrection dépend du dessin de la courbure et se prescrit après examen : ce programme la reprend, il ne la remplace pas. Et les exercices ne se substituent ni au corset ni au suivi radiologique, dont le rythme revient au médecin. Aucun sport n'est à interdire.",
+        parent: "La scoliose idiopathique de l'adolescent se surveille sur l'angle de Cobb et la maturité osseuse, non sur la douleur — elle est le plus souvent indolore, et l'absence de gêne ne dit rien de l'évolution. Les seuils usuels : surveillance en dessous de 20°, corset au-delà de 25° pendant la croissance, chirurgie discutée au-delà de 45 à 50°. Les exercices spécifiques — Schroth, SEAS, Lyon, BSPTS — reposent sur l'autocorrection en trois dimensions, son transfert dans les gestes quotidiens et l'éducation ; ils se pratiquent avec un kinésithérapeute formé, en séances longues et régulières. Ce programme est un support entre les séances : il ne constitue pas à lui seul un traitement de ce type. Deux points méritent d'être dits aux parents. L'autocorrection dépend du dessin de la courbure et se prescrit après examen : ce programme la reprend, il ne la remplace pas. Et les exercices ne se substituent ni au corset ni au suivi radiologique, dont le rythme revient au médecin. Aucun sport n'est à interdire.",
         drapeaux: ["Une douleur qui te réveille la nuit, ou qui s'installe alors qu'elle n'était pas là avant.", "Des fourmillements, une faiblesse dans une jambe, ou une courbure qui change vite en quelques mois."],
         stages: [
             { critere: "Tu retrouves seul la position corrigée que ton kiné t'a montrée, et tu la tiens une dizaine de secondes en respirant normalement.", exercises: [
@@ -3458,7 +3486,7 @@ const CROISSANCE_DATA = [
             { critere: "Tu tiens les gainages jusqu'au bout sans que ta position corrigée se défasse en fin de série.", exercises: [
                     { name: "Gainage ventral", dose: "3 × 30 sec", tip: "En appui sur les avant-bras et la pointe des pieds, coudes sous les épaules, corps en ligne droite, ventre serré. Si tu ne tiens pas, pose les genoux au sol.", pourquoi: "Tenir une correction demande de l'endurance, pas de la force pure. C'est ce tronc solide qui t'évite de t'affaisser au bout de cinq minutes." },
                     { name: "Gainage latéral", dose: "3 × 20 sec chaque côté", tip: "Allongé sur le côté, en appui sur l'avant-bras, coude sous l'épaule. Décolle le bassin jusqu'à aligner chevilles, hanches et épaules. Commence par le côté que ton kiné t'a indiqué.", pourquoi: "Ta courbe te fait travailler différemment à droite et à gauche. Ce gainage-là rattrape le côté qui se laisse aller." },
-                    { name: "Renforcement des extenseurs du dos en position corrigée", dose: "3 × 12", tip: "Allongé sur le ventre, bras le long du corps. Allonge d'abord ta colonne, puis décolle la poitrine de quelques centimètres, regard vers le sol.", pourquoi: "Ce qui compte n'est pas de monter haut, mais de garder la correction pendant l'effort. Monter plus haut en la perdant ne sert à rien." },
+                    { name: "Renforcement des extenseurs du dos en position corrigée", dose: "3 × 12", tip: "Allongé sur le ventre, bras le long du corps. Allonge d'abord ta colonne, puis décolle à peine la poitrine, regard vers le sol : on cherche à grandir, pas à creuser.", pourquoi: "Ce qui compte n'est pas de monter haut, mais de garder la correction pendant l'effort. Monter plus haut en la perdant ne sert à rien." },
                     { name: "Tirage en position corrigée", dose: "3 × 12", tip: "Élastique fixé devant toi à hauteur de poitrine. Grandis-toi d'abord, puis tire les coudes vers l'arrière en serrant les omoplates, sans laisser le buste se replier.", pourquoi: "La force en tirage est ce qui te permettra un jour de tenir la position sans y penser." }
                 ] },
             { critere: "Tu retrouves ta position corrigée sans miroir, et tu la gardes en marchant et en portant ton sac.", exercises: [
@@ -3471,12 +3499,13 @@ const CROISSANCE_DATA = [
                     { name: "Entretien de l'autocorrection", dose: "3 × par semaine", tip: "Reprends en entier la séance d'autocorrection et de respiration dirigée.", pourquoi: "Il n'y a pas de fin à atteindre ici : tant que tu grandis, la courbure peut encore bouger, et les gains se perdent en quelques mois d'arrêt." },
                     { name: "Renforcement global d'entretien", dose: "2 à 3 × par semaine", tip: "Gainages, tirages et extensions du dos, en gardant la correction pendant l'effort.", pourquoi: "Un tronc endurant est ce qui te permet de tenir la position toute la journée sans fatiguer." },
                     { name: "Activité physique régulière", dose: "2 à 3 × par semaine", tip: "Choisis un sport qui te plaît, sans restriction.", pourquoi: "Aucun sport ne provoque ni n'aggrave une scoliose, et aucun n'est à éviter pour cette raison. Bouger entretient mieux ton dos que n'importe quel exercice isolé." },
-                    { name: "Maintien de la mobilité thoracique", dose: "2 à 3 × par semaine", tip: "Continue les rotations et les extensions du haut du dos, ainsi que la respiration dirigée.", pourquoi: "Ta cage thoracique se raidit vite quand le travail s'arrête, et c'est elle qui porte la rotation." }
+                    { name: "Maintien de la mobilité thoracique", dose: "2 à 3 × par semaine", tip: "Continue le chat-vache et la respiration dirigée pour garder le haut du dos mobile.", pourquoi: "Ta cage thoracique se raidit vite quand le travail s'arrête, et c'est elle qui porte la rotation." }
                 ] }
         ],
     },
     {
         id: "bassin",
+        rythme: "Chaque jour tant que ça tire, puis 3 fois par semaine.",
         label: "Apophysite du bassin",
         alias: "La douleur à l'aine ou sous la fesse",
         desc: "Une douleur à l'avant de la hanche, dans l'aine ou juste sous la fesse, qui arrive quand tu sprintes, quand tu tires dans un ballon ou quand tu fais le grand écart.",
@@ -3512,6 +3541,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "scheuermann",
+        rythme: "3 à 4 fois par semaine, pendant toute la croissance.",
         label: "Maladie de Scheuermann",
         alias: "Le dos rond qui fait mal",
         desc: "Un dos qui s'arrondit en haut et qui devient douloureux en fin de journée, surtout assis en cours ou penché sur un bureau.",
@@ -3547,6 +3577,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "spondylolyse",
+        rythme: "Celui que ton médecin et ton kiné ont fixé.",
         label: "Spondylolyse",
         alias: "La douleur en bas du dos quand tu te cambres",
         desc: "Une douleur en bas du dos, souvent d'un seul côté, qui arrive quand tu te cambres en arrière, quand tu smashes, tu sautes ou tu fais des extensions.",
@@ -3582,6 +3613,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "coude-lanceur",
+        rythme: "3 fois par semaine, et pas de lancer les jours de repos.",
         label: "Ostéochondrite du coude",
         alias: "La douleur au coude quand tu lances",
         desc: "Une douleur sur le côté du coude quand tu lances, quand tu sers au tennis ou quand tu prends appui sur les bras en gymnastique.",
@@ -3617,6 +3649,7 @@ const CROISSANCE_DATA = [
     },
     {
         id: "nocturnes",
+        rythme: "Le soir, les jours où ça arrive.",
         label: "Douleurs de croissance",
         alias: "Les jambes qui font mal le soir",
         desc: "Des douleurs dans les deux jambes, le soir ou la nuit, qui réveillent parfois, mais qui ont complètement disparu le matin au réveil.",
@@ -3773,6 +3806,18 @@ const DRAPEAUX_COMMUNS = [
     "Une perte de force, des fourmillements ou une insensibilité qui s'installent ou progressent.",
     "Une douleur qui augmente franchement de semaine en semaine malgré les exercices.",
 ];
+// Ce qui ne peut pas attendre lundi. Les signes d'alerte ordinaires vivent à l'accueil, une
+// fois par jour ; celui-ci reste sous les yeux sur chaque écran d'étape, parce que le patient
+// qui le concerne travaille dans son étape depuis des semaines et ne repasse plus par
+// l'accueil. Une compression de la queue de cheval se récupère en heures, et « consultez
+// sans attendre » se lit comme « je prends rendez-vous ».
+const URGENCES = {
+    "cervical:ncb-c5": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    "cervical:ncb-c6": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    "cervical:ncb-c7": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    "cervical:ncb-c8": "Appelez le 15 ou allez aux urgences le jour même, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes. Ces signes ne relèvent pas de ces exercices.",
+    lombaire: "Appelez le 15 ou allez aux urgences le jour même, même la nuit ou le week-end, sans attendre votre rendez-vous : difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur qui descend dans les deux jambes, ou jambe qui faiblit de jour en jour.",
+};
 const DRAPEAUX = {
     // Genou
     "genou:entorse": ["Un gonflement apparu dans l'heure suivant le traumatisme, ou un genou qui se dérobe franchement en appui."],
@@ -3796,14 +3841,14 @@ const DRAPEAUX = {
     "pied:coussinet": ["Une douleur du talon apparue après une chute ou une réception sur les talons.", "Un talon gonflé, chaud, ou une douleur qui vous réveille la nuit."],
     "pied:fasciite-pied": ["Une douleur du talon apparue brutalement pendant un effort, avec sensation de déchirure."],
     // Rachis — le plus important de tous
-    "lombaire:lombalgie": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus : ce sont des urgences, consultez sans attendre."],
-    "lombaire:lombosciatique": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou un pied qui tombe en marchant : consultez sans attendre."],
-    "lombaire:hernie-discale": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou une faiblesse qui s'aggrave dans la jambe : consultez sans attendre."],
-    "lombaire:stenose-spinale": ["Une difficulté à uriner ou à vous retenir, une insensibilité entre les cuisses ou autour de l'anus, ou des jambes qui se dérobent : consultez sans attendre."],
-    "cervical:ncb-c5": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
-    "cervical:ncb-c6": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
-    "cervical:ncb-c7": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
-    "cervical:ncb-c8": ["Des difficultés à marcher ou un équilibre qui se dégrade, une maladresse des deux mains, des symptômes dans les deux bras ou dans les jambes, ou une difficulté à uriner : consultez sans attendre, cela ne relève pas de ces exercices.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "lombaire:lombalgie": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
+    "lombaire:lombosciatique": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
+    "lombaire:hernie-discale": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
+    "lombaire:stenose-spinale": ["Difficulté à uriner ou à vous retenir, perte de sensibilité entre les cuisses ou autour de l'anus, douleur dans les deux jambes, ou jambe qui faiblit de jour en jour : appelez le 15 ou allez aux urgences le jour même."],
+    "cervical:ncb-c5": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c6": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c7": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
+    "cervical:ncb-c8": ["Difficulté à uriner ou à vous retenir, ou des troubles qui s'aggravent vite — marche instable, maladresse des deux mains, symptômes dans les deux bras ou dans les jambes : appelez le 15 ou allez aux urgences le jour même.", "Une faiblesse qui s'aggrave d'une semaine à l'autre, ou une main qui lâche les objets."],
     "cervical:whiplash": ["Des troubles de la vision, des vertiges, des difficultés à avaler ou à parler, ou une douleur intense après un choc violent."],
     "cervical:cervicalgie": ["Des troubles de la vision, des vertiges, ou une douleur qui descend dans le bras avec perte de force."],
 };
@@ -4444,7 +4489,7 @@ const CABINET = {
 // familles de protocoles et de méthodes citées dans les textes eux-mêmes, et non les
 // organismes consultés en les rédigeant. Dire « conforme aux recommandations » serait
 // invérifiable, et faux pour les parties qui relèvent de la seule pratique du cabinet.
-const CONTENU_ORIGINE = "Les consignes ont été rédigées par " + PRATICIEN + ", "
+const CONTENU_ORIGINE = "Les consignes ont été rédigées, ou relues et validées, par " + PRATICIEN + ", "
     + PRATICIEN_TITRE.toLowerCase() + ", à partir de sa pratique clinique. Plusieurs programmes "
     + "s'appuient en outre sur des travaux publiés : protocoles de renforcement progressif pour "
     + "les tendinopathies, méthodes d'exercices spécifiques pour la scoliose, messages qui font "
@@ -5284,6 +5329,20 @@ function SignauxDuJour({ items, montrer, onVue }) {
     return React.createElement("div", { className: "px-6 pb-5" },
         React.createElement(SignauxAlerte, { items: items }));
 }
+// La zone suffit au rachis lombaire, où les quatre parcours partagent le même risque. Au
+// rachis cervical non : seules les quatre névralgies cervico-brachiales exposent à une
+// myélopathie, et la cervicalgie commune n'a rien à faire sous ce bandeau.
+function urgenceDe(zone, blessure) {
+    return URGENCES[zone + ":" + blessure] || URGENCES[zone];
+}
+function BandeauUrgence({ texte }) {
+    if (!texte)
+        return null;
+    return React.createElement("div", { className: "px-6 pt-5" },
+        React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: WARN_VOILE, border: `1px solid ${WARN_FILET}` } },
+            React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Urgence"),
+            React.createElement("p", { className: "text-xs mt-1.5 leading-relaxed", style: { color: INK } }, texte)));
+}
 function SignauxAlerte({ items }) {
     return (React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: WARN_VOILE, border: `1px solid ${WARN_FILET}` } },
         React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Quand consulter sans attendre"),
@@ -5582,7 +5641,11 @@ function CarteExercice(props) {
         demandeUnElastique(ex) && React.createElement("p", { lang: "fr", className: "mt-2",
             style: styleProse(12.5, INK_DOUX) },
             React.createElement("span", { className: "font-medium" }, "Sans élastique : "),
-            "faites le même mouvement sans résistance. C'est la version plus facile, et le repli quand vous n'en avez pas avec vous."),
+            // Six exercices du parcours croissance demandent un élastique, et recevaient
+            // cette phrase au vouvoiement au milieu d'un texte qui tutoie d'un bout à l'autre.
+            props.tutoie
+                ? "fais le même mouvement sans résistance. C'est la version plus facile, et le repli quand tu n'en as pas avec toi."
+                : "faites le même mouvement sans résistance. C'est la version plus facile, et le repli quand vous n'en avez pas avec vous."),
         props.pourquoi && React.createElement("div", { className: "rounded-2xl p-3 mt-3",
             style: { backgroundColor: props.fondSecondaire } },
             React.createElement("p", { lang: "fr", style: styleProse(13, INK) },
@@ -6020,7 +6083,7 @@ function GuidedJourney() {
                     "Les doses et les seuils indiqués, comme le repère de douleur, sont des repères courants et non des règles valables pour tout le monde. Si votre kinésithérapeute vous a donné d'autres consignes, ce sont les siennes qui comptent.",
                 ]),
                 bloc("Vos données", [
-                    "Rien de ce que vous faites ici ne quitte votre téléphone. Il n'y a ni compte, ni inscription, ni mesure d'audience, ni service tiers.",
+                    "Rien de ce que vous faites ici ne quitte votre téléphone. Il n'y a ni compte, ni inscription, ni mesure d'audience. Comme pour tout site, l'hébergeur reçoit votre adresse de connexion au chargement de la page ; le parcours que vous ouvrez, lui, reste dans votre navigateur et ne lui est pas transmis.",
                     "Vos exercices cochés, vos notes de douleur et vos charges sont enregistrés par votre navigateur, sur cet appareil seulement. Votre kinésithérapeute ne les reçoit pas : c'est vous qui les lui montrez, si vous le souhaitez.",
                     "Le bouton « Effacer ma progression » en bas de l'accueil supprime tout définitivement. Vider les données du navigateur, ou désinstaller l'application, produit le même effet.",
                     "Le récapitulatif en PDF est fabriqué par votre appareil au moment où vous l'enregistrez. Il n'est envoyé nulle part.",
@@ -6032,7 +6095,7 @@ function GuidedJourney() {
                     CABINET.contact && "Contact : " + CABINET.contact,
                     "Profession réglementée : l'exercice de la masso-kinésithérapie est régi par le code de la santé publique et par le code de déontologie de la profession.",
                     "Hébergeur : " + HEBERGEUR,
-                    "Les textes, les schémas et le code de cette application sont l'œuvre de son éditeur.",
+                    "Les textes, les schémas et le code de cette application sont publiés sous la responsabilité de son éditeur.",
                 ]))));
     }
     if (view === "zone") {
@@ -6241,6 +6304,7 @@ function GuidedJourney() {
                             ? "Où en êtes-vous dans l'évolution ?"
                             : "Où en êtes-vous dans votre récupération ?"),
                 injury.context && (React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, injury.context))),
+            React.createElement(BandeauUrgence, { texte: urgenceDe(pathId, injuryId) }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 injury.surgical || injury.checkinKind === "binary" || injury.checkinKind === "phase"
                     ? injury.stages.map((s, si) => (React.createElement("button", { key: s.label, onClick: () => { setStageIdx(si); setView("stage"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
@@ -6408,6 +6472,12 @@ function GuidedJourney() {
                     "Étape ", croissanceStageIdx + 1, " sur ", phasesDe(croi).length),
                 React.createElement("h1", { className: "text-white text-2xl mt-1 font-medium" }, ph.label),
                 React.createElement("p", { className: "text-sm mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, phaseInfoDe(croi)[croissanceStageIdx]),
+                // Les trois autres parcours disent à quelle fréquence travailler ; celui-ci
+                // était le seul à ne rien dire, alors que la page parents de la scoliose
+                // promet des séances régulières.
+                croi.rythme && React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
+                    React.createElement(IconeCalendrier, { size: 14, style: { display: "inline", verticalAlign: "-2px", marginRight: 6 } }),
+                    croi.rythme),
                 React.createElement("p", { className: "text-[11px] mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
                 React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, age.note)),
@@ -6425,7 +6495,7 @@ function GuidedJourney() {
                     onBascule: () => toggle(cle, exId, st.exercises.length),
                     accent: CROISSANCE_ACCENT, accentTexte: CROISSANCE_ACCENT, fondIcone: CROISSANCE_FOND,
                     dose: e.dose,
-                    effort: repereEffort(e, true),
+                    effort: repereEffort(e, true), tutoie: true,
                     pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
                 });
             })),
@@ -6771,6 +6841,7 @@ function GuidedJourney() {
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
+            React.createElement(BandeauUrgence, { texte: urgenceDe(pathId, injuryId) }),
             React.createElement(NoteDePrudence, { key: stageIdx, deplier: !regleVue("blessure"), onVue: () => marquerRegleVue("blessure"), texte: "Une g\u00EAne l\u00E9g\u00E8re peut \u00EAtre normale. Arr\u00EAtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et pr\u00E9venez votre kin\u00E9sith\u00E9rapeute." }),
             stageIdx === 0 && React.createElement(ConseilsPremiersJours, { lignes: injury.premiersJours }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
