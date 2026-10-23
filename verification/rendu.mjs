@@ -412,7 +412,9 @@ async function ouvrir(ctx, hash) {
     const out = [];
     const REGLES = [
         { nom: "blessure", route: "#/z/epaule/coiffe/e1", suivant: "#/z/epaule/coiffe/e2",
-            debut: "Arrêtez l'exercice si la douleur dépasse" },
+            // La règle de blessure ne donne plus de seuil chiffré mais une comparaison à la
+            // veille : on reconnaît la note à ce qui lui est propre.
+            debut: "nettement pire qu'avant l'exercice" },
         { nom: "prévention", route: "#/prevention/stretch-post/inferieur", suivant: "#/prevention/flexibility/dos",
             debut: "Ces exercices supposent l'absence de douleur" },
         { nom: "coureur", route: "#/coureur/essuie-glace/e1", suivant: "#/coureur/essuie-glace/e2",
