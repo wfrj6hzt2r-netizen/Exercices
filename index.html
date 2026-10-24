@@ -5240,9 +5240,15 @@ function BandeAssiduite({ journal, jour, accent }) {
                 React.createElement("div", { className: "w-full rounded-full", style: {
                         height: 26,
                         backgroundColor: j.faits > 0 ? accent : "rgba(255,255,255,0.14)",
-                        border: j.estAujourdhui ? "1.5px solid rgba(255,255,255,0.65)" : "1.5px solid transparent",
+                        border: j.estAujourdhui ? "2px solid rgba(255,255,255,0.9)" : "1.5px solid transparent",
                     }, title: j.faits > 0 ? `${j.faits} exercice${j.faits > 1 ? "s" : ""}` : "aucun exercice" }),
-                React.createElement("span", { className: "text-[10px]", style: { color: "rgba(255,255,255,0.6)" } }, initiale)));
+                // Sept jours glissants, le jour même à droite — mais alignées sous D L M M J V S,
+                // les cases se lisent comme une semaine de calendrier, et une patiente a
+                // cherché pourquoi la sienne commençait un dimanche. Le jour même se
+                // distinguait par un filet à 65 % de blanc et une initiale de 10 px à 60 % :
+                // trop peu pour trancher, surtout de loin.
+                React.createElement("span", { className: j.estAujourdhui ? "text-[11px] font-semibold" : "text-[11px]",
+                    style: { color: j.estAujourdhui ? "#FFFFFF" : "rgba(255,255,255,0.6)" } }, initiale)));
         })),
         React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.7)" } }, total === 0
             ? "Aucune séance cette semaine — la régularité compte plus que la durée."
@@ -5251,7 +5257,12 @@ function BandeAssiduite({ journal, jour, accent }) {
 // Curseur de fin de séance. La règle des 3-4/10 est rappelée sur chaque écran d'exercices
 // mais n'était jamais recueillie : le patient s'auto-évalue, et le kinésithérapeute dispose
 // d'un relevé à la consultation suivante plutôt que d'un souvenir approximatif.
-function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accent, tutoie }) {
+// « faits » et « total » portaient le compte du parcours entier. Le chiffre était juste,
+// mais c'était le mauvais : ce bilan ne s'affiche que lorsque l'étape est complète, et il
+// accueillait le patient par « 4 exercices sur 16 » — un échec annoncé au moment précis
+// de la réussite. Il n'y a qu'un nombre à dire ici, celui de l'étape qu'on vient de finir ;
+// le compte du parcours a sa place sur l'en-tête de l'écran, pas sur cette carte.
+function BilanSeance({ faitsEtape, valeurInitiale, onValider, onIgnorer, accent, tutoie }) {
     const [note, setNote] = useState(valeurInitiale === undefined ? 2 : valeurInitiale);
     // Trois paliers, avec les mêmes jetons que les pastilles de douleur du récapitulatif :
     // vert, or, framboise. Les deux derniers étaient écrits en dur et ne basculaient donc
@@ -5273,7 +5284,8 @@ function BilanSeance({ faits, total, valeurInitiale, onValider, onIgnorer, accen
     return (React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
         React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, tutoie ? "C'est fini pour aujourd'hui" : "Séance terminée"),
         React.createElement("p", { className: "text-xs mt-1", style: { color: INK_DOUX } },
-            faits, " exercice", faits > 1 ? "s" : "", " sur ", total, " aujourd'hui."),
+            tutoie ? "Tes " : "Vos ", faitsEtape, " exercice", faitsEtape > 1 ? "s" : "",
+            faitsEtape > 1 ? " sont coch\u00E9s." : " est coch\u00E9."),
         React.createElement("p", { className: "text-xs mt-4 mb-2", style: { color: INK } },
             tutoie ? "Pendant les exercices, ta douleur était de :"
                    : "Pendant les exercices, votre douleur était de :"),
@@ -5731,7 +5743,7 @@ function CarteExercice(props) {
         // qu'une carte entière cliquable : un lecteur d'écran annonçait les trois cents
         // caractères de la consigne comme intitulé, et ne disait jamais si l'exercice était fait.
         // Les outils secondaires tiennent leur propre ligne, l'action principale la sienne :
-        // avec un seul rang qui se replie, le bouton « À faire » se retrouvait tantôt à droite,
+        // avec un seul rang qui se replie, le bouton de validation se retrouvait tantôt à droite,
         // tantôt à gauche selon la présence du minuteur.
         (secondes || props.avecCharge) && React.createElement("div", { className: "flex flex-wrap items-center gap-2 mt-3.5" },
             secondes ? React.createElement(ExerciseTimer, { seconds: secondes, accent: accent }) : null,
@@ -5755,8 +5767,14 @@ function CarteExercice(props) {
                         border: coche ? "none" : `1.5px solid ${accentTexte}`,
                         backgroundColor: coche ? "rgba(255,255,255,0.22)" : "transparent",
                         color: coche ? "#FFFFFF" : "transparent" } }, "✓"),
+                // « À faire » et « Fait » nomment deux états, pas deux gestes : sur un bouton,
+                // une étiquette qui décrit la situation se lit comme une pastille de statut.
+                // Le bouton a beau être irréprochable — pleine largeur, 44 px, bordure
+                // d'accent, rond vide visible — une patiente de soixante-douze ans n'osait pas
+                // y toucher, « de peur que ça disparaisse ». L'étiquette porte donc le geste
+                // tant qu'il reste à faire, et l'état une fois qu'il est fait.
                 React.createElement("span", { id: idEtat, style: { fontSize: 13, fontWeight: 600 } },
-                    coche ? "Fait" : "À faire")))));
+                    coche ? "Fait" : "Je l'ai fait")))));
 }
 // --- Fabrique de liens, pour le cabinet ------------------------------------------------
 // Un écran que le patient ne voit jamais : il n'est référencé nulle part et ne s'atteint
@@ -6057,14 +6075,14 @@ function GuidedJourney() {
     // Le bilan de fin de séance n'était proposé que sur les parcours par zone : ni le coureur,
     // ni l'enfant, ni la prévention ne se voyaient demander leur douleur, et leur colonne
     // « Douleur relevée » du récapitulatif restait vide. Écrit une fois, appelé par les quatre.
-    const bilanDeFin = (cle, exercices, faitsDuJour, total, accent, tutoie) => {
+    const bilanDeFin = (cle, exercices, faitsDuJour, accent, tutoie) => {
         const tousFaits = exercices.every((e) => faitsDuJour.has(idExercice(e)));
         const entree = entreeDuJour(cle);
         if (!tousFaits || bilanOuvert === cle || !entree || entree.douleur !== undefined)
             return null;
         return React.createElement("div", { className: "mt-4" },
             React.createElement(BilanSeance, {
-                faits: faitsDuJour.size, total: total, valeurInitiale: undefined,
+                faitsEtape: exercices.length, valeurInitiale: undefined,
                 accent: accent, tutoie: tutoie,
                 onValider: (n) => { setJournal((j) => noterDouleur(j, cle, jour, n)); setBilanOuvert(cle); },
                 onIgnorer: () => setBilanOuvert(cle),
@@ -6304,7 +6322,14 @@ function GuidedJourney() {
                         // sur un écran de 390 px.
                         React.createElement("div", { className: "rounded-3xl px-1 py-3", style: { backgroundColor: "#FFFFFF" } },
                             React.createElement(RealisticSelector, { onSelect: selectZone })),
-                        React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos.")),
+                        React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos."),
+                        // Cette phrase ne vivait que sur l'écran suivant, celui des types de
+                        // blessure — c'est-à-dire une fois la zone déjà choisie. Un patient
+                        // arrivé par l'adresse nue s'auto-orientait donc pendant un écran entier
+                        // avant qu'on lui dise de ne pas le faire. Elle est ici au moment où elle
+                        // sert, c'est-à-dire avant le premier choix.
+                        React.createElement("p", { className: "text-xs text-center mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.55)" } },
+                            "Si votre kin\u00E9sith\u00E9rapeute vous a envoy\u00E9 un lien, suivez-le plut\u00F4t que de choisir ici.")),
                     // Les trois voies d'accès n'étaient pas trois propositions concurrentes mais une
                     // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
                     // carte à trois rangs, elles disent cela, et rendent une centaine de pixels.
@@ -6428,10 +6453,25 @@ function GuidedJourney() {
                     React.createElement("div", { className: "flex flex-wrap gap-1 mt-3" }, cal.map((j) => (React.createElement("div", { key: j.jour, title: `${jjmm(j.jour)} — ${j.faits} exercice(s)`, style: {
                             width: "calc((100% - 1.5rem) / 7)", height: 22, borderRadius: 4,
                             backgroundColor: j.faits === 0 ? (vide ? ACCENT_ATTENTE : BORDURE_DOUCE) : j.faits < 3 ? ACCENT_CALENDRIER : ACCENT,
+                            // Les cases vides tenaient à 1,16 pour 1 du fond blanc : invisibles.
+                            // La grille n'avait donc aucune forme, et « du plus ancien à gauche au
+                            // jour même à droite » ne s'accrochait à rien — une patiente n'y a vu
+                            // qu'une seule case verte flottant dans du blanc. Un filet les dessine,
+                            // sans les remplir : une case vide ne doit pas ressembler à un jour
+                            // travaillé. Le vert éteint est le ton de la palette fait pour cela,
+                            // et il tient dans les deux thèmes — 2,2 pour 1 sur la carte claire,
+                            // 2,5 sur la sombre.
+                            boxShadow: j.faits === 0 && !vide ? `inset 0 0 0 1px ${ACCENT_ETEINT}` : undefined,
                         } })))),
+                    // « Plus la case est foncée » était vrai en thème clair et faux en thème
+                    // sombre, où la rampe va nécessairement du sombre au clair : sur une carte
+                    // sombre, « plus » ne peut pas s'écrire « plus foncé ». La légende ne parle
+                    // donc plus d'intensité, et dit ce que le patient a besoin de savoir —
+                    // quels jours il a travaillés. C'est aussi ce que dit le reste de
+                    // l'application : un seul exercice suffit à compter la journée.
                     React.createElement("p", { className: "text-xs mt-3", style: { color: INK_DOUX } }, vide
                         ? "Chaque jour où vous cocherez un exercice colorera une case, et le détail par parcours s'ajoutera dessous."
-                        : "Du plus ancien à gauche au jour même à droite. Plus la case est foncée, plus il y a eu d'exercices.")),
+                        : "Du plus ancien à gauche au jour même à droite. Chaque case verte est un jour où vous avez coché au moins un exercice.")),
                 vide ? null : resume.map((g) => {
                         const ch = charges[g.cle] || {};
                         const notes = Object.keys(ch).map((exId) => ({ exId, n: ch[exId][0] })).filter((x) => x.n);
@@ -6579,7 +6619,7 @@ function GuidedJourney() {
                 st.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: CROISSANCE_FOND } },
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: CROISSANCE_ACCENT, letterSpacing: "0.08em" } }, "Tu peux passer à la suite quand"),
                     React.createElement("p", { className: "text-sm mt-1.5 leading-relaxed", style: { color: INK } }, st.critere))),
-                bilanDeFin(cle, st.exercises, faits, st.exercises.length, CROISSANCE_ACCENT, true),
+                bilanDeFin(cle, st.exercises, faits, CROISSANCE_ACCENT, true),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { disabled: croissanceStageIdx === 0, onClick: () => setCroissanceStageIdx((i) => Math.max(0, i - 1)), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -6727,7 +6767,7 @@ function GuidedJourney() {
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: ACCENT_FORT, letterSpacing: "0.08em" } }, runnerStageIdx === path.stages.length - 1 ? "Le repère à garder" : "Prêt pour l'étape suivante ?"),
                     React.createElement("p", { className: "text-sm mt-1.5 leading-relaxed", style: { color: INK } }, runnerStage.critere),
                     !(runnerStageIdx === path.stages.length - 1) && React.createElement("p", { className: "text-xs mt-2", style: { color: ACCENT_FORT } }, "Si ce n'est pas encore le cas, restez à cette étape : c'est elle qui prépare la suivante."))),
-                bilanDeFin(runnerKey, runnerStage.exercises, runnerDoneSet, totalCount, ACCENT, false),
+                bilanDeFin(runnerKey, runnerStage.exercises, runnerDoneSet, ACCENT, false),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { disabled: runnerStageIdx === 0, onClick: () => setRunnerStageIdx((i) => Math.max(0, i - 1)), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -6845,7 +6885,7 @@ function GuidedJourney() {
             }),
                 React.createElement(MinimumDuJour, { rienDeFait: sub.exercises.every((e) => !prevDoneSet.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
-                bilanDeFin(prevKey, sub.exercises, prevDoneSet, totalCount, ACCENT, false),
+                bilanDeFin(prevKey, sub.exercises, prevDoneSet, ACCENT, false),
                 React.createElement("div", { className: "flex justify-between" },
                     React.createElement("button", { onClick: () => setView("prevention-sub"), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
@@ -6908,12 +6948,15 @@ function GuidedJourney() {
                 stage.sub && React.createElement("p", { className: "text-xs mt-0.5", style: { color: "rgba(255,255,255,0.75)" } }, stage.sub),
                 (stage.pourquoi || POURQUOI_ETAPE[stage.label]) && React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: ACCENT_SOFT } }, stage.pourquoi || POURQUOI_ETAPE[stage.label]),
                 React.createElement("p", { className: "text-xs mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
+                    // Ce compteur porte sur toutes les étapes, pas sur la seule affichée. Le
+                    // dire ne suffisait pas : la précision venait après le nombre, et une
+                    // patiente fatiguée lisait « 0 / 16 exercices » devant une liste de quatre,
+                    // puis refermait. La portée passe donc devant le chiffre, là où elle est lue.
+                    "Sur l'ensemble du parcours, ",
                     totalDone,
                     " / ",
                     totalCount,
-                    // Ce compteur porte sur toutes les étapes, pas sur la seule affichée :
-                    // sans le dire, « 0 / 16 » devant quatre exercices se lisait comme une erreur.
-                    " exercices du parcours cochés aujourd'hui"),
+                    " exercices cochés aujourd'hui"),
                 React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
                     React.createElement(IconeCalendrier, { size: 14, style: { display: "inline", verticalAlign: "-2px", marginRight: 6 } }),
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
@@ -6971,20 +7014,26 @@ function GuidedJourney() {
                 // est fra\u00eeche, plut\u00f4t que de la reconstituer \u00e0 la consultation suivante.
                 // Les deux nombres doivent parler du même ensemble : les coches d'un parcours par
                 // zone couvrent toutes ses étapes, pas la seule affichée.
-                bilanDeFin(key, stage.exercises, doneSet, totalCount, ACCENT, false))));
+                bilanDeFin(key, stage.exercises, doneSet, ACCENT, false))));
     }
     if (view === "complete") {
         // Le nombre d'étapes varie selon le parcours : 3 pour les arthroses, 6 après une
         // reconstruction du croisé ou une suture méniscale. Il ne peut pas être écrit en dur.
         const nbEtapes = (injury === null || injury === void 0 ? void 0 : injury.stages.length) || 0;
+        const toutValide = !!(injury && injury.stages.every((s) => stageComplete(s)));
         return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-16" },
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours termin\u00E9"),
+                // Le titre félicitait dans les deux cas, et c'est la phrase en dessous, trois
+                // fois plus petite, qui corrigeait : « sans tout valider en cours de route ». Un
+                // patient qui a traversé le parcours sans rien cocher se trouvait grondé et
+                // flatté en même temps, sans savoir lequel des deux croire. Le titre dit donc
+                // ce qui s'est passé, et le bravo est gardé pour ce qui le mérite.
                 React.createElement("h1", { className: "text-white text-3xl mt-3 font-medium leading-tight" },
-                    "Bravo pour votre travail sur \u00AB ", injury === null || injury === void 0 ? void 0 :
-                    injury.label,
+                    toutValide ? "Bravo pour votre travail sur \u00AB " : "Vous \u00EAtes au bout de \u00AB ",
+                    injury === null || injury === void 0 ? void 0 : injury.label,
                     " \u00BB."),
-                React.createElement("p", { className: "text-sm mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, (injury === null || injury === void 0 ? void 0 : injury.stages.every((s) => stageComplete(s)))
+                React.createElement("p", { className: "text-sm mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, toutValide
                     ? `Vous avez complété les ${nbEtapes} étapes du parcours. Faites le point avec votre kinésithérapeute pour confirmer la suite de votre prise en charge, avant de reprendre une activité complète.`
                     : `Vous avez parcouru les ${nbEtapes} étapes, sans tout valider en cours de route. Reprenez les exercices non cochés quand vous le pourrez, et faites le point avec votre kinésithérapeute sur votre progression.`)),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
