@@ -343,7 +343,7 @@ et les cinquante-cinq endroits qui les emploient n'ont pas à changer. */
 .bg-\[\#F5F8FA\]{background-color:var(--page)}
 .text-\[\#6B7086\]{color:var(--encre-doux)}/* Le nom de cette classe est celui de l'ancienne valeur : l'encre douce vaut désormais #5F6478. Renommer coûterait cinquante points de retouche pour rien, la couleur venant de la variable. */
 .text-\[\#0F172A\]{color:var(--encre)}
-html{font-size:106.25%}html,body{margin:0;padding:0;background:#0F2A43}body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}body{-webkit-font-smoothing:antialiased}*{-webkit-tap-highlight-color:transparent}input,button{font-family:inherit}button,[role=button]{-webkit-user-select:none;user-select:none}/* Le focus clavier n'était visible nulle part, et trois champs l'avaient même désactivé. */:focus-visible{outline:3px solid #8FBFA1;outline-offset:2px}/* Le titre reçoit le focus à chaque changement d'écran, pour que le lecteur d'écran annonce où l'on arrive. Il n'est pas atteignable au clavier : le contour n'y désigne donc rien où l'on puisse agir, et il paraît comme un cadre posé sur un titre. Il reste partout où il sert, boutons et liens. */h1:focus-visible{outline:none}/* Cibles tactiles : 44 px est le minimum confortable, et une partie des patients a 70 ans. */.cible-44{min-height:44px}
+html{font-size:106.25%}html,body{margin:0;padding:0;background:#0F2A43}/* Le corps décale le contenu sous la barre d'état au repos, mais rien n'était opaque derrière l'heure : au défilement, le texte passait dessous et les deux devenaient illisibles l'un sur l'autre. Une bande fixe, de la couleur de l'en-tête, tient la place. */body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:#0F2A43;z-index:40;pointer-events:none}body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}body{-webkit-font-smoothing:antialiased}*{-webkit-tap-highlight-color:transparent}input,button{font-family:inherit}button,[role=button]{-webkit-user-select:none;user-select:none}/* Le focus clavier n'était visible nulle part, et trois champs l'avaient même désactivé. */:focus-visible{outline:3px solid #8FBFA1;outline-offset:2px}/* Le titre reçoit le focus à chaque changement d'écran, pour que le lecteur d'écran annonce où l'on arrive. Il n'est pas atteignable au clavier : le contour n'y désigne donc rien où l'on puisse agir, et il paraît comme un cadre posé sur un titre. Il reste partout où il sert, boutons et liens. */h1:focus-visible{outline:none}/* Cibles tactiles : 44 px est le minimum confortable, et une partie des patients a 70 ans. */.cible-44{min-height:44px}
 /* Le Tailwind de cette page est figé : seules les classes réellement employées au moment de
 la compilation y figurent. Cinq classes d'espacement écrites depuis ne s'y trouvaient pas et
 ne faisaient donc rien — silencieusement, ce qui est le pire des cas. Elles sont rétablies ici
@@ -352,7 +352,7 @@ avec leurs valeurs d'origine. Toute nouvelle classe d'espacement doit être vér
 /* Hauteur d'écran. « 100vh » sur iPhone compte la place occupée par la barre d'outils de
 Safari : le dernier bouton d'un écran de fin se retrouve dessous, ou la frôle. « svh » mesure
 la fenêtre réellement visible. La règle n'est appliquée que si le navigateur la comprend. */
-@supports(min-height:100svh){.min-h-screen{min-height:100svh}}
+@supports(min-height:100svh){.min-h-screen{min-height:100svh}/* Le corps porte les marges de zone sûre et le contenu demande une fenêtre entière : le document dépassait donc la fenêtre de la hauteur de ces marges, et le marine du corps apparaissait en bande sous les écrans clairs. On retranche ce qui a été ajouté. */.min-h-screen{min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom))}}
 /* Mouvement. Trois gestes seulement, tous courts : l'arrivée d'un écran, la coche d'un
 exercice, le remplissage de la barre de progression. Une application de rééducation s'ouvre
 vingt fois par semaine — une animation qu'on remarque la deuxième fois est déjà trop longue.
@@ -4916,6 +4916,17 @@ function calendrier(journal, jours) {
     }
     return out;
 }
+// Les initiales qui coiffent la grille du récapitulatif. La grille n'est pas un calendrier
+// aligné sur le lundi : c'est une fenêtre glissante qui finit aujourd'hui, et ses colonnes
+// tiennent donc un jour de semaine différent selon la date. On les lit de la grille
+// elle-même plutôt que de les écrire, sans quoi l'en-tête mentirait six jours sur sept.
+const INITIALES_JOURS = ["D", "L", "M", "M", "J", "V", "S"];
+function enTeteDesJours(cal) {
+    return cal.slice(0, 7).map((j) => {
+        const [a, m, d] = j.jour.split("-").map(Number);
+        return INITIALES_JOURS[new Date(a, m - 1, d).getDay()];
+    });
+}
 // Les exercices cochés sont stockés dans des Set, que JSON ne sait pas sérialiser.
 function doneToJSON(done) {
     const out = {};
@@ -5230,12 +5241,11 @@ function SwipeBack({ onBack, actif, children }) {
 // donnaient le même écran.
 function BandeAssiduite({ journal, jour, accent }) {
     const jours = septDerniersJours(journal, jour);
-    const initiales = ["D", "L", "M", "M", "J", "V", "S"];
     const total = jours.filter((j) => j.faits > 0).length;
     return (React.createElement("div", null,
         React.createElement("div", { className: "flex items-end justify-between gap-1.5" }, jours.map((j) => {
             const [a, m, d] = j.jour.split("-").map(Number);
-            const initiale = initiales[new Date(a, m - 1, d).getDay()];
+            const initiale = INITIALES_JOURS[new Date(a, m - 1, d).getDay()];
             return (React.createElement("div", { key: j.jour, className: "flex flex-col items-center gap-1", style: { flex: 1 } },
                 React.createElement("div", { className: "w-full rounded-full", style: {
                         height: 26,
@@ -5737,7 +5747,7 @@ function CarteExercice(props) {
                     React.createElement("span", null, props.effort)))),
         // 3. La consigne. Justifiée et coupée en fin de ligne : sur une colonne étroite, le
         // drapeau à droite laissait des trous qui hachaient la lecture.
-        React.createElement("p", { lang: "fr", className: "mt-3", style: styleProse(13.5, INK_PROSE) }, ex.tip),
+        React.createElement("p", { lang: "fr", className: "mt-3", style: styleProse(14, INK_PROSE) }, ex.tip),
         demandeUnElastique(ex) && React.createElement("p", { lang: "fr", className: "mt-2",
             style: styleProse(12.5, INK_DOUX) },
             React.createElement("span", { className: "font-medium" }, "Sans élastique : "),
@@ -6345,7 +6355,7 @@ function GuidedJourney() {
                         // sur un écran de 390 px.
                         React.createElement("div", { className: "rounded-3xl px-1 py-3", style: { backgroundColor: "#FFFFFF" } },
                             React.createElement(RealisticSelector, { onSelect: selectZone })),
-                        React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez une articulation ou une zone du dos."),
+                        React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez la zone qui vous g\u00EAne, ou son nom \u00E0 c\u00F4t\u00E9."),
                         // Cette phrase ne vivait que sur l'écran suivant, celui des types de
                         // blessure — c'est-à-dire une fois la zone déjà choisie. Un patient
                         // arrivé par l'adresse nue s'auto-orientait donc pendant un écran entier
@@ -6361,7 +6371,12 @@ function GuidedJourney() {
                             [
                                 { id: "coureur", titre: "Vous êtes coureur ?", sous: "Pathologies spécifiques de la course à pied", teinte: ACCENT,
                                     aller: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); } },
-                                { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance", teinte: CROISSANCE_ACCENT,
+                                // L'or du parcours croissance servait ici de chevron, alors qu'il porte ailleurs la
+                                // prudence — la douleur « un peu élevée » de la réglette. Un avertissement sans
+                                // texte devant « moins de 16 ans » inquiète un parent sans rien lui dire.
+                                // Les trois voies prennent donc le même chevron ; la teinte propre au
+                                // parcours reprend ses droits une fois dedans.
+                                { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance", teinte: ACCENT,
                                     aller: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); } },
                                 { id: "prevention", titre: "Échauffement, étirements & souplesse", sous: "Pas de douleur, juste de la prévention", teinte: ACCENT,
                                     aller: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); } },
@@ -6473,7 +6488,13 @@ function GuidedJourney() {
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-5" },
                 React.createElement("div", { className: "rounded-2xl p-4 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Les 4 dernières semaines"),
-                    React.createElement("div", { className: "flex flex-wrap gap-1 mt-3" }, cal.map((j) => (React.createElement("div", { key: j.jour, title: `${jjmm(j.jour)} — ${j.faits} exercice(s)`, style: {
+                    // La grille se lit par lignes de sept, mais rien ne disait quel jour tenait
+                    // quelle colonne — alors que l'accueil affiche déjà D L M M J V S. Les mêmes
+                    // initiales, au-dessus des mêmes colonnes.
+                    React.createElement("div", { className: "flex flex-wrap gap-1 mt-3" }, enTeteDesJours(cal).map((lettre, i) => (
+                        React.createElement("span", { key: i, className: "text-[10px] text-center",
+                            style: { width: "calc((100% - 1.5rem) / 7)", color: INK_DOUX } }, lettre)))),
+                    React.createElement("div", { className: "flex flex-wrap gap-1 mt-1" }, cal.map((j) => (React.createElement("div", { key: j.jour, title: `${jjmm(j.jour)} — ${j.faits} exercice(s)`, style: {
                             width: "calc((100% - 1.5rem) / 7)", height: 22, borderRadius: 4,
                             backgroundColor: j.faits === 0 ? (vide ? ACCENT_ATTENTE : BORDURE_DOUCE) : j.faits < 3 ? ACCENT_CALENDRIER : ACCENT,
                             // Les cases vides tenaient à 1,16 pour 1 du fond blanc : invisibles.
@@ -6494,7 +6515,7 @@ function GuidedJourney() {
                     // l'application : un seul exercice suffit à compter la journée.
                     React.createElement("p", { className: "text-xs mt-3", style: { color: INK_DOUX } }, vide
                         ? "Chaque jour où vous cocherez un exercice colorera une case, et le détail par parcours s'ajoutera dessous."
-                        : "Du plus ancien à gauche au jour même à droite. Chaque case verte est un jour où vous avez coché au moins un exercice.")),
+                        : "Du plus ancien en haut à gauche au jour même en bas à droite, une ligne par semaine. Chaque case verte est un jour où vous avez coché au moins un exercice.")),
                 vide ? null : resume.map((g) => {
                         const ch = charges[g.cle] || {};
                         const notes = Object.keys(ch).map((exId) => ({ exId, n: ch[exId][0] })).filter((x) => x.n);
@@ -6613,8 +6634,10 @@ function GuidedJourney() {
                 // Les trois autres parcours disent à quelle fréquence travailler ; celui-ci
                 // était le seul à ne rien dire, alors que la page parents de la scoliose
                 // promet des séances régulières.
-                croi.rythme && React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
-                    React.createElement(IconeCalendrier, { size: 14, style: { display: "inline", verticalAlign: "-2px", marginRight: 6 } }),
+                croi.rythme && // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
+                // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
+                React.createElement("p", { className: "text-xs mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                    React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     croi.rythme),
                 React.createElement("p", { className: "text-[11px] mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full text-xs font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
@@ -6741,8 +6764,10 @@ function GuidedJourney() {
                     " / ",
                     totalCount,
                     " exercices r\u00E9alis\u00E9s"),
-                React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
-                    React.createElement(IconeCalendrier, { size: 14, style: { display: "inline", verticalAlign: "-2px", marginRight: 6 } }),
+                // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
+                // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
+                React.createElement("p", { className: "text-xs mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                    React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     guidance.freq,
                     " \u00B7 ",
                     guidance.duration),
@@ -6880,8 +6905,10 @@ function GuidedJourney() {
                     " / ",
                     totalCount,
                     " exercices r\u00E9alis\u00E9s"),
-                React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
-                    React.createElement(IconeCalendrier, { size: 14, style: { display: "inline", verticalAlign: "-2px", marginRight: 6 } }),
+                // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
+                // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
+                React.createElement("p", { className: "text-xs mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                    React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     category.guidance.freq,
                     " \u00B7 ",
                     category.guidance.duration)),
@@ -6938,6 +6965,12 @@ function GuidedJourney() {
                 React.createElement("button", { onClick: () => { setView("zone"); setPreventionCategory(null); setPreventionSub(null); }, className: "w-full py-3.5 rounded-full text-sm font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
     if (view === "stage") {
+        // Le segment de l'étape en cours était rempli à 50 % en dur, quel que soit le nombre
+        // d'exercices cochés : une proportion qui ne correspondait à aucun chiffre affiché, et
+        // que le patient cherchait à expliquer. Il suit maintenant ce qu'il montre.
+        const partDeLEtape = (s) => (s.exercises.length
+            ? Math.round(100 * s.exercises.filter((e) => doneSet.has(idExercice(e))).length / s.exercises.length) + "%"
+            : "0%");
         const totalDone = injury.stages.reduce((a, s) => a + s.exercises.filter((e) => doneSet.has(idExercice(e))).length, 0);
         const totalCount = injury.stages.reduce((a, s) => a + s.exercises.length, 0);
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
@@ -6958,7 +6991,8 @@ function GuidedJourney() {
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, injury.stages.map((s, si) => (React.createElement("div", { key: s.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
                     React.createElement("div", { className: "h-full rounded-full", style: {
                             transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)",
-                            width: si < stageIdx || stageComplete(s) ? "100%" : si === stageIdx ? "50%" : "0%",
+                            width: si < stageIdx || stageComplete(s) ? "100%"
+                                : si === stageIdx ? partDeLEtape(s) : "0%",
                             backgroundColor: ACCENT,
                         } }))))),
                 React.createElement("h1", { className: "text-white text-xl font-medium" },
@@ -6980,8 +7014,10 @@ function GuidedJourney() {
                     " / ",
                     totalCount,
                     " exercices cochés aujourd'hui"),
-                React.createElement("p", { className: "text-xs mt-2", style: { color: "rgba(255,255,255,0.8)" } },
-                    React.createElement(IconeCalendrier, { size: 14, style: { display: "inline", verticalAlign: "-2px", marginRight: 6 } }),
+                // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
+                // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
+                React.createElement("p", { className: "text-xs mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                    React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].duration)),
