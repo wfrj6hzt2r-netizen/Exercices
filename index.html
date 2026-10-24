@@ -3974,22 +3974,45 @@ const MANNEQUIN_ACCENT = "#345940";
 const MANNEQUIN_TRAIT = "#9FB6A6";
 const MANNEQUIN_BOX = { x: 63, y: 24, w: 174, h: 522.8 };
 // Positions relevees sur Manequin_Avec_Point.png par detection des pastilles vertes,
-// et non estimees a l'oeil. « hit » est le rayon de la cible tactile : il est reduit la
-// ou deux reperes anatomiques sont naturellement proches (hanche/pubalgie, cheville/pied)
-// pour qu'aucune cible n'en recouvre une autre. « labelY » ne s'ecarte de « cy » que pour
-// la cheville, dont le libelle est remonte afin de laisser respirer celui du pied.
+// et non estimees a l'oeil.
+//
+// Le dessin occupe 342 px de large pour 400 unites de viewBox : une unite vaut donc
+// 0,855 px, et les 44 px de cible minimale valent 51,5 unites. « hit » est le rayon de
+// la pastille tactile, porte au maximum que laisse le voisin le plus proche sans qu'une
+// cible en recouvre une autre — une cible qui depasse sur sa voisine est pire que trop
+// petite : elle ouvre la mauvaise zone sans que le patient comprenne pourquoi.
+//
+// Quatre reperes sont anatomiquement trop proches pour qu'une pastille de 44 px tienne :
+// hanche et pubalgie sont a 39 unites l'une de l'autre, cheville et pied a 32. C'est le
+// libelle qui porte alors la cible pleine, et c'est de toute facon le mot que le patient
+// lit et vise. Les libelles de la cheville et du pied sont donc ecartes jusqu'a 55 unites,
+// de quoi loger deux boites de 52 sans qu'elles se touchent.
 const REALISTIC_MARKERS = [
-    { id: "cervical", label: "Cervicales", cx: 150, cy: 105, labelX: 242, labelY: 105, anchor: "start", hit: 22 },
-    { id: "epaule", label: "Épaule", cx: 96.1, cy: 137.8, labelX: 62, labelY: 138, anchor: "end", hit: 22 },
-    { id: "thoracique", label: "Thoraciques", cx: 150.3, cy: 166.8, labelX: 242, labelY: 167, anchor: "start", hit: 22 },
-    { id: "coude", label: "Coude", cx: 86.3, cy: 215.3, labelX: 62, labelY: 215, anchor: "end", hit: 22 },
-    { id: "lombaire", label: "Lombaires", cx: 150.3, cy: 225.1, labelX: 242, labelY: 225, anchor: "start", hit: 22 },
+    { id: "cervical", label: "Cervicales", cx: 150, cy: 105, labelX: 242, labelY: 105, anchor: "start", hit: 26 },
+    { id: "epaule", label: "Épaule", cx: 96.1, cy: 137.8, labelX: 62, labelY: 138, anchor: "end", hit: 26 },
+    { id: "thoracique", label: "Thoraciques", cx: 150.3, cy: 166.8, labelX: 242, labelY: 167, anchor: "start", hit: 26 },
+    { id: "coude", label: "Coude", cx: 86.3, cy: 215.3, labelX: 62, labelY: 215, anchor: "end", hit: 26 },
+    { id: "lombaire", label: "Lombaires", cx: 150.3, cy: 225.1, labelX: 242, labelY: 225, anchor: "start", hit: 26 },
     { id: "hanche", label: "Hanche", cx: 111.2, cy: 277.1, labelX: 62, labelY: 277, anchor: "end", hit: 19 },
     { id: "pubalgie", label: "Pubalgie", cx: 150.3, cy: 281.2, labelX: 242, labelY: 281, anchor: "start", hit: 19 },
-    { id: "genou", label: "Genou", cx: 119.1, cy: 395.6, labelX: 62, labelY: 396, anchor: "end", hit: 22 },
-    { id: "cheville", label: "Cheville", cx: 116.4, cy: 506.7, labelX: 62, labelY: 496, anchor: "end", hit: 15 },
-    { id: "pied", label: "Pied", cx: 106.6, cy: 537.3, labelX: 62, labelY: 537, anchor: "end", hit: 15 },
+    { id: "genou", label: "Genou", cx: 119.1, cy: 395.6, labelX: 62, labelY: 396, anchor: "end", hit: 26 },
+    { id: "cheville", label: "Cheville", cx: 116.4, cy: 506.7, labelX: 62, labelY: 490, anchor: "end", hit: 16 },
+    { id: "pied", label: "Pied", cx: 106.6, cy: 537.3, labelX: 62, labelY: 545, anchor: "end", hit: 16 },
 ];
+// Hauteur de la boite tactile d'un libelle, en unites de viewBox : 52 pour depasser les
+// 51,5 qui font 44 px. La largeur ajoute 28 unites au texte, de quoi tenir le minimum
+// dans les deux sens meme sur « Pied ».
+const LIBELLE_CIBLE_H = 52;
+const LIBELLE_CIBLE_MARGE = 28;
+// Le dessin a ses propres unites : ses libelles ne suivent donc pas le reglage de taille
+// du telephone, contrairement au reste de la page. Ils sont portes de 15 a 16,5 unites —
+// de 12,8 a 14,1 px reels — ce que la largeur disponible permet encore : « Thoraciques »,
+// le plus long, s'arrete a 6 unites du bord du viewBox.
+const LIBELLE_TAILLE = 16.5;
+const LIBELLE_LARGEUR_CAR = 9.3;
+// Bords du viewBox du selecteur, « -50 18 400 570 ».
+const VUE_X1 = -50;
+const VUE_X2 = 350;
 function RealisticSelector({ onSelect }) {
     // Marqueur actuellement touché, survolé ou au clavier, pour donner un retour visuel.
     const [active, setActive] = useState(null);
@@ -4019,9 +4042,16 @@ function RealisticSelector({ onSelect }) {
             const arrivee = m.labelX - sens * 5;
             const coude = depart + sens * Math.min(16, Math.abs(depart - arrivee) / 2);
             const trace = `${depart},${m.cy} ${coude},${m.labelY} ${arrivee},${m.labelY}`;
-            // Boîte englobant le libellé, pour le rendre cliquable au même titre que la pastille.
-            const larg = m.label.length * 8.5 + 16;
-            const boxX = toRight ? m.labelX - 6 : m.labelX - larg + 6;
+            // Boîte englobant le libellé. Elle ne le rend pas seulement cliquable « au même
+            // titre » que la pastille : pour la hanche, le pubis, la cheville et le pied, dont
+            // les pastilles ne peuvent pas atteindre 44 px sans mordre sur leur voisine, c'est
+            // elle qui porte la cible pleine. Elle fait donc 52 unités de haut partout.
+            const largVoulue = m.label.length * LIBELLE_LARGEUR_CAR + LIBELLE_CIBLE_MARGE;
+            const xVoulu = toRight ? m.labelX - 12 : m.labelX - largVoulue + 12;
+            // Rognee au bord du viewBox : au-dela, la boite serait coupee a l'affichage et
+            // le patient viserait une cible qui n'existe pas la ou il la voit finir.
+            const boxX = Math.max(VUE_X1, xVoulu);
+            const larg = Math.min(VUE_X2, xVoulu + largVoulue) - boxX;
             const choisir = () => onSelect(m.id);
             return (React.createElement("g", { key: m.id, onClick: choisir, onMouseEnter: () => setActive(m.id), onMouseLeave: () => setActive(null), onTouchStart: () => setActive(m.id), onTouchEnd: () => setActive(null), onFocus: () => setActive(m.id), onBlur: () => setActive(null), onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
@@ -4034,9 +4064,9 @@ function RealisticSelector({ onSelect }) {
                 React.createElement("circle", { cx: m.cx, cy: m.cy, r: on ? 17 : 14, fill: "#FFFFFF", opacity: on ? 0.5 : 0.38 }),
                 React.createElement("circle", { cx: m.cx, cy: m.cy, r: on ? 17 : 14, fill: MANNEQUIN_ACCENT, opacity: on ? 0.32 : 0.18 }),
                 React.createElement("circle", { cx: m.cx, cy: m.cy, r: on ? 9 : 8, fill: MANNEQUIN_ACCENT, stroke: "#FFFFFF", strokeWidth: "2.5" }),
-                React.createElement("text", { x: m.labelX, y: m.labelY + 5, textAnchor: toRight ? "start" : "end", fontSize: "15", fontWeight: "600", fontFamily: POLICE, fill: on ? MANNEQUIN_ACCENT : MANNEQUIN_ENCRE }, m.label),
+                React.createElement("text", { x: m.labelX, y: m.labelY + 5, textAnchor: toRight ? "start" : "end", fontSize: String(LIBELLE_TAILLE), fontWeight: "600", fontFamily: POLICE, fill: on ? MANNEQUIN_ACCENT : MANNEQUIN_ENCRE }, m.label),
                 React.createElement("circle", { cx: m.cx, cy: m.cy, r: m.hit, fill: "transparent" }),
-                React.createElement("rect", { x: boxX, y: m.labelY - 16, width: larg, height: "26", fill: "transparent" })));
+                React.createElement("rect", { x: boxX, y: m.labelY - LIBELLE_CIBLE_H / 2, width: larg, height: LIBELLE_CIBLE_H, fill: "transparent" })));
         })));
 }
 const POSITION_LIBRARY = [
@@ -5451,9 +5481,36 @@ const PRUDENCE_FILET = "var(--prudence-filet)";
 // toute la largeur de la carte, et sa taille s'ajuste à la place disponible.
 // Safari sur iPhone n'applique pas la taille de texte du systeme aux pages web, contrairement
 // aux applications natives : un patient de soixante-dix ans qui a agrandi tout son telephone
-// retrouve ici du 13 px. Le reglage est donc interne, et tout s'y accorde : les classes en rem
-// par la racine du document, les tailles en pixels par ce facteur.
+// retrouvait ici du 13 px. Tout etait pret pour l'eviter — les classes en rem suivent la
+// racine du document, les tailles en pixels passent par le facteur ci-dessous, qui mesure
+// cette meme racine — mais la racine, elle, etait ecrite en dur dans la feuille de style.
+// Le facteur valait donc 1 sur tous les telephones, et le mecanisme ne servait a rien.
+//
+// Une seule chose reporte le reglage du patient sur une page web : la police systeme
+// « -apple-system-body », que Safari et les navigateurs WebKit dimensionnent d'apres ce
+// reglage. On la mesure donc une fois, sur un element invisible, et l'on en tire la racine.
 const RACINE_PAR_DEFAUT = 17;
+// Les tailles d'accessibilite d'iOS montent jusqu'a 53 px : aucune mise en page ne les
+// absorbe, et le patient se retrouverait avec trois mots par ecran. Le plafond tient dans
+// un rapport de 1,45, soit du 24,6 px, ce qui couvre tout le reglage courant — les cinq
+// crans au-dessus du neutre — et s'arrete avant les crans d'accessibilite.
+const RACINE_PLAFOND = Math.round(RACINE_PAR_DEFAUT * 1.45 * 10) / 10;
+// Lue au demarrage, et seulement la : le patient qui change ce reglage pendant sa seance
+// est un cas de laboratoire, et surveiller la valeur couterait un observateur permanent.
+function reglerRacineSurLeTelephone() {
+    if (typeof document === "undefined" || !document.documentElement || !document.body)
+        return;
+    const sonde = document.createElement("div");
+    sonde.style.cssText = "position:absolute;visibility:hidden;font:-apple-system-body";
+    document.body.appendChild(sonde);
+    const px = parseFloat(getComputedStyle(sonde).fontSize);
+    sonde.remove();
+    // Navigateur qui ignore cette police : la mesure retombe sur la taille par defaut du
+    // document, qu'il est inutile de reecrire.
+    if (!px || px <= RACINE_PAR_DEFAUT)
+        return;
+    document.documentElement.style.fontSize = Math.min(px, RACINE_PLAFOND) + "px";
+}
 function echelleTexte() {
     if (typeof document === "undefined" || !document.documentElement)
         return 1;
@@ -6978,6 +7035,9 @@ function GuidedJourney() {
     return React.createElement(SwipeBack, { onBack: retourEnArriere, actif: cibleRetour !== undefined },
         React.createElement("main", { ref: refEcran }, renderScreen()));
 }
+// Avant le premier rendu : les tailles en pixels sont calculees a partir de la racine, et
+// la recalculer apres aurait fait sauter la page sous les yeux du patient.
+reglerRacineSurLeTelephone();
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(React.createElement(GuidedJourney));
 }catch(e){document.getElementById("loader").textContent="Une erreur est survenue au chargement. Rechargez la page.";console.error(e);}})();</script>
