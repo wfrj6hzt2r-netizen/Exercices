@@ -361,7 +361,7 @@ Tout est annulé si le système demande à réduire les animations. */
 .apparition{animation:apparition .18s cubic-bezier(.2,.7,.3,1) both}
 @keyframes coche-ressort{0%{transform:scale(.55)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
 .coche-ressort{animation:coche-ressort .28s cubic-bezier(.2,.8,.2,1)}
-@media(prefers-reduced-motion:reduce){.apparition,.coche-ressort{animation:none}}/* Impression du récapitulatif : le patient l'enregistre en PDF depuis l'aperçu et l'envoie à son kinésithérapeute, au lieu de lui tendre son téléphone. Le bandeau bleu nuit s'éclaircit — il gaspillerait l'encre et rendrait le texte blanc invisible — et les couleurs du calendrier et des pastilles de douleur sont forcées, car elles portent l'information. */@media print{/* Le papier est blanc quel que soit le thème du téléphone : les variables reprennent leurs valeurs claires avant toute autre règle d'impression. */:root{--page:#fff;--surface:#fff;--bordure:#E4E6F0;--bordure-douce:#EAEFF2;--encre:#0F172A;--encre-prose:#3F4759;--encre-doux:#5F6478;--accent:#4F7A5E;--accent-fort:#345940;--accent-voile:#E4EEE6;--accent-pale:#EDF2F0;--accent-calendrier:#BBD3C2;--accent-attente:rgba(79,122,94,0.14);--warn:#9F1239;--warn-voile:#FDE4E9;--warn-filet:#F4B8C4;--prudence:#8F3517;--prudence-voile:#FBEDE7;--prudence-filet:#F0CDBD;--badge-coureur:#DBEAFE;--badge-coureur-texte:#1D4ED8;--badge-prevention:#F3E8FB;--badge-prevention-texte:#7B3FA8;--croissance-accent:#8A5D18;--croissance-fond:#F6EEDD;--croissance-sur-accent:#fff;--ombre-carte:none}@page{margin:14mm}html,body{background:#fff!important}body{padding:0!important}.sans-impression{display:none!important}.pour-impression{display:block!important}.bandeau-sombre,.bandeau-sombre *{background-color:#fff!important;color:#0F172A!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}#root>div{max-width:none!important}.min-h-screen{min-height:0!important;background-color:#fff!important}article,.rounded-2xl{break-inside:avoid}}.pour-impression{display:none}#loader{min-height:100vh;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-family:-apple-system,Arial,sans-serif;font-size:14px}
+/* La réglette de douleur. La poignée native d'iOS mesure environ 23 px sur 16 et la piste 6 : trop fin pour une main âgée, qui vise alors à côté et fait sauter la note de deux à cinq. On la porte à 28 px dans une zone tactile de 44, et la couleur suit « currentColor », posé par le palier de douleur. */.reglette{-webkit-appearance:none;appearance:none;background:transparent;min-height:44px;padding:0}.reglette::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface);margin-top:-11px}.reglette::-moz-range-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface)}.reglette:focus-visible{outline:2px solid var(--accent-fort);outline-offset:4px;border-radius:8px}@media(prefers-reduced-motion:reduce){.apparition,.coche-ressort{animation:none}}/* Impression du récapitulatif : le patient l'enregistre en PDF depuis l'aperçu et l'envoie à son kinésithérapeute, au lieu de lui tendre son téléphone. Le bandeau bleu nuit s'éclaircit — il gaspillerait l'encre et rendrait le texte blanc invisible — et les couleurs du calendrier et des pastilles de douleur sont forcées, car elles portent l'information. */@media print{/* Le papier est blanc quel que soit le thème du téléphone : les variables reprennent leurs valeurs claires avant toute autre règle d'impression. */:root{--page:#fff;--surface:#fff;--bordure:#E4E6F0;--bordure-douce:#EAEFF2;--encre:#0F172A;--encre-prose:#3F4759;--encre-doux:#5F6478;--accent:#4F7A5E;--accent-fort:#345940;--accent-voile:#E4EEE6;--accent-pale:#EDF2F0;--accent-calendrier:#BBD3C2;--accent-attente:rgba(79,122,94,0.14);--warn:#9F1239;--warn-voile:#FDE4E9;--warn-filet:#F4B8C4;--prudence:#8F3517;--prudence-voile:#FBEDE7;--prudence-filet:#F0CDBD;--badge-coureur:#DBEAFE;--badge-coureur-texte:#1D4ED8;--badge-prevention:#F3E8FB;--badge-prevention-texte:#7B3FA8;--croissance-accent:#8A5D18;--croissance-fond:#F6EEDD;--croissance-sur-accent:#fff;--ombre-carte:none}@page{margin:14mm}html,body{background:#fff!important}body{padding:0!important}.sans-impression{display:none!important}.pour-impression{display:block!important}.bandeau-sombre,.bandeau-sombre *{background-color:#fff!important;color:#0F172A!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}#root>div{max-width:none!important}.min-h-screen{min-height:0!important;background-color:#fff!important}article,.rounded-2xl{break-inside:avoid}}.pour-impression{display:none}#loader{min-height:100vh;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-family:-apple-system,Arial,sans-serif;font-size:14px}
 /* Sur écran large, l'interface reste une colonne : sans cela elle s'étire sur toute la largeur. */
 @media(min-width:560px){#root>div{max-width:480px;margin-left:auto;margin-right:auto}}</style></head><body><div id="root"><div id="loader">Chargement de vos exercices…</div></div><noscript><div style="padding:32px;color:#fff;font-family:Arial,sans-serif"><p>Cette application a besoin de JavaScript pour fonctionner.</p><p>Activez-le dans les réglages de votre navigateur, puis rechargez la page.</p></div></noscript><script>(function(){if(typeof React==="undefined"||typeof ReactDOM==="undefined"){document.getElementById("loader").innerHTML="Impossible de charger l'application.<br>Rechargez la page ; si le message revient, prévenez votre kinésithérapeute.";return;}try{"use strict";
 const { useState, useEffect } = React;
@@ -5263,11 +5263,18 @@ function BandeAssiduite({ journal, jour, accent }) {
 // de la réussite. Il n'y a qu'un nombre à dire ici, celui de l'étape qu'on vient de finir ;
 // le compte du parcours a sa place sur l'en-tête de l'écran, pas sur cette carte.
 function BilanSeance({ faitsEtape, valeurInitiale, onValider, onIgnorer, accent, tutoie }) {
-    const [note, setNote] = useState(valeurInitiale === undefined ? 2 : valeurInitiale);
+    // Le curseur partait à 2 sur 10. Un patient qui touchait « Enregistrer » sans y poser
+    // le doigt transmettait donc un 2 qu'il n'avait jamais dit, et le kinésithérapeute
+    // lisait une mesure à la consultation suivante en la croyant donnée. Une valeur
+    // inventée est pire qu'une valeur absente : elle ne se distingue pas d'une vraie.
+    // Tant que le curseur n'a pas bougé, il n'y a donc pas de note — l'affichage montre
+    // un tiret et le bouton d'enregistrement reste inactif.
+    const [note, setNote] = useState(valeurInitiale);
+    const releve = note !== undefined;
     // Trois paliers, avec les mêmes jetons que les pastilles de douleur du récapitulatif :
     // vert, or, framboise. Les deux derniers étaient écrits en dur et ne basculaient donc
     // pas en thème sombre — un or foncé sur une carte sombre.
-    const teinte = note <= 3 ? ACCENT_FORT : note <= 5 ? CROISSANCE_ACCENT : WARN;
+    const teinte = !releve ? INK_DOUX : note <= 3 ? ACCENT_FORT : note <= 5 ? CROISSANCE_ACCENT : WARN;
     // Le parcours croissance tutoie l'enfant d'un bout à l'autre : le bilan ne peut pas
     // être le seul écran à le vouvoyer, ni à le renvoyer seul vers son kinésithérapeute.
     const commentaire = tutoie
@@ -5290,17 +5297,28 @@ function BilanSeance({ faitsEtape, valeurInitiale, onValider, onIgnorer, accent,
             tutoie ? "Pendant les exercices, ta douleur était de :"
                    : "Pendant les exercices, votre douleur était de :"),
         React.createElement("div", { className: "flex items-center gap-3" },
-            React.createElement("input", { type: "range", min: 0, max: 10, step: 1, value: note,
+            // La poignée native mesurait 23 px sur 16, et la piste 6 : trop fin pour une main
+            // qui tremble. La classe « reglette » la porte à 28 px dans une zone de 44, et
+            // « currentColor » lui fait suivre le palier de douleur sans l'écrire deux fois.
+            React.createElement("input", { type: "range", min: 0, max: 10, step: 1,
+                value: releve ? note : 0,
                 onChange: (e) => setNote(Number(e.target.value)),
-                "aria-label": "Niveau de douleur de 0 à 10",
-                style: { flex: 1, accentColor: teinte } }),
-            React.createElement("span", { className: "text-sm font-medium tabular-nums", style: { color: teinte, minWidth: "3.2rem", textAlign: "right" } }, note + " / 10")),
+                "aria-label": "Niveau de douleur de 0 \u00e0 10",
+                "aria-valuetext": releve ? note + " sur 10" : "pas encore indiqu\u00e9",
+                className: "reglette", style: { flex: 1, color: releve ? teinte : ACCENT_ETEINT } }),
+            React.createElement("span", { className: "text-sm font-medium tabular-nums", style: { color: teinte, minWidth: "3.2rem", textAlign: "right" } },
+                releve ? note + " / 10" : "\u2014 / 10")),
         React.createElement("div", { className: "flex justify-between mt-1" },
             React.createElement("span", { className: "text-[10px]", style: { color: INK_DOUX } }, "aucune"),
             React.createElement("span", { className: "text-[10px]", style: { color: INK_DOUX } }, "insupportable")),
-        React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: teinte } }, commentaire),
+        React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: teinte } },
+            releve ? commentaire
+                   : (tutoie ? "D\u00E9place le curseur pour dire o\u00F9 tu en \u00E9tais."
+                             : "D\u00E9placez le curseur pour indiquer votre niveau.")),
         React.createElement("div", { className: "flex flex-col gap-2 mt-5" },
-            React.createElement("button", { onClick: () => onValider(note), className: "w-full py-3 rounded-full text-sm font-medium text-white", style: { backgroundColor: accent } }, "Enregistrer"),
+            React.createElement("button", { onClick: () => releve && onValider(note), disabled: !releve,
+                className: "w-full py-3 rounded-full text-sm font-medium text-white disabled:opacity-30",
+                style: { backgroundColor: accent } }, "Enregistrer"),
             React.createElement("button", { onClick: onIgnorer, className: "w-full py-2 text-xs", style: { color: INK_DOUX } }, "Passer"))));
 }
 // Encadré identique d'un parcours à l'autre, placé sur l'écran de contexte : le patient
@@ -5757,16 +5775,21 @@ function CarteExercice(props) {
                 // donc la couleur d'accent dès avant d'être coché, là où le minuteur et la
                 // charge se contentent d'un filet. Les trois pastilles étaient auparavant
                 // grises et de même poids, sans indiquer laquelle comptait.
+                // Coché, ce bouton portait exactement le style de l'action principale : plein,
+                // vert d'accent, texte blanc. Une étape de quatre exercices tous faits donnait
+                // donc quatre gros boutons verts, et l'écran ne disait plus où appuyer ni ce
+                // qu'il restait à faire. « Fait » est un état, pas une action : il passe en fond
+                // voilé, encre verte, et c'est le bouton d'enregistrement qui garde le plein.
                 style: { minHeight: 44,
-                    border: coche ? "1px solid transparent" : `1.5px solid ${accentTexte}`,
-                    backgroundColor: coche ? accent : "transparent",
-                    color: coche ? "#FFFFFF" : accentTexte } },
+                    border: coche ? `1px solid ${ACCENT_VOILE}` : `1.5px solid ${accentTexte}`,
+                    backgroundColor: coche ? ACCENT_VOILE : "transparent",
+                    color: accentTexte } },
                 React.createElement("span", { "aria-hidden": "true",
                     className: "inline-flex items-center justify-center rounded-full shrink-0" + (ressort ? " coche-ressort" : ""),
                     style: { width: 22, height: 22, fontSize: 13,
                         border: coche ? "none" : `1.5px solid ${accentTexte}`,
-                        backgroundColor: coche ? "rgba(255,255,255,0.22)" : "transparent",
-                        color: coche ? "#FFFFFF" : "transparent" } }, "✓"),
+                        backgroundColor: coche ? accentTexte : "transparent",
+                        color: coche ? ACCENT_VOILE : "transparent" } }, "✓"),
                 // « À faire » et « Fait » nomment deux états, pas deux gestes : sur un bouton,
                 // une étiquette qui décrit la situation se lit comme une pastille de statut.
                 // Le bouton a beau être irréprochable — pleine largeur, 44 px, bordure
@@ -6987,6 +7010,11 @@ function GuidedJourney() {
             }),
                 React.createElement(MinimumDuJour, { rienDeFait: stage.exercises.every((e) => !doneSet.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
+                // Le relevé de douleur venait en dernier, sous les boutons de navigation : le
+                // patient qui touchait « Suivant » quittait l'écran avant de l'avoir vu, et le
+                // kinésithérapeute n'avait rien à lire à la consultation. On recueille donc la
+                // mesure avant d'offrir la sortie, pendant que la séance est fraîche.
+                bilanDeFin(key, stage.exercises, doneSet, ACCENT, false),
                 // Un stade sans critère de sortie mesurable n'est qu'un calendrier déguisé.
                 // Le critère s'affiche là où la décision se prend, au-dessus du bouton.
                 stage.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: ACCENT_VOILE } },
@@ -7002,7 +7030,13 @@ function GuidedJourney() {
                                 setView("complete");
                             else
                                 setStageIdx((i) => Math.min(injury.stages.length - 1, i + 1));
-                        }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm text-white disabled:opacity-30", style: { backgroundColor: ACCENT } },
+                        // Plein et vert d'accent, ce bouton était l'élément le plus appuyé de
+                        // l'écran — juste sous la phrase qui demande au patient de rester à son
+                        // étape. Le texte disait de rester, la mise en page disait d'avancer, et
+                        // c'est la mise en page qui gagne quand on est fatigué. Il prend donc le
+                        // même contour que « Précédent » : le passage reste ouvert, mais rien ne
+                        // le pousse. Seul « Enregistrer », au-dessus, garde le plein.
+                        }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         stageIdx === injury.stages.length - 1 ? "Terminer le parcours" : "Suivant",
                         " ",
                         React.createElement(ChevronRight, { size: 16 }))),
@@ -7010,11 +7044,7 @@ function GuidedJourney() {
                 // petit texte souligné, qui se lisait comme un aveu, par un simple état des lieux.
                 !stageComplete(stage) && (React.createElement("p", { className: "text-xs mt-3", style: { color: INK_DOUX } },
                     "Il vous reste ", stage.exercises.length - stage.exercises.filter((e) => doneSet.has(idExercice(e))).length, " exercice", stage.exercises.length - stage.exercises.filter((e) => doneSet.has(idExercice(e))).length > 1 ? "s" : "", " à cocher. Vous pouvez continuer sans les faire.")),
-                // Le stade du jour est boucl\u00e9 : on recueille la douleur pendant que la s\u00e9ance
-                // est fra\u00eeche, plut\u00f4t que de la reconstituer \u00e0 la consultation suivante.
-                // Les deux nombres doivent parler du même ensemble : les coches d'un parcours par
-                // zone couvrent toutes ses étapes, pas la seule affichée.
-                bilanDeFin(key, stage.exercises, doneSet, ACCENT, false))));
+                )));
     }
     if (view === "complete") {
         // Le nombre d'étapes varie selon le parcours : 3 pour les arthroses, 6 après une
