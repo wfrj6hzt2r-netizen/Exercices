@@ -116,6 +116,12 @@ const MUTATIONS = [
         (s) => rem(s, "const GLOSSARY = {\n",
                       "const GLOSSARY = {\n    \"sous-acromial\": \"Sous l'arche osseuse de l'épaule.\",\n")],
 
+    // La cheville revient à son ancien rayon : sa pastille retombe à 27 px et son libellé,
+    // ramené à la hauteur d'avant, recouvre celui du pied.
+    ["chaque repère du corps atteint la cible tactile minimale",
+        (s) => rem(s, 'id: "cheville", label: "Cheville", cx: 116.4, cy: 506.7, labelX: 62, labelY: 490, anchor: "end", hit: 16',
+                      'id: "cheville", label: "Cheville", cx: 116.4, cy: 506.7, labelX: 62, labelY: 536, anchor: "end", hit: 15')],
+
     ["la vignette de l'accueil est bien l'icône installée",
         (s) => {
             const marque = 'const LOGO = "data:image/png;base64,';

@@ -252,7 +252,9 @@ try {
         "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
         "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
         "SANS_REPERE_EFFORT",
-        "REPERE_EFFORT_TU"]);
+        "REPERE_EFFORT_TU",
+        "REALISTIC_MARKERS", "LIBELLE_CIBLE_H", "LIBELLE_CIBLE_MARGE",
+        "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2"]);
 } catch (e) {
     panne = e.message;
 }
@@ -567,6 +569,45 @@ controle("la vignette de l'accueil est bien l'icône installée", () => {
     const fichier = readFileSync(join(RACINE, "icon-192.png"));
     if (embarquee.equals(fichier)) return [];
     return [`la vignette (${embarquee.length} octets) diffère de icon-192.png (${fichier.length} octets)`];
+});
+
+// Le sélecteur de zone est le premier écran du parcours, et ses dix repères étaient tous
+// sous les 44 px de cible tactile minimale — jusqu'à 25,6 px pour la cheville et le pied.
+// Une patiente de soixante-douze ans a désigné, sans connaître un seul de ces chiffres, les
+// deux paires qui se touchaient presque. Le contrôle mesure ce que le doigt rencontre
+// vraiment : le dessin fait 400 unités de viewBox pour 342 px à l'écran d'un iPhone, une
+// unité vaut donc 0,855 px. Chaque repère doit atteindre 44 px par sa pastille ou par son
+// libellé, et aucune cible ne doit en recouvrir une autre : une cible qui mord sur sa
+// voisine ouvre la mauvaise zone, ce qui est pire que d'être trop petite.
+controle("chaque repère du corps atteint la cible tactile minimale", () => {
+    const LARGEUR_RENDUE = 342, LARGEUR_VUE = 400, MINIMUM = 44;
+    const u = LARGEUR_RENDUE / LARGEUR_VUE;
+    const M = D.REALISTIC_MARKERS;
+    const boite = (m) => {
+        const largeur = m.label.length * D.LIBELLE_LARGEUR_CAR + D.LIBELLE_CIBLE_MARGE;
+        const x = m.anchor === "start" ? m.labelX - 12 : m.labelX - largeur + 12;
+        const x1 = Math.max(D.VUE_X1, x), x2 = Math.min(D.VUE_X2, x + largeur);
+        return { x1, x2, y1: m.labelY - D.LIBELLE_CIBLE_H / 2, y2: m.labelY + D.LIBELLE_CIBLE_H / 2 };
+    };
+    const fautes = [];
+    for (const m of M) {
+        const b = boite(m);
+        const pastille = 2 * m.hit * u;
+        const libelle = Math.min((b.x2 - b.x1) * u, D.LIBELLE_CIBLE_H * u);
+        if (pastille < MINIMUM && libelle < MINIMUM)
+            fautes.push(`${m.id} : pastille ${pastille.toFixed(1)} px, libell\u00e9 ${libelle.toFixed(1)} px, `
+                + `aucun n'atteint ${MINIMUM} px`);
+    }
+    for (let i = 0; i < M.length; i++)
+        for (let j = i + 1; j < M.length; j++) {
+            const d = Math.hypot(M[i].cx - M[j].cx, M[i].cy - M[j].cy);
+            if (d < M[i].hit + M[j].hit)
+                fautes.push(`les pastilles de ${M[i].id} et ${M[j].id} se recouvrent`);
+            const a = boite(M[i]), b = boite(M[j]);
+            if (a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2)
+                fautes.push(`les libell\u00e9s de ${M[i].id} et ${M[j].id} se recouvrent`);
+        }
+    return fautes;
 });
 
 // --- Restitution ----------------------------------------------------------------------
