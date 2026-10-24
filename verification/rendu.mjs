@@ -535,6 +535,59 @@ async function ouvrir(ctx, hash) {
     noter("les signes d'alerte ne paraissent qu'à l'accueil, une fois par jour", out);
 }
 
+// --- 9. Le relevé de douleur n'invente aucune valeur ---------------------------------
+// Le curseur partait à 2 sur 10. Un patient qui touchait « Enregistrer » sans y poser le
+// doigt transmettait un 2 qu'il n'avait jamais dit, et rien ne distinguait cette mesure
+// d'une vraie. Une donnée clinique inventée est pire qu'une donnée absente : on ne peut
+// pas la rattraper, parce qu'on ne sait pas qu'elle manque.
+{
+    const out = [];
+    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+    const { p } = await ouvrir(ctx, "#/z/genou/entorse/e1");
+    await p.waitForTimeout(500);
+    // Le bilan ne paraît qu'une fois l'étape entièrement cochée. On vise l'état plutôt que
+    // le libellé : le nom accessible du bouton est composé par « aria-labelledby » à partir
+    // du nom de l'exercice et de son état, et ne se cherche donc pas par son seul texte.
+    for (let i = 0; i < 12; i++) {
+        const b = p.locator('[role="switch"][aria-checked="false"]').first();
+        if (!(await b.count()))
+            break;
+        await b.click({ force: true });
+        await p.waitForTimeout(150);
+    }
+    await p.waitForTimeout(600);
+    if (!(await p.getByText(/Séance terminée/).first().count())) {
+        out.push("le bilan de fin d'étape ne paraît pas une fois tous les exercices cochés");
+    }
+    else {
+        const corps = await p.locator("main").innerText();
+        if (!/— \/ 10/.test(corps))
+            out.push("le curseur affiche une valeur avant d'avoir été touché : "
+                + (corps.match(/\d+ \/ 10/) || ["introuvable"])[0]);
+        const bouton = p.getByRole("button", { name: "Enregistrer" }).first();
+        if (!(await bouton.count()))
+            out.push("le bouton « Enregistrer » est introuvable sur le bilan");
+        else if (!(await bouton.isDisabled()))
+            out.push("« Enregistrer » est actif alors qu'aucune douleur n'a été indiquée");
+        // Curseur déplacé : la note s'affiche, et l'enregistrement s'ouvre.
+        await p.locator("input[type=range]").first().evaluate((el) => {
+            const poser = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+            poser.call(el, "6");
+            el.dispatchEvent(new Event("input", { bubbles: true }));
+            el.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        await p.waitForTimeout(400);
+        if (!/6 \/ 10/.test(await p.locator("main").innerText()))
+            out.push("la note ne s'affiche pas après déplacement du curseur");
+        const apres = p.getByRole("button", { name: "Enregistrer" }).first();
+        if ((await apres.count()) && (await apres.isDisabled()))
+            out.push("« Enregistrer » reste inactif alors que la douleur a été indiquée");
+    }
+    await p.close();
+    await ctx.close();
+    noter("le relevé de douleur n'invente aucune valeur", out);
+}
+
 await navigateur.close();
 serveur.close();
 
