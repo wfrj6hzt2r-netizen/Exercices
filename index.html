@@ -5335,6 +5335,19 @@ function SignauxDuJour({ items, montrer, onVue }) {
 function urgenceDe(zone, blessure) {
     return URGENCES[zone + ":" + blessure] || URGENCES[zone];
 }
+// Le journal compte une journée dès qu'un seul exercice est coché : c'est déjà la règle du
+// code, elle n'était écrite nulle part. Un patient fatigué lit « souvent quotidien », en
+// conclut qu'un soir sauté est un échec, et le lendemain rouvrir coûte plus cher que la
+// veille. La phrase ne paraît que tant que rien n'est coché dans l'étape : une fois
+// commencé, elle n'a plus rien à dire.
+function MinimumDuJour({ rienDeFait, tutoie }) {
+    if (!rienDeFait)
+        return null;
+    return React.createElement("p", { className: "text-xs leading-relaxed", style: { color: INK_DOUX } },
+        tutoie
+            ? "Pas le temps, ou pas l'envie ce soir\u00A0? Un seul exercice suffit \u00E0 compter la journ\u00E9e. C'est mieux qu'un soir saut\u00E9."
+            : "Pas le temps, ou pas l'envie ce soir\u00A0? Un seul exercice suffit \u00E0 compter la journ\u00E9e\u00A0: c'est ce que retient votre suivi, et c'est mieux qu'un soir saut\u00E9.");
+}
 function BandeauUrgence({ texte }) {
     if (!texte)
         return null;
@@ -6160,12 +6173,17 @@ function GuidedJourney() {
             // Le moment de l'abandon. Après quelques jours sans rien, l'application affichait le
             // même écran qu'au premier jour ; elle dit maintenant ce qu'elle voit, sans reproche,
             // et propose la plus petite reprise possible plutôt que la séance entière.
-            !searching && absence !== null && absence >= 4 && (React.createElement("div", { className: "px-6 pb-5" },
+            // Le seuil était à quatre jours : deux soirs sautés ne disaient rien, et c'est
+            // pourtant là que le patient décroche — « rouvrir après un soir sauté est plus dur
+            // que le premier soir ». Un mot dès deux jours, sans reproche.
+            !searching && absence !== null && absence >= 2 && (React.createElement("div", { className: "px-6 pb-5" },
                 React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.22)" } },
                     React.createElement("p", { className: "text-sm text-white leading-relaxed" },
                         absence >= 21
                             ? "Cela fait quelques semaines. Reprendre après une interruption est la règle, pas l'exception : recommencez à l'étape où vous vous sentez, quitte à revenir en arrière."
-                            : "Pas d'exercices depuis " + absence + " jours. Ce n'est pas grave, et ce n'est pas perdu : dix minutes aujourd'hui valent mieux qu'une séance parfaite la semaine prochaine.")))),
+                            : absence >= 4
+                                ? "Pas d'exercices depuis " + absence + " jours. Ce n'est pas grave, et ce n'est pas perdu : dix minutes aujourd'hui valent mieux qu'une séance parfaite la semaine prochaine."
+                                : absence + " jours sans exercices, ça arrive à tout le monde. Un seul aujourd'hui suffit à repartir.")))),
             // La meme carte sert dans les deux cas, mais elle ne dit pas la meme chose : « reprendre
             // ou vous en etiez » pour un parcours choisi, « envoye par votre kinesitherapeute le … »
             // pour un programme prescrit. La date evite qu'un programme ancien passe pour actuel.
@@ -6498,7 +6516,8 @@ function GuidedJourney() {
                     effort: repereEffort(e, true), tutoie: true,
                     pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
                 });
-            })),
+            }),
+                React.createElement(MinimumDuJour, { tutoie: true, rienDeFait: st.exercises.every((e) => !faits.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 st.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: CROISSANCE_FOND } },
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: CROISSANCE_ACCENT, letterSpacing: "0.08em" } }, "Tu peux passer à la suite quand"),
@@ -6634,6 +6653,7 @@ function GuidedJourney() {
                         onNoterCharge: (v) => setCharges((c) => noterCharge(c, runnerKey, exId, jour, v)),
                     });
                 }),
+                React.createElement(MinimumDuJour, { rienDeFait: runnerStage.exercises.every((e) => !runnerDoneSet.has(idExercice(e))) }),
                 runnerStage.plan && (React.createElement("div", { className: "rounded-2xl p-5 mt-2", style: { backgroundColor: ACCENT_PALE, border: `1px solid ${ACCENT_CALENDRIER}` } },
                     React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, "Plan de reprise de la course"),
                     React.createElement("p", { className: "text-xs mt-1 mb-3 leading-relaxed", style: { color: INK_DOUX } }, "Progression indicative. Ne passez \u00E0 la semaine suivante que si la douleur du lendemain reste stable \u2014 sinon, restez une semaine de plus au m\u00EAme palier."),
@@ -6765,7 +6785,8 @@ function GuidedJourney() {
                     chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
                     onNoterCharge: (v) => setCharges((c) => noterCharge(c, prevKey, exId, jour, v)),
                 });
-            })),
+            }),
+                React.createElement(MinimumDuJour, { rienDeFait: sub.exercises.every((e) => !prevDoneSet.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 bilanDeFin(prevKey, sub.exercises, prevDoneSet, totalCount, ACCENT, false),
                 React.createElement("div", { className: "flex justify-between" },
@@ -6863,7 +6884,8 @@ function GuidedJourney() {
                     chargePrecedente: chargePrecedente(charges, key, exId, jour),
                     onNoterCharge: (v) => setCharges((c) => noterCharge(c, key, exId, jour, v)),
                 });
-            })),
+            }),
+                React.createElement(MinimumDuJour, { rienDeFait: stage.exercises.every((e) => !doneSet.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 // Un stade sans critère de sortie mesurable n'est qu'un calendrier déguisé.
                 // Le critère s'affiche là où la décision se prend, au-dessus du bouton.
