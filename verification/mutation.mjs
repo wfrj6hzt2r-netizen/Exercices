@@ -51,9 +51,13 @@ const MUTATIONS = [
         (s) => rem(s, 'className: "w-full max-w-[342px] mx-auto"',
                       'className: "w-full max-w-[342px] mx-auto pb-42"')],
 
+    // La carte du mannequin portait son blanc en clair dans le style : elle le tient
+    // maintenant d'un jeton, et la mutation vise donc un autre point d'entrée. On remplace
+    // ici une référence de palette par une couleur écrite en dur, ce que le contrôle refuse
+    // où qu'elle se trouve.
     ["aucune couleur hors de la palette",
-        (s) => rem(s, 'className: "rounded-3xl px-1 py-3", style: { backgroundColor: "#FFFFFF" }',
-                      'className: "rounded-3xl px-1 py-3", style: { backgroundColor: "#AB12CD" }')],
+        (s) => rem(s, 'React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE',
+                      'React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: "#AB12CD"')],
 
     ["aucun emoji couleur dans l'interface",
         (s) => rem(s, '"Une derni\\u00E8re question"', '"Une derni\\u00E8re question \u{1F9B4}"')],
