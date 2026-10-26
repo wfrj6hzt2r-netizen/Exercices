@@ -307,7 +307,7 @@ Le bandeau bleu nuit ne bascule pas — il est déjà sombre, c'est l'identité 
 et les soixante-dix-huit blancs translucides posés dessus restent donc valides. Ce qui
 bascule, c'est la zone de contenu : fond de page, cartes, texte, filets, voiles de couleur. */
 :root{
-  --page:#F5F8FA; --surface:#FFFFFF; --bordure:#E4E6F0; --bordure-douce:#EAEFF2;
+  --page:#F5F8FA; --surface:#FFFFFF;--carte-figure:#FFFFFF; --bordure:#E4E6F0; --bordure-douce:#EAEFF2;
   --encre:#0F172A; --encre-prose:#3F4759; --encre-doux:#5F6478;
   --accent:#4F7A5E; --accent-fort:#345940; --accent-soft:#8FBFA1;
   --accent-voile:#E4EEE6; --accent-pale:#EDF2F0; --accent-eteint:#9FB6A6;
@@ -322,7 +322,7 @@ bascule, c'est la zone de contenu : fond de page, cartes, texte, filets, voiles 
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --page:#0B1621; --surface:#16232F; --bordure:#27343F; --bordure-douce:#1F2C37;
+    --page:#0B1621; --surface:#16232F;--carte-figure:#E6E1DA; --bordure:#27343F; --bordure-douce:#1F2C37;
     --encre:#E8EFF4; --encre-prose:#C3CED8; --encre-doux:#97A5B2;
     --accent:#4F7A5E; --accent-fort:#93C4A5; --accent-soft:#8FBFA1;
     --accent-voile:#1D3327; --accent-pale:#1A2922; --accent-eteint:#5C7768;
@@ -361,7 +361,7 @@ Tout est annulé si le système demande à réduire les animations. */
 .apparition{animation:apparition .18s cubic-bezier(.2,.7,.3,1) both}
 @keyframes coche-ressort{0%{transform:scale(.55)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
 .coche-ressort{animation:coche-ressort .28s cubic-bezier(.2,.8,.2,1)}
-/* La réglette de douleur. La poignée native d'iOS mesure environ 23 px sur 16 et la piste 6 : trop fin pour une main âgée, qui vise alors à côté et fait sauter la note de deux à cinq. On la porte à 28 px dans une zone tactile de 44, et la couleur suit « currentColor », posé par le palier de douleur. */.reglette{-webkit-appearance:none;appearance:none;background:transparent;min-height:44px;padding:0}.reglette::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface);margin-top:-11px}.reglette::-moz-range-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface)}.reglette:focus-visible{outline:2px solid var(--accent-fort);outline-offset:4px;border-radius:8px}@media(prefers-reduced-motion:reduce){.apparition,.coche-ressort{animation:none}}/* Impression du récapitulatif : le patient l'enregistre en PDF depuis l'aperçu et l'envoie à son kinésithérapeute, au lieu de lui tendre son téléphone. Le bandeau bleu nuit s'éclaircit — il gaspillerait l'encre et rendrait le texte blanc invisible — et les couleurs du calendrier et des pastilles de douleur sont forcées, car elles portent l'information. */@media print{/* Le papier est blanc quel que soit le thème du téléphone : les variables reprennent leurs valeurs claires avant toute autre règle d'impression. */:root{--page:#fff;--surface:#fff;--bordure:#E4E6F0;--bordure-douce:#EAEFF2;--encre:#0F172A;--encre-prose:#3F4759;--encre-doux:#5F6478;--accent:#4F7A5E;--accent-fort:#345940;--accent-voile:#E4EEE6;--accent-pale:#EDF2F0;--accent-calendrier:#BBD3C2;--accent-attente:rgba(79,122,94,0.14);--warn:#9F1239;--warn-voile:#FDE4E9;--warn-filet:#F4B8C4;--prudence:#8F3517;--prudence-voile:#FBEDE7;--prudence-filet:#F0CDBD;--badge-coureur:#DBEAFE;--badge-coureur-texte:#1D4ED8;--badge-prevention:#F3E8FB;--badge-prevention-texte:#7B3FA8;--croissance-accent:#8A5D18;--croissance-fond:#F6EEDD;--croissance-sur-accent:#fff;--ombre-carte:none}@page{margin:14mm}html,body{background:#fff!important}body{padding:0!important}.sans-impression{display:none!important}.pour-impression{display:block!important}.bandeau-sombre,.bandeau-sombre *{background-color:#fff!important;color:#0F172A!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}#root>div{max-width:none!important}.min-h-screen{min-height:0!important;background-color:#fff!important}article,.rounded-2xl{break-inside:avoid}}.pour-impression{display:none}#loader{min-height:100vh;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-family:-apple-system,Arial,sans-serif;font-size:14px}
+/* La réglette de douleur. La poignée native d'iOS mesure environ 23 px sur 16 et la piste 6 : trop fin pour une main âgée, qui vise alors à côté et fait sauter la note de deux à cinq. On la porte à 28 px dans une zone tactile de 44, et la couleur suit « currentColor », posé par le palier de douleur. */.reglette{-webkit-appearance:none;appearance:none;background:transparent;min-height:44px;padding:0}.reglette::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface);margin-top:-11px}.reglette::-moz-range-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface)}.reglette:focus-visible{outline:2px solid var(--accent-fort);outline-offset:4px;border-radius:8px}.carte-mannequin{background-color:var(--carte-figure)}.carte-mannequin image{mix-blend-mode:multiply}@media print{.carte-mannequin{background-color:#fff}.carte-mannequin image{mix-blend-mode:normal}}@media(prefers-reduced-motion:reduce){.apparition,.coche-ressort{animation:none}}/* Impression du récapitulatif : le patient l'enregistre en PDF depuis l'aperçu et l'envoie à son kinésithérapeute, au lieu de lui tendre son téléphone. Le bandeau bleu nuit s'éclaircit — il gaspillerait l'encre et rendrait le texte blanc invisible — et les couleurs du calendrier et des pastilles de douleur sont forcées, car elles portent l'information. */@media print{/* Le papier est blanc quel que soit le thème du téléphone : les variables reprennent leurs valeurs claires avant toute autre règle d'impression. */:root{--page:#fff;--surface:#fff;--bordure:#E4E6F0;--bordure-douce:#EAEFF2;--encre:#0F172A;--encre-prose:#3F4759;--encre-doux:#5F6478;--accent:#4F7A5E;--accent-fort:#345940;--accent-voile:#E4EEE6;--accent-pale:#EDF2F0;--accent-calendrier:#BBD3C2;--accent-attente:rgba(79,122,94,0.14);--warn:#9F1239;--warn-voile:#FDE4E9;--warn-filet:#F4B8C4;--prudence:#8F3517;--prudence-voile:#FBEDE7;--prudence-filet:#F0CDBD;--badge-coureur:#DBEAFE;--badge-coureur-texte:#1D4ED8;--badge-prevention:#F3E8FB;--badge-prevention-texte:#7B3FA8;--croissance-accent:#8A5D18;--croissance-fond:#F6EEDD;--croissance-sur-accent:#fff;--ombre-carte:none}@page{margin:14mm}html,body{background:#fff!important}body{padding:0!important}.sans-impression{display:none!important}.pour-impression{display:block!important}.bandeau-sombre,.bandeau-sombre *{background-color:#fff!important;color:#0F172A!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}#root>div{max-width:none!important}.min-h-screen{min-height:0!important;background-color:#fff!important}article,.rounded-2xl{break-inside:avoid}}.pour-impression{display:none}#loader{min-height:100vh;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-family:-apple-system,Arial,sans-serif;font-size:14px}
 /* Sur écran large, l'interface reste une colonne : sans cela elle s'étire sur toute la largeur. */
 @media(min-width:560px){#root>div{max-width:480px;margin-left:auto;margin-right:auto}}</style></head><body><div id="root"><div id="loader">Chargement de vos exercices…</div></div><noscript><div style="padding:32px;color:#fff;font-family:Arial,sans-serif"><p>Cette application a besoin de JavaScript pour fonctionner.</p><p>Activez-le dans les réglages de votre navigateur, puis rechargez la page.</p></div></noscript><script>(function(){if(typeof React==="undefined"||typeof ReactDOM==="undefined"){document.getElementById("loader").innerHTML="Impossible de charger l'application.<br>Rechargez la page ; si le message revient, prévenez votre kinésithérapeute.";return;}try{"use strict";
 const { useState, useEffect } = React;
@@ -5247,8 +5247,12 @@ function BandeAssiduite({ journal, jour, accent }) {
             const [a, m, d] = j.jour.split("-").map(Number);
             const initiale = INITIALES_JOURS[new Date(a, m - 1, d).getDay()];
             return (React.createElement("div", { key: j.jour, className: "flex flex-col items-center gap-1", style: { flex: 1 } },
-                React.createElement("div", { className: "w-full rounded-full", style: {
-                        height: 26,
+                // Hautes de 26 px, pleines et arrondies en pilule, ces sept pastilles avaient
+                // la forme de boutons sans en être : deux relecteurs ont dit ne pas savoir si
+                // l'on pouvait appuyer dessus, et n'avoir donc pas essayé. Plus basses et à
+                // peine arrondies, elles redeviennent les barres d'un graphique.
+                React.createElement("div", { className: "w-full", style: {
+                        height: 14, borderRadius: 4,
                         backgroundColor: j.faits > 0 ? accent : "rgba(255,255,255,0.14)",
                         border: j.estAujourdhui ? "2px solid rgba(255,255,255,0.9)" : "1.5px solid transparent",
                     }, title: j.faits > 0 ? `${j.faits} exercice${j.faits > 1 ? "s" : ""}` : "aucun exercice" }),
@@ -6152,7 +6156,11 @@ function GuidedJourney() {
                     "Ce programme complète le suivi de votre kinésithérapeute, il ne le remplace pas.",
                     "Une gêne légère peut être normale. Arrêtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et prévenez votre kinésithérapeute.",
                     "En cas de doute, de douleur inhabituelle ou d'aggravation, contactez votre kinésithérapeute avant de continuer.",
-                ].map((txt, i) => (React.createElement("div", { key: i, className: "rounded-2xl p-4", style: { backgroundColor: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.2)" } },
+                // Fond plein, bordure, coins arrondis : sur un écran dont le seul bouton est en bas,
+                // ces trois encadrés se lisaient comme trois boutons, et deux relecteurs ont
+                // dit avoir eu envie d'appuyer dessus. Un filet à gauche les tient ensemble
+                // sans promettre un geste.
+                ].map((txt, i) => (React.createElement("div", { key: i, className: "px-4", style: { borderLeft: "2px solid rgba(255,255,255,0.32)" } },
                     React.createElement("p", { className: "text-sm text-white leading-relaxed" }, txt)))))),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
                 // Le troisième encadré demande de contacter le kinésithérapeute : autant en
@@ -6341,7 +6349,7 @@ function GuidedJourney() {
                                 React.createElement("p", { className: "text-sm font-medium text-white" }, "Voir tous les programmes"),
                                 React.createElement("p", { className: "text-xs mt-0.5", style: { color: "rgba(255,255,255,0.75)" } },
                                     "Une autre douleur, la course \u00E0 pied, la pr\u00E9vention")),
-                            React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: ACCENT_SOFT } })))
+                            React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_SOFT } })))
                     : React.createElement(React.Fragment, null,
                     // Le dessin n'est pas réduit : ses zones sensibles font déjà 38 px de haut,
                     // sous le minimum tactile confortable. La place se gagne donc sur les marges,
@@ -6353,7 +6361,19 @@ function GuidedJourney() {
                         // Marge horizontale resserrée : le cadre du dessin porte déjà sa propre marge, et
                         // la place ainsi rendue évite que le mannequin — et donc ses cibles — rapetisse
                         // sur un écran de 390 px.
-                        React.createElement("div", { className: "rounded-3xl px-1 py-3", style: { backgroundColor: "#FFFFFF" } },
+                        // Le mannequin est un WebP compressé avec perte et sans couche alpha :
+                        // un rectangle blanc opaque, bordé du bruit de compression que deux
+                        // relecteurs ont décrit séparément — « des taches grises derrière la tête »,
+                        // « une image mal découpée ». Le fichier d'origine n'existe plus : détourer
+                        // le blanc à partir du fichier compressé changerait le bruit en liséré
+                        // franc, donc en pire.
+                        //
+                        // La fusion « multiply » règle les deux d'un coup : le blanc n'y laisse
+                        // passer que la carte, donc le fond du fichier et son bruit se fondent
+                        // dans la surface, pendant que la figure garde ses tons. La carte peut
+                        // alors quitter le blanc pur, qui éblouissait à 22 h dans un thème fait
+                        // pour reposer les yeux.
+                        React.createElement("div", { className: "rounded-3xl px-1 py-3 carte-mannequin" },
                             React.createElement(RealisticSelector, { onSelect: selectZone })),
                         React.createElement("p", { className: "text-xs text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez la zone qui vous g\u00EAne, ou son nom \u00E0 c\u00F4t\u00E9."),
                         // Cette phrase ne vivait que sur l'écran suivant, celui des types de
@@ -6362,7 +6382,7 @@ function GuidedJourney() {
                         // avant qu'on lui dise de ne pas le faire. Elle est ici au moment où elle
                         // sert, c'est-à-dire avant le premier choix.
                         React.createElement("p", { className: "text-xs text-center mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.55)" } },
-                            "Si votre kin\u00E9sith\u00E9rapeute vous a envoy\u00E9 un lien, suivez-le plut\u00F4t que de choisir ici.")),
+                            "Si votre kin\u00E9sith\u00E9rapeute vous a envoy\u00E9 un lien, il vous m\u00E8ne directement au bon endroit.")),
                     // Les trois voies d'accès n'étaient pas trois propositions concurrentes mais une
                     // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
                     // carte à trois rangs, elles disent cela, et rendent une centaine de pixels.
@@ -6386,7 +6406,7 @@ function GuidedJourney() {
                                 React.createElement("div", { className: "min-w-0" },
                                     React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, voie.titre),
                                     React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
-                                React.createElement(ChevronRight, { size: 18, className: "shrink-0", style: { color: voie.teinte } }))))))),
+                                React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: voie.teinte } }))))))),
                 React.createElement("div", { className: "px-6 pb-10" },
                     canSave ? (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "text-[11px] leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
                     // Effacer sa progression est une action, pas une note de bas de page. Au même
@@ -6411,9 +6431,7 @@ function GuidedJourney() {
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de zone"),
                 React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, pathology.label),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quel est le type de blessure ?"),
-                React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
-                    "Si votre kinésithérapeute vous a envoyé un lien, suivez-le plutôt que de choisir ici : il ouvre directement le parcours qu'il a retenu pour vous.")),
+                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quel est le type de blessure ?")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 // Un intertitre s'insère quand le champ « groupe » change d'un parcours au
                 // suivant. Les zones qui n'en déclarent pas s'affichent exactement comme avant.
@@ -6423,7 +6441,7 @@ function GuidedJourney() {
                     React.createElement("div", null,
                         React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, inj.label),
                         React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, inj.desc)),
-                    React.createElement(ChevronRight, { size: 18, style: { color: ACCENT_FORT } }))))),
+                    React.createElement(ChevronRight, { size: 20, style: { color: ACCENT_FORT } }))))),
                 React.createElement("p", { className: "text-xs text-[#6B7086] px-1 mt-2 leading-relaxed" }, "Vous h\u00E9sitez entre deux descriptions, ou aucune ne correspond vraiment ? Choisissez celle qui s'en rapproche le plus, ou demandez \u00E0 votre kin\u00E9sith\u00E9rapeute avant de continuer."))));
     }
     if (view === "checkin") {
@@ -6441,20 +6459,32 @@ function GuidedJourney() {
                         : injury.checkinKind === "phase"
                             ? "Où en êtes-vous dans l'évolution ?"
                             : "Où en êtes-vous dans votre récupération ?"),
-                injury.context && (React.createElement("p", { className: "text-xs mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, injury.context))),
+                ),
             React.createElement(BandeauUrgence, { texte: urgenceDe(pathId, injuryId) }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 injury.surgical || injury.checkinKind === "binary" || injury.checkinKind === "phase"
-                    ? injury.stages.map((s, si) => (React.createElement("button", { key: s.label, onClick: () => { setStageIdx(si); setView("stage"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
-                        React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, s.sub),
-                        React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, s.label))))
+                    // Ces cartes n'avaient pas de chevron, alors que celles de l'écran
+                    // précédent en portent un : rien ne disait qu'elles se touchent. Le même
+                    // repère qu'ailleurs, au même calibre.
+                    ? injury.stages.map((s, si) => (React.createElement("button", { key: s.label, onClick: () => { setStageIdx(si); setView("stage"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between gap-3", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        React.createElement("div", { className: "min-w-0" },
+                            React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, s.sub),
+                            React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, s.label)),
+                        React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_FORT } }))))
                     : CHECKIN_OPTIONS.map((opt) => (React.createElement("button", { key: opt.title, onClick: () => {
                             const idx = Math.round(opt.fraction * (injury.stages.length - 1));
                             setStageIdx(idx);
                             setView("stage");
-                        }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
-                        React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, opt.title),
-                        React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, opt.detail)))),
+                        }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between gap-3", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        React.createElement("div", { className: "min-w-0" },
+                            React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, opt.title),
+                            React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, opt.detail)),
+                        React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_FORT } })))),
+                // Neuf lignes se tenaient entre la question et ses réponses, et il fallait les
+                // traverser ou les sauter pour répondre — avec, au milieu, le mot « chirurgie »
+                // juste avant de choisir. Le texte n'a pas changé : il a changé de place, et
+                // passe derrière les réponses, là où il informe sans barrer le chemin.
+                injury.context && React.createElement("p", { className: "text-xs px-1 mt-2 leading-relaxed", style: { color: INK_PROSE } }, injury.context),
                 React.createElement("p", { className: "text-xs text-[#6B7086] px-1 mt-2 leading-relaxed" }, injury.surgical
                     ? "Pas sûr de la période exacte ? Choisissez celle qui s'en rapproche le plus, ou demandez à votre chirurgien / kinésithérapeute."
                     : injury.checkinKind === "binary"
@@ -6479,7 +6509,11 @@ function GuidedJourney() {
                 // Sur papier, la feuille doit dire de qui elle vient et de quand elle date.
                 React.createElement("p", { className: "pour-impression text-[11px] mb-2", style: { color: INK_DOUX } },
                     PRATICIEN + " \u00B7 " + PRATICIEN_TITRE + " \u2014 imprim\u00E9 le " + jjmm(aujourdHui())),
-                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Pour votre kin\u00E9sith\u00E9rapeute"),
+                // L'étiquette disait à qui la page s'adresse, le titre parlait à la première
+                // personne du patient : « je ne sais plus qui parle ». Les deux voix tenaient
+                // dans huit centimètres. Le titre reste celui du patient — c'est lui qui l'a
+                // fait, et la feuille imprimée porte déjà le nom du praticien en tête.
+                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "\u00C0 montrer en s\u00E9ance"),
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Ce que j'ai fait"),
                 React.createElement("p", { className: "text-sm mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } },
                     joursTravailles === 0
@@ -6707,7 +6741,7 @@ function GuidedJourney() {
                         React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, path.label),
                         React.createElement("p", { className: "text-[11px] mt-0.5", style: { color: ACCENT_FORT } }, path.alias),
                         React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, path.desc)),
-                    React.createElement(ChevronRight, { size: 18, style: { color: ACCENT_FORT }, className: "shrink-0" })))),
+                    React.createElement(ChevronRight, { size: 20, style: { color: ACCENT_FORT }, className: "shrink-0" })))),
                 React.createElement("p", { className: "text-xs text-[#6B7086] px-1 mt-2 leading-relaxed" }, "Une douleur tr\u00E8s localis\u00E9e sur un point pr\u00E9cis de l'os, qui s'aggrave \u00E0 chaque sortie, doit faire consulter avant toute reprise : elle peut \u00E9voquer une fracture de fatigue."))));
     }
     if (view === "runner-stage-select") {
@@ -6726,7 +6760,7 @@ function GuidedJourney() {
                     React.createElement("div", null,
                         React.createElement("p", { className: "text-[11px]", style: { color: ACCENT_FORT } }, st.sub),
                         React.createElement("p", { className: "text-[#0F172A] text-base font-medium mt-0.5" }, st.label)),
-                    React.createElement(ChevronRight, { size: 18, style: { color: ACCENT_FORT }, className: "shrink-0" })))),
+                    React.createElement(ChevronRight, { size: 20, style: { color: ACCENT_FORT }, className: "shrink-0" })))),
                 React.createElement("p", { className: "text-xs text-[#6B7086] px-1 mt-2 leading-relaxed" }, "Dans le doute, commencez au stade 1 : vous avancerez vite s'il est trop facile."))));
     }
     if (view === "runner-exercises") {
@@ -6859,7 +6893,7 @@ function GuidedJourney() {
                 React.createElement("div", null,
                     React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, cat.title),
                     React.createElement("p", { className: "text-xs mt-1 text-[#6B7086]" }, cat.detail)),
-                React.createElement(ChevronRight, { size: 18, style: { color: ACCENT_FORT } })))))));
+                React.createElement(ChevronRight, { size: 20, style: { color: ACCENT_FORT } })))))));
     }
     if (view === "prevention-sub") {
         const category = PREVENTION_CATEGORIES.find((c) => c.id === preventionCategory);
@@ -6872,7 +6906,7 @@ function GuidedJourney() {
                 React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, category.title)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" }, Object.entries(category.data).map(([id, sub]) => (React.createElement("button", { key: id, onClick: () => { setPreventionSub(id); setView("prevention-exercises"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                 React.createElement("p", { className: "text-[#0F172A] text-base font-medium" }, sub.label),
-                React.createElement(ChevronRight, { size: 18, style: { color: ACCENT_FORT } })))))));
+                React.createElement(ChevronRight, { size: 20, style: { color: ACCENT_FORT } })))))));
     }
     if (view === "prevention-exercises") {
         const category = PREVENTION_CATEGORIES.find((c) => c.id === preventionCategory);
@@ -7087,22 +7121,48 @@ function GuidedJourney() {
         // reconstruction du croisé ou une suture méniscale. Il ne peut pas être écrit en dur.
         const nbEtapes = (injury === null || injury === void 0 ? void 0 : injury.stages.length) || 0;
         const toutValide = !!(injury && injury.stages.every((s) => stageComplete(s)));
-        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-16" },
-                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours termin\u00E9"),
+        // « justify-between » poussait le pied de page tout en bas : deux tiers d'écran
+        // vides entre le texte et le bouton. Ce qui suit la phrase la prolonge, et se
+        // place donc à sa suite.
+        return (React.createElement("div", { className: "min-h-screen flex flex-col", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+            React.createElement("div", { className: "px-6 pt-10" },
+                // Le nom du parcours remonte en étiquette, comme sur l'écran des blessures : dans
+                // le titre et entre guillemets, il « sonnait comme un formulaire rempli par
+                // une machine ».
+                React.createElement("p", { className: "text-[11px] tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } },
+                    (injury === null || injury === void 0 ? void 0 : injury.label) || "Parcours termin\u00E9"),
                 // Le titre félicitait dans les deux cas, et c'est la phrase en dessous, trois
                 // fois plus petite, qui corrigeait : « sans tout valider en cours de route ». Un
                 // patient qui a traversé le parcours sans rien cocher se trouvait grondé et
                 // flatté en même temps, sans savoir lequel des deux croire. Le titre dit donc
                 // ce qui s'est passé, et le bravo est gardé pour ce qui le mérite.
                 React.createElement("h1", { className: "text-white text-3xl mt-3 font-medium leading-tight" },
-                    toutValide ? "Bravo pour votre travail sur \u00AB " : "Vous \u00EAtes au bout de \u00AB ",
-                    injury === null || injury === void 0 ? void 0 : injury.label,
-                    " \u00BB."),
+                    // Le nom entre guillemets « sonne comme un formulaire rempli par une
+                    // machine ». Sans eux, la phrase se lit comme une phrase.
+                    toutValide ? "Bravo pour votre travail." : "Vous \u00EAtes au bout du parcours."),
                 React.createElement("p", { className: "text-sm mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, toutValide
                     ? `Vous avez complété les ${nbEtapes} étapes du parcours. Faites le point avec votre kinésithérapeute pour confirmer la suite de votre prise en charge, avant de reprendre une activité complète.`
                     : `Vous avez parcouru les ${nbEtapes} étapes, sans tout valider en cours de route. Reprenez les exercices non cochés quand vous le pourrez, et faites le point avec votre kinésithérapeute sur votre progression.`)),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
+                // Deux tiers d'écran vides, puis un bouton collé tout en bas. Quand il reste
+                // des exercices non cochés, la phrase du haut dit de les reprendre sans dire
+                // lesquels : la place libre sert à les nommer, chacun ramenant à son étape.
+                // Rien à ajouter quand tout est fait — l'écran reste alors sobre, et c'est bien.
+                !toutValide && injury && React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                    React.createElement("p", { className: "text-[11px] font-semibold uppercase px-4 pt-5", style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Ce qu'il reste \u00E0 cocher"),
+                    React.createElement("div", { className: "mt-2 pb-3" }, injury.stages.map((st, si) => {
+                        const restants = st.exercises.filter((e) => !doneSet.has(idExercice(e)));
+                        if (!restants.length)
+                            return null;
+                        return React.createElement("button", { key: st.label,
+                            onClick: () => { setStageIdx(si); setView("stage"); },
+                            className: "cible-44 w-full px-4 flex items-center justify-between gap-3 text-left" },
+                            React.createElement("div", { className: "min-w-0" },
+                                React.createElement("p", { className: "text-sm font-medium", style: { color: INK } }, st.label),
+                                React.createElement("p", { className: "text-xs mt-0.5", style: { color: INK_DOUX } },
+                                    restants.length, " exercice", restants.length > 1 ? "s" : "", " non coch\u00E9", restants.length > 1 ? "s" : "")),
+                            React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_FORT } }));
+                    }))),
                 React.createElement("button", { onClick: () => { setView("zone"); setPathId(null); setInjuryId(null); setStageIdx(0); }, className: "w-full py-3.5 rounded-full text-sm font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
     };
