@@ -131,6 +131,12 @@ const MUTATIONS = [
     ["la fabrique de liens atteint chaque programme",
         (s) => rem(s, 'secondIntitule: "Activit\\u00E9",', 'secondIntitule: "Activit\\u00E9", second: null,')],
 
+    // La carte d'exercice retrouve son ancien retrait : seize là où toutes les autres
+    // cartes bordées en portent vingt.
+    ["les cartes bordées portent le même retrait",
+        (s) => rem(s, 'React.createElement("article", { className: "rounded-2xl p-5 bg-white"',
+                      'React.createElement("article", { className: "rounded-2xl p-4 bg-white"')],
+
     ["la vignette de l'accueil est bien l'icône installée",
         (s) => {
             const marque = 'const LOGO = "data:image/png;base64,';
