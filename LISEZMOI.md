@@ -32,7 +32,7 @@ Envoyer un nouveau lien remplace le précédent.
 | `index.html` | Toute l'application : contenu, écrans, styles, React inclus. Aucune étape de compilation |
 | `sw.js` | Le service worker, qui rend l'ouverture possible sans réseau |
 | `manifest.webmanifest`, `*.png` | L'installation sur l'écran d'accueil |
-| `verification/` | Vingt-quatre contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
+| `verification/` | Vingt-huit contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
 | `.github/workflows/` | Les mêmes contrôles, à chaque modification |
 
 ## Modifier le contenu

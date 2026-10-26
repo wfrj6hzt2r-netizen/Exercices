@@ -254,6 +254,8 @@ try {
         "SANS_REPERE_EFFORT",
         "REPERE_EFFORT_TU",
         "REALISTIC_MARKERS", "LIBELLE_CIBLE_H", "LIBELLE_CIBLE_MARGE",
+        "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
+        "construireRoute", "phasesDe",
         "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2"]);
 } catch (e) {
     panne = e.message;
@@ -608,6 +610,51 @@ controle("chaque repère du corps atteint la cible tactile minimale", () => {
                 fautes.push(`les libell\u00e9s de ${M[i].id} et ${M[j].id} se recouvrent`);
         }
     return fautes;
+});
+
+// La fabrique de liens est l'écran par lequel le praticien prescrit : un programme qu'elle
+// n'atteint pas ne peut être envoyé à personne. Elle ne lisait que « PATHOLOGIES », et
+// dix-huit programmes sur soixante étaient donc hors de portée — un tiers du contenu, sans
+// qu'aucun contrôle ne puisse le voir, puisque ce contenu existe et s'affiche par ailleurs.
+// On compare ici deux ensembles : ce que le contenu propose, et ce que le formulaire sait
+// construire. L'écart est l'erreur.
+controle("la fabrique de liens atteint chaque programme", () => {
+    const attendus = new Set();
+    D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => attendus.add(`zone:${z.id}/${i.id}`)));
+    D.RUNNER_DATA.forEach((r) => attendus.add(`coureur:${r.id}`));
+    D.CROISSANCE_DATA.forEach((c) => attendus.add(`croissance:${c.id}`));
+    D.PREVENTION_CATEGORIES.forEach((c) => Object.keys(c.data).forEach((k) => attendus.add(`prevention:${c.id}/${k}`)));
+
+    const joignables = new Set();
+    for (const p of D.PARCOURS_DU_LIEN)
+        for (const a of p.premier()) {
+            const seconds = p.second ? p.second(a.v) : [{ v: null }];
+            for (const b of seconds) {
+                // Le lien par défaut, celui que le praticien copie sans rien changer.
+                if (!p.route(a.v, b.v, "bilan"))
+                    return [`${p.id} / ${a.v} : la route par défaut est nulle`];
+                joignables.add(p.id === "zone" ? `zone:${a.v}/${b.v}`
+                    : p.id === "prevention" ? `prevention:${a.v}/${b.v}`
+                    : `${p.id}:${a.v}`);
+                // Et chaque étape proposée doit produire une route, pas seulement la première.
+                if (p.etapes)
+                    for (const e of p.etapes(a.v, b.v)) {
+                        if (!p.route(a.v, b.v, e.v))
+                            return [`${p.id} / ${a.v} : l'étape « ${e.t} » ne produit aucune route`];
+                        // Une route juste derrière un libellé vide reste inutilisable : le
+                        // praticien choisit dans une liste, pas dans des adresses. Les étapes
+                        // du coureur s'y sont affichées « undefined », et la première version
+                        // de ce contrôle ne l'a pas vu parce qu'elle ne regardait que la route.
+                        if (/undefined|null|\u2014 *$/.test(e.t) || !e.t.trim())
+                            return [`${p.id} / ${a.v} : l'étape ${e.v} s'affiche « ${e.t} »`];
+                    }
+            }
+        }
+
+    const manquants = [...attendus].filter((x) => !joignables.has(x));
+    const fantomes = [...joignables].filter((x) => !attendus.has(x));
+    return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
+        .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
 });
 
 // --- Restitution ----------------------------------------------------------------------
