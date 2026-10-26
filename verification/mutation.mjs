@@ -137,6 +137,11 @@ const MUTATIONS = [
         (s) => rem(s, 'React.createElement("article", { className: "rounded-2xl p-5 bg-white"',
                       'React.createElement("article", { className: "rounded-2xl p-4 bg-white"')],
 
+    // Une taille inventée au milieu d'un style, comme il y en avait onze.
+    ["aucune taille de texte hors de l'échelle",
+        (s) => rem(s, 'style: { fontSize: TAILLE_ACCOMPAGNE, fontWeight: 600 } }',
+                      'style: { fontSize: 12.5, fontWeight: 600 } }')],
+
     ["la vignette de l'accueil est bien l'icône installée",
         (s) => {
             const marque = 'const LOGO = "data:image/png;base64,';
