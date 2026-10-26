@@ -5252,7 +5252,7 @@ function BandeAssiduite({ journal, jour, accent }) {
                 // l'on pouvait appuyer dessus, et n'avoir donc pas essayé. Plus basses et à
                 // peine arrondies, elles redeviennent les barres d'un graphique.
                 React.createElement("div", { className: "w-full", style: {
-                        height: 14, borderRadius: 4,
+                        height: 14, borderRadius: RAYON_CASE,
                         backgroundColor: j.faits > 0 ? accent : "rgba(255,255,255,0.14)",
                         border: j.estAujourdhui ? "2px solid rgba(255,255,255,0.9)" : "1.5px solid transparent",
                     }, title: j.faits > 0 ? `${j.faits} exercice${j.faits > 1 ? "s" : ""}` : "aucun exercice" }),
@@ -5488,6 +5488,13 @@ const INK = "var(--encre)";
 const INK_PROSE = "var(--encre-prose)"; // prose secondaire des cartes
 const INK_DOUX = "var(--encre-doux)"; // légendes, texte de second plan
 const HEADER = "#0F2A43";
+// Les rayons. Trois valeurs, et chacune dit autre chose : la pilule pour ce qui se touche,
+// seize pour une carte ou un champ, quatre pour les cases d'un graphique, trop petites pour
+// porter davantage. Les classes « rounded-full » et « rounded-2xl » du Tailwind figé portent
+// les deux premières ; ces jetons tiennent les cas écrits en style, qui dérivaient — la
+// fabrique de liens s'était fait ses propres douze.
+const RAYON_CARTE = 16;
+const RAYON_CASE = 4;
 const PAGE = "var(--page)"; // fond des écrans de contenu
 const SURFACE = "var(--surface)"; // fond des cartes
 const BORDURE = "var(--bordure)"; // filet des cartes
@@ -5710,7 +5717,7 @@ function CarteExercice(props) {
     // calculer la taille du texte, sinon elle passerait à la ligne toute seule.
     const echelle = echelleTexte();
     const [refNom, tailleNom, nomSurUneLigne] = useNomAjuste(ex.name, props.term ? 30 : 0, echelle);
-    return (React.createElement("article", { className: "rounded-2xl p-4 bg-white",
+    return (React.createElement("article", { className: "rounded-2xl p-5 bg-white",
         style: { border: coche ? `1px solid ${accent}` : `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
         // 1. Le nom, seul sur sa ligne : c'est lui qu'on cherche des yeux en parcourant la liste.
         React.createElement("h2", { ref: refNom, id: idNom, className: "flex items-center gap-1.5",
@@ -5926,7 +5933,7 @@ function ConstructeurDeLien({ onRetour }) {
     const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
     const lien = base + route;
     const styleChamp = { backgroundColor: SURFACE, color: INK, border: `1px solid ${BORDURE}`,
-        borderRadius: 12, padding: "0.6rem 0.7rem", width: "100%", fontFamily: POLICE, fontSize: 14 };
+        borderRadius: RAYON_CARTE, padding: "0.6rem 0.7rem", width: "100%", fontFamily: POLICE, fontSize: 14 };
     const champ = (intitule, valeur, surChangement, options) => React.createElement("label", { className: "block mt-4" },
         React.createElement("span", { className: "text-[11px] font-semibold uppercase block mb-1.5",
             style: { color: INK_DOUX, letterSpacing: "0.08em" } }, intitule),
@@ -5954,7 +5961,7 @@ function ConstructeurDeLien({ onRetour }) {
                 React.createElement("p", { className: "text-[11px] font-semibold uppercase block mt-5 mb-1.5",
                     style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Lien à envoyer"),
                 React.createElement("p", { className: "text-xs leading-relaxed",
-                    style: { color: INK, backgroundColor: ACCENT_VOILE, borderRadius: 12, padding: "0.7rem", overflowWrap: "anywhere" } }, lien),
+                    style: { color: INK, backgroundColor: ACCENT_VOILE, borderRadius: RAYON_CARTE, padding: "0.7rem", overflowWrap: "anywhere" } }, lien),
                 React.createElement("button", { onClick: () => {
                         if (typeof navigator !== "undefined" && navigator.clipboard)
                             navigator.clipboard.writeText(lien).then(() => setCopie(true), () => setCopie(false));
@@ -6451,13 +6458,17 @@ function GuidedJourney() {
                                     "Une autre douleur, la course \u00E0 pied, la pr\u00E9vention")),
                             React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_SOFT } })))
                     : React.createElement(React.Fragment, null,
-                    // Le dessin n'est pas réduit : ses zones sensibles font déjà 38 px de haut,
-                    // sous le minimum tactile confortable. La place se gagne donc sur les marges,
-                    // jamais sur la cible.
+                    // Seule gouttière de l'application à ne pas valoir vingt-quatre, et c'est
+                    // volontaire : le dessin se met à l'échelle de la place qu'on lui laisse, et
+                    // ses dix cibles tactiles avec lui. Les ramener à la gouttière commune leur
+                    // coûterait seize pixels de largeur et les ferait repasser sous les 44 px que
+                    // le contrôle « chaque repère du corps » exige. La place se gagne sur les
+                    // marges, jamais sur la cible.
                     React.createElement("div", { className: "px-4 pb-4" },
-                        // Seule carte qui ne bascule pas : le mannequin est une image WebP sans
-                        // canal alpha, son fond clair est cuit dedans. Sur une carte sombre, il
-                        // apparaîtrait comme un rectangle blanc posé au milieu de l'écran.
+                        // Cette carte basculait autrefois seule : le mannequin est une image WebP
+                        // sans canal alpha, son fond clair cuit dedans, et sur une carte sombre il
+                        // serait apparu comme un rectangle blanc. La fusion « multiply » a levé
+                        // l'obstacle, et la carte suit maintenant le thème comme les autres.
                         // Marge horizontale resserrée : le cadre du dessin porte déjà sa propre marge, et
                         // la place ainsi rendue évite que le mannequin — et donc ses cibles — rapetisse
                         // sur un écran de 390 px.
@@ -6620,7 +6631,7 @@ function GuidedJourney() {
                         ? "Aucune séance enregistrée pour l'instant. Cochez vos exercices au fur et à mesure : ce résumé se remplira tout seul."
                         : `${joursTravailles} jour${joursTravailles > 1 ? "s" : ""} travaillé${joursTravailles > 1 ? "s" : ""} sur les 4 dernières semaines.`)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-5" },
-                React.createElement("div", { className: "rounded-2xl p-4 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("p", { className: "text-[11px] font-semibold uppercase", style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Les 4 dernières semaines"),
                     // La grille se lit par lignes de sept, mais rien ne disait quel jour tenait
                     // quelle colonne — alors que l'accueil affiche déjà D L M M J V S. Les mêmes
@@ -6629,7 +6640,7 @@ function GuidedJourney() {
                         React.createElement("span", { key: i, className: "text-[10px] text-center",
                             style: { width: "calc((100% - 1.5rem) / 7)", color: INK_DOUX } }, lettre)))),
                     React.createElement("div", { className: "flex flex-wrap gap-1 mt-1" }, cal.map((j) => (React.createElement("div", { key: j.jour, title: `${jjmm(j.jour)} — ${j.faits} exercice(s)`, style: {
-                            width: "calc((100% - 1.5rem) / 7)", height: 22, borderRadius: 4,
+                            width: "calc((100% - 1.5rem) / 7)", height: 22, borderRadius: RAYON_CASE,
                             backgroundColor: j.faits === 0 ? (vide ? ACCENT_ATTENTE : BORDURE_DOUCE) : j.faits < 3 ? ACCENT_CALENDRIER : ACCENT,
                             // Les cases vides tenaient à 1,16 pour 1 du fond blanc : invisibles.
                             // La grille n'avait donc aucune forme, et « du plus ancien à gauche au
@@ -6653,7 +6664,7 @@ function GuidedJourney() {
                 vide ? null : resume.map((g) => {
                         const ch = charges[g.cle] || {};
                         const notes = Object.keys(ch).map((exId) => ({ exId, n: ch[exId][0] })).filter((x) => x.n);
-                        return (React.createElement("div", { key: g.cle, className: "rounded-2xl p-4 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        return (React.createElement("div", { key: g.cle, className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                             React.createElement("p", { className: "text-base font-medium", style: { color: INK } }, libelleCle(g.cle)),
                             React.createElement("p", { className: "text-sm mt-1", style: { color: INK_DOUX } },
                                 g.seances, " séance", g.seances > 1 ? "s" : "", " · ", g.faits, " exercice", g.faits > 1 ? "s" : "", " · dernière le ", jjmm(g.derniere)),

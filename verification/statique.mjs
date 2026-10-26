@@ -657,6 +657,33 @@ controle("la fabrique de liens atteint chaque programme", () => {
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
 });
 
+// Les retraits de carte dérivaient : treize cartes bordées portaient vingt pixels, trois
+// en portaient seize, et rien ne disait laquelle avait raison. La règle est maintenant
+// simple — une carte bordée porte « p-5 », un bloc teinté sans bordure porte « p-4 » —
+// et c'est le genre de règle qu'on oublie trois mois plus tard, au moment d'ajouter une
+// carte. Le contrôle lit les styles, pas les intentions : il cherche les cartes qui
+// portent une bordure et une ombre, et vérifie qu'elles s'accordent.
+controle("les cartes bordées portent le même retrait", () => {
+    const fautes = [];
+    // La carte la plus répandue de l'application — celle d'un exercice — porte son ombre
+    // sur la ligne suivante : une expression qui s'arrête au saut de ligne ne la voyait
+    // pas, et le contrôle passait à côté du cas le plus important. C'est le banc de
+    // mutation qui l'a dit. On traverse donc les lignes, en bornant la portée pour ne pas
+    // happer la carte suivante.
+    const re = /className: "([^"]*rounded-2xl[^"]*)"[\s\S]{0,240}?boxShadow: OMBRE_CARTE/g;
+    let m;
+    while ((m = re.exec(app)) !== null) {
+        const classes = m[1];
+        // Deux cartes ne portent aucun retrait, et c'est voulu : ce sont des conteneurs
+        // dont chaque rang porte le sien, pour que la zone touchable aille d'un bord à
+        // l'autre. Seul un retrait présent et différent est une dérive.
+        const retrait = (classes.match(/\bp-(\d)\b/) || [])[1];
+        if (retrait && retrait !== "5")
+            fautes.push(`une carte bordée porte « p-${retrait} » au lieu de « p-5 » : ${classes}`);
+    }
+    return fautes;
+});
+
 // --- Restitution ----------------------------------------------------------------------
 const large = Math.max(...rapport.map((r) => r.nom.length));
 for (const r of rapport)
