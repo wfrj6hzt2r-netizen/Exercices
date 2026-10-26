@@ -684,6 +684,41 @@ controle("les cartes bordées portent le même retrait", () => {
     return fautes;
 });
 
+// Onze tailles de texte vivaient dans le fichier, dont sept entre 10 et 14 px. Aucune ne
+// disait à quoi elle servait : la même valeur portait tantôt une légende, tantôt une
+// consigne, et chaque écran en inventait une. C'est ainsi que le texte légal avait fini
+// composé plus gros que la consigne qu'on lit entre deux séries.
+//
+// Le contrôle refuse la prochaine. Une taille s'écrit désormais par un jeton ou par une
+// classe de l'échelle, jamais en chiffres au milieu d'un style.
+controle("aucune taille de texte hors de l'échelle", () => {
+    const fautes = [];
+    // Les tailles écrites en dur dans un style. Le dessin du corps a ses propres unités de
+    // viewBox, qui ne sont pas des pixels : son libellé porte son propre jeton.
+    for (const m of app.matchAll(/fontSize: (\d[\d.]*)/g))
+        fautes.push(`taille écrite en dur : fontSize: ${m[1]}`);
+    // Les classes de taille improvisées, du genre « text-[13px] ».
+    for (const m of app.matchAll(/text-\\?\[(\d+)px\\?\]/g))
+        fautes.push(`classe de taille improvisée : text-[${m[1]}px]`);
+    // Et dans la feuille : toute déclaration hors des classes de l'échelle et des titres.
+    // « #loader » est le texte affiché avant que l'application existe : il ne peut pas
+    // porter de classe posée par elle, et prend donc la valeur du corps en clair.
+    const permises = new Set([".t-etiquette", ".t-accompagne", ".t-corps", ".t-carte",
+        ".text-xl", ".text-2xl", ".text-3xl", "html", "#loader"]);
+    for (const feuille of blocsStyle(html))
+        for (const m of feuille.matchAll(/([.#]?[\w\\.\[\]#-]+)\{[^}]*font-size:([^;}]+)/g)) {
+            const valeur = m[2].trim();
+            // Les réinitialisations du Tailwind posent des valeurs relatives — inherit,
+            // 1em, 80 % — qui ne décident d'aucune taille : seules les valeurs absolues
+            // engagent l'échelle.
+            if (!/^\d*\.?\d+(px|rem)$/.test(valeur))
+                continue;
+            if (!permises.has(m[1]))
+                fautes.push(`la feuille fixe une taille hors échelle : ${m[1]} → ${valeur}`);
+        }
+    return fautes;
+});
+
 // --- Restitution ----------------------------------------------------------------------
 const large = Math.max(...rapport.map((r) => r.nom.length));
 for (const r of rapport)
