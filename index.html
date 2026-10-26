@@ -6809,7 +6809,7 @@ function GuidedJourney() {
                                 setView("croissance-fin");
                             else
                                 setCroissanceStageIdx((i) => i + 1);
-                        }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm", style: { backgroundColor: CROISSANCE_ACCENT, color: CROISSANCE_SUR_ACCENT } },
+                        }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         croissanceStageIdx === phasesDe(croi).length - 1 ? "J'ai fini" : "Étape suivante",
                         " ",
                         React.createElement(ChevronRight, { size: 16 }))),
@@ -6959,7 +6959,7 @@ function GuidedJourney() {
                                 setView("runner-complete");
                             else
                                 setRunnerStageIdx((i) => i + 1);
-                        }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm text-white disabled:opacity-30", style: { backgroundColor: ACCENT } },
+                        }, className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         isLast ? "Terminer" : "Stade suivant",
                         " ",
                         React.createElement(ChevronRight, { size: 16 }))),
@@ -7074,7 +7074,7 @@ function GuidedJourney() {
                     React.createElement("button", { onClick: () => setView("prevention-sub"), className: "flex items-center gap-1 px-4 py-2.5 rounded-full text-sm", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         React.createElement(ChevronLeft, { size: 16 }),
                         " Changer de zone / sport"),
-                    React.createElement("button", { onClick: () => setView("prevention-complete"), className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm text-white disabled:opacity-30", style: { backgroundColor: ACCENT } },
+                    React.createElement("button", { onClick: () => setView("prevention-complete"), className: "flex items-center gap-1 px-5 py-2.5 rounded-full text-sm disabled:opacity-30", style: { border: `1px solid ${BORDURE}`, color: INK } },
                         "Terminer ",
                         React.createElement(ChevronRight, { size: 16 }))),
                 // Le bouton n'est plus verrouillé : on remplace l'injonction et son échappatoire en
