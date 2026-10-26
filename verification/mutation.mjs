@@ -126,6 +126,11 @@ const MUTATIONS = [
         (s) => rem(s, 'id: "cheville", label: "Cheville", cx: 116.4, cy: 506.7, labelX: 62, labelY: 490, anchor: "end", hit: 16',
                       'id: "cheville", label: "Cheville", cx: 116.4, cy: 506.7, labelX: 62, labelY: 536, anchor: "end", hit: 15')],
 
+    // Le parcours prévention perd son second champ : la fabrique ne sait plus désigner
+    // l'activité, et ses trois catégories deviennent des programmes sans lien.
+    ["la fabrique de liens atteint chaque programme",
+        (s) => rem(s, 'secondIntitule: "Activit\\u00E9",', 'secondIntitule: "Activit\\u00E9", second: null,')],
+
     ["la vignette de l'accueil est bien l'icône installée",
         (s) => {
             const marque = 'const LOGO = "data:image/png;base64,';

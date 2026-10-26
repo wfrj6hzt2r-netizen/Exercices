@@ -5818,24 +5818,113 @@ function CarteExercice(props) {
 // qu'en tapant son adresse. Le kinésithérapeute y choisit le programme et obtient le lien
 // à envoyer. Il aurait pu naviguer dans l'application et copier la barre d'adresse ; cet
 // écran lui évite de se tromper d'étape et de recommencer.
+// Les quatre parcours, decrits une fois, pour que la fabrique les traite pareil.
+//
+// Elle ne connaissait que les pathologies par zone : dix-huit programmes sur soixante
+// etaient donc impossibles a prescrire par lien, et il fallait naviguer dans
+// l'application puis copier la barre d'adresse — ce que cet ecran existe pour eviter.
+//
+// Les trois parcours ajoutes ne se decrivent pas comme les pathologies. Le coureur n'a
+// pas de zone du corps au-dessus de sa blessure. La croissance non plus, et ses etapes
+// portent leur nom dans « phases », pas dans « stages ». La prevention n'a ni bilan de
+// depart ni etapes : on y choisit un sous-parcours, et c'est tout. Chaque parcours dit
+// donc lui-meme ce qu'il offre, plutot que d'etre plie au moule du premier.
+const PARCOURS_DU_LIEN = [
+    {
+        id: "zone",
+        label: "Par zone du corps",
+        // Deux niveaux : la zone, puis la blessure.
+        premier: () => PATHOLOGIES.map((z) => ({ v: z.id, t: z.label })),
+        premierIntitule: "Zone",
+        second: (zid) => {
+            const z = PATHOLOGIES.find((x) => x.id === zid) || PATHOLOGIES[0];
+            return injuriesOrdonnees(z).map((i) => ({ v: i.id, t: i.label }));
+        },
+        secondIntitule: "Blessure",
+        etapes: (zid, bid) => {
+            const z = PATHOLOGIES.find((x) => x.id === zid) || PATHOLOGIES[0];
+            const b = z.injuries.find((i) => i.id === bid) || z.injuries[0];
+            return b.stages.map((st, k) => ({ v: String(k), t: `\u00C9tape ${k + 1} \u2014 ${st.label}` }));
+        },
+        bilan: "Le bilan de d\u00E9part (recommand\u00E9)",
+        route: (zid, bid, etape) => (etape === "bilan"
+            ? construireRoute({ view: "checkin", pathId: zid, injuryId: bid })
+            : construireRoute({ view: "stage", pathId: zid, injuryId: bid, stageIdx: Number(etape) })),
+    },
+    {
+        id: "coureur",
+        label: "Coureur",
+        premier: () => RUNNER_DATA.map((r) => ({ v: r.id, t: r.label })),
+        premierIntitule: "Blessure du coureur",
+        second: null,
+        // Les étapes du coureur sont les mêmes pour toutes ses blessures, et ne portent
+        // donc pas leur nom dans la blessure : il vit dans « RUNNER_STAGE_LABELS ».
+        etapes: (rid) => {
+            const r = RUNNER_DATA.find((x) => x.id === rid) || RUNNER_DATA[0];
+            return r.stages.map((st, k) => ({ v: String(k),
+                t: `\u00C9tape ${k + 1} \u2014 ${(RUNNER_STAGE_LABELS[k] || {}).label || ""}` }));
+        },
+        bilan: "Le choix de l'\u00E9tape par le patient (recommand\u00E9)",
+        route: (rid, _s, etape) => (etape === "bilan"
+            ? construireRoute({ view: "runner-stage-select", runnerPathId: rid })
+            : construireRoute({ view: "runner-exercises", runnerPathId: rid, runnerStageIdx: Number(etape) })),
+    },
+    {
+        id: "croissance",
+        label: "Croissance (moins de 16 ans)",
+        premier: () => CROISSANCE_DATA.map((c) => ({ v: c.id, t: c.label })),
+        premierIntitule: "Situation",
+        second: null,
+        // Les etapes de ce parcours portent leur nom dans « phases », pas dans « stages ».
+        etapes: (cid) => {
+            const c = CROISSANCE_DATA.find((x) => x.id === cid) || CROISSANCE_DATA[0];
+            return phasesDe(c).map((ph, k) => ({ v: String(k), t: `\u00C9tape ${k + 1} \u2014 ${ph.label}` }));
+        },
+        bilan: "Le bilan de d\u00E9part (recommand\u00E9)",
+        route: (cid, _s, etape) => (etape === "bilan"
+            ? construireRoute({ view: "croissance-checkin", croissanceId: cid })
+            : construireRoute({ view: "croissance-exercices", croissanceId: cid, croissanceStageIdx: Number(etape) })),
+    },
+    {
+        id: "prevention",
+        label: "Pr\u00E9vention",
+        premier: () => PREVENTION_CATEGORIES.map((c) => ({ v: c.id, t: c.title })),
+        premierIntitule: "Cat\u00E9gorie",
+        second: (cid) => {
+            const c = PREVENTION_CATEGORIES.find((x) => x.id === cid) || PREVENTION_CATEGORIES[0];
+            return Object.keys(c.data).map((k) => ({ v: k, t: c.data[k].label }));
+        },
+        secondIntitule: "Activit\u00E9",
+        // Pas d'etapes : une seule liste d'exercices par activite.
+        etapes: null,
+        route: (cid, sid) => construireRoute({ view: "prevention-exercises", preventionCategory: cid, preventionSub: sid }),
+    },
+];
 function ConstructeurDeLien({ onRetour }) {
-    const [zoneId, setZoneId] = useState(PATHOLOGIES[0].id);
-    const [blessureId, setBlessureId] = useState(PATHOLOGIES[0].injuries[0].id);
+    const [parcoursId, setParcoursId] = useState(PARCOURS_DU_LIEN[0].id);
+    const parcours = PARCOURS_DU_LIEN.find((p) => p.id === parcoursId) || PARCOURS_DU_LIEN[0];
+    const [premierId, setPremierId] = useState(PARCOURS_DU_LIEN[0].premier()[0].v);
+    const [secondId, setSecondId] = useState(PARCOURS_DU_LIEN[0].second(PARCOURS_DU_LIEN[0].premier()[0].v)[0].v);
     const [etape, setEtape] = useState("bilan");
     const [copie, setCopie] = useState(false);
-    const zone = PATHOLOGIES.find((z) => z.id === zoneId) || PATHOLOGIES[0];
-    const blessure = zone.injuries.find((i) => i.id === blessureId) || zone.injuries[0];
-    const route = etape === "bilan"
-        ? construireRoute({ view: "checkin", pathId: zone.id, injuryId: blessure.id })
-        : construireRoute({ view: "stage", pathId: zone.id, injuryId: blessure.id, stageIdx: Number(etape) });
-    const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
-    const lien = base + route;
-    const choisirZone = (id) => {
-        const z = PATHOLOGIES.find((x) => x.id === id);
-        setZoneId(id);
-        setBlessureId(z.injuries[0].id);
+    // Un changement de parcours remet les champs suivants \u00e0 leur premier choix : garder
+    // l'ancien produirait une route vers un programme qui n'existe pas dans le nouveau.
+    const choisirParcours = (id) => {
+        const p = PARCOURS_DU_LIEN.find((x) => x.id === id) || PARCOURS_DU_LIEN[0];
+        const premier = p.premier()[0].v;
+        setParcoursId(id);
+        setPremierId(premier);
+        setSecondId(p.second ? p.second(premier)[0].v : null);
         setEtape("bilan");
     };
+    const choisirPremier = (v) => {
+        setPremierId(v);
+        setSecondId(parcours.second ? parcours.second(v)[0].v : null);
+        setEtape("bilan");
+    };
+    const route = parcours.route(premierId, secondId, etape);
+    const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
+    const lien = base + route;
     const styleChamp = { backgroundColor: SURFACE, color: INK, border: `1px solid ${BORDURE}`,
         borderRadius: 12, padding: "0.6rem 0.7rem", width: "100%", fontFamily: POLICE, fontSize: 14 };
     const champ = (intitule, valeur, surChangement, options) => React.createElement("label", { className: "block mt-4" },
@@ -5853,12 +5942,15 @@ function ConstructeurDeLien({ onRetour }) {
                 "À votre usage. Le lien ouvre directement le programme choisi, et l'application s'en souvient : le patient le retrouve à chaque ouverture, sans avoir à choisir sa blessure lui-même.")),
         React.createElement("div", { className: "px-6 py-6" },
             React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
-                champ("Zone", zone.id, choisirZone, PATHOLOGIES.map((z) => ({ v: z.id, t: z.label }))),
-                champ("Blessure", blessure.id, (v) => { setBlessureId(v); setEtape("bilan"); },
-                    injuriesOrdonnees(zone).map((i) => ({ v: i.id, t: i.label }))),
-                champ("Point de départ", etape, setEtape,
-                    [{ v: "bilan", t: "Le bilan de départ (recommandé)" }].concat(
-                        blessure.stages.map((st, k) => ({ v: String(k), t: `Étape ${k + 1} — ${st.label}` })))),
+                champ("Parcours", parcours.id, choisirParcours,
+                    PARCOURS_DU_LIEN.map((p) => ({ v: p.id, t: p.label }))),
+                champ(parcours.premierIntitule, premierId, choisirPremier, parcours.premier()),
+                parcours.second && champ(parcours.secondIntitule, secondId,
+                    (v) => { setSecondId(v); setEtape("bilan"); }, parcours.second(premierId)),
+                // La prévention n'a ni bilan de départ ni étapes : le troisième champ
+                // disparaît plutôt que de proposer un choix vide.
+                parcours.etapes && champ("Point de départ", etape, setEtape,
+                    [{ v: "bilan", t: parcours.bilan }].concat(parcours.etapes(premierId, secondId))),
                 React.createElement("p", { className: "text-[11px] font-semibold uppercase block mt-5 mb-1.5",
                     style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Lien à envoyer"),
                 React.createElement("p", { className: "text-xs leading-relaxed",
@@ -5870,8 +5962,16 @@ function ConstructeurDeLien({ onRetour }) {
                     },
                     className: "cible-44 w-full rounded-full text-sm font-medium text-white mt-3",
                     style: { backgroundColor: ACCENT } }, copie ? "Lien copié" : "Copier le lien")),
+            // La note du bas ne valait que pour les pathologies par zone. La prévention
+                // n'a pas de point de départ à régler, et le parcours croissance tutoie
+                // l'enfant qui recevra le lien : le dire ici évite au praticien de
+                // découvrir le tutoiement après l'avoir envoyé aux parents.
             React.createElement("p", { className: "text-xs mt-4 leading-relaxed", style: { color: INK_DOUX } },
-                "Le bilan de départ fait choisir au patient son stade en fonction de ce qu'il ressent le jour où il ouvre le lien ; c'est le point d'entrée le plus sûr. Ouvrir une étape précise court-circuite ce réglage."))));
+                parcours.id === "prevention"
+                    ? "Ce parcours n'a ni bilan de départ ni étapes : le lien ouvre directement la liste des exercices de l'activité choisie."
+                    : "Le bilan de départ fait choisir au patient son stade en fonction de ce qu'il ressent le jour où il ouvre le lien ; c'est le point d'entrée le plus sûr. Ouvrir une étape précise court-circuite ce réglage."),
+            parcours.id === "croissance" && React.createElement("p", { className: "text-xs mt-2 leading-relaxed", style: { color: INK_DOUX } },
+                "Ce parcours s'adresse directement à l'enfant et le tutoie. Chaque situation porte aussi une note à l'intention des parents."))));
 }
 function GuidedJourney() {
     // Lecture unique de la sauvegarde au montage.
