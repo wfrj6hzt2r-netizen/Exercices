@@ -1,9 +1,9 @@
 # Vérification
 
-Trente contrôles automatiques — vingt et un statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Trente et un contrôles automatiques — vingt-deux statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
-Un troisième script, `mutation.mjs`, introduit vingt et un défauts un par un et vérifie que le
+Un troisième script, `mutation.mjs`, introduit vingt-deux défauts un par un et vérifie que le
 contrôle concerné les voit. Deux d'entre eux avaient cessé de vérifier quoi que ce soit sans
 que rien ne le signale.
 

@@ -142,6 +142,11 @@ const MUTATIONS = [
         (s) => rem(s, 'style: { fontSize: TAILLE_ACCOMPAGNE, fontWeight: 600 } }',
                       'style: { fontSize: 12.5, fontWeight: 600 } }')],
 
+    // La règle des massages perd son exception : la voûte plantaire retombe sur le
+    // bloc-notes, alors que le praticien a validé son dessin devant ses exercices.
+    ["les affectations relues restent celles qui ont été validées",
+        (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
+
     ["la vignette de l'accueil est bien l'icône installée",
         (s) => {
             const marque = 'const LOGO = "data:image/png;base64,';

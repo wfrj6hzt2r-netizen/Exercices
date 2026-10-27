@@ -1268,6 +1268,25 @@ const POSES = [
     { key: "triceps-stretch", icon: PoseTricepsStretch, test: (n) => n.includes("étirement") && n.includes("triceps") },
     { key: "child-pose", icon: PoseChildPose, test: (n) => n.includes("posture de l'enfant") },
 
+    // --- 0 ter. Trois réaffectations relevées à la relecture des 84 dessins ---
+    // Le praticien a jugé chaque pictogramme devant les exercices qu'il sert. Ces
+    // trois-là montraient un geste pour un autre, et un dessin déjà existant convenait :
+    // aucune retouche, seulement une règle nommée plus étroitement, placée avant celle
+    // qui les attrapait.
+    //
+    // Un massage n'est pas un mouvement à reproduire : le bloc-notes dit la vérité là où
+    // la montée sur pointe ou la mobilisation allongée mentaient. Deux exceptions, parce
+    // que le praticien a validé ces dessins-là devant leurs exercices : la voûte plantaire
+    // garde son pied, et le trapèze sa nuque.
+    { key: "advice", icon: PoseAdvice,
+        test: (n) => n.includes("massage") && !/plantaire|voûte|trapèze/.test(n) },
+    // « Excentrique unipodal jusqu'au sol » et « sur marche » sont des descentes de marche,
+    // pas des épreuves d'équilibre.
+    { key: "step", icon: PoseStep, test: (n) => n.includes("excentrique unipodal") },
+    // Trois rotations du tronc tombaient sur une extension de genou assise.
+    { key: "seated-twist", icon: PoseSeatedTwist,
+        test: (n) => /rotation assise|mobilité thoracique en rotation|mobilisation en rotation/.test(n) },
+
     // --- 0. Gestes que des règles plus générales captaient à tort ---
     // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
     { key: "nerve", icon: PoseNerveGlide, test: (n) => n.includes("nerf") || n.includes("glissement nerveux")
@@ -2324,11 +2343,11 @@ const PATHOLOGIES = [
                     { label: "Mobilité & activation", pourquoi: "Ce qui manque est moins la solidité du ligament que l'information : la cheville part avant que vous puissiez réagir. On réveille d'abord ce qui la commande.", critere: "La cheville bouge librement et vous marchez sans appréhension sur terrain plat.", exercises: [
                             { name: "Mobilité en flexion dorsale", dose: "3 × 15", tip: "Genou vers l'avant, talon au sol, mobilisez la cheville sur l'amplitude confortable. Un déficit de flexion dorsale est fréquent après des entorses répétées." },
                             { name: "Isométrique 4 directions", dose: "5 × 10 sec chaque direction", tip: "Assis, poussez le pied contre une résistance fixe (mur, main) dans les 4 directions (flexion, extension, inversion, éversion), sans bouger la cheville." },
-                            { name: "Automassage et mobilisation des péroniers", dose: "2 × 1 min", tip: "Massage doux le long du bord externe de la jambe, du genou vers la cheville, pour entretenir la mobilité des tissus fréquemment sollicités après une entorse." },
+                            { name: "Automassage et mobilisation des fibulaires", dose: "2 × 1 min", tip: "Massage doux le long du bord externe de la jambe, du genou vers la cheville, pour entretenir la mobilité des tissus fréquemment sollicités après une entorse." },
                             { name: "Alphabet avec le pied", dose: "2 × l'alphabet", tip: "Assis ou allongé, dessinez les lettres de l'alphabet avec le gros orteil, pour mobiliser la cheville dans toutes les directions." }
                         ] },
                     { label: "Renforcement", critere: "Vous montez sur la pointe d'un seul pied 15 fois de suite, et pousser le pied vers l'extérieur contre résistance est fort et indolore.", exercises: [
-                            { name: "Renforcement à l'élastique 4 directions", dose: "4 × 15", tip: "Flexion, extension, inversion, éversion contre résistance élastique. Base du renforcement après entorse à répétition, en particulier les éverseurs (péroniers), souvent déficitaires." },
+                            { name: "Renforcement à l'élastique 4 directions", dose: "4 × 15", tip: "Flexion, extension, inversion, éversion contre résistance élastique. Base du renforcement après entorse à répétition, en particulier les éverseurs (fibulaires), souvent déficitaires." },
                             { name: "Renforcement des éverseurs en charge", dose: "3 × 15 chaque côté", tip: "Debout, élastique autour de l'avant-pied fixé du côté interne. Poussez le pied vers l'extérieur contre la résistance : ce sont ces muscles qui limitent le risque de retourner la cheville vers l'intérieur." },
                             { name: "Renforcement du mollet", dose: "3 × 15", tip: "Debout, mains en appui léger sur un mur. Montez sur la pointe des deux pieds en 2 secondes, marquez un temps en haut, puis redescendez en 3 secondes. Passez sur une seule jambe quand la version à deux pieds devient facile." },
                             { name: "Renforcement des intrinsèques du pied", dose: "3 × 15", tip: "Assis puis debout, pied à plat au sol. Rapprochez la base du gros orteil du talon pour creuser la voûte, sans recroqueviller les orteils ni décoller le talon. Tenez quelques secondes, relâchez. Un pied plus fort contribue à la stabilité globale de la cheville." }
