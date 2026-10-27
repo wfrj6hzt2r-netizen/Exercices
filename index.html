@@ -604,11 +604,12 @@ const PoseAnklePump = poseWrap(React.createElement(React.Fragment, null,
 // Allongé sur le côté, jambe du dessus levée : sol et deux jambes distinctes.
 const PoseSideLying = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
-    React.createElement("circle", { cx: "10", cy: "34", r: "3.6" }),
-    React.createElement("line", { x1: "14", y1: "35", x2: "28", y2: "35" }),
-    React.createElement("line", { x1: "28", y1: "35", x2: "41", y2: "38" }),
-    React.createElement("line", { x1: "28", y1: "34", x2: "41", y2: "25" }),
-    React.createElement("line", { x1: "16", y1: "33", x2: "21", y2: "28" })));
+    React.createElement("circle", { cx: "11", cy: "37", r: "3.6" }),
+    React.createElement("line", { x1: "15", y1: "38", x2: "29", y2: "38" }),
+    React.createElement("line", { x1: "29", y1: "38", x2: "41", y2: "41" }),
+    React.createElement("line", { x1: "29", y1: "37", x2: "41", y2: "33" }),
+    React.createElement("line", { x1: "17", y1: "37", x2: "21", y2: "32" }),
+    React.createElement("line", { x1: "21", y1: "32", x2: "26", y2: "35" })));
 const PoseBike = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "12", cy: "32", r: "7" }),
     React.createElement("circle", { cx: "36", cy: "32", r: "7" }),
@@ -838,12 +839,12 @@ const PoseAutocorrection = poseWrap(React.createElement(React.Fragment, null,
 // corps, puisque c'est la colonne qu'on étire et non le regard qu'on lève.
 const PoseAxialSupine = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
-    React.createElement("line", { x1: "14", y1: "26", x2: "6", y2: "26" }),
-    React.createElement("path", { d: "M8.5 23.5 6 26 8.5 28.5" }),
     React.createElement("circle", { cx: "15", cy: "33", r: "4" }),
     React.createElement("line", { x1: "19", y1: "34", x2: "30", y2: "34" }),
     React.createElement("line", { x1: "30", y1: "34", x2: "35", y2: "28" }),
-    React.createElement("line", { x1: "35", y1: "28", x2: "40", y2: "39" })));
+    React.createElement("line", { x1: "35", y1: "28", x2: "40", y2: "39" }),
+    React.createElement("line", { x1: "10", y1: "33", x2: "5", y2: "33" }),
+    React.createElement("path", { d: "M7.5 30.5 L5 33 L7.5 35.5" })));
 // Le gainage latéral : le corps en diagonale, l'avant-bras seul au sol. Le gainage ventral
 // existait déjà, mais sa posture déclarée — sur le ventre — faisait retomber celui-ci sur
 // le pictogramme neutre.
@@ -949,12 +950,13 @@ const PoseStandingExtension = poseWrap(React.createElement(React.Fragment, null,
 // d'elle : à vingt-quatre pixels, un bras qui traverse le crâne ne se lit plus.
 const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "43", x2: "44", y2: "43" }),
+    React.createElement("line", { x1: "17", y1: "24", x2: "34", y2: "24" }),
+    React.createElement("line", { x1: "17", y1: "24", x2: "13", y2: "27" }),
     React.createElement("circle", { cx: "10", cy: "29", r: "3.5" }),
-    React.createElement("line", { x1: "16", y1: "25", x2: "34", y2: "25" }),
-    React.createElement("line", { x1: "16", y1: "25", x2: "5", y2: "17" }),
-    React.createElement("line", { x1: "17", y1: "25", x2: "16", y2: "43" }),
-    React.createElement("line", { x1: "33", y1: "25", x2: "35", y2: "43" }),
-    React.createElement("line", { x1: "34", y1: "25", x2: "45", y2: "25" })));
+    React.createElement("line", { x1: "17", y1: "24", x2: "16", y2: "43" }),
+    React.createElement("line", { x1: "34", y1: "24", x2: "35", y2: "43" }),
+    React.createElement("line", { x1: "17", y1: "24", x2: "7", y2: "21" }),
+    React.createElement("line", { x1: "34", y1: "24", x2: "44", y2: "21" })));
 // La marche, distincte de la course : tronc droit, foulée courte, les deux pieds bas.
 const PoseWalk = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
@@ -1007,16 +1009,16 @@ const PoseChinTuckSupine = poseWrap(React.createElement(React.Fragment, null,
 // Épaule contre le mur, genou du côté mur relevé et poussant contre lui : c'est la jambe
 // d'appui, au sol, qui travaille. De face, ce geste ne se lit pas ; de profil, si.
 const PoseWallHipIso = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "6", y1: "4", x2: "6", y2: "44" }),
-    React.createElement("line", { x1: "6", y1: "44", x2: "44", y2: "44" }),
-    React.createElement("circle", { cx: "23", cy: "11", r: "4" }),
-    React.createElement("line", { x1: "23", y1: "15", x2: "23", y2: "29" }),
-    React.createElement("line", { x1: "23", y1: "19", x2: "28", y2: "28" }),
-    React.createElement("line", { x1: "23", y1: "29", x2: "28", y2: "44" }),
-    React.createElement("line", { x1: "23", y1: "29", x2: "16", y2: "29" }),
-    React.createElement("line", { x1: "16", y1: "29", x2: "16", y2: "40" }),
-    React.createElement("line", { x1: "13.5", y1: "29", x2: "9.5", y2: "29" }),
-    React.createElement("path", { d: "M12.5 26 L9 29 L12.5 32" })));
+    React.createElement("line", { x1: "10", y1: "4", x2: "10", y2: "44" }),
+    React.createElement("line", { x1: "10", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("circle", { cx: "17", cy: "11", r: "4" }),
+    React.createElement("line", { x1: "17", y1: "15", x2: "17", y2: "30" }),
+    React.createElement("line", { x1: "17", y1: "18", x2: "10", y2: "18" }),
+    React.createElement("line", { x1: "17", y1: "19", x2: "22", y2: "26" }),
+    React.createElement("line", { x1: "22", y1: "26", x2: "23", y2: "33" }),
+    React.createElement("line", { x1: "17", y1: "30", x2: "21", y2: "44" }),
+    React.createElement("line", { x1: "17", y1: "30", x2: "11", y2: "33" }),
+    React.createElement("line", { x1: "11", y1: "33", x2: "16", y2: "38" })));
 // --- Épaule : vingt-deux dessins, parce qu'une élévation latérale générique servait à
 // vingt-quatre exercices, du gainage scapulaire au poinçon du serratus. ---
 // Mains à plat sur un mur, à hauteur d'épaule : la chaîne fermée.
@@ -1076,11 +1078,11 @@ const PoseStickRotation = poseWrap(React.createElement(React.Fragment, null,
 const PoseTowelBehind = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "20", cy: "9", r: "4" }),
     React.createElement("line", { x1: "20", y1: "13", x2: "20", y2: "33" }),
-    React.createElement("line", { x1: "20", y1: "17", x2: "28", y2: "11" }),
-    React.createElement("line", { x1: "28", y1: "11", x2: "30", y2: "19" }),
-    React.createElement("line", { x1: "30", y1: "19", x2: "30", y2: "30" }),
-    React.createElement("line", { x1: "20", y1: "20", x2: "26", y2: "28" }),
-    React.createElement("line", { x1: "26", y1: "28", x2: "30", y2: "30" }),
+    React.createElement("line", { x1: "20", y1: "17", x2: "27", y2: "11" }),
+    React.createElement("line", { x1: "27", y1: "11", x2: "31", y2: "18" }),
+    React.createElement("line", { x1: "20", y1: "21", x2: "26", y2: "27" }),
+    React.createElement("line", { x1: "26", y1: "27", x2: "31", y2: "32" }),
+    React.createElement("line", { x1: "31", y1: "18", x2: "31", y2: "32", strokeDasharray: "3 3" }),
     React.createElement("line", { x1: "20", y1: "33", x2: "16", y2: "44" }),
     React.createElement("line", { x1: "20", y1: "33", x2: "24", y2: "44" })));
 // Allongé sur le côté, bras à angle droit, l'avant-bras poussé vers le sol.
