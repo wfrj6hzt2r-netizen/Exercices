@@ -762,6 +762,82 @@ controle("les affectations relues restent celles qui ont été validées", () =>
     return fautes;
 });
 
+// Quatre silhouettes avaient des membres hors de toute proportion humaine : un avant-bras
+// de 13 unités sur un tronc de 18, un bras de 15,6 là où l'avant-bras en faisait 7,8. Le
+// praticien les a vues à l'œil sur la planche de relecture — « bras beaucoup trop long par
+// rapport au corps » — et la mesure lui a donné raison : jusqu'à 63 % d'écart.
+//
+// Le canon tient en une tête : avec un crâne de huit unités de diamètre, le tronc en vaut
+// 2,2, le bras 1,2, l'avant-bras 1,1, la jambe 1,7. Il ne vaut que pour une silhouette
+// debout entière, et le fichier ne dit pas lesquelles le sont : un contrôle général
+// signalerait le squat, l'assise et les dessins de tête seule, que le praticien a validés.
+// Celui-ci ne garde donc que les quatre corrigées, et il les mesure au lieu de figer leurs
+// coordonnées : un dessin peut bouger, il ne peut pas s'allonger.
+controle("les quatre silhouettes redessinées gardent leurs proportions", () => {
+    const fautes = [];
+    for (const nom of ["PoseArmSupport", "PoseArm9090", "PoseIsoRotWall", "PoseWallWalk"]) {
+        const d = app.match(new RegExp("const " + nom + " = poseWrap\\(([\\s\\S]*?)\\)\\)\\);"));
+        if (!d) {
+            fautes.push(`${nom} est introuvable : le contrôle ne garde plus rien`);
+            continue;
+        }
+        const tete = [...d[1].matchAll(/cx: "([\d.]+)", cy: "([\d.]+)", r: "([\d.]+)"/g)]
+            .map((c) => c.slice(1).map(Number))[0];
+        const segments = [...d[1].matchAll(/x1: "([\d.]+)", y1: "([\d.]+)", x2: "([\d.]+)", y2: "([\d.]+)"/g)]
+            .map((l) => l.slice(1).map(Number));
+        if (!tete || !segments.length) {
+            fautes.push(`${nom} n'a plus de tête ou plus de segment mesurable`);
+            continue;
+        }
+        const [cx, cy, r] = tete;
+        const longueur = ([x1, y1, x2, y2]) => Math.hypot(x2 - x1, y2 - y1);
+        // Le sol, le mur et le plan d'appui : du décor, long par nature.
+        const decor = ([x1, y1, x2, y2]) => (y1 === y2 && y1 >= 42)
+            || (x1 === x2 && (x1 <= 8 || x1 >= 38)) || longueur([x1, y1, x2, y2]) >= 20;
+        const tronc = segments.find(([x1, y1]) => Math.abs(x1 - cx) <= 1.5 && Math.abs(y1 - (cy + r)) <= 1.5);
+        if (!tronc)
+            fautes.push(`${nom} : le tronc ne part plus du bas de la tête, rien n'est mesurable`);
+        else {
+            const voulu = 2.2 * 2 * r;
+            const ecart = Math.round(100 * (longueur(tronc) / voulu - 1));
+            if (Math.abs(ecart) > 12)
+                fautes.push(`${nom} : tronc de ${longueur(tronc).toFixed(1)} au lieu de `
+                    + `${voulu.toFixed(1)} (${ecart > 0 ? "+" : ""}${ecart} %)`);
+        }
+        // Hors tronc et décor, aucun segment ne dépasse une jambe : quatorze unités.
+        for (const sg of segments) {
+            if (sg === tronc || decor(sg))
+                continue;
+            if (longueur(sg) > 14)
+                fautes.push(`${nom} : un segment de ${longueur(sg).toFixed(1)} unités `
+                    + `(${sg[0]},${sg[1]} → ${sg[2]},${sg[3]}), maximum 14`);
+        }
+        // Et le bras se mesure entier. C'est là qu'était le défaut : un membre de 26 unités
+        // fait de deux segments de 13, dont aucun ne dépassait la borne précédente. Un bras
+        // part du tronc entre la nuque et la hanche, et se suit de bout en bout ; bras plus
+        // avant-bras valent 2,3 têtes, soit 18,4.
+        if (tronc) {
+            const surLeTronc = ([x1, y1]) => Math.abs(x1 - tronc[0]) <= 1.5
+                && y1 > cy + r + 1 && y1 < tronc[3] - 2;
+            for (const racine of segments.filter((sg) => sg !== tronc && !decor(sg) && surLeTronc(sg))) {
+                let bout = racine, total = longueur(racine), pas = 0;
+                while (pas++ < 4) {
+                    const suite = segments.find((sg) => sg !== bout && sg !== tronc && !decor(sg)
+                        && Math.abs(sg[0] - bout[2]) <= 0.5 && Math.abs(sg[1] - bout[3]) <= 0.5);
+                    if (!suite)
+                        break;
+                    total += longueur(suite);
+                    bout = suite;
+                }
+                if (total > 20)
+                    fautes.push(`${nom} : un bras de ${total.toFixed(1)} unités depuis `
+                        + `${racine[0]},${racine[1]}, maximum 20 pour bras et avant-bras`);
+            }
+        }
+    }
+    return fautes;
+});
+
 // --- Restitution ----------------------------------------------------------------------
 const large = Math.max(...rapport.map((r) => r.nom.length));
 for (const r of rapport)
