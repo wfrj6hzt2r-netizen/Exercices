@@ -719,6 +719,49 @@ controle("aucune taille de texte hors de l'échelle", () => {
     return fautes;
 });
 
+// Le praticien a relu les 84 pictogrammes devant les exercices qu'ils servent, et nommé
+// ceux qui montraient un geste pour un autre. Ces affectations-là ne se devinent pas : la
+// règle qui les porte est nommée étroitement, et une règle plus large ajoutée plus haut la
+// supplanterait en silence. Le contrôle fige le résultat jugé, pas la règle qui le produit.
+controle("les affectations relues restent celles qui ont été validées", () => {
+    const attendu = {
+        // Un massage n'est pas un mouvement à reproduire.
+        "Massage du mollet": "advice",
+        "Massage des jambes le soir": "advice",
+        "Massage quand ça revient": "advice",
+        "Automassage le long des fibulaires": "advice",
+        "Automassage et mobilisation des fibulaires": "advice",
+        // Deux exceptions validées : ces dessins-là conviennent à leur massage.
+        "Automassage de la voûte plantaire": "foot-arch",
+        "Auto-massage doux du trapèze": "neck",
+        // Des descentes de marche, pas des épreuves d'équilibre.
+        "Excentrique unipodal jusqu'au sol": "step",
+        "Excentrique unipodal sur marche": "step",
+        // Des rotations du tronc, pas des extensions de genou assises.
+        "Mobilité thoracique en rotation": "seated-twist",
+        "Mobilité en rotation assise": "seated-twist",
+        "Mobilisation en rotation assise, amplitude progressive": "seated-twist",
+    };
+    const cles = new Map();
+    for (const p of D.POSES) {
+        if (!cles.has(p.icon))
+            cles.set(p.icon, []);
+        if (!cles.get(p.icon).includes(p.key))
+            cles.get(p.icon).push(p.key);
+    }
+    const vus = new Map();
+    for (const { ex } of exercices)
+        vus.set(ex.name, (cles.get(D.getExerciseIcon(ex.name, ex.tip)) || ["?"])[0]);
+    const fautes = [];
+    for (const [nom, voulu] of Object.entries(attendu)) {
+        if (!vus.has(nom))
+            fautes.push(`« ${nom} » a disparu du contenu : le contrôle ne garde plus rien`);
+        else if (vus.get(nom) !== voulu)
+            fautes.push(`« ${nom} » retombe sur « ${vus.get(nom)} » au lieu de « ${voulu} »`);
+    }
+    return fautes;
+});
+
 // --- Restitution ----------------------------------------------------------------------
 const large = Math.max(...rapport.map((r) => r.nom.length));
 for (const r of rapport)
