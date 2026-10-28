@@ -6793,7 +6793,7 @@ function CarteExerciceCompacte(props) {
     const doseParts = splitDose(props.dose);
     const echelle = echelleTexte();
     // Le nom est mesuré dans sa propre colonne, chevron déjà déduit : aucune réserve à prendre.
-    const [refNom, tailleNom, nomSurUneLigne] = useNomAjuste(ex.name, 0, echelle);
+    const [refNom, tailleNom] = useNomAjuste(ex.name, 0, echelle);
     // Pas de retrait sur la carte elle-même : chaque rang porte le sien, pour que la zone qui
     // ouvre la fiche aille d'un bord à l'autre.
     return (React.createElement("article", { className: "rounded-2xl bg-white overflow-hidden",
@@ -6805,12 +6805,14 @@ function CarteExerciceCompacte(props) {
                 React.createElement(Icon, { size: 24, color: coche ? "#FFFFFF" : accentTexte })),
             React.createElement("span", { className: "min-w-0 flex-1 block" },
                 // Aux plus grandes tailles de texte, « Autograndissement » ne tenait pas dans la
-                // colonne et se faisait rogner : le nom se coupe plutôt que de disparaître.
+                // colonne et se faisait rogner : le nom se coupe plutôt que de disparaître. Il
+                // n'est jamais forcé sur une ligne : la largeur se mesure dans un canevas, et
+                // les polices du serveur d'intégration, plus larges d'un rien, rognaient encore
+                // « Activité physique régulière » que la mesure disait tenir.
                 React.createElement("span", { ref: refNom, id: idNom, className: "block", lang: "fr",
                     style: { fontSize: `${tailleNom}px`, fontWeight: 600, color: INK, lineHeight: 1.25,
-                        letterSpacing: "-0.01em", overflow: "hidden", hyphens: "auto", WebkitHyphens: "auto",
-                        overflowWrap: "break-word",
-                        whiteSpace: nomSurUneLigne ? "nowrap" : "normal" } }, ex.name),
+                        letterSpacing: "-0.01em", hyphens: "auto", WebkitHyphens: "auto",
+                        overflowWrap: "break-word" } }, ex.name),
                 React.createElement("span", { className: "block mt-0.5", style: { color: accentTexte, fontVariantNumeric: "tabular-nums",
                         fontSize: TAILLE_ACCOMPAGNE * echelle, fontWeight: 600, lineHeight: 1.3 } },
                     doseParts.main,
