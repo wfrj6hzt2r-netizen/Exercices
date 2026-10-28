@@ -12,6 +12,19 @@ Pour les contrôles : [verification/LISEZMOI.md](verification/LISEZMOI.md).
 Lire les **issues ouvertes** du dépôt : elles portent le travail en cours et les décisions
 en attente, et chacune dit le défaut qui l'a fait naître.
 
+**Les issues fermées comptent autant.** Elles gardent le raisonnement, pas seulement le
+résultat, et plusieurs resservent :
+
+| | |
+| --- | --- |
+| **#74** | L'audit typographique du designer, avec le comptage fait dans le code : huit classes de taille, quatre styles d'étiquette, trois paddings de carte, quatre rayons, et des rôles de couleur qui se chevauchent. C'est le document de référence pour toute refonte visuelle. |
+| **#71** | La relecture d'une patiente de 72 ans sur la hiérarchie des boutons — « quand un bouton est vert et gros, j'appuie dessus ». |
+| **#75** | Les 84 pictogrammes relus un par un, et le lien vers la planche qui conserve les verdicts. |
+| **#90** | Pourquoi un contrôle vert peut ne rien vérifier. |
+
+Les messages de fusion des PR disent aussi, chacun, le défaut qu'ils réparent et ce qui a
+été essayé puis retiré. `git log` est une source, pas un journal.
+
 ## Les contraintes du fichier
 
 **Un seul fichier.** Tout vit dans `index.html` : contenu, écrans, styles, React compris.
