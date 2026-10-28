@@ -149,9 +149,33 @@ const echap = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 if (!revision) {
     rmSync(join(SORTIE, "actuel"), { recursive: true, force: true });
     const h = await serie("actuel");
+    // Une planche de contact des vingt-sept, en une image : l'inventaire de l'application
+    // à un instant donné, qu'on peut envoyer et regarder d'un coup. Les écrans longs sont
+    // coupés en bas — celui du lexique fait douze mille pixels.
+    const vignette = ([nom]) => `<figure><img src="${slug(nom)}.png">
+ <figcaption>${echap(nom)}<br><span>${h[nom]} px</span></figcaption></figure>`;
+    writeFileSync(join(SORTIE, "actuel", "planche.html"), `<!doctype html><meta charset="utf-8"><style>
+body{background:#F5F8FA;font:15px/1.5 -apple-system,system-ui,sans-serif;margin:0;padding:24px;color:#0F172A}
+h1{font-size:22px;margin:0 0 4px}p{color:#4B5565;margin:0 0 20px}
+.g{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+figure{margin:0}figure img{width:100%;max-height:620px;object-fit:cover;object-position:top;
+ display:block;border:1px solid #DCE4EA;border-radius:10px;background:#fff}
+figcaption{font-size:13px;color:#0F172A;text-align:center;margin-top:6px;font-weight:600}
+figcaption span{font-weight:400;color:#8A94A6;font-size:12px}
+</style><h1>Les vingt-sept écrans</h1>
+<p>Largeur d'iPhone, page entière. Les écrans longs sont coupés en bas.</p>
+<div class="g">${ROUTES.map(vignette).join("")}</div>`);
+    const pl = await (await navigateur.newContext({
+        viewport: { width: 1180, height: 800 }, deviceScaleFactor: 1 })).newPage();
+    await pl.goto("file://" + join(SORTIE, "actuel", "planche.html"), { waitUntil: "load" });
+    await pl.waitForTimeout(500);
+    await pl.screenshot({ path: join(SORTIE, "actuel", "planche.png"), fullPage: true });
+    await pl.close();
+
     console.log(`${ROUTES.length} écrans photographiés dans verification/captures/actuel/`);
     for (const [nom, haut] of Object.entries(h))
         console.log(`  ${String(haut).padStart(6)} px  ${nom}`);
+    console.log("\nverification/captures/actuel/planche.png");
 } else {
     // La révision passée est écrite à part : le dépôt n'est jamais touché, et un plantage
     // en cours de route ne laisse pas un index.html étranger à sa place.

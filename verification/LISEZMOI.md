@@ -105,6 +105,10 @@ node verification/captures.mjs                 photographie les vingt-sept écra
 node verification/captures.mjs --avant main    photographie aussi « main », et compare
 ```
 
+Sans `--avant`, l'outil écrit aussi une **planche de contact des vingt-sept écrans** en une
+seule image : l'inventaire de l'application à un instant donné, qu'on peut envoyer et
+regarder d'un coup.
+
 La comparaison écrit trois choses dans `verification/captures/apres/` : un **rapport HTML**
 avec avant, après et ce qui a bougé pour chaque écran ; une **planche en PNG** des seuls
 écrans modifiés, lisible dans une conversation ; et la liste triée sur la sortie standard.
