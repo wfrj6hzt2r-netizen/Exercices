@@ -2996,9 +2996,15 @@ const GLOSSARY = {
     "charge légère": "Exercice facile, avec peu de poids ou d'effort.",
     "noter ma charge": "Indiquer à quel point l'exercice vous a paru difficile.",
 };
+// Deux mots restent définis mais ne déclenchent aucune pastille : « prévention » et
+// « échauffement » figurent dans la consigne de quatre exercices, où la définition —
+// « exercices pour éviter de se blesser » — répond à une question que personne ne se pose
+// à cet endroit. On les lit sur l'écran du lexique, là où on vient chercher un mot.
+const LEXIQUE_SEUL = new Set(["prévention", "échauffement"]);
 function findGlossaryTerm(name) {
     const n = name.toLowerCase();
-    return Object.keys(GLOSSARY).find((term) => n.includes(term.toLowerCase()));
+    return Object.keys(GLOSSARY).find((term) =>
+        !LEXIQUE_SEUL.has(term) && n.includes(term.toLowerCase()));
 }
 // « Coiffe des rotateurs » s'affichait « Coiffe Des Rotateurs » : la majuscule venait de
 // « text-transform: capitalize », qui la pose sur chaque mot. Seule l'initiale en prend une,

@@ -249,6 +249,7 @@ try {
         "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
         "posturesFines",
         "GLOSSARY", "findGlossaryTerm", "lexiqueParLettre", "initialeLexique",
+        "LEXIQUE_SEUL",
         "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
         "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
         "SANS_REPERE_EFFORT",
@@ -575,9 +576,31 @@ controle("aucun mot du lexique n'est masqué par un autre", () => {
     // des mois là où la carte écrivait le mot composé. On demande à chaque mot de se
     // reconnaître lui-même.
     return Object.keys(D.GLOSSARY || {})
+        .filter((terme) => !D.LEXIQUE_SEUL.has(terme))
         .map((terme) => [terme, D.findGlossaryTerm(terme)])
         .filter(([terme, trouve]) => trouve !== terme)
         .map(([terme, trouve]) => `« ${terme} » est masqué par « ${trouve} », placé avant lui`);
+});
+// La décision est celle du kinésithérapeute : ces deux mots restent définis mais ne se
+// posent sur aucune carte. Le contrôle en garde sa propre copie plutôt que de lire
+// l'ensemble du fichier — sa première version le lisait, et le banc de mutation l'a prise
+// en défaut : retirer « échauffement » de l'ensemble le rendait aveugle à son propre défaut,
+// puisqu'il demandait au code s'il était d'accord avec lui-même.
+const RESERVES_AU_LEXIQUE = ["prévention", "échauffement"];
+controle("les mots réservés au lexique n'en sortent jamais", () => {
+    const out = [];
+    for (const mot of RESERVES_AU_LEXIQUE) {
+        if (!(mot in (D.GLOSSARY || {})))
+            out.push(`« ${mot} » est réservé au lexique mais n'y est pas défini`);
+        if (!D.LEXIQUE_SEUL.has(mot))
+            out.push(`« ${mot} » ne figure plus parmi les mots réservés`);
+    }
+    for (const { ex, ou } of exercices) {
+        const terme = D.findGlossaryTerm(ex.name) || D.findGlossaryTerm(ex.tip || "");
+        if (terme && RESERVES_AU_LEXIQUE.includes(terme))
+            out.push(`${ou} — « ${ex.name} » porte la pastille « ${terme} »`);
+    }
+    return out;
 });
 controle("l'écran du lexique montre tout le tableau", () => {
     // L'écran se déduit de GLOSSARY, et c'est précisément ce qu'on vérifie : une définition

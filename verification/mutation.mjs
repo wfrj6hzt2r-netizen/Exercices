@@ -129,6 +129,12 @@ const MUTATIONS = [
             return rem(rem(s, court, ""), long, court + long);
         }],
 
+    // « échauffement » n'est plus réservé : la pastille le repose sur deux cartes
+    // d'exercice, pour y définir un mot que la consigne n'emploie qu'en passant.
+    ["les mots réservés au lexique n'en sortent jamais",
+        (s) => rem(s, 'const LEXIQUE_SEUL = new Set(["prévention", "échauffement"]);',
+                      'const LEXIQUE_SEUL = new Set(["prévention"]);')],
+
     // Le classement par lettre perd son premier mot en chemin : l'écran en montre
     // quatre-vingt-douze pour quatre-vingt-treize définitions, sans rien signaler.
     ["l'écran du lexique montre tout le tableau",
