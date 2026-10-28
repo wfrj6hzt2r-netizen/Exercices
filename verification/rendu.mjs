@@ -17,6 +17,7 @@ import { chromium } from "playwright";
 import axe from "axe-core"; // module CommonJS : l'export nommé n'existe pas
 const axeSource = axe.source;
 import { RACINE } from "./lire.mjs";
+import { ROUTES } from "./ecrans.mjs";
 
 const PORT = 8123;
 const BASE = `http://127.0.0.1:${PORT}/`;
@@ -25,24 +26,8 @@ const TYPES = {
     ".png": "image/png", ".webmanifest": "application/manifest+json",
 };
 
-const ROUTES = [
-    ["accueil", "#/"], ["blessures", "#/z/genou"], ["check-in", "#/z/genou/entorse"],
-    ["exercices", "#/z/genou/entorse/e1"], ["exercices tardifs", "#/z/genou/entorse/e4"],
-    ["fin de parcours", "#/z/genou/entorse/fin"], ["lombaires", "#/z/lombaire/hernie-discale"],
-    ["hernie positions", "#/z/lombaire/hernie-discale/e1"],
-    ["cheville", "#/z/cheville/achille-insertion/e4"], ["cervicales", "#/z/cervical/cervicalgie"],
-    ["hanche", "#/z/hanche/arthrose-hanche"], ["coureur", "#/coureur"],
-    ["arthrose entretien", "#/z/genou/arthrose-genou/e3"],
-    ["scoliose correction", "#/croissance/scoliose/e1"],
-    ["scoliose entretien", "#/croissance/scoliose/e4"],
-    ["coureur exercices", "#/coureur/essuie-glace/e1"], ["croissance", "#/croissance"],
-    ["croissance exercices", "#/croissance/osgood/e1"], ["prévention", "#/prevention"],
-    ["prévention exercices", "#/prevention/warmup/course"], ["récapitulatif", "#/recap"],
-    ["à propos", "#/apropos"], ["lexique", "#/lexique"],
-    ["fabrique de liens", "#/lien"], ["pied", "#/z/pied/coussinet/e1"],
-    ["cervicalgie C5", "#/z/cervical/ncb-c5/e1"], ["coude lanceur", "#/croissance/coude-lanceur/e1"],
-];
-
+// La liste des écrans vit dans « ecrans.mjs » : la suite de rendu et l'outil de captures
+// la lisent tous les deux, et deux copies auraient dérivé en silence.
 const echecs = [];
 const rapport = [];
 function noter(nom, lignes) {

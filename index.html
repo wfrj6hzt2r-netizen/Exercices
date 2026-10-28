@@ -1443,6 +1443,67 @@ const PoseElbowMobilise = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "17.5", y1: "28.5", x2: "28", y2: "21" }),
     React.createElement("path", { d: "M16 32.5 L16 43", strokeDasharray: "3 3" }),
     React.createElement("path", { d: "M 27 24 A 12 12 0 0 1 19 41" })));
+// --- Quatre dessins nés d'un contrôle rendu voyant ------------------------------
+// Huit dessins montraient une silhouette entière sans déclarer sa posture : le contrôle
+// de cohérence ne pouvait donc rien leur reprocher. En la déclarant, douze exercices
+// ont levé la main. Ceux-ci leur répondent ; aucun n'est atteignable par son nom, ils
+// ne servent que de repli à un dessin dont la posture ne convient pas.
+
+// Glissement du nerf du bras, assis. Sept exercices commencent par « Assis, bras écarté
+// à hauteur d'épaule » et recevaient une silhouette debout : le dessin du nerf ne
+// déclarait aucune posture, donc rien ne pouvait lui reprocher celle qu'il montre.
+const PoseNerveAssis = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M8 13 L8 28 L22 28" }),
+    React.createElement("line", { x1: "9", y1: "28", x2: "9", y2: "45" }),
+    React.createElement("circle", { cx: "12", cy: "9", r: "3.6" }),
+    React.createElement("line", { x1: "12", y1: "12.6", x2: "14", y2: "27" }),
+    React.createElement("line", { x1: "14", y1: "27", x2: "26", y2: "27" }),
+    React.createElement("line", { x1: "26", y1: "27", x2: "26", y2: "45" }),
+    React.createElement("line", { x1: "13", y1: "15", x2: "24", y2: "14" }),
+    React.createElement("line", { x1: "24", y1: "14", x2: "33", y2: "13" }),
+    React.createElement("line", { x1: "33", y1: "13", x2: "35", y2: "8" }),
+    React.createElement("path", { d: "M38 10 A 8 8 0 0 1 38 22" })));
+// Respiration assise. Les deux arcs disent l'ampliation des côtes ; les mains posées
+// dessus sont dans la consigne, et les dessiner encombrait le tronc sans rien ajouter.
+// La chaise a un dossier : sans lui, le siège seul se lisait comme un tabouret.
+const PoseBreathingAssis = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M5 14 L5 28 L21 28" }),
+    React.createElement("line", { x1: "7", y1: "28", x2: "7", y2: "45" }),
+    React.createElement("circle", { cx: "16", cy: "8", r: "3.6" }),
+    React.createElement("line", { x1: "16", y1: "11.6", x2: "17", y2: "27" }),
+    React.createElement("line", { x1: "17", y1: "27", x2: "29", y2: "27" }),
+    React.createElement("line", { x1: "29", y1: "27", x2: "29", y2: "45" }),
+    React.createElement("path", { d: "M13 17 A 4 4 0 0 0 13 25" }),
+    React.createElement("path", { d: "M20 17 A 4 4 0 0 1 20 25" })));
+// Respiration diaphragmatique : allongé sur le dos, une main posée sur le ventre, et
+// l'arc en pointillé pour le ventre qui se gonfle. Le genou plié, pied au sol, est ce qui
+// dit « sur le dos » : sans lui, jambes tendues et bras relevé, la silhouette se lisait
+// à plat ventre, comme toutes les autres silhouettes couchées de l'application.
+const PoseBreathingDos = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "38", r: "3.6" }),
+    React.createElement("line", { x1: "12.6", y1: "38", x2: "26", y2: "39" }),
+    React.createElement("line", { x1: "26", y1: "39", x2: "33", y2: "32" }),
+    React.createElement("line", { x1: "33", y1: "32", x2: "38", y2: "41" }),
+    React.createElement("line", { x1: "14", y1: "37", x2: "18", y2: "34" }),
+    React.createElement("line", { x1: "18", y1: "34", x2: "23", y2: "37" }),
+    React.createElement("path", { d: "M18 31 A 6 6 0 0 1 26 32", strokeDasharray: "3 3" })));
+// Extension du haut du dos assise : chaise à dossier bas, mains derrière la tête, et la
+// flèche pour la poitrine qui s'ouvre vers le plafond.
+const PoseThoracicExtAssis = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M8 20 L8 28 L22 28" }),
+    React.createElement("line", { x1: "9", y1: "28", x2: "9", y2: "45" }),
+    React.createElement("circle", { cx: "13", cy: "9", r: "3.8" }),
+    React.createElement("line", { x1: "13", y1: "12.8", x2: "15", y2: "27" }),
+    React.createElement("line", { x1: "15", y1: "27", x2: "27", y2: "27" }),
+    React.createElement("line", { x1: "27", y1: "27", x2: "27", y2: "45" }),
+    React.createElement("line", { x1: "13.5", y1: "15", x2: "20", y2: "11" }),
+    React.createElement("line", { x1: "20", y1: "11", x2: "15", y2: "6" }),
+    React.createElement("line", { x1: "25", y1: "23", x2: "25", y2: "15" }),
+    React.createElement("path", { d: "M22 18 L25 14 L28 18" })));
 const POSES = [
     // --- 0 bis. Cinq gestes relevés à l'écran, chacun dessiné par une règle trop large ---
     // Le chat-vache tombait sur la rotation du tronc debout, le relevé de buste à plat
@@ -1503,6 +1564,12 @@ const POSES = [
     { key: "supine-slr", icon: PoseSupineSlr, test: (n) => n.includes("étirements du nerf sciatique") },
     { key: "ham-curl", icon: PoseHamCurl, test: (n) => n.includes("curl ischio") },
     { key: "elbow-mobilise", icon: PoseElbowMobilise, test: (n) => n.includes("mobilité douce du coude") },
+
+    // --- 0 sexies. Replis de posture, jamais atteints par leur nom ---
+    { key: "nerve-assis", icon: PoseNerveAssis, test: () => false },
+    { key: "breathing-assis", icon: PoseBreathingAssis, test: () => false },
+    { key: "breathing-dos", icon: PoseBreathingDos, test: () => false },
+    { key: "thoracic-ext-assis", icon: PoseThoracicExtAssis, test: () => false },
 
     // --- 0. Gestes que des règles plus générales captaient à tort ---
     // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
@@ -1807,6 +1874,13 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     // contrôle de cohérence ne pouvait donc rien lui reprocher, et trois bascules du
     // bassin « allongé sur le dos » recevaient un homme debout.
     trunk: "debout",
+    "thoracic-ext": "dos", "shoulder-raise": "debout", throw: "debout",
+    "supine-stick": "dos", "etirement-epaule": "debout", nerve: "debout",
+    breathing: "debout",
+    "nerve-assis": "assis", "breathing-assis": "assis", "breathing-dos": "dos",
+    "thoracic-ext-assis": "assis",
+    "arm-support": "debout", "triceps-push": "debout", "band-row": "debout",
+    pendulum: "debout",
     "floor-lift": "debout", "standing-hip-ext": "debout", "leg-swing": "debout",
     "leg-press": "assis", "band-rot-int": "debout", "scap-row": "debout",
     "copenhagen": "cote", "nerve-sciatic": "assis", "supine-slr": "dos",
@@ -1850,6 +1924,9 @@ const DESSIN_AUTRE_POSTURE = {
     "lying-mobilise": { assis: "seated-leg", debout: "trunk", cote: "side-lying" },
     "hip-hinge": { dos: "lying-mobilise", ventre: "prone-extension" },
     trunk: { dos: "supine-core", assis: "seated-twist" },
+    nerve: { assis: "nerve-assis" },
+    breathing: { assis: "breathing-assis", dos: "breathing-dos" },
+    "thoracic-ext": { ventre: "prone-ytw", assis: "thoracic-ext-assis" },
     squat: { assis: "seated-leg" },
     // Le renforcement de hanche s'écrit tantôt sur le flanc, tantôt sur le dos, tantôt
     // debout : le même geste existe dans les trois postures, et c'est la consigne qui tranche.
@@ -1868,7 +1945,10 @@ function postureDecrite(tip) {
     const t = normalizeSearch(tip || "").slice(0, 110);
     // Le ventre et les quatre pattes se déclarent avant tout : « allongé sur le ventre »
     // commence par « allongé » sans être pour autant la même posture que sur le dos.
-    if (/sur le ventre|a plat ventre|\bplanche\b/.test(t))
+    // « Allongé, une main sur le ventre » décrit quelqu'un sur le dos : le ventre y est une
+    // partie du corps, pas une posture. La règle le prenait pour un décubitus ventral, et
+    // la respiration diaphragmatique réclamait donc un dessin à plat ventre.
+    if (/(?<!main )(?<!mains )sur le ventre|a plat ventre|\bplanche\b/.test(t))
         return "ventre";
     if (/a quatre pattes/.test(t))
         return "quatre";

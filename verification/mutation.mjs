@@ -129,6 +129,12 @@ const MUTATIONS = [
             return rem(rem(s, court, ""), long, court + long);
         }],
 
+    // Le pendule perd sa posture déclarée. Il ne sert aucune consigne qui nomme la sienne,
+    // donc le contrôle de cohérence ne bronche pas : c'est tout le problème, et c'est ce
+    // nouveau contrôle-là qui doit le voir.
+    ["tout dessin de silhouette entière déclare sa posture",
+        (s) => rem(s, '    pendulum: "debout",\n', "")],
+
     // « échauffement » n'est plus réservé : la pastille le repose sur deux cartes
     // d'exercice, pour y définir un mot que la consigne n'emploie qu'en passant.
     ["les mots réservés au lexique n'en sortent jamais",

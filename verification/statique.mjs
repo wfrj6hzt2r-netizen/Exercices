@@ -618,6 +618,35 @@ controle("l'écran du lexique montre tout le tableau", () => {
                 out.push(`« ${t} » est rangé sous ${lettre}`);
     return out;
 });
+// Les dessins qui ne montrent pas une silhouette entière : un bloc-notes, un pied, une
+// tête, un élastique. Ils n'ont pas de posture à déclarer. La liste fait foi — c'est elle
+// qu'il faut modifier, en connaissance de cause, pour exempter un dessin de plus.
+const SANS_POSTURE = new Set([
+    "advice", "advice-late",            // le bloc-notes
+    "shoe",                             // une chaussure
+    "hand", "wrist", "elbow-mobilise",  // main, poignet, bras seul
+    "ankle-pump", "foot-arch",          // une jambe, un pied
+    "band", "isometrique",              // un élastique, deux flèches
+    "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
+    // À genoux, assis sur les talons : une posture que « postureDecrite » ne nomme pas.
+    // La déclarer reviendrait à inventer une sixième valeur que rien ne lirait.
+    "child-pose", "nordic-kneel",
+]);
+controle("tout dessin de silhouette entière déclare sa posture", () => {
+    // Le contrôle de cohérence compare la posture que la consigne nomme à celle que le
+    // dessin déclare. Un dessin qui n'en déclare aucune n'est comparé à rien : il peut
+    // montrer un homme debout sous une consigne qui commence par « allongé sur le dos »,
+    // et c'est exactement ce que trois bascules du bassin ont fait pendant des mois, sans
+    // qu'aucun des vingt-cinq autres contrôles ne puisse le voir.
+    const cles = [...new Set(D.POSES.map((p) => p.key))];
+    const out = cles
+        .filter((k) => !D.POSTURE_DESSIN[k] && !SANS_POSTURE.has(k))
+        .map((k) => `« ${k} » montre une silhouette sans déclarer sa posture`);
+    for (const k of SANS_POSTURE)
+        if (!cles.includes(k))
+            out.push(`« ${k} » est exempté de posture mais n'est plus un dessin`);
+    return out;
+});
 controle("chaque « pourquoi » désigne une étape qui existe", () => {
     const libelles = new Set();
     D.PATHOLOGIES.forEach((z) => z.injuries.forEach((i) => i.stages.forEach((s) => libelles.add(s.label))));
@@ -864,6 +893,23 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Bascules du bassin en insistant sur la flexion": "supine-core",
         "Bascule du bassin": "supine-core",
         "Coordination mobilité thoraco-lombaire": "seated-twist",
+        // Et les douze qu'a fait lever le contrôle une fois les postures déclarées : sept
+        // glissements nerveux « Assis » qui montraient une silhouette debout, trois
+        // respirations, deux exercices du haut du dos.
+        "Glissement du nerf, version très douce": "nerve-assis",
+        "Glissement du nerf du bras": "nerve-assis",
+        "Mise en tension du nerf du bras": "nerve-assis",
+        "Glissement du nerf médian": "nerve-assis",
+        "Mise en tension du nerf médian": "nerve-assis",
+        "Glissement du nerf ulnaire": "nerve-assis",
+        "Mise en tension du nerf ulnaire": "nerve-assis",
+        "Relâchement musculaire": "breathing-assis",
+        "Respiration dirigée assise": "breathing-assis",
+        // « Allongé, une main sur le ventre » décrit quelqu'un sur le dos : le détecteur y
+        // lisait un décubitus ventral, et réclamait donc un dessin à plat ventre.
+        "Respiration diaphragmatique": "breathing-dos",
+        "Renforcement doux du haut du dos": "prone-ytw",
+        "Extension du haut du dos": "thoracic-ext-assis",
     };
     const cles = new Map();
     for (const p of D.POSES) {
