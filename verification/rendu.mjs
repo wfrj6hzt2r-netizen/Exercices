@@ -38,7 +38,8 @@ const ROUTES = [
     ["coureur exercices", "#/coureur/essuie-glace/e1"], ["croissance", "#/croissance"],
     ["croissance exercices", "#/croissance/osgood/e1"], ["prévention", "#/prevention"],
     ["prévention exercices", "#/prevention/warmup/course"], ["récapitulatif", "#/recap"],
-    ["à propos", "#/apropos"], ["fabrique de liens", "#/lien"], ["pied", "#/z/pied/coussinet/e1"],
+    ["à propos", "#/apropos"], ["lexique", "#/lexique"],
+    ["fabrique de liens", "#/lien"], ["pied", "#/z/pied/coussinet/e1"],
     ["cervicalgie C5", "#/z/cervical/ncb-c5/e1"], ["coude lanceur", "#/croissance/coude-lanceur/e1"],
 ];
 
