@@ -68,7 +68,7 @@ Pour un changement visuel, ajouter la comparaison d'écrans :
 node verification/captures.mjs --avant main
 ```
 
-Elle dit lesquels des vingt-sept écrans ont bougé, et montre quoi.
+Elle dit lesquels des écrans ont bougé, et montre quoi.
 
 ## Travailler avec le praticien
 

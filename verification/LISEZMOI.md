@@ -1,9 +1,9 @@
 # Vérification
 
-Trente-six contrôles automatiques — vingt-sept statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Trente-sept contrôles automatiques — vingt-huit statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
-Un troisième script, `mutation.mjs`, introduit vingt-trois défauts un par un et vérifie que le
+Un troisième script, `mutation.mjs`, introduit un défaut par contrôle statique, un par un, et vérifie que le
 contrôle concerné les voit. Deux d'entre eux avaient cessé de vérifier quoi que ce soit sans
 que rien ne le signale.
 
@@ -55,14 +55,14 @@ contrôles-ci mordent encore.
 | L'écran du lexique montre tout le tableau | L'écran se déduit du tableau des définitions, et c'est précisément ce qu'on vérifie : un mot ajouté doit y paraître sans qu'on y pense, et le classement par lettre ne doit en perdre aucun en route |
 | Tout dessin de silhouette entière déclare sa posture | Le contrôle de cohérence compare la posture que la consigne nomme à celle que le dessin déclare. Un dessin qui n'en déclare aucune n'est comparé à rien : trois « bascules du bassin », dont la consigne commence par « allongé sur le dos », ont montré un homme debout pendant des mois sans qu'aucun des vingt-cinq autres contrôles ne puisse le voir. Les dessins qui ne montrent pas une silhouette — un bloc-notes, un pied, une tête, un élastique — sont exemptés par une liste écrite en clair, et c'est elle qu'il faut modifier pour en exempter un de plus |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
-
+| Une sauvegarde ancienne garde toute sa progression | La refonte de 2026 a porté la sauvegarde en version 4. Les trois migrations précédentes n'avaient été vérifiées qu'en ouvrant l'application sur un téléphone qui gardait une sauvegarde d'avant — en pratique, chez le patient. Le contrôle rejoue une sauvegarde v1, une v3, le passage au lendemain et une seconde lecture, et exige que coches, journal, douleurs, charges, programme prescrit et réglages survivent |
 | La vignette de l'accueil est bien l'icône installée | Le logo encastré dans la page et le fichier `icon-192.png` avaient divergé : l'accueil montrait un dessin que l'icône posée sur l'écran d'accueil ne montrait plus. Le contrôle compare les octets |
 
 ### Contrôles de rendu — `rendu.mjs`
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 27 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
+| Chaque écran s'affiche sans erreur | 29 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur les 26 écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
@@ -101,11 +101,11 @@ visuelle c'est pourtant la question : qu'est-ce qui a changé, et qu'est-ce qui 
 sans qu'on le veuille.
 
 ```
-node verification/captures.mjs                 photographie les vingt-sept écrans
+node verification/captures.mjs                 photographie tous les écrans
 node verification/captures.mjs --avant main    photographie aussi « main », et compare
 ```
 
-Sans `--avant`, l'outil écrit aussi une **planche de contact des vingt-sept écrans** en une
+Sans `--avant`, l'outil écrit aussi une **planche de contact de tous les écrans** en une
 seule image : l'inventaire de l'application à un instant donné, qu'on peut envoyer et
 regarder d'un coup.
 

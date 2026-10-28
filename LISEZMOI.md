@@ -15,7 +15,7 @@ dans l'application : les patients ne le rencontrent pas.
 Choisissez la zone, la blessure et le point de départ, puis copiez le lien et envoyez-le.
 
 Le patient qui ouvre ce lien arrive directement sur son programme, et **l'application s'en
-souvient** : à chaque ouverture suivante, l'accueil affiche « Votre programme » au lieu de lui
+souvient** : à chaque ouverture suivante, l'accueil affiche ce programme dans la carte « Mon parcours » au lieu de lui
 demander de choisir sa blessure parmi quarante-deux. Le catalogue reste accessible d'un
 bouton, pour une douleur nouvelle.
 

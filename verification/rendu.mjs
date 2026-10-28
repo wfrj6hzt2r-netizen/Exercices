@@ -320,7 +320,7 @@ async function ouvrir(ctx, hash) {
         await ctx.setOffline(true);
         await p.goto(BASE, { waitUntil: "domcontentloaded" });
         await p.waitForTimeout(800);
-        if (!(await p.locator("text=Quelle zone").count()))
+        if (!(await p.locator("text=Bonjour").count()))
             out.push("l'accueil ne s'affiche pas sans réseau");
         const externes = await p.evaluate(() => performance.getEntriesByType("resource")
             .filter((r) => !r.name.startsWith(location.origin)).length);
@@ -346,6 +346,9 @@ async function ouvrir(ctx, hash) {
 // --- 6. Le lien prescrit tient dans le temps ------------------------------------------
 // Un lien reçu du kinésithérapeute doit être retenu : à la réouverture, l'accueil montre le
 // programme au lieu de redemander au patient de choisir sa blessure parmi quarante-deux.
+// Depuis la refonte, le programme tient dans la carte « Mon parcours » de l'accueil, et le
+// dessin du corps vit sur son propre écran : l'accueil ne doit plus le montrer, mais doit
+// toujours y mener — une douleur nouvelle ne prévient pas.
 {
     const out = [];
     const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
@@ -356,28 +359,23 @@ async function ouvrir(ctx, hash) {
         const { p } = await ouvrir(ctx, lien);
         await p.goto(BASE, { waitUntil: "load" });
         await p.waitForTimeout(500);
-        const r = await p.evaluate(() => {
-            const surtitre = document.querySelector("main p");
-            const carte = [...document.querySelectorAll("main button")]
-                .find((x) => /ENVOY\u00c9 PAR VOTRE KIN/i.test(x.textContent));
-            return {
-                surtitre: surtitre ? surtitre.textContent.trim() : "",
-                carte: !!carte,
-                catalogue: !!document.querySelector('main svg[role="group"]'),
-                bouton: [...document.querySelectorAll("main button")]
-                    .some((x) => /Voir tous les programmes/.test(x.textContent)),
-            };
-        });
-        if (r.surtitre !== "Votre programme")
-            out.push(`${lien} — l'accueil ne reconna\u00eet pas le programme (« ${r.surtitre} »)`);
+        const r = await p.evaluate(() => ({
+            carte: /ENVOY\u00c9 PAR VOTRE KIN/i.test(document.querySelector("main").textContent),
+            reprendre: [...document.querySelectorAll("main button")]
+                .some((x) => /Continuer ma s\u00e9ance|Commencer mon programme/.test(x.textContent)),
+            catalogue: !!document.querySelector('main svg[role="group"]'),
+        }));
         if (!r.carte)
             out.push(`${lien} — la carte du programme prescrit manque`);
+        if (!r.reprendre)
+            out.push(`${lien} — la carte ne permet pas de rouvrir le programme`);
         if (r.catalogue)
-            out.push(`${lien} — le catalogue s'affiche encore alors qu'un programme est prescrit`);
-        if (!r.bouton)
+            out.push(`${lien} — le catalogue s'affiche sur l'accueil alors qu'un programme est prescrit`);
+        const choisir = p.getByRole("button", { name: /Choisir une zone/ });
+        if (!(await choisir.count()))
             out.push(`${lien} — aucun moyen d'atteindre le catalogue`);
         else {
-            await p.getByRole("button", { name: /Voir tous les programmes/ }).click();
+            await choisir.first().click();
             await p.waitForTimeout(300);
             if (!(await p.locator('main svg[role="group"]').count()))
                 out.push(`${lien} — le catalogue ne s'ouvre pas quand on le demande`);

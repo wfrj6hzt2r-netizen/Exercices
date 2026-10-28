@@ -353,6 +353,13 @@ restent derrière le texte et au-dessous de 25 % d'opacité ; le contrôle de co
 ignore, mais aucune teinte ici n'assombrit ni n'éclaircit assez pour gêner la lecture. */
 .bandeau{background-image:var(--bandeau-vague),radial-gradient(130% 95% at 100% 0%,var(--bandeau-lueur),transparent 72%);background-repeat:no-repeat;background-position:right top,0 0;background-size:min(78%,320px) auto,100% 100%}
 .text-sur-bandeau{color:var(--sur-bandeau)}
+/* La barre d'onglets. Fixée en bas, elle porte elle-même la marge de sécurité de l'iPhone
+(la barre d'accueil), et le contenu réserve sa hauteur pour qu'aucun dernier bouton ne passe
+dessous. Sur écran large, elle reste dans la colonne de l'application. */
+.barre-onglets{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;max-width:480px;margin:0 auto;padding:4px 6px calc(4px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--bordure);box-shadow:0 -6px 20px -14px rgba(22,48,31,0.25)}
+.barre-onglets button{min-height:56px}
+.avec-onglets{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+@media print{.barre-onglets{display:none!important}.avec-onglets{padding-bottom:0}}
 /* Les quatre classes Tailwind qui portaient une couleur en dur passent par les mêmes
 variables. Ce bloc vient après le Tailwind figé : à spécificité égale, c'est lui qui gagne,
 et les cinquante-cinq endroits qui les emploient n'ont pas à changer. */
@@ -365,7 +372,7 @@ html{font-size:106.25%}html,body{margin:0;padding:0;background:var(--bandeau)}/*
 la compilation y figurent. Cinq classes d'espacement écrites depuis ne s'y trouvaient pas et
 ne faisaient donc rien — silencieusement, ce qui est le pire des cas. Elles sont rétablies ici
 avec leurs valeurs d'origine. Toute nouvelle classe d'espacement doit être vérifiée de même. */
-.mt-2\.5{margin-top:0.625rem}.mt-3\.5{margin-top:0.875rem}.pb-4{padding-bottom:1rem}.pb-8{padding-bottom:2rem}.gap-5{gap:1.25rem}.pb-16{padding-bottom:4rem}
+.mt-2\.5{margin-top:0.625rem}.mt-3\.5{margin-top:0.875rem}.pb-4{padding-bottom:1rem}.pb-8{padding-bottom:2rem}.gap-5{gap:1.25rem}.pb-16{padding-bottom:4rem}.gap-6{gap:1.5rem}
 /* Hauteur d'écran. « 100vh » sur iPhone compte la place occupée par la barre d'outils de
 Safari : le dernier bouton d'un écran de fin se retrouve dessous, ou la frôle. « svh » mesure
 la fenêtre réellement visible. La règle n'est appliquée que si le navigateur la comprend. */
@@ -412,6 +419,20 @@ const IconeJauge = traitIcone(React.createElement(React.Fragment, null,
 const IconeMaison = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M4 11.2 12 4.5l8 6.7" }),
     React.createElement("path", { d: "M6.2 10.4V20h11.6v-9.6" })));
+// Les quatre onglets, et les deux accès rapides de l'accueil.
+const IconeParcours = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "6", cy: "18", r: "2.2" }),
+    React.createElement("circle", { cx: "18", cy: "6", r: "2.2" }),
+    React.createElement("path", { d: "M8.2 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.8" })));
+const IconeProgres = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M4 20h16" }),
+    React.createElement("path", { d: "M7 16v-4M12 16V8M17 16V5" })));
+const IconeProfil = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "12", cy: "8.5", r: "3.8" }),
+    React.createElement("path", { d: "M4.5 20c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" })));
+const IconeCible = traitIcone(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "12", cy: "12", r: "8" }),
+    React.createElement("circle", { cx: "12", cy: "12", r: "3.2" })));
 const IconeRecommencer = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M20 12a8 8 0 1 1-2.6-5.9" }),
     React.createElement("path", { d: "M20 3.5V8h-4.5" })));
@@ -5487,6 +5508,60 @@ function describeRoute(route) {
     }
     return null;
 }
+// La séance que désigne une adresse : ses exercices, la clé sous laquelle ils se cochent,
+// et l'étape atteinte sur le nombre d'étapes. La carte « Mon parcours » de l'accueil en tire
+// son anneau. Un écran de bilan de départ n'a pas encore d'étape : il rend « etape » nul.
+function seanceDeRoute(route) {
+    if (!route)
+        return null;
+    if (route.view === "stage" || route.view === "checkin") {
+        const z = PATHOLOGIES.find((x) => x.id === route.pathId);
+        const inj = z && z.injuries.find((x) => x.id === route.injuryId);
+        if (!inj)
+            return null;
+        const i = route.view === "stage" ? route.stageIdx || 0 : null;
+        return { cle: cleParcours(z.id, inj.id), zone: z.label, total: inj.stages.length, etape: i,
+            exercices: i === null ? [] : inj.stages[i].exercises };
+    }
+    if (route.view === "runner-exercises" || route.view === "runner-stage-select") {
+        const rp = RUNNER_DATA.find((x) => x.id === route.runnerPathId);
+        if (!rp)
+            return null;
+        const i = route.view === "runner-exercises" ? route.runnerStageIdx || 0 : null;
+        return { cle: i === null ? null : cleCoureur(rp.id, i), zone: "Coureur", total: rp.stages.length, etape: i,
+            exercices: i === null ? [] : rp.stages[i].exercises };
+    }
+    if (route.view === "croissance-exercices" || route.view === "croissance-checkin") {
+        const c = CROISSANCE_DATA.find((x) => x.id === route.croissanceId);
+        if (!c)
+            return null;
+        const i = route.view === "croissance-exercices" ? route.croissanceStageIdx || 0 : null;
+        return { cle: i === null ? null : cleCroissance(c.id, i), zone: "Croissance", total: c.stages.length, etape: i,
+            exercices: i === null ? [] : c.stages[i].exercises };
+    }
+    if (route.view === "prevention-exercises" || route.view === "prevention-sub") {
+        const cat = PREVENTION_CATEGORIES.find((x) => x.id === route.preventionCategory);
+        const sub = cat && cat.data[route.preventionSub];
+        if (!sub)
+            return null;
+        return { cle: clePrevention(cat.id, route.preventionSub), zone: "Prévention", total: null, etape: null,
+            exercices: sub.exercises };
+    }
+    return null;
+}
+// Le résumé de l'accueil : séances, exercices et douleur moyenne sur une fenêtre de jours.
+function resumeDesJours(journal, jours, aujourdhui) {
+    const d = new Date();
+    d.setDate(d.getDate() - (jours - 1));
+    const borne = aujourdHui(d);
+    const dans = (journal || []).filter((e) => e.date >= borne && e.date <= aujourdhui);
+    const douleurs = dans.filter((e) => e.douleur !== undefined).map((e) => e.douleur);
+    return {
+        seances: new Set(dans.map((e) => e.date)).size,
+        exercices: dans.reduce((a, e) => a + e.faits, 0),
+        douleur: douleurs.length ? douleurs.reduce((a, v) => a + v, 0) / douleurs.length : null,
+    };
+}
 // --- Adresses des écrans -------------------------------------------------------------
 // Chaque écran reçoit une adresse en dièse. Trois bénéfices : le bouton retour du
 // navigateur fonctionne, un rechargement retombe au même endroit, et surtout un lien peut
@@ -5497,7 +5572,11 @@ const ROUTE_VIDE = { pathId: null, injuryId: null, stageIdx: 0, runnerPathId: nu
 function construireRoute(e) {
     const z = e.pathId, i = e.injuryId, c = e.preventionCategory, s = e.preventionSub, r = e.runnerPathId;
     switch (e.view) {
-        case "zone": return "#/";
+        // L'adresse nue est l'accueil. Le choix de la zone, qui l'occupait jusqu'à la refonte,
+        // prend sa propre adresse : les liens envoyés aux patients (#/z/…) ne changent pas.
+        case "accueil": return "#/";
+        case "zone": return "#/zone";
+        case "profil": return "#/profil";
         case "injury": return z ? `#/z/${z}` : null;
         case "checkin": return z && i ? `#/z/${z}/${i}` : null;
         case "stage": return z && i ? `#/z/${z}/${i}/e${(e.stageIdx || 0) + 1}` : null;
@@ -5527,7 +5606,11 @@ function etatDepuisRoute(hash) {
     const p = String(hash || "").replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
     const fait = (sup) => Object.assign({}, ROUTE_VIDE, sup);
     if (!p.length)
+        return fait({ view: "accueil" });
+    if (p[0] === "zone")
         return fait({ view: "zone" });
+    if (p[0] === "profil")
+        return fait({ view: "profil" });
     const etape = (txt, max) => {
         const m = /^e(\d+)$/.exec(txt || "");
         if (!m)
@@ -5610,28 +5693,29 @@ function etatDepuisRoute(hash) {
 // en haut à gauche. Ce geste raccourcit le trajet. Destination de retour par écran, reprise
 // exactement des flèches existantes pour que geste et bouton ne divergent jamais.
 const RETOUR = {
+    zone: "accueil",
     injury: "zone",
     checkin: "injury",
     stage: "injury",
-    complete: "zone",
+    complete: "accueil",
     "runner-pathology": "zone",
     "runner-stage-select": "runner-pathology",
     "runner-exercises": "runner-stage-select",
-    "runner-complete": "zone",
-    recap: "zone",
+    "runner-complete": "accueil",
+    recap: "accueil",
     // Destination par défaut seulement : l'écran « À propos » s'ouvre aussi depuis
     // l'introduction, et le retour est alors calculé par « cibleRetour ».
-    apropos: "zone",
-    lexique: "zone",
-    lien: "zone",
+    apropos: "profil",
+    lexique: "profil",
+    lien: "accueil",
     "croissance-liste": "zone",
     "croissance-checkin": "croissance-liste",
     "croissance-exercices": "croissance-checkin",
-    "croissance-fin": "zone",
+    "croissance-fin": "accueil",
     "prevention-category": "zone",
     "prevention-sub": "prevention-category",
     "prevention-exercises": "prevention-sub",
-    "prevention-complete": "zone",
+    "prevention-complete": "accueil",
 };
 const GLISSE_SEUIL = 72; // distance à franchir pour valider le retour
 const GLISSE_MARGE = 28; // bande de bord gauche laissée au geste natif de Safari
@@ -5728,6 +5812,56 @@ function SwipeBack({ onBack, actif, children }) {
 // Bande des sept derniers jours. L'assiduité est le premier déterminant du résultat, et
 // jusqu'ici rien ne la montrait : trois semaines sérieuses et une soirée d'un seul tenant
 // donnaient le même écran.
+// --- La barre d'onglets ----------------------------------------------------------------
+// Quatre destinations, toujours au même endroit. Sans elle, l'accueil était le seul carrefour
+// de l'application : pour voir sa progression depuis un exercice, il fallait remonter trois
+// écrans. Elle se pose par-dessus le bas de page, marge de sécurité de l'iPhone comprise.
+const ONGLETS = [
+    { id: "accueil", libelle: "Accueil", Icone: IconeMaison },
+    { id: "parcours", libelle: "Parcours", Icone: IconeParcours },
+    { id: "progres", libelle: "Progrès", Icone: IconeProgres },
+    { id: "profil", libelle: "Profil", Icone: IconeProfil },
+];
+function ongletDeVue(vue) {
+    if (vue === "accueil")
+        return "accueil";
+    if (vue === "recap")
+        return "progres";
+    if (vue === "profil" || vue === "apropos" || vue === "lexique")
+        return "profil";
+    return "parcours";
+}
+function BarreOnglets({ actif, onChoisir }) {
+    return React.createElement("nav", { className: "barre-onglets", "aria-label": "Navigation principale" },
+        ONGLETS.map((o) => {
+            const estActif = o.id === actif;
+            return React.createElement("button", { key: o.id, type: "button", onClick: () => onChoisir(o.id),
+                "aria-current": estActif ? "page" : undefined,
+                className: "flex-1 flex flex-col items-center justify-center gap-1 cible-44",
+                style: { color: estActif ? ACCENT_FORT : INK_DOUX } },
+                React.createElement("span", { className: "inline-flex items-center justify-center rounded-full",
+                    style: { width: 48, height: 28, backgroundColor: estActif ? ANIS_VOILE : "transparent" } },
+                    React.createElement(o.Icone, { size: 22 })),
+                React.createElement("span", { className: "t-accompagne", style: { fontWeight: estActif ? 600 : 400 } }, o.libelle));
+        }));
+}
+// L'anneau de la carte « Mon parcours » : la part de la séance du jour déjà cochée.
+function AnneauProgression({ part, taille }) {
+    const t = taille || 64, ep = 7, r = (t - ep) / 2, c = 2 * Math.PI * r;
+    const pct = Math.round(Math.max(0, Math.min(1, part || 0)) * 100);
+    return React.createElement("div", { className: "relative shrink-0", style: { width: t, height: t },
+        role: "img", "aria-label": `${pct} % de la séance du jour` },
+        React.createElement("svg", { width: t, height: t, viewBox: `0 0 ${t} ${t}`, "aria-hidden": "true" },
+            React.createElement("circle", { cx: t / 2, cy: t / 2, r, fill: "none", stroke: ACCENT_VOILE, strokeWidth: ep }),
+            // À zéro, l'extrémité arrondie d'un arc vide dessinait un point : on ne trace rien.
+            pct > 0 && React.createElement("circle", { cx: t / 2, cy: t / 2, r, fill: "none", stroke: ACCENT, strokeWidth: ep,
+                strokeLinecap: "round", strokeDasharray: `${c * pct / 100} ${c}`,
+                transform: `rotate(-90 ${t / 2} ${t / 2})`,
+                style: { transition: MOUVEMENT_REDUIT ? "none" : "stroke-dasharray .4s cubic-bezier(.2,.7,.3,1)" } })),
+        React.createElement("span", { className: "absolute t-corps font-semibold tabular-nums",
+            style: { inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: INK } },
+            pct, "\u00A0%"));
+}
 function BandeAssiduite({ journal, jour, accent }) {
     const jours = septDerniersJours(journal, jour);
     const total = jours.filter((j) => j.faits > 0).length;
@@ -5973,6 +6107,11 @@ const ACCENT_CALENDRIER = "var(--accent-calendrier)"; // palier intermédiaire d
 // Grille du récapitulatif tant qu'aucune séance n'est enregistrée : l'accent posé très bas,
 // pour que les cases se lisent comme une place réservée et non comme un tableau éteint.
 const ACCENT_ATTENTE = "var(--accent-attente)";
+// L'anis marque ce qui est actif — l'onglet courant —, jamais un texte : sur blanc, il ne
+// tient pas le contraste d'une écriture.
+const ANIS = "var(--anis)";
+const ANIS_VOILE = "var(--anis-voile)";
+const ORANGE = "var(--orange)"; // la douleur, dans les graphiques uniquement
 const INK = "var(--encre)";
 const INK_PROSE = "var(--encre-prose)"; // prose secondaire des cartes
 const INK_DOUX = "var(--encre-doux)"; // légendes, texte de second plan
@@ -6552,7 +6691,7 @@ function GuidedJourney() {
     const [arrivee] = useState(() => (typeof window !== "undefined"
         ? etatDepuisRoute(window.location.hash)
         : null));
-    const depart = arrivee || Object.assign({ view: "zone" }, ROUTE_VIDE);
+    const depart = arrivee || Object.assign({ view: "accueil" }, ROUTE_VIDE);
     // Le programme envoyé par le kinésithérapeute. Il se retient à la première ouverture du
     // lien et survit aux suivantes : sans lui, un patient qui rouvre l'application depuis son
     // écran d'accueil retombait sur le catalogue des quarante-deux blessures, c'est-à-dire sur
@@ -6566,9 +6705,6 @@ function GuidedJourney() {
     // simple retour en arrière réécrirait la prescription. Un nouveau lien est donc pris en
     // compte à la prochaine ouverture franche, ce qui est le cas courant.
     const [prescrit, setPrescrit] = useState(() => restored.prescrit || null);
-    // Ouvert a la demande, le temps de la visite : rien n'est memorise, l'accueil retrouve
-    // son programme a la prochaine ouverture.
-    const [catalogueDeploye, setCatalogueOuvert] = useState(false);
     useEffect(() => {
         const cle = cleDuProgramme(arrivee);
         if (cle && cle !== (prescrit && prescrit.cle))
@@ -6579,7 +6715,7 @@ function GuidedJourney() {
     // L'écran « À propos » s'atteint depuis l'introduction comme depuis l'accueil : on
     // retient d'où l'on vient pour ne pas renvoyer sur l'accueil quelqu'un qui n'a pas
     // encore validé les règles de prudence.
-    const [retourApropos, setRetourApropos] = useState("zone");
+    const [retourApropos, setRetourApropos] = useState("profil");
     const [pathId, setPathId] = useState(depart.pathId);
     const [injuryId, setInjuryId] = useState(depart.injuryId);
     const [stageIdx, setStageIdx] = useState(depart.stageIdx);
@@ -6720,6 +6856,12 @@ function GuidedJourney() {
             window.scrollTo(0, 0);
     }, [view, stageIdx, runnerStageIdx, preventionSub, preventionCategory, croissanceStageIdx]);
     const resumeInfo = describeRoute(lastRoute);
+    // Le programme prescrit, et l'endroit où le rouvrir : la progression du patient si elle
+    // porte sur ce programme, sinon l'étape que le lien désignait. À défaut de prescription,
+    // le dernier parcours ouvert. C'est ce que rouvrent la carte « Mon parcours » et l'onglet.
+    const routePrescrite = prescrit && (cleDuProgramme(lastRoute) === prescrit.cle ? lastRoute : prescrit.route);
+    const infoPrescrite = describeRoute(routePrescrite);
+    const routeDuParcours = infoPrescrite ? routePrescrite : resumeInfo ? lastRoute : null;
     // Ouvrir une adresse quelconque : la reprise du parcours en cours et l'ouverture du
     // programme prescrit font le meme geste, sur deux adresses differentes.
     const ouvrirRoute = (route) => {
@@ -6940,16 +7082,156 @@ function GuidedJourney() {
                     "Les textes, les schémas et le code de cette application sont publiés sous la responsabilité de son éditeur.",
                 ]))));
     }
+    // Les trois voies qui ne passent pas par le dessin du corps. Elles vivent sur l'accueil et
+    // sur l'écran du choix de la zone : on y pense en arrivant comme en hésitant devant le dessin.
+    const carteVoies = () => React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+        [
+            { id: "coureur", titre: "Vous êtes coureur ?", sous: "Pathologies spécifiques de la course à pied",
+                aller: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); } },
+            // L'or du parcours croissance servait ici de chevron, alors qu'il porte ailleurs la
+            // prudence — la douleur « un peu élevée » de la réglette. Un avertissement sans
+            // texte devant « moins de 16 ans » inquiète un parent sans rien lui dire.
+            { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance",
+                aller: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); } },
+            { id: "prevention", titre: "Échauffement, étirements & souplesse", sous: "Pas de douleur, juste de la prévention",
+                aller: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); } },
+        ].map((voie, vi) => (React.createElement("button", { key: voie.id, onClick: voie.aller,
+            className: "w-full p-4 flex items-center justify-between gap-3 text-left",
+            style: vi ? { borderTop: `1px solid ${BORDURE}` } : undefined },
+            React.createElement("div", { className: "min-w-0" },
+                React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, voie.titre),
+                React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
+            React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_FORT } })))));
+    const intertitre = (texte) => React.createElement("h2", { className: "t-carte font-semibold mb-3", style: { color: INK } }, texte);
+    if (view === "accueil") {
+        const absence = joursDepuisDerniereSeance(journal, jour);
+        const seance = seanceDeRoute(routeDuParcours);
+        const faitsSet = seance && seance.cle ? done[seance.cle] || new Set() : new Set();
+        const faits = seance ? seance.exercices.filter((e) => faitsSet.has(idExercice(e))).length : 0;
+        const semaine = resumeDesJours(journal, 7, jour);
+        const info = infoPrescrite || resumeInfo;
+        // La carte « Mon parcours » absorbe l'ancienne carte « Reprendre où vous en étiez » et
+        // celle du programme prescrit. Elle ne dit pas la même chose dans les deux cas :
+        // « envoyé par votre kinésithérapeute le … » pour un programme prescrit, que la date
+        // empêche de passer pour actuel s'il est ancien.
+        const detail = seance
+            ? [seance.zone, seance.etape !== null && seance.total ? `étape ${seance.etape + 1} / ${seance.total}` : null]
+                .filter(Boolean).join(" · ")
+            : info && info.detail;
+        // Trois chiffres dans une seule carte, séparés d'un filet : trois cartes de 100 px
+        // auraient demandé un retrait plus serré que celui de toutes les autres.
+        const tuile = (valeur, legende, icone, i) => React.createElement("div", { className: "flex-1 text-center px-1", style: i ? { borderLeft: `1px solid ${BORDURE_DOUCE}` } : undefined },
+            React.createElement(icone, { size: 20, className: "mx-auto", style: { color: ACCENT_FORT } }),
+            React.createElement("p", { className: "text-xl font-semibold mt-1 tabular-nums", style: { color: INK } }, valeur),
+            React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, legende));
+        const acces = [
+            { id: "zone", titre: "Choisir une zone", Icone: IconeCible, aller: () => { setQuery(""); setView("zone"); } },
+        ];
+        return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" },
+                    profil.prenom ? `Bonjour ${profil.prenom}` : "Bonjour"),
+                React.createElement("p", { className: "t-corps mt-1", style: { color: SUR_BANDEAU_DOUX } },
+                    info ? "Votre programme vous attend." : "Commençons par ce qui vous gêne.")),
+            // Les drapeaux du programme prescrit quand il y en a un, les repères communs sinon.
+            React.createElement(SignauxDuJour, {
+                items: routeDuParcours && routeDuParcours.pathId && routeDuParcours.injuryId
+                    ? drapeauxDe(`${routeDuParcours.pathId}:${routeDuParcours.injuryId}`)
+                    : DRAPEAUX_COMMUNS,
+                montrer: !regleVue("signaux"), onVue: () => marquerRegleVue("signaux") }),
+            React.createElement("div", { className: "px-6 pb-8 flex flex-col gap-6" },
+                // Le moment de l'abandon. Après quelques jours sans rien, l'application affichait le
+                // même écran qu'au premier jour ; elle dit maintenant ce qu'elle voit, sans reproche,
+                // et propose la plus petite reprise possible plutôt que la séance entière. Un mot dès
+                // deux jours : « rouvrir après un soir sauté est plus dur que le premier soir ».
+                absence !== null && absence >= 2 && (React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: ACCENT_PALE } },
+                    React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK } },
+                        absence >= 21
+                            ? "Cela fait quelques semaines. Reprendre après une interruption est la règle, pas l'exception : recommencez à l'étape où vous vous sentez, quitte à revenir en arrière."
+                            : absence >= 4
+                                ? "Pas d'exercices depuis " + absence + " jours. Ce n'est pas grave, et ce n'est pas perdu : dix minutes aujourd'hui valent mieux qu'une séance parfaite la semaine prochaine."
+                                : absence + " jours sans exercices, ça arrive à tout le monde. Un seul aujourd'hui suffit à repartir."))),
+                React.createElement("section", { className: "rounded-2xl p-5", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                    info ? React.createElement(React.Fragment, null,
+                        React.createElement("div", { className: "flex items-center justify-between gap-4" },
+                            React.createElement("div", { className: "min-w-0" },
+                                React.createElement("p", { className: "t-etiquette font-semibold uppercase", style: { color: ACCENT_FORT } },
+                                    infoPrescrite ? "ENVOYÉ PAR VOTRE KINÉSITHÉRAPEUTE" : "MON PARCOURS"),
+                                React.createElement("h2", { className: "t-carte font-semibold mt-1 leading-tight", style: { color: INK } }, info.title),
+                                React.createElement("p", { className: "t-accompagne mt-1", style: { color: INK_DOUX } },
+                                    detail,
+                                    infoPrescrite && prescrit.date ? " · reçu le " + jjmm(prescrit.date) : "")),
+                            seance && seance.exercices.length > 0 && React.createElement(AnneauProgression, { part: faits / seance.exercices.length })),
+                        seance && seance.exercices.length > 0 && React.createElement("p", { className: "t-accompagne mt-3", style: { color: INK_PROSE } },
+                            faits === seance.exercices.length
+                                ? "Séance du jour terminée. Bravo !"
+                                : `Aujourd'hui : ${faits} exercice${faits > 1 ? "s" : ""} sur ${seance.exercices.length}`),
+                        React.createElement("button", { onClick: () => ouvrirRoute(routeDuParcours),
+                            className: "cible-44 w-full mt-4 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } },
+                            seance && seance.etape === null && seance.total ? "Commencer mon programme" : "Continuer ma séance"))
+                        : React.createElement(React.Fragment, null,
+                            React.createElement("p", { className: "t-etiquette font-semibold uppercase", style: { color: ACCENT_FORT } }, "MON PARCOURS"),
+                            React.createElement("h2", { className: "t-carte font-semibold mt-1", style: { color: INK } }, "Aucun programme en cours"),
+                            React.createElement("p", { className: "t-corps mt-1 leading-relaxed", style: { color: INK_PROSE } },
+                                "Touchez la zone qui vous gêne sur le dessin du corps. Si votre kinésithérapeute vous a envoyé un lien, il vous mène directement au bon endroit."),
+                            React.createElement("button", { onClick: () => { setQuery(""); setView("zone"); },
+                                className: "cible-44 w-full mt-4 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } },
+                                "Choisir une zone"))),
+                React.createElement("section", null,
+                    intertitre("Ma progression"),
+                    React.createElement("button", { onClick: () => setView("recap"), className: "w-full text-left" },
+                        React.createElement("div", { className: "flex rounded-2xl p-5", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                            tuile(semaine.seances, semaine.seances > 1 ? "séances" : "séance", IconeCalendrier, 0),
+                            tuile(semaine.exercices, semaine.exercices > 1 ? "exercices" : "exercice", IconeProgres, 1),
+                            tuile(semaine.douleur === null ? "—" : `${String(Math.round(semaine.douleur * 10) / 10).replace(".", ",")}/10`, "douleur moy.", IconeJauge, 2)),
+                        React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } }, "Sur les 7 derniers jours \u00B7 ",
+                            React.createElement("span", { className: "underline underline-offset-2", style: { color: ACCENT_FORT } }, "voir le d\u00E9tail")))),
+                info && React.createElement("section", null,
+                    intertitre("Accès rapide"),
+                    React.createElement("div", { className: "flex gap-2.5" }, acces.map((a) => React.createElement("button", { key: a.id, onClick: a.aller,
+                        className: "flex-1 rounded-2xl p-5 flex items-center gap-3 text-left cible-44", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        React.createElement("span", { className: "inline-flex items-center justify-center rounded-full shrink-0 w-11 h-11", style: { backgroundColor: ACCENT_VOILE, color: ACCENT_FORT } },
+                            React.createElement(a.Icone, { size: 22 })),
+                        React.createElement("span", { className: "t-corps font-medium", style: { color: INK } }, a.titre))))),
+                React.createElement("section", null,
+                    intertitre("Autres programmes"),
+                    carteVoies()))));
+    }
+    if (view === "profil") {
+        return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Mon profil")),
+            React.createElement("div", { className: "px-6 pb-8 flex flex-col gap-6" },
+                React.createElement("section", null,
+                    intertitre("Mes données"),
+                    React.createElement("div", { className: "rounded-2xl p-5", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        canSave ? (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Votre progression est enregistrée sur cet appareil uniquement. Elle n'est envoyée nulle part et reste privée.")) : (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
+                        // Effacer sa progression est une action, pas une note de bas de page : encadrée
+                        // et sans soulignement, elle se lit comme un bouton — mais reste en retrait,
+                        // car elle efface sans revenir.
+                        (resumeInfo || journal.length > 0 || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer,
+                            className: "cible-44 mt-4 px-4 rounded-full t-accompagne font-medium inline-flex items-center gap-2",
+                            style: { color: INK_PROSE, border: `1px solid ${BORDURE}` } },
+                            React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
+                            "Effacer ma progression et repartir de zéro")))),
+                React.createElement("section", null,
+                    intertitre("L'application"),
+                    React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        [
+                            { id: "lexique", titre: "Lexique", sous: "Les mots de l'application", aller: () => setView("lexique") },
+                            { id: "apropos", titre: "À propos", sous: "Mentions légales et confidentialité", aller: () => { setRetourApropos("profil"); setView("apropos"); } },
+                        ].map((l, i) => React.createElement("button", { key: l.id, onClick: l.aller,
+                            className: "w-full p-4 flex items-center justify-between gap-3 text-left",
+                            style: i ? { borderTop: `1px solid ${BORDURE}` } : undefined },
+                            React.createElement("div", { className: "min-w-0" },
+                                React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, l.titre),
+                                React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: INK_DOUX } }, l.sous)),
+                            React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_FORT } }))))))));
+    }
     if (view === "zone") {
         const selectZone = (id) => { setPathId(id); setInjuryId(null); setView("injury"); };
         const results = searchEntries(query);
         const searching = normalizeSearch(query).length >= 2;
-        const absence = joursDepuisDerniereSeance(journal, jour);
-        // Le programme prescrit, et l'endroit ou le rouvrir : la progression du patient si
-        // elle porte sur ce programme, sinon l'etape que le lien designait.
-        const routePrescrite = prescrit && (cleDuProgramme(lastRoute) === prescrit.cle ? lastRoute : prescrit.route);
-        const infoPrescrite = describeRoute(routePrescrite);
-        const catalogueOuvert = catalogueDeploye || !infoPrescrite;
         // Un résultat de recherche renvoie toujours vers l'écran de contexte du parcours
         // concerné, jamais directement sur une liste d'exercices.
         const openResult = (entry) => {
@@ -6973,13 +7255,11 @@ function GuidedJourney() {
         };
         return (React.createElement("div", { className: "min-h-screen bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5" },
-                // Deux accueils, selon que le kinesitherapeute a repondu ou non a la question.
-                // Pour un patient qui a recu un lien, demander « quelle zone ? » revient a lui
-                // faire refaire un choix qui n'est pas le sien.
-                React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } },
-                    infoPrescrite ? "Votre programme" : "Parcours guid\u00E9"),
-                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" },
-                    infoPrescrite ? infoPrescrite.title : "Quelle zone souhaitez-vous travailler ?"),
+                React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps mb-2", style: { color: SUR_BANDEAU_DOUX } },
+                    React.createElement(ChevronLeft, { size: 18 }),
+                    " Accueil"),
+                React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours guid\u00E9"),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Quelle zone souhaitez-vous travailler ?"),
                 React.createElement("div", { className: "mt-5 relative" },
                     React.createElement("input", { type: "text", value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Rechercher : sciatique\u2026", className: "w-full rounded-full py-3 pl-11 pr-10 t-corps", style: { backgroundColor: SURFACE, color: INK, border: "none",
                         // Aux plus grandes tailles de texte, la place disponible dans le champ
@@ -6989,43 +7269,6 @@ function GuidedJourney() {
                         textOverflow: "ellipsis" } }),
                     React.createElement(IconeLoupe, { size: 17, className: "absolute left-4 top-1/2 -translate-y-1/2", style: { color: INK_DOUX } }),
                     query && (React.createElement("button", { onClick: () => setQuery(""), className: "absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full t-accompagne", style: { backgroundColor: BORDURE, color: INK_DOUX } }, "\u2715")))),
-            // Les drapeaux du programme prescrit quand il y en a un, les repères communs sinon :
-            // sur l'accueil, aucune blessure n'est encore désignée.
-            !searching && React.createElement(SignauxDuJour, {
-                items: routePrescrite && routePrescrite.pathId && routePrescrite.injuryId
-                    ? drapeauxDe(`${routePrescrite.pathId}:${routePrescrite.injuryId}`)
-                    : DRAPEAUX_COMMUNS,
-                montrer: !regleVue("signaux"), onVue: () => marquerRegleVue("signaux") }),
-            !searching && journal.length > 0 && (React.createElement("div", { className: "px-6 pb-5" },
-                React.createElement(BandeAssiduite, { journal: journal, jour: jour, accent: ACCENT_SOFT }),
-                React.createElement("button", { onClick: () => setView("recap"), className: "mt-3 t-accompagne underline underline-offset-2", style: { color: SUR_BANDEAU_DOUX } }, "Voir le résumé à montrer à mon kinésithérapeute"))),
-            // Le moment de l'abandon. Après quelques jours sans rien, l'application affichait le
-            // même écran qu'au premier jour ; elle dit maintenant ce qu'elle voit, sans reproche,
-            // et propose la plus petite reprise possible plutôt que la séance entière.
-            // Le seuil était à quatre jours : deux soirs sautés ne disaient rien, et c'est
-            // pourtant là que le patient décroche — « rouvrir après un soir sauté est plus dur
-            // que le premier soir ». Un mot dès deux jours, sans reproche.
-            !searching && absence !== null && absence >= 2 && (React.createElement("div", { className: "px-6 pb-5" },
-                React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: SUR_BANDEAU_VOILE, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                    React.createElement("p", { className: "t-corps text-sur-bandeau leading-relaxed" },
-                        absence >= 21
-                            ? "Cela fait quelques semaines. Reprendre après une interruption est la règle, pas l'exception : recommencez à l'étape où vous vous sentez, quitte à revenir en arrière."
-                            : absence >= 4
-                                ? "Pas d'exercices depuis " + absence + " jours. Ce n'est pas grave, et ce n'est pas perdu : dix minutes aujourd'hui valent mieux qu'une séance parfaite la semaine prochaine."
-                                : absence + " jours sans exercices, ça arrive à tout le monde. Un seul aujourd'hui suffit à repartir.")))),
-            // La meme carte sert dans les deux cas, mais elle ne dit pas la meme chose : « reprendre
-            // ou vous en etiez » pour un parcours choisi, « envoye par votre kinesitherapeute le … »
-            // pour un programme prescrit. La date evite qu'un programme ancien passe pour actuel.
-            !searching && (infoPrescrite || resumeInfo) && (React.createElement("div", { className: "px-6 pb-5" },
-                React.createElement("button", { onClick: () => (infoPrescrite ? ouvrirRoute(routePrescrite) : reprendre()), className: "w-full rounded-2xl p-4 flex items-center justify-between gap-3 text-left", style: { backgroundColor: ACCENT } },
-                    React.createElement("div", { className: "min-w-0" },
-                        React.createElement("p", { className: "t-etiquette font-semibold text-sur-bandeau", style: { opacity: 0.85 } },
-                            infoPrescrite ? "ENVOY\u00C9 PAR VOTRE KIN\u00C9SITH\u00C9RAPEUTE" : "REPRENDRE O\u00D9 VOUS EN \u00C9TIEZ"),
-                        React.createElement("p", { className: "t-corps font-medium text-sur-bandeau mt-0.5" }, (infoPrescrite || resumeInfo).title),
-                        React.createElement("p", { className: "t-accompagne text-sur-bandeau mt-0.5", style: { opacity: 0.85 } },
-                            (infoPrescrite || resumeInfo).detail,
-                            infoPrescrite && prescrit.date ? " \u00B7 re\u00E7u le " + jjmm(prescrit.date) : "")),
-                    React.createElement(ChevronRight, { size: 20, style: { color: SUR_BANDEAU }, className: "shrink-0" })))),
             searching ? (React.createElement("div", { className: "px-6 pb-10" }, results.length > 0 ? (React.createElement(React.Fragment, null,
                 React.createElement("p", { className: "t-accompagne mb-3", style: { color: SUR_BANDEAU_DOUX } },
                     results.length,
@@ -7049,21 +7292,7 @@ function GuidedJourney() {
                     " \u00BB"),
                 React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: INK_DOUX } }, "Essayez un autre mot, ou d\u00E9crivez plut\u00F4t l'endroit qui vous g\u00EAne. Toutes les pathologies ne sont pas encore couvertes : effacez la recherche pour parcourir les zones du corps, et demandez \u00E0 votre kin\u00E9sith\u00E9rapeute si vous ne trouvez pas votre situation."),
                 React.createElement("button", { onClick: () => setQuery(""), className: "mt-4 px-4 py-2 rounded-full t-accompagne font-medium text-white", style: { backgroundColor: ACCENT } }, "Parcourir les zones du corps"))))) : (React.createElement(React.Fragment, null,
-                // Le catalogue du corps entier et les trois voies d'acces posent au patient une
-                // question a laquelle son kinesitherapeute a deja repondu. Quand un programme a
-                // ete prescrit, ils passent donc derriere une demande explicite — sans jamais
-                // devenir inaccessibles : une douleur nouvelle ne previent pas.
-                infoPrescrite && !catalogueOuvert
-                    ? React.createElement("div", { className: "px-6 pb-8" },
-                        React.createElement("button", { onClick: () => setCatalogueOuvert(true),
-                            className: "cible-44 w-full rounded-2xl px-4 flex items-center justify-between gap-3 text-left",
-                            style: { backgroundColor: SUR_BANDEAU_VOILE, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                            React.createElement("div", { className: "min-w-0" },
-                                React.createElement("p", { className: "t-corps font-medium text-sur-bandeau" }, "Voir tous les programmes"),
-                                React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: SUR_BANDEAU_DOUX } },
-                                    "Une autre douleur, la course \u00E0 pied, la pr\u00E9vention")),
-                            React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_SOFT } })))
-                    : React.createElement(React.Fragment, null,
+                React.createElement(React.Fragment, null,
                     // Seule gouttière de l'application à ne pas valoir vingt-quatre, et c'est
                     // volontaire : le dessin se met à l'échelle de la place qu'on lui laisse, et
                     // ses dix cibles tactiles avec lui. Les ramener à la gouttière commune leur
@@ -7104,46 +7333,7 @@ function GuidedJourney() {
                     // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
                     // carte à trois rangs, elles disent cela, et rendent une centaine de pixels.
                     React.createElement("div", { className: "px-6 pb-8" },
-                        React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
-                            [
-                                { id: "coureur", titre: "Vous êtes coureur ?", sous: "Pathologies spécifiques de la course à pied", teinte: ACCENT,
-                                    aller: () => { setRunnerPathId(null); setRunnerStageIdx(0); setView("runner-pathology"); } },
-                                // L'or du parcours croissance servait ici de chevron, alors qu'il porte ailleurs la
-                                // prudence — la douleur « un peu élevée » de la réglette. Un avertissement sans
-                                // texte devant « moins de 16 ans » inquiète un parent sans rien lui dire.
-                                // Les trois voies prennent donc le même chevron ; la teinte propre au
-                                // parcours reprend ses droits une fois dedans.
-                                { id: "croissance", titre: "Vous avez moins de 16 ans ?", sous: "Douleurs liées à la croissance", teinte: ACCENT,
-                                    aller: () => { setCroissanceId(null); setCroissanceStageIdx(0); setView("croissance-liste"); } },
-                                { id: "prevention", titre: "Échauffement, étirements & souplesse", sous: "Pas de douleur, juste de la prévention", teinte: ACCENT,
-                                    aller: () => { setPreventionCategory(null); setPreventionSub(null); setView("prevention-category"); } },
-                            ].map((voie, vi) => (React.createElement("button", { key: voie.id, onClick: voie.aller,
-                                className: "w-full p-4 flex items-center justify-between gap-3 text-left",
-                                style: vi ? { borderTop: `1px solid ${BORDURE}` } : undefined },
-                                React.createElement("div", { className: "min-w-0" },
-                                    React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, voie.titre),
-                                    React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
-                                React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: voie.teinte } }))))))),
-                React.createElement("div", { className: "px-6 pb-10" },
-                    canSave ? (React.createElement("p", { className: "t-etiquette leading-relaxed", style: { color: SUR_BANDEAU_PALE } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "t-etiquette leading-relaxed", style: { color: SUR_BANDEAU_PALE } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
-                    // Effacer sa progression est une action, pas une note de bas de page. Au même
-                    // corps et à la même encre que la phrase de confidentialité et le lien des
-                    // mentions légales, elle passait pour l'une d'elles : un patient qui reprend
-                    // une rééducation ne la trouvait pas. Encadrée et sans soulignement, elle se
-                    // lit comme un bouton — mais reste en retrait, car elle efface sans revenir.
-                    (resumeInfo || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer,
-                        className: "cible-44 mt-4 px-4 rounded-full t-accompagne font-medium inline-flex items-center gap-2",
-                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                        React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
-                        "Effacer ma progression et repartir de z\u00E9ro")),
-                    // Les mentions légales. Le réglage de taille de texte qui leur faisait face a
-                    // été retiré : il était cherché une fois, au début, puis plus jamais.
-                    React.createElement("div", { className: "mt-3 flex flex-col items-start" },
-                        // Le lexique s'ouvre d'ici et de nulle part ailleurs : c'est l'endroit
-                        // ou l'on revient entre deux seances, et la pastille « i » suffit
-                        // partout ou le mot se presente de lui-meme.
-                        React.createElement("button", { onClick: () => setView("lexique"), className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: SUR_BANDEAU_PALE } }, "Lexique\u00A0: les mots de l'application"),
-                        React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: SUR_BANDEAU_PALE } }, "\u00C0 propos et mentions l\u00E9gales")))))));
+                        carteVoies()))))));
     }
     if (view === "injury") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
@@ -7375,7 +7565,7 @@ function GuidedJourney() {
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         croi.alias),
-                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
                         style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
@@ -7447,7 +7637,7 @@ function GuidedJourney() {
                 React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "En attendant, garde les étirements et le renforcement deux ou trois fois par semaine : c'est ce qui rendra la prochaine fois plus courte.")),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
                 React.createElement("button", { onClick: () => { setCroissanceStageIdx(0); setView("croissance-exercices"); }, className: "w-full py-3.5 rounded-full t-corps font-medium", style: { backgroundColor: SUR_BANDEAU_VOILE, color: SUR_BANDEAU } }, "Revenir à la première étape"),
-                React.createElement("button", { onClick: () => { setCroissanceId(null); setView("zone"); }, className: "w-full py-3.5 rounded-full t-corps font-medium", style: { backgroundColor: CROISSANCE_ACCENT, color: CROISSANCE_SUR_ACCENT } }, "Revenir à l'accueil"))));
+                React.createElement("button", { onClick: () => { setCroissanceId(null); setView("accueil"); }, className: "w-full py-3.5 rounded-full t-corps font-medium", style: { backgroundColor: CROISSANCE_ACCENT, color: CROISSANCE_SUR_ACCENT } }, "Revenir à l'accueil"))));
     }
     if (view === "runner-pathology") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
@@ -7506,7 +7696,7 @@ function GuidedJourney() {
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         path.label),
-                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
                         style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
@@ -7602,7 +7792,7 @@ function GuidedJourney() {
                     " \u00BB."),
                 React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "Sur ce type de pathologie, l'erreur la plus fr\u00E9quente est d'arr\u00EAter le renforcement d\u00E8s que la douleur dispara\u00EEt. Maintenez-le une \u00E0 deux fois par semaine sur plusieurs mois : c'est ce qui prot\u00E8ge le mieux de la r\u00E9cidive. Faites le point avec votre kin\u00E9sith\u00E9rapeute avant de revenir \u00E0 votre volume d'entra\u00EEnement habituel.")),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
-                React.createElement("button", { onClick: () => { setView("zone"); setRunnerPathId(null); setRunnerStageIdx(0); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
+                React.createElement("button", { onClick: () => { setView("accueil"); setRunnerPathId(null); setRunnerStageIdx(0); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
     if (view === "prevention-category") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
@@ -7649,7 +7839,7 @@ function GuidedJourney() {
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         category.title),
-                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
                         style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
@@ -7720,7 +7910,7 @@ function GuidedJourney() {
                     " \u00BB compl\u00E9t\u00E9."),
                 React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "La r\u00E9gularit\u00E9 fait toute la diff\u00E9rence sur ce type d'exercices. Reprenez-les au rythme indiqu\u00E9, avant vos s\u00E9ances ou en dehors, selon le cas.")),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
-                React.createElement("button", { onClick: () => { setView("zone"); setPreventionCategory(null); setPreventionSub(null); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
+                React.createElement("button", { onClick: () => { setView("accueil"); setPreventionCategory(null); setPreventionSub(null); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
     if (view === "stage") {
         // Le segment de l'étape en cours était rempli à 50 % en dur, quel que soit le nombre
@@ -7741,7 +7931,7 @@ function GuidedJourney() {
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         injury.label),
-                    React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
+                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
                         style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
@@ -7887,7 +8077,7 @@ function GuidedJourney() {
                                     restants.length, " exercice", restants.length > 1 ? "s" : "", " non coch\u00E9", restants.length > 1 ? "s" : "")),
                             React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_FORT } }));
                     }))),
-                React.createElement("button", { onClick: () => { setView("zone"); setPathId(null); setInjuryId(null); setStageIdx(0); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
+                React.createElement("button", { onClick: () => { setView("accueil"); setPathId(null); setInjuryId(null); setStageIdx(0); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
     };
     // Remonter d'un écran. Quand nous avons nous-mêmes empilé une entrée d'historique, on
@@ -7931,8 +8121,26 @@ function GuidedJourney() {
         void el.offsetWidth;
         el.classList.add("apparition");
     }, [view, stageIdx, runnerStageIdx, croissanceStageIdx, preventionSub, pathId, injuryId, runnerPathId, croissanceId, preventionCategory]);
-    return React.createElement(SwipeBack, { onBack: retourEnArriere, actif: cibleRetour !== undefined },
-        React.createElement("main", { ref: refEcran }, renderScreen()));
+    // La barre d'onglets accompagne tous les écrans sauf deux : l'introduction, qui doit être
+    // lue avant d'aller ailleurs, et la fabrique de liens, réservée au kinésithérapeute.
+    const avecOnglets = view !== "intro" && view !== "lien";
+    const choisirOnglet = (id) => {
+        setQuery("");
+        if (id === "accueil")
+            setView("accueil");
+        else if (id === "progres")
+            setView("recap");
+        else if (id === "profil")
+            setView("profil");
+        else if (routeDuParcours)
+            ouvrirRoute(routeDuParcours);
+        else
+            setView("zone");
+    };
+    return React.createElement(React.Fragment, null,
+        React.createElement(SwipeBack, { onBack: retourEnArriere, actif: cibleRetour !== undefined },
+            React.createElement("main", { ref: refEcran, className: avecOnglets ? "avec-onglets" : undefined }, renderScreen())),
+        avecOnglets && React.createElement(BarreOnglets, { actif: ongletDeVue(view), onChoisir: choisirOnglet }));
 }
 // Avant le premier rendu : les tailles en pixels sont calculees a partir de la racine, et
 // la recalculer apres aurait fait sauter la page sous les yeux du patient.

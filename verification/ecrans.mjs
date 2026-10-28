@@ -6,7 +6,7 @@
 // une copie se met à dériver dès qu'un écran est ajouté d'un côté seulement.
 
 export const ROUTES = [
-    ["accueil", "#/"], ["blessures", "#/z/genou"], ["check-in", "#/z/genou/entorse"],
+    ["accueil", "#/"], ["choisir une zone", "#/zone"], ["profil", "#/profil"], ["blessures", "#/z/genou"], ["check-in", "#/z/genou/entorse"],
     ["exercices", "#/z/genou/entorse/e1"], ["exercices tardifs", "#/z/genou/entorse/e4"],
     ["fin de parcours", "#/z/genou/entorse/fin"], ["lombaires", "#/z/lombaire/hernie-discale"],
     ["hernie positions", "#/z/lombaire/hernie-discale/e1"],
