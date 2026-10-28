@@ -5251,7 +5251,7 @@ function migrerSauvegarde(data, aujourdhui) {
 }
 // Ce que le patient écrit sur lui-même, dans l'écran Profil. Tout est facultatif.
 const PROFIL_VIDE = { prenom: "", nom: "", age: "", sports: "", objectifs: "",
-    antecedents: "", notesRdv: "" };
+    antecedents: "", notesRdv: "", rappelJours: null, rappelHeure: "" };
 // La mémoire des parcours. Le journal est borné à quatre mois et s'efface par le bas : un
 // patient qui revient deux mois après une entorse, pour l'épaule, aurait perdu jusqu'à la
 // trace de sa cheville. Une ligne par parcours suivi, qui ne s'efface pas : premier et
@@ -5639,8 +5639,15 @@ function construireRoute(e) {
 }
 // Une adresse inconnue, ou qui désigne une pathologie retirée du contenu, renvoie null :
 // l'appelant retombe alors sur l'accueil plutôt que d'afficher un écran vide.
+// Le nombre de séances par semaine que le kinésithérapeute attend, porté par le lien :
+// « #/z/genou/entorse?s=3 ». Absent, l'application compte cinq séances.
+function seancesDuLien(hash) {
+    const m = /[?&]s=(\d)\b/.exec(String(hash || ""));
+    const n = m ? Number(m[1]) : null;
+    return n >= 1 && n <= 7 ? n : null;
+}
 function etatDepuisRoute(hash) {
-    const p = String(hash || "").replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
+    const p = String(hash || "").split("?")[0].replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
     // La fiche d'un exercice se greffe au bout de l'adresse de sa séance : « …/e2/x/pont-fessier ».
     // On la détache, on lit la séance comme d'habitude, puis on la rattache.
     let exerciceId = null;
@@ -6087,6 +6094,103 @@ function EcranPointDeDepart({ initial, programme, onChoisirZone, onEnregistrer, 
                 style: { backgroundColor: ACCENT } }, "Enregistrer mon point de départ"),
             !releve && React.createElement("p", { className: "t-accompagne text-center", style: { color: INK_DOUX } },
                 "Indiquez au moins votre douleur d'aujourd'hui pour enregistrer."))));
+}
+// --- Le profil -------------------------------------------------------------------------------
+// Les parcours suivis, regroupés par programme. Le coureur et la croissance rangent chaque
+// étape sous sa propre clé : on les réunit sous leur programme, pour que le patient revenu
+// deux mois plus tard lise « Coureur — syndrome de l'essuie-glace », et non trois lignes.
+function parcoursPasses(memoire) {
+    const groupes = {};
+    Object.keys(memoire || {}).forEach((cle) => {
+        const b = cle.split(":");
+        const g = b[0] === "runner" || b[0] === "croissance" ? `${b[0]}:${b[1]}` : cle;
+        const m = memoire[cle];
+        const cur = groupes[g] || (groupes[g] = { cle, debut: m.debut, dernier: m.dernier, seances: 0 });
+        cur.seances += m.seances || 0;
+        if (m.debut < cur.debut)
+            cur.debut = m.debut;
+        if (m.dernier > cur.dernier)
+            cur.dernier = m.dernier;
+        if (m.douleurDebut !== undefined && (cur.dateDouleurDebut === undefined || m.dateDouleurDebut < cur.dateDouleurDebut)) {
+            cur.douleurDebut = m.douleurDebut;
+            cur.dateDouleurDebut = m.dateDouleurDebut;
+        }
+        if (m.douleurFin !== undefined && (cur.dateDouleurFin === undefined || m.dateDouleurFin > cur.dateDouleurFin)) {
+            cur.douleurFin = m.douleurFin;
+            cur.dateDouleurFin = m.dateDouleurFin;
+        }
+    });
+    return Object.keys(groupes).map((g) => Object.assign({ groupe: g }, groupes[g]))
+        .sort((a, b) => (a.dernier < b.dernier ? 1 : -1));
+}
+// Le rappel de séance. Une application sans serveur ne peut pas envoyer de notification
+// fiable sur iPhone : le rappel part donc dans l'agenda du téléphone, qui sait le faire, sous
+// la forme d'un évènement récurrent avec une alerte à l'heure dite.
+const JOURS_RAPPEL = [
+    { id: "MO", court: "L", long: "lundi" }, { id: "TU", court: "M", long: "mardi" },
+    { id: "WE", court: "M", long: "mercredi" }, { id: "TH", court: "J", long: "jeudi" },
+    { id: "FR", court: "V", long: "vendredi" }, { id: "SA", court: "S", long: "samedi" },
+    { id: "SU", court: "D", long: "dimanche" },
+];
+// Les jours proposés d'emblée suivent le rythme prescrit : cinq séances, du lundi au
+// vendredi ; trois, un jour sur deux ; et ainsi de suite.
+const JOURS_PAR_RYTHME = { 1: ["WE"], 2: ["TU", "FR"], 3: ["MO", "WE", "FR"], 4: ["MO", "TU", "TH", "FR"],
+    5: ["MO", "TU", "WE", "TH", "FR"], 6: ["MO", "TU", "WE", "TH", "FR", "SA"], 7: ["MO", "TU", "WE", "TH", "FR", "SA", "SU"] };
+function calendrierDeRappel(jours, heure, maintenant) {
+    const t = maintenant || new Date();
+    const p = (n) => String(n).padStart(2, "0");
+    const [h, mi] = String(heure || "18:00").split(":").map(Number);
+    // Le premier rendez-vous tombe sur un des jours choisis : un départ hors de la règle
+    // ajoute, dans certains agendas, une occurrence que personne n'a demandée.
+    const codes = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+    const d = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+    for (let i = 0; i < 7 && jours.indexOf(codes[d.getDay()]) < 0; i++)
+        d.setDate(d.getDate() + 1);
+    const date = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}`;
+    const tampon = `${t.getUTCFullYear()}${p(t.getUTCMonth() + 1)}${p(t.getUTCDate())}T${p(t.getUTCHours())}${p(t.getUTCMinutes())}00Z`;
+    return [
+        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Mes exercices//FR", "CALSCALE:GREGORIAN",
+        "BEGIN:VEVENT",
+        `UID:rappel-${tampon}@mes-exercices`,
+        `DTSTAMP:${tampon}`,
+        // Heure « flottante », sans fuseau : 18 h reste 18 h où que soit le téléphone.
+        `DTSTART:${date}T${p(h)}${p(mi)}00`,
+        "DURATION:PT20M",
+        `RRULE:FREQ=WEEKLY;BYDAY=${jours.join(",")}`,
+        "SUMMARY:Mes exercices",
+        "DESCRIPTION:Ma séance d'exercices de rééducation.",
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Mes exercices", "TRIGGER:PT0M", "END:VALARM",
+        "END:VEVENT", "END:VCALENDAR", "",
+    ].join("\r\n");
+}
+function telecharger(nom, type, contenu) {
+    try {
+        const url = URL.createObjectURL(new Blob([contenu], { type }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = nom;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+// Un champ du profil : l'intitulé au-dessus, en clair, et non dans le champ — un texte
+// indicatif disparaît dès la première lettre, et la question avec lui.
+function ChampProfil({ id, intitule, aide, valeur, onChange, long, type }) {
+    const commun = { id, value: valeur || "", onChange: (e) => onChange(e.target.value),
+        className: "w-full mt-1.5 rounded-2xl px-4 py-2.5 t-corps",
+        style: { border: `1px solid ${BORDURE}`, color: INK, backgroundColor: SURFACE, fontFamily: POLICE } };
+    return React.createElement("div", null,
+        React.createElement("label", { htmlFor: id, className: "t-accompagne font-medium block", style: { color: INK } }, intitule),
+        aide && React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, aide),
+        long
+            ? React.createElement("textarea", Object.assign({ rows: 3 }, commun, { style: Object.assign({}, commun.style, { resize: "vertical" }) }))
+            : React.createElement("input", Object.assign({ type: type || "text" }, commun, type === "number" ? { inputMode: "numeric", min: 1, max: 120 } : null, { className: commun.className + " cible-44" })));
 }
 function BandeAssiduite({ journal, jour, accent }) {
     const jours = septDerniersJours(journal, jour);
@@ -6942,6 +7046,7 @@ function ConstructeurDeLien({ onRetour }) {
     const [premierId, setPremierId] = useState(PARCOURS_DU_LIEN[0].premier()[0].v);
     const [secondId, setSecondId] = useState(PARCOURS_DU_LIEN[0].second(PARCOURS_DU_LIEN[0].premier()[0].v)[0].v);
     const [etape, setEtape] = useState("bilan");
+    const [seances, setSeances] = useState(String(SEANCES_SEMAINE_DEFAUT));
     const [copie, setCopie] = useState(false);
     // Un changement de parcours remet les champs suivants \u00e0 leur premier choix : garder
     // l'ancien produirait une route vers un programme qui n'existe pas dans le nouveau.
@@ -6958,7 +7063,9 @@ function ConstructeurDeLien({ onRetour }) {
         setSecondId(parcours.second ? parcours.second(v)[0].v : null);
         setEtape("bilan");
     };
-    const route = parcours.route(premierId, secondId, etape);
+    // Le rythme n'est écrit dans le lien que s'il s'écarte de la valeur par défaut.
+    const route = parcours.route(premierId, secondId, etape)
+        + (Number(seances) !== SEANCES_SEMAINE_DEFAUT ? `?s=${seances}` : "");
     const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
     const lien = base + route;
     const styleChamp = { backgroundColor: SURFACE, color: INK, border: `1px solid ${BORDURE}`,
@@ -6987,6 +7094,9 @@ function ConstructeurDeLien({ onRetour }) {
                 // disparaît plutôt que de proposer un choix vide.
                 parcours.etapes && champ("Point de départ", etape, setEtape,
                     [{ v: "bilan", t: parcours.bilan }].concat(parcours.etapes(premierId, secondId))),
+                // L'écran Progrès mesure l'assiduité contre ce rythme.
+                champ("Séances par semaine", seances, setSeances,
+                    [1, 2, 3, 4, 5, 6, 7].map((n) => ({ v: String(n), t: n === SEANCES_SEMAINE_DEFAUT ? `${n} (par défaut)` : String(n) }))),
                 React.createElement("p", { className: "t-etiquette font-semibold uppercase block mt-5 mb-1.5",
                     style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Lien à envoyer"),
                 React.createElement("p", { className: "t-accompagne leading-relaxed",
@@ -7035,8 +7145,12 @@ function GuidedJourney() {
     const [prescrit, setPrescrit] = useState(() => restored.prescrit || null);
     useEffect(() => {
         const cle = cleDuProgramme(arrivee);
+        const seances = typeof window !== "undefined" ? seancesDuLien(window.location.hash) : null;
+        // Un même programme renvoyé avec un autre rythme met le rythme à jour, sans toucher au reste.
         if (cle && cle !== (prescrit && prescrit.cle))
-            setPrescrit({ cle, route: arrivee, date: aujourdHui() });
+            setPrescrit(Object.assign({ cle, route: arrivee, date: aujourdHui() }, seances ? { seancesSemaine: seances } : null));
+        else if (cle && seances && seances !== prescrit.seancesSemaine)
+            setPrescrit(Object.assign({}, prescrit, { seancesSemaine: seances }));
     }, []);
     const [introVu, setIntroVu] = useState(() => !!restored.introVu);
     const [view, setView] = useState(() => (restored.introVu ? depart.view : "intro"));
@@ -7064,6 +7178,7 @@ function GuidedJourney() {
     // Quatre semaines par défaut : sur sept jours, une douleur qui baisse lentement paraît
     // immobile, et c'est justement la baisse que l'écran doit rendre visible.
     const [fenetreProgres, setFenetreProgres] = useState("4s");
+    const [resumeCopie, setResumeCopie] = useState(false);
     // La mémoire suit le journal : chaque journée inscrite y laisse sa trace durable.
     useEffect(() => { setMemoire((m) => memoriserParcours(m, journal)); }, [journal]);
     const [jour, setJour] = useState(() => aujourdHui());
@@ -7700,19 +7815,121 @@ function GuidedJourney() {
         });
     }
     if (view === "profil") {
+        const poser = (champ) => (v) => setProfil((p) => Object.assign({}, p, { [champ]: v }));
+        const passes = parcoursPasses(memoire);
+        const cleCourante = routeDuParcours ? seanceDeRoute(routeDuParcours) : null;
+        const joursRappel = profil.rappelJours || JOURS_PAR_RYTHME[seancesSemaine] || JOURS_PAR_RYTHME[5];
+        const heureRappel = profil.rappelHeure || "18:00";
+        const carte = { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE };
+        const fourchette = (m) => (m.douleurDebut !== undefined && m.douleurFin !== undefined && m.dateDouleurDebut !== m.dateDouleurFin
+            ? ` · douleur ${m.douleurDebut} → ${m.douleurFin}/10` : "");
+        // Le résumé à copier : ce que le patient colle dans un message, ou lit à voix haute en
+        // séance. Rien qui permette de le joindre — ni courriel ni téléphone.
+        const resume = () => {
+            const quatre = resumeDesJours(journal, 28, jour);
+            const serie = serieDouleur(journal, pointDeDepart, "", jour);
+            const lignes = [`Mes exercices — résumé du ${jjmm(jour)}`];
+            const info = describeRoute(routeDuParcours);
+            if (info)
+                lignes.push(`Programme : ${info.title} (${info.detail})`);
+            if (pointDeDepart)
+                lignes.push(`Point de départ (${jjmm(pointDeDepart.date)}) : douleur ${pointDeDepart.douleur}/10`
+                    + (pointDeDepart.gene ? `, gêne : ${(DEPART_GENE.find((g) => g.id === pointDeDepart.gene) || {}).libelle.toLowerCase()}` : "")
+                    + (pointDeDepart.objectif ? `, objectif : ${(DEPART_OBJECTIF.find((g) => g.id === pointDeDepart.objectif) || {}).libelle.toLowerCase()}` : ""));
+            lignes.push(`4 dernières semaines : ${quatre.seances} séance(s), ${quatre.exercices} exercice(s), objectif ${seancesSemaine} par semaine`);
+            if (serie.length >= 2)
+                lignes.push(`Douleur : ${serie[0].v}/10 le ${jjmm(serie[0].d)} → ${serie[serie.length - 1].v}/10 le ${jjmm(serie[serie.length - 1].d)}`);
+            Object.keys(charges || {}).forEach((cle) => Object.keys(charges[cle]).forEach((exId) => {
+                const l = charges[cle][exId];
+                if (l.length)
+                    lignes.push(`${nomExercice(cle, exId)} : ${l.length > 1 ? libelleCharge(l[l.length - 1]) + " → " : ""}${libelleCharge(l[0])}`);
+            }));
+            if (profil.notesRdv && profil.notesRdv.trim())
+                lignes.push(`À dire au kiné : ${profil.notesRdv.trim()}`);
+            return lignes.join("\n");
+        };
+        const copierResume = () => {
+            const texte = resume();
+            if (typeof navigator !== "undefined" && navigator.clipboard)
+                navigator.clipboard.writeText(texte).then(() => setResumeCopie(true), () => setResumeCopie(false));
+            setResumeCopie(true);
+        };
         return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
-                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Mon profil")),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Mon profil"),
+                React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
+                    "Tout est facultatif, et rien ne quitte ce téléphone.")),
             React.createElement("div", { className: "px-6 pb-8 flex flex-col gap-6" },
                 React.createElement("section", null,
+                    intertitre("Moi"),
+                    React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-4", style: carte },
+                        React.createElement(ChampProfil, { id: "pr-prenom", intitule: "Prénom", aide: "Pour que l'accueil vous dise bonjour.", valeur: profil.prenom, onChange: poser("prenom") }),
+                        React.createElement(ChampProfil, { id: "pr-nom", intitule: "Nom", valeur: profil.nom, onChange: poser("nom") }),
+                        React.createElement(ChampProfil, { id: "pr-age", intitule: "Âge", valeur: profil.age, onChange: poser("age"), type: "number" }),
+                        React.createElement(ChampProfil, { id: "pr-sports", intitule: "Sports pratiqués", aide: "Et à quel niveau : loisir, club, compétition.", valeur: profil.sports, onChange: poser("sports"), long: true }),
+                        React.createElement(ChampProfil, { id: "pr-objectifs", intitule: "Mes objectifs", valeur: profil.objectifs, onChange: poser("objectifs"), long: true }))),
+                React.createElement("section", null,
+                    intertitre("Mes antécédents"),
+                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                        React.createElement(ChampProfil, { id: "pr-antecedents", intitule: "Blessures et opérations passées",
+                            aide: "Avec leur date si vous la connaissez — elle compte après une ligamentoplastie ou une suture méniscale.",
+                            valeur: profil.antecedents, onChange: poser("antecedents"), long: true }))),
+                passes.length > 0 && React.createElement("section", null,
+                    intertitre("Mes parcours"),
+                    React.createElement("div", { className: "rounded-2xl overflow-hidden", style: carte },
+                        passes.map((m, i) => React.createElement("div", { key: m.groupe, className: "p-4", style: i ? { borderTop: `1px solid ${BORDURE_DOUCE}` } : undefined },
+                            React.createElement("div", { className: "flex items-center justify-between gap-2" },
+                                React.createElement("p", { className: "t-corps font-medium min-w-0", style: { color: INK } }, libelleCle(m.cle)),
+                                cleCourante && cleCourante.cle && cleCourante.cle.indexOf(m.groupe) === 0 && React.createElement("span", { className: "t-accompagne font-semibold px-3 py-0.5 rounded-full shrink-0", style: { backgroundColor: ACCENT_VOILE, color: ACCENT_FORT } }, "en cours")),
+                            React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: INK_DOUX } },
+                                m.debut === m.dernier ? `le ${jjmm(m.debut)}` : `du ${jjmm(m.debut)} au ${jjmm(m.dernier)}`,
+                                ` · ${m.seances} séance${m.seances > 1 ? "s" : ""}`, fourchette(m))))),
+                    React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } },
+                        "Gardé même après la fin d'un parcours, pour en reparler si la douleur revient.")),
+                React.createElement("section", null,
+                    intertitre("Pour mon prochain rendez-vous"),
+                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                        React.createElement(ChampProfil, { id: "pr-rdv", intitule: "Ce que je veux dire à mon kinésithérapeute",
+                            aide: "Une question, un exercice qui gêne, une douleur nouvelle.", valeur: profil.notesRdv, onChange: poser("notesRdv"), long: true }))),
+                React.createElement("section", null,
+                    intertitre("Rappel de séance"),
+                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                        React.createElement("p", { id: "pr-jours", className: "t-accompagne font-medium", style: { color: INK } }, "Les jours"),
+                        React.createElement("div", { className: "flex gap-1.5 mt-1.5", role: "group", "aria-labelledby": "pr-jours" },
+                            JOURS_RAPPEL.map((j) => {
+                                const actif = joursRappel.indexOf(j.id) >= 0;
+                                return React.createElement("button", { key: j.id, type: "button", "aria-pressed": actif, "aria-label": j.long,
+                                    onClick: () => poser("rappelJours")(actif ? joursRappel.filter((x) => x !== j.id) : JOURS_RAPPEL.map((x) => x.id).filter((x) => x === j.id || joursRappel.indexOf(x) >= 0)),
+                                    className: "flex-1 cible-44 rounded-full t-accompagne font-semibold",
+                                    // Un état, pas une action : voilé, comme les filtres de Progrès. Cinq
+                                    // pastilles vertes pleines auraient été cinq boutons à presser (#71).
+                                    style: { backgroundColor: actif ? ACCENT_VOILE : "transparent", color: actif ? ACCENT_FORT : INK_DOUX,
+                                        border: `1.5px solid ${actif ? ACCENT_FORT : BORDURE}` } }, j.court);
+                            })),
+                        React.createElement("label", { htmlFor: "pr-heure", className: "t-accompagne font-medium block mt-4", style: { color: INK } }, "L'heure"),
+                        React.createElement("input", { id: "pr-heure", type: "time", value: heureRappel, onChange: (e) => poser("rappelHeure")(e.target.value || "18:00"),
+                            className: "cible-44 mt-1.5 rounded-2xl px-4 t-corps", style: { border: `1px solid ${BORDURE}`, color: INK, backgroundColor: SURFACE } }),
+                        React.createElement("button", { type: "button", disabled: !joursRappel.length,
+                            onClick: () => telecharger("rappel-mes-exercices.ics", "text/calendar", calendrierDeRappel(joursRappel, heureRappel)),
+                            className: "cible-44 w-full mt-4 rounded-full t-corps font-medium disabled:opacity-30",
+                            style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } }, "Ajouter le rappel à mon agenda"),
+                        React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: INK_DOUX } },
+                            "Le téléphone ouvre son agenda : confirmez l'ajout. Pour l'arrêter, supprimez l'évènement « Mes exercices » de l'agenda."))),
+                React.createElement("section", null,
                     intertitre("Mes données"),
-                    React.createElement("div", { className: "rounded-2xl p-5", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                    React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-3", style: carte },
                         canSave ? (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Votre progression est enregistrée sur cet appareil uniquement. Elle n'est envoyée nulle part et reste privée.")) : (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
+                        React.createElement("button", { type: "button", onClick: copierResume,
+                            className: "cible-44 w-full rounded-full t-corps font-medium", style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } },
+                            resumeCopie ? "Résumé copié" : "Copier un résumé de ma progression"),
+                        React.createElement("button", { type: "button", onClick: () => setView("recap"),
+                            className: "cible-44 w-full rounded-full t-corps font-medium", style: { border: `1px solid ${BORDURE}`, color: INK } },
+                            "Voir le résumé à imprimer ou enregistrer en PDF"),
                         // Effacer sa progression est une action, pas une note de bas de page : encadrée
                         // et sans soulignement, elle se lit comme un bouton — mais reste en retrait,
                         // car elle efface sans revenir.
-                        (resumeInfo || journal.length > 0 || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer,
-                            className: "cible-44 mt-4 px-4 rounded-full t-accompagne font-medium inline-flex items-center gap-2",
+                        (resumeInfo || journal.length > 0 || Object.keys(done).length > 0 || profil.prenom) && (React.createElement("button", { onClick: toutEffacer,
+                            className: "cible-44 px-4 rounded-full t-accompagne font-medium inline-flex items-center gap-2 w-fit",
                             style: { color: INK_PROSE, border: `1px solid ${BORDURE}` } },
                             React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
                             "Effacer ma progression et repartir de zéro")))),

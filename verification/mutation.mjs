@@ -184,6 +184,10 @@ const MUTATIONS = [
         (s) => rem(s, "return Math.round((serie[serie.length - 1].v - serie[0].v) / serie[0].v * 100);",
                       "return Math.round((serie[0].v - serie[serie.length - 1].v) / serie[0].v * 100);")],
 
+    // La lecture de l'adresse oublie d'écarter le rythme.
+    ["le rythme porté par le lien ne casse pas le lien",
+        (s) => rem(s, 'const p = String(hash || "").split("?")[0].replace(', 'const p = String(hash || "").replace(')],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

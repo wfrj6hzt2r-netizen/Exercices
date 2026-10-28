@@ -258,7 +258,7 @@ try {
         "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
         "construireRoute", "phasesDe",
         "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2",
-        "migrerSauvegarde", "tuilesDeDose", "serieDouleur", "variationDouleur", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
+        "migrerSauvegarde", "seancesDuLien", "etatDepuisRoute", "tuilesDeDose", "serieDouleur", "variationDouleur", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
 } catch (e) {
     panne = e.message;
 }
@@ -752,6 +752,23 @@ controle("la fabrique de liens atteint chaque programme", () => {
     const fantomes = [...joignables].filter((x) => !attendus.has(x));
     return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
+});
+
+// --- Le rythme porté par le lien ne casse pas le lien ------------------------------------
+// La fabrique ajoute « ?s=3 » au lien quand le kinésithérapeute attend un autre rythme que
+// cinq séances. Si la lecture de l'adresse ne savait pas l'écarter, « entorse?s=3 » ne
+// désignerait plus aucune blessure : le patient atterrirait sur l'accueil, son programme perdu.
+controle("le rythme porté par le lien ne casse pas le lien", () => {
+    const out = [];
+    const e = D.etatDepuisRoute("#/z/genou/entorse/e2?s=3");
+    if (!e || e.view !== "stage" || e.injuryId !== "entorse" || e.stageIdx !== 1)
+        out.push(`« #/z/genou/entorse/e2?s=3 » n'ouvre plus l'étape 2 de l'entorse : ${JSON.stringify(e)}`);
+    if (D.seancesDuLien("#/z/genou/entorse?s=3") !== 3)
+        out.push("« ?s=3 » ne donne pas trois séances");
+    for (const h of ["#/z/genou/entorse", "#/z/genou/entorse?s=0", "#/z/genou/entorse?s=9"])
+        if (D.seancesDuLien(h) !== null)
+            out.push(`« ${h} » donne ${D.seancesDuLien(h)} séances au lieu de la valeur par défaut`);
+    return out;
 });
 
 // --- La baisse de douleur affichée est exacte ----------------------------------------------
