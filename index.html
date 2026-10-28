@@ -1355,23 +1355,24 @@ const PoseBandRotInt = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M39 17 L34 21 L39 25" }),
     React.createElement("line", { x1: "24", y1: "32", x2: "20", y2: "44" }),
     React.createElement("line", { x1: "24", y1: "32", x2: "28", y2: "44" })));
-// Tirage scapulaire : le coude est déjà passé derrière le tronc, et le chevron dit où il
-// va. Le tirage générique montre le début du geste, bras tendu devant ; or ce qu'on
-// demande ici, c'est la fin — « tirez les coudes vers l'arrière ».
+// Renforcement scapulaire : bras tendus contre le mur, et la double flèche derrière le dos
+// pour le va-et-vient des omoplates. Le tirage à l'élastique montrait le début du geste,
+// bras tendu devant ; et l'élastique n'était pas ce qu'il fallait retenir.
 const PoseScapRow = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("line", { x1: "6", y1: "13", x2: "6", y2: "27" }),
-    React.createElement("line", { x1: "7", y1: "20", x2: "19", y2: "21" }),
-    React.createElement("circle", { cx: "26", cy: "10", r: "4" }),
-    React.createElement("line", { x1: "26", y1: "14", x2: "26", y2: "30" }),
-    React.createElement("line", { x1: "26", y1: "18", x2: "31", y2: "26" }),
-    React.createElement("line", { x1: "31", y1: "26", x2: "19", y2: "21" }),
-    React.createElement("path", { d: "M33 23 L36.5 26 L33 29" }),
+    React.createElement("line", { x1: "6", y1: "6", x2: "6", y2: "44" }),
+    React.createElement("circle", { cx: "24", cy: "11", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "26", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "18", x2: "8", y2: "19" }),
     React.createElement("line", { x1: "26", y1: "30", x2: "23", y2: "44" }),
-    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" })));
+    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" }),
+    React.createElement("line", { x1: "32", y1: "21", x2: "42", y2: "21" }),
+    React.createElement("path", { d: "M35 18 L32 21 L35 24" }),
+    React.createElement("path", { d: "M39 18 L42 21 L39 24" })));
 // Copenhague : gainage latéral, jambe du dessus posée sur un banc, jambe du dessous
 // libre. Il recevait le couché sur le côté jambe levée, qui travaille les abducteurs —
 // l'opposé du muscle visé, sur la pathologie dont c'est l'exercice de référence.
+// Le bras libre monte vers le plafond, à angle droit du corps.
 const PoseCopenhagen = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
     React.createElement("line", { x1: "33", y1: "37", x2: "43", y2: "37" }),
@@ -1380,10 +1381,11 @@ const PoseCopenhagen = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "14", y1: "28", x2: "12", y2: "43" }),
     React.createElement("line", { x1: "12", y1: "43", x2: "19", y2: "43" }),
     React.createElement("line", { x1: "14", y1: "28", x2: "28", y2: "33" }),
+    React.createElement("line", { x1: "14.5", y1: "28", x2: "19", y2: "15" }),
     React.createElement("line", { x1: "28", y1: "33", x2: "42", y2: "33" }),
     React.createElement("line", { x1: "28", y1: "33", x2: "36", y2: "42" })));
 // Glissement du nerf sciatique, assis : le genou se tend pendant que la tête se relève —
-// d'où l'arc au-dessus du crâne. La position pliée est en pointillé. Les deux exercices
+// d'où le chevron au-dessus du crâne. La position pliée est en pointillé. Les deux exercices
 // sciatiques portaient le dessin du membre supérieur, bras tendu devant.
 const PoseNerveSciatic = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
@@ -1394,7 +1396,7 @@ const PoseNerveSciatic = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "14", y1: "27", x2: "27", y2: "27" }),
     React.createElement("line", { x1: "27", y1: "27", x2: "38", y2: "25" }),
     React.createElement("path", { d: "M27 27 L30 38", strokeDasharray: "3 3" }),
-    React.createElement("path", { d: "M8 4.5 Q12 2 16 4.5" })));
+    React.createElement("path", { d: "M16 1 L19.5 4 L16 7" })));
 // L'autre exercice sciatique : allongé sur le dos, un genou plié, l'autre jambe tendue
 // remontée vers le plafond, la serviette sous le pied en pointillé.
 const PoseSupineSlr = poseWrap(React.createElement(React.Fragment, null,
