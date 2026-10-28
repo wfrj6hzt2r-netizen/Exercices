@@ -64,7 +64,7 @@ contrôles-ci mordent encore.
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 31 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
+| Chaque écran s'affiche sans erreur | 32 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur tous les écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |

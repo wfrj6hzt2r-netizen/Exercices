@@ -567,6 +567,14 @@ async function ouvrir(ctx, hash) {
         if ((await apres.count()) && (await apres.isDisabled()))
             out.push("« Enregistrer » reste inactif alors que la douleur a été indiquée");
     }
+    // Le point de départ porte la même promesse : sa note ancre toute la courbe de Progrès.
+    await p.goto(BASE + "#/depart", { waitUntil: "load" });
+    await p.waitForTimeout(500);
+    if (!/— \/ 10/.test(await p.locator("main").innerText()))
+        out.push("le point de départ affiche une douleur avant qu'on l'ait indiquée");
+    const enregistrer = p.getByRole("button", { name: /Enregistrer mon point de départ/ });
+    if (!(await enregistrer.count()) || !(await enregistrer.isDisabled()))
+        out.push("le point de départ s'enregistre sans douleur indiquée");
     await p.close();
     await ctx.close();
     noter("le relevé de douleur n'invente aucune valeur", out);

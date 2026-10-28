@@ -5613,6 +5613,7 @@ function construireRoute(e) {
         case "zone": return "#/zone";
         case "profil": return "#/profil";
         case "progres": return "#/progres";
+        case "depart": return "#/depart";
         case "injury": return z ? `#/z/${z}` : null;
         case "checkin": return z && i ? `#/z/${z}/${i}` : null;
         case "stage": return z && i ? `#/z/${z}/${i}/e${(e.stageIdx || 0) + 1}` : null;
@@ -5657,6 +5658,8 @@ function etatDepuisRoute(hash) {
         return fait({ view: "profil" });
     if (p[0] === "progres")
         return fait({ view: "progres" });
+    if (p[0] === "depart")
+        return fait({ view: "depart" });
     const etape = (txt, max) => {
         const m = /^e(\d+)$/.exec(txt || "");
         if (!m)
@@ -5740,6 +5743,7 @@ function etatDepuisRoute(hash) {
 // exactement des flèches existantes pour que geste et bouton ne divergent jamais.
 const RETOUR = {
     zone: "accueil",
+    depart: "accueil",
     injury: "zone",
     checkin: "injury",
     stage: "injury",
@@ -5869,7 +5873,7 @@ const ONGLETS = [
     { id: "profil", libelle: "Profil", Icone: IconeProfil },
 ];
 function ongletDeVue(vue) {
-    if (vue === "accueil")
+    if (vue === "accueil" || vue === "depart")
         return "accueil";
     if (vue === "recap" || vue === "progres")
         return "progres";
@@ -5985,6 +5989,104 @@ function MiniCourbe({ valeurs }) {
     return React.createElement("svg", { width: larg, height: haut, viewBox: `0 0 ${larg} ${haut}`, "aria-hidden": "true", className: "shrink-0" },
         React.createElement("polyline", { points: valeurs.map((v, i) => `${px(i)},${py(v)}`).join(" "), fill: "none", stroke: ACCENT, strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round" }),
         React.createElement("circle", { cx: px(valeurs.length - 1), cy: py(valeurs[valeurs.length - 1]), r: 3, fill: ACCENT }));
+}
+// --- Mon point de départ ---------------------------------------------------------------------
+// Le court questionnaire du début, modifiable ensuite. Il donne son origine à la courbe de
+// l'écran Progrès : sans lui, la courbe partait de la première séance notée, quand la douleur
+// avait déjà commencé à baisser. Questions validées par le praticien en octobre 2026.
+const DEPART_GENE = [
+    { id: "aucune", libelle: "Pas du tout" },
+    { id: "un-peu", libelle: "Un peu" },
+    { id: "beaucoup", libelle: "Beaucoup" },
+    { id: "empeche", libelle: "Elle m'empêche de faire certaines choses" },
+];
+const DEPART_ACTIVITE = [
+    { id: "aucune", libelle: "Aucune" },
+    { id: "marche", libelle: "Marche ou jardinage" },
+    { id: "loisir", libelle: "Sport loisir" },
+    { id: "club", libelle: "Sport en club ou compétition" },
+];
+const DEPART_OBJECTIF = [
+    { id: "quotidien", libelle: "Retrouver le confort au quotidien" },
+    { id: "sport", libelle: "Reprendre mon sport" },
+    { id: "recidive", libelle: "Prévenir une récidive" },
+    { id: "operation", libelle: "Me préparer à une opération ou m'en remettre" },
+];
+function ChoixUnique({ idQuestion, options, valeur, onChoisir }) {
+    return React.createElement("div", { role: "radiogroup", "aria-labelledby": idQuestion, className: "flex flex-col gap-2 mt-3" },
+        options.map((o) => {
+            const choisi = valeur === o.id;
+            return React.createElement("button", { key: o.id, type: "button", role: "radio", "aria-checked": choisi,
+                onClick: () => onChoisir(choisi ? null : o.id),
+                className: "cible-44 w-full rounded-2xl px-4 py-2.5 flex items-center gap-3 text-left t-corps",
+                style: { border: `1.5px solid ${choisi ? ACCENT_FORT : BORDURE}`, backgroundColor: choisi ? ACCENT_VOILE : SURFACE,
+                    color: INK, fontWeight: choisi ? 600 : 400 } },
+                React.createElement("span", { "aria-hidden": "true", className: "inline-flex items-center justify-center rounded-full shrink-0",
+                    style: { width: 20, height: 20, border: `1.5px solid ${choisi ? ACCENT_FORT : INK_DOUX}` } },
+                    choisi && React.createElement("span", { className: "rounded-full", style: { width: 10, height: 10, backgroundColor: ACCENT_FORT } })),
+                o.libelle);
+        }));
+}
+function EcranPointDeDepart({ initial, programme, onChoisirZone, onEnregistrer, onRetour }) {
+    const [brouillon, setBrouillon] = useState(() => Object.assign({ douleur: undefined, gene: null, activite: null, sport: "", objectif: null }, initial));
+    const poser = (champ) => (v) => setBrouillon((b) => Object.assign({}, b, { [champ]: v }));
+    // Pas de note avant que le curseur ait bougé : un point de départ inventé fausserait toute
+    // la courbe, et ne se distinguerait pas d'un vrai.
+    const releve = brouillon.douleur !== undefined && brouillon.douleur !== null;
+    const carte = { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE };
+    const question = (id, numero, texte, enfant) => React.createElement("section", { className: "rounded-2xl p-5", style: carte },
+        React.createElement("p", { className: "t-etiquette font-semibold uppercase", style: { color: ACCENT_FORT } }, `Question ${numero} sur 5`),
+        React.createElement("h2", { id, className: "t-carte font-semibold mt-1", style: { color: INK } }, texte),
+        enfant);
+    return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
+        React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+            React.createElement("button", { onClick: onRetour, className: "cible-44 flex items-center gap-1 t-corps mb-2", style: { color: SUR_BANDEAU_DOUX } },
+                React.createElement(ChevronLeft, { size: 18 }),
+                " Retour"),
+            React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Mon point de départ"),
+            React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
+                "Cinq questions, une minute. Vos réponses servent de repère pour mesurer vos progrès ; vous pourrez les modifier.")),
+        React.createElement("div", { className: "px-6 pb-8 flex flex-col gap-4" },
+            question("q-zone", 1, "Où avez-vous mal, et pour quelle raison ?",
+                programme
+                    ? React.createElement("div", { className: "mt-3 flex items-center justify-between gap-3" },
+                        React.createElement("div", { className: "min-w-0" },
+                            React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, programme.title),
+                            React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, programme.detail)),
+                        React.createElement("button", { onClick: onChoisirZone, className: "cible-44 px-4 rounded-full t-accompagne font-medium shrink-0",
+                            style: { border: `1px solid ${BORDURE}`, color: ACCENT_FORT } }, "Changer"))
+                    : React.createElement("button", { onClick: onChoisirZone, className: "cible-44 mt-3 w-full rounded-full t-corps font-medium",
+                        style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } }, "Choisir sur le dessin du corps")),
+            question("q-douleur", 2, "Quelle est votre douleur aujourd'hui ?",
+                React.createElement(React.Fragment, null,
+                    React.createElement("div", { className: "flex items-center gap-3 mt-3" },
+                        React.createElement("input", { type: "range", min: 0, max: 10, step: 1,
+                            value: releve ? brouillon.douleur : 0,
+                            onChange: (e) => poser("douleur")(Number(e.target.value)),
+                            "aria-labelledby": "q-douleur",
+                            "aria-valuetext": releve ? brouillon.douleur + " sur 10" : "pas encore indiqué",
+                            className: "reglette", style: { flex: 1, color: releve ? ORANGE : ACCENT_ETEINT } }),
+                        React.createElement("span", { className: "t-corps font-medium tabular-nums", style: { color: INK, minWidth: "3.2rem", textAlign: "right" } },
+                            releve ? brouillon.douleur + " / 10" : "— / 10")),
+                    React.createElement("div", { className: "flex justify-between mt-1" },
+                        React.createElement("span", { className: "t-etiquette", style: { color: INK_DOUX } }, "aucune"),
+                        React.createElement("span", { className: "t-etiquette", style: { color: INK_DOUX } }, "insupportable")))),
+            question("q-gene", 3, "Dans la vie de tous les jours, cette douleur vous gêne…",
+                React.createElement(ChoixUnique, { idQuestion: "q-gene", options: DEPART_GENE, valeur: brouillon.gene, onChoisir: poser("gene") })),
+            question("q-activite", 4, "Quelle activité physique pratiquez-vous ?",
+                React.createElement(React.Fragment, null,
+                    React.createElement(ChoixUnique, { idQuestion: "q-activite", options: DEPART_ACTIVITE, valeur: brouillon.activite, onChoisir: poser("activite") }),
+                    brouillon.activite && brouillon.activite !== "aucune" && React.createElement("input", { type: "text", value: brouillon.sport,
+                        onChange: (e) => poser("sport")(e.target.value), placeholder: "Laquelle ? (facultatif)",
+                        "aria-label": "Activité pratiquée",
+                        className: "cible-44 w-full mt-3 rounded-2xl px-4 t-corps", style: { border: `1px solid ${BORDURE}`, color: INK, backgroundColor: SURFACE } }))),
+            question("q-objectif", 5, "Quel est votre objectif ?",
+                React.createElement(ChoixUnique, { idQuestion: "q-objectif", options: DEPART_OBJECTIF, valeur: brouillon.objectif, onChoisir: poser("objectif") })),
+            React.createElement("button", { onClick: () => releve && onEnregistrer(brouillon), disabled: !releve,
+                className: "cible-44 w-full py-3 rounded-full t-corps font-medium text-white disabled:opacity-30",
+                style: { backgroundColor: ACCENT } }, "Enregistrer mon point de départ"),
+            !releve && React.createElement("p", { className: "t-accompagne text-center", style: { color: INK_DOUX } },
+                "Indiquez au moins votre douleur d'aujourd'hui pour enregistrer."))));
 }
 function BandeAssiduite({ journal, jour, accent }) {
     const jours = septDerniersJours(journal, jour);
@@ -7402,8 +7504,10 @@ function GuidedJourney() {
             React.createElement("p", { className: "text-xl font-semibold mt-1 tabular-nums", style: { color: INK } }, valeur),
             React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, legende));
         const acces = [
-            { id: "zone", titre: "Choisir une zone", Icone: IconeCible, aller: () => { setQuery(""); setView("zone"); } },
-        ];
+            // Sans programme, la carte « Mon parcours » porte déjà ce bouton-là.
+            info && { id: "zone", titre: "Choisir une zone", Icone: IconeCible, aller: () => { setQuery(""); setView("zone"); } },
+            { id: "depart", titre: "Mon point de départ", Icone: IconeCalendrier, aller: () => setView("depart") },
+        ].filter(Boolean);
         return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
                 React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" },
@@ -7463,7 +7567,7 @@ function GuidedJourney() {
                             tuile(semaine.douleur === null ? "—" : `${String(Math.round(semaine.douleur * 10) / 10).replace(".", ",")}/10`, "douleur moy.", IconeJauge, 2)),
                         React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } }, "Sur les 7 derniers jours \u00B7 ",
                             React.createElement("span", { className: "underline underline-offset-2", style: { color: ACCENT_FORT } }, "voir le d\u00E9tail")))),
-                info && React.createElement("section", null,
+                React.createElement("section", null,
                     intertitre("Accès rapide"),
                     React.createElement("div", { className: "flex gap-2.5" }, acces.map((a) => React.createElement("button", { key: a.id, onClick: a.aller,
                         className: "flex-1 rounded-2xl p-5 flex items-center gap-3 text-left cible-44", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
@@ -7576,6 +7680,24 @@ function GuidedJourney() {
                     canSave
                         ? "Tout reste sur ce téléphone : rien n'est envoyé nulle part."
                         : "Ce navigateur n'autorise pas l'enregistrement : vos progrès seront perdus en fermant la page."))));
+    }
+    if (view === "depart") {
+        // Le programme retenu pour la question 1 : celui qu'ouvre la carte « Mon parcours ».
+        const programme = describeRoute(routeDuParcours);
+        const cle = cleDuProgramme(routeDuParcours);
+        return React.createElement(EcranPointDeDepart, {
+            initial: pointDeDepart, programme,
+            onChoisirZone: () => { setQuery(""); setView("zone"); },
+            onRetour: retourEnArriere,
+            onEnregistrer: (b) => {
+                // Modifier ses réponses garde la date d'origine : c'est elle qui ancre la courbe.
+                // Un autre programme, en revanche, est un nouveau départ.
+                const memeProgramme = pointDeDepart && pointDeDepart.cle === cle;
+                setPointDeDepart(Object.assign({}, b, { cle, programme: programme ? programme.title : null,
+                    date: memeProgramme ? pointDeDepart.date : jour }));
+                setView("accueil");
+            },
+        });
     }
     if (view === "profil") {
         return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
