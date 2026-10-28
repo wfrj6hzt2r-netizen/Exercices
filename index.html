@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#0F2A43"><meta name="description" content="Programme d'exercices de rééducation, à faire chez soi entre deux séances."><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Mes exercices"><meta name="mobile-web-app-capable" content="yes"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="manifest" href="manifest.webmanifest"><title>Mes exercices — rééducation</title><!-- React 18.3.1 (UMD, build de production) embarqué dans la page. Chargé jusqu'ici depuis un CDN, il rendait l'application inutilisable sans réseau : installée sur l'écran d'accueil, elle n'affichait qu'un message d'erreur en avion, en sous-sol ou dans une salle sans wifi. Licence MIT, conservée en tête de chaque fichier. -->
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#F6F8F3" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0E1712" media="(prefers-color-scheme: dark)"><meta name="description" content="Programme d'exercices de rééducation, à faire chez soi entre deux séances."><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Mes exercices"><meta name="mobile-web-app-capable" content="yes"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="manifest" href="manifest.webmanifest"><title>Mes exercices — rééducation</title><!-- React 18.3.1 (UMD, build de production) embarqué dans la page. Chargé jusqu'ici depuis un CDN, il rendait l'application inutilisable sans réseau : installée sur l'écran d'accueil, elle n'affichait qu'un message d'erreur en avion, en sous-sol ou dans une salle sans wifi. Licence MIT, conservée en tête de chaque fichier. -->
 <script>/**
  * @license React
  * react.production.min.js
@@ -303,30 +303,42 @@ Les couleurs vivent ici, en variables CSS, et le JavaScript ne fait plus que les
 C'est ce qui rend le thème sombre possible sans toucher aux centaines d'endroits qui les
 emploient : seule la valeur change, jamais le nom.
 
-Le bandeau bleu nuit ne bascule pas — il est déjà sombre, c'est l'identité de l'application,
-et les soixante-dix-huit blancs translucides posés dessus restent donc valides. Ce qui
-bascule, c'est la zone de contenu : fond de page, cartes, texte, filets, voiles de couleur. */
+Refonte de 2026 : vert forêt pour ce qui se touche, anis pour ce qui est actif, orange pour la
+douleur. Le bandeau bleu nuit, qui ne basculait pas, devient clair le jour et sombre la nuit
+comme le reste ; ses blancs translucides sont désormais nommés par rôle (« sur-bandeau »). */
 :root{
-  --page:#F5F8FA; --surface:#FFFFFF;--carte-figure:#FFFFFF; --bordure:#E4E6F0; --bordure-douce:#EAEFF2;
-  --encre:#0F172A; --encre-prose:#3F4759; --encre-doux:#5F6478;
-  --accent:#4F7A5E; --accent-fort:#345940; --accent-soft:#8FBFA1;
-  --accent-voile:#E4EEE6; --accent-pale:#EDF2F0; --accent-eteint:#9FB6A6;
-  --accent-calendrier:#BBD3C2; --accent-attente:rgba(79,122,94,0.14);
+  --page:#F6F8F3; --surface:#FFFFFF;--carte-figure:#FFFFFF; --bordure:#E1E8DC; --bordure-douce:#EBF0E7;
+  --encre:#16231B; --encre-prose:#3B4A40; --encre-doux:#57655C;
+  --accent:#1F6B3F; --accent-fort:#1A5A35; --accent-soft:#2A6E45;
+  --accent-voile:#E2F0D9; --accent-pale:#EEF6E8; --accent-eteint:#A3BC9C;
+  --accent-calendrier:#B9DBA2; --accent-attente:rgba(31,107,63,0.12);
+  --anis:#A8DC4E; --anis-voile:#EEF8DC; --sur-anis:#16301F; --orange:#E8792A;
+  --bandeau:#F6F8F3; --sur-bandeau:#16231B; --sur-bandeau-doux:#3B4A40; --sur-bandeau-pale:#57655C;
+  --sur-bandeau-filet:rgba(31,107,63,0.24); --sur-bandeau-voile:rgba(31,107,63,0.08);
+  --bandeau-lueur:rgba(168,220,78,0.20);
+  --bandeau-vague:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Cpath d='M320 0H120c30 46 78 70 132 74 30 2 52 22 68 56Z' fill='%23A8DC4E' fill-opacity='.22'/%3E%3Cpath d='M70 0c34 70 104 96 170 100 38 3 62 26 80 64' fill='none' stroke='%231F6B3F' stroke-opacity='.14' stroke-width='2'/%3E%3C/svg%3E");
   --warn:#9F1239; --warn-voile:#FDE4E9; --warn-filet:#F4B8C4;
-  --prudence:#8F3517; --prudence-voile:#FBEDE7; --prudence-filet:#F0CDBD;
+  --prudence:#9A3E0E; --prudence-voile:#FEF0E4; --prudence-filet:#F7CDAA;
   --badge-coureur:#DBEAFE; --badge-coureur-texte:#1D4ED8;
   --badge-prevention:#F3E8FB; --badge-prevention-texte:#7B3FA8;
-  --croissance-accent:#8A5D18; --croissance-clair:#E0B972; --croissance-fond:#F6EEDD;
+  --croissance-accent:#8A5D18; --croissance-clair:#8A5D18; --croissance-fond:#F6EEDD;
   --croissance-sur-accent:#FFFFFF;
-  --ombre-carte:0 1px 2px rgba(15,42,67,0.04), 0 8px 24px -12px rgba(15,42,67,0.10);
+  --ombre-carte:0 1px 2px rgba(22,48,31,0.05), 0 10px 26px -14px rgba(22,48,31,0.16);
 }
+/* Le thème sombre suit le réglage du téléphone, y compris quand celui-ci bascule seul à la
+tombée du jour : c'est le navigateur qui relaie ce réglage, l'application n'a rien à surveiller. */
 @media(prefers-color-scheme:dark){
   :root{
-    --page:#0B1621; --surface:#16232F;--carte-figure:#E6E1DA; --bordure:#27343F; --bordure-douce:#1F2C37;
-    --encre:#E8EFF4; --encre-prose:#C3CED8; --encre-doux:#97A5B2;
-    --accent:#4F7A5E; --accent-fort:#93C4A5; --accent-soft:#8FBFA1;
-    --accent-voile:#1D3327; --accent-pale:#1A2922; --accent-eteint:#5C7768;
-    --accent-calendrier:#3A6A4E; --accent-attente:rgba(143,191,161,0.14);
+    --page:#0E1712; --surface:#17231C;--carte-figure:#E6E1DA; --bordure:#26362C; --bordure-douce:#1E2C24;
+    --encre:#E7EFE9; --encre-prose:#C2CFC6; --encre-doux:#98A89E;
+    --accent:#2E7D4F; --accent-fort:#9AD3A6; --accent-soft:#A6D98C;
+    --accent-voile:#1D3326; --accent-pale:#18291F; --accent-eteint:#587466;
+    --accent-calendrier:#3A6A4E; --accent-attente:rgba(166,217,140,0.14);
+    --anis:#A8DC4E; --anis-voile:#26381A; --sur-anis:#16301F; --orange:#F39A55;
+    --bandeau:#0E1712; --sur-bandeau:#E7EFE9; --sur-bandeau-doux:#C2CFC6; --sur-bandeau-pale:#98A89E;
+    --sur-bandeau-filet:rgba(231,239,233,0.22); --sur-bandeau-voile:rgba(231,239,233,0.08);
+    --bandeau-lueur:rgba(46,125,79,0.26);
+    --bandeau-vague:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Cpath d='M320 0H120c30 46 78 70 132 74 30 2 52 22 68 56Z' fill='%232E7D4F' fill-opacity='.30'/%3E%3Cpath d='M70 0c34 70 104 96 170 100 38 3 62 26 80 64' fill='none' stroke='%23A6D98C' stroke-opacity='.16' stroke-width='2'/%3E%3C/svg%3E");
     --warn:#FFA8B8; --warn-voile:#3B1621; --warn-filet:#5C2333;
     --prudence:#F2B79C; --prudence-voile:#2F1A11; --prudence-filet:#4C2B1C;
     --badge-coureur:#1C2F49; --badge-coureur-texte:#A8C7F5;
@@ -336,6 +348,11 @@ bascule, c'est la zone de contenu : fond de page, cartes, texte, filets, voiles 
     --ombre-carte:0 1px 2px rgba(0,0,0,0.35), 0 10px 28px -14px rgba(0,0,0,0.60);
   }
 }
+/* Le décor du bandeau : une lueur verte sur le bord droit et une vague dans l'angle. Les deux
+restent derrière le texte et au-dessous de 25 % d'opacité ; le contrôle de contraste les
+ignore, mais aucune teinte ici n'assombrit ni n'éclaircit assez pour gêner la lecture. */
+.bandeau{background-image:var(--bandeau-vague),radial-gradient(130% 95% at 100% 0%,var(--bandeau-lueur),transparent 72%);background-repeat:no-repeat;background-position:right top,0 0;background-size:min(78%,320px) auto,100% 100%}
+.text-sur-bandeau{color:var(--sur-bandeau)}
 /* Les quatre classes Tailwind qui portaient une couleur en dur passent par les mêmes
 variables. Ce bloc vient après le Tailwind figé : à spécificité égale, c'est lui qui gagne,
 et les cinquante-cinq endroits qui les emploient n'ont pas à changer. */
@@ -343,7 +360,7 @@ et les cinquante-cinq endroits qui les emploient n'ont pas à changer. */
 .bg-\[\#F5F8FA\]{background-color:var(--page)}
 .text-\[\#6B7086\]{color:var(--encre-doux)}/* Le nom de cette classe est celui de l'ancienne valeur : l'encre douce vaut désormais #5F6478. Renommer coûterait cinquante points de retouche pour rien, la couleur venant de la variable. */
 .text-\[\#0F172A\]{color:var(--encre)}
-html{font-size:106.25%}html,body{margin:0;padding:0;background:#0F2A43}/* Le corps décale le contenu sous la barre d'état au repos, mais rien n'était opaque derrière l'heure : au défilement, le texte passait dessous et les deux devenaient illisibles l'un sur l'autre. Une bande fixe, de la couleur de l'en-tête, tient la place. */body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:#0F2A43;z-index:40;pointer-events:none}body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}body{-webkit-font-smoothing:antialiased}*{-webkit-tap-highlight-color:transparent}input,button{font-family:inherit}button,[role=button]{-webkit-user-select:none;user-select:none}/* Le focus clavier n'était visible nulle part, et trois champs l'avaient même désactivé. */:focus-visible{outline:3px solid #8FBFA1;outline-offset:2px}/* Le titre reçoit le focus à chaque changement d'écran, pour que le lecteur d'écran annonce où l'on arrive. Il n'est pas atteignable au clavier : le contour n'y désigne donc rien où l'on puisse agir, et il paraît comme un cadre posé sur un titre. Il reste partout où il sert, boutons et liens. */h1:focus-visible{outline:none}/* Cibles tactiles : 44 px est le minimum confortable, et une partie des patients a 70 ans. */.cible-44{min-height:44px}
+html{font-size:106.25%}html,body{margin:0;padding:0;background:var(--bandeau)}/* Le corps décale le contenu sous la barre d'état au repos, mais rien n'était opaque derrière l'heure : au défilement, le texte passait dessous et les deux devenaient illisibles l'un sur l'autre. Une bande fixe, de la couleur de l'en-tête, tient la place. */body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:var(--bandeau);z-index:40;pointer-events:none}body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}body{-webkit-font-smoothing:antialiased}*{-webkit-tap-highlight-color:transparent}input,button{font-family:inherit}button,[role=button]{-webkit-user-select:none;user-select:none}/* Le focus clavier n'était visible nulle part, et trois champs l'avaient même désactivé. */:focus-visible{outline:3px solid var(--accent);outline-offset:2px}/* Le titre reçoit le focus à chaque changement d'écran, pour que le lecteur d'écran annonce où l'on arrive. Il n'est pas atteignable au clavier : le contour n'y désigne donc rien où l'on puisse agir, et il paraît comme un cadre posé sur un titre. Il reste partout où il sert, boutons et liens. */h1:focus-visible{outline:none}/* Cibles tactiles : 44 px est le minimum confortable, et une partie des patients a 70 ans. */.cible-44{min-height:44px}
 /* Le Tailwind de cette page est figé : seules les classes réellement employées au moment de
 la compilation y figurent. Cinq classes d'espacement écrites depuis ne s'y trouvaient pas et
 ne faisaient donc rien — silencieusement, ce qui est le pire des cas. Elles sont rétablies ici
@@ -361,7 +378,7 @@ Tout est annulé si le système demande à réduire les animations. */
 .apparition{animation:apparition .18s cubic-bezier(.2,.7,.3,1) both}
 @keyframes coche-ressort{0%{transform:scale(.55)}55%{transform:scale(1.14)}100%{transform:scale(1)}}
 .coche-ressort{animation:coche-ressort .28s cubic-bezier(.2,.8,.2,1)}
-/* La réglette de douleur. La poignée native d'iOS mesure environ 23 px sur 16 et la piste 6 : trop fin pour une main âgée, qui vise alors à côté et fait sauter la note de deux à cinq. On la porte à 28 px dans une zone tactile de 44, et la couleur suit « currentColor », posé par le palier de douleur. */.reglette{-webkit-appearance:none;appearance:none;background:transparent;min-height:44px;padding:0}.reglette::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface);margin-top:-11px}.reglette::-moz-range-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface)}.reglette:focus-visible{outline:2px solid var(--accent-fort);outline-offset:4px;border-radius:8px}.carte-mannequin{background-color:var(--carte-figure)}.carte-mannequin image{mix-blend-mode:multiply}@media print{.carte-mannequin{background-color:#fff}.carte-mannequin image{mix-blend-mode:normal}}/* L'échelle typographique. Une taille vaut pour un métier, jamais pour un écran : c'est la seule règle qui empêche onze tailles de repousser. Les trois tailles de titre gardent leurs classes Tailwind — text-xl, text-2xl, text-3xl — parce qu'elles ne dérivaient pas. */.t-etiquette{font-size:0.6875rem}.t-accompagne{font-size:0.8125rem}.t-corps{font-size:0.9375rem}.t-carte{font-size:1.0625rem}@media(prefers-reduced-motion:reduce){.apparition,.coche-ressort{animation:none}}/* Impression du récapitulatif : le patient l'enregistre en PDF depuis l'aperçu et l'envoie à son kinésithérapeute, au lieu de lui tendre son téléphone. Le bandeau bleu nuit s'éclaircit — il gaspillerait l'encre et rendrait le texte blanc invisible — et les couleurs du calendrier et des pastilles de douleur sont forcées, car elles portent l'information. */@media print{/* Le papier est blanc quel que soit le thème du téléphone : les variables reprennent leurs valeurs claires avant toute autre règle d'impression. */:root{--page:#fff;--surface:#fff;--bordure:#E4E6F0;--bordure-douce:#EAEFF2;--encre:#0F172A;--encre-prose:#3F4759;--encre-doux:#5F6478;--accent:#4F7A5E;--accent-fort:#345940;--accent-voile:#E4EEE6;--accent-pale:#EDF2F0;--accent-calendrier:#BBD3C2;--accent-attente:rgba(79,122,94,0.14);--warn:#9F1239;--warn-voile:#FDE4E9;--warn-filet:#F4B8C4;--prudence:#8F3517;--prudence-voile:#FBEDE7;--prudence-filet:#F0CDBD;--badge-coureur:#DBEAFE;--badge-coureur-texte:#1D4ED8;--badge-prevention:#F3E8FB;--badge-prevention-texte:#7B3FA8;--croissance-accent:#8A5D18;--croissance-fond:#F6EEDD;--croissance-sur-accent:#fff;--ombre-carte:none}@page{margin:14mm}html,body{background:#fff!important}body{padding:0!important}.sans-impression{display:none!important}.pour-impression{display:block!important}.bandeau-sombre,.bandeau-sombre *{background-color:#fff!important;color:#0F172A!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}#root>div{max-width:none!important}.min-h-screen{min-height:0!important;background-color:#fff!important}article,.rounded-2xl{break-inside:avoid}}.pour-impression{display:none}#loader{min-height:100vh;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-family:-apple-system,Arial,sans-serif;font-size:0.9375rem}
+/* La réglette de douleur. La poignée native d'iOS mesure environ 23 px sur 16 et la piste 6 : trop fin pour une main âgée, qui vise alors à côté et fait sauter la note de deux à cinq. On la porte à 28 px dans une zone tactile de 44, et la couleur suit « currentColor », posé par le palier de douleur. */.reglette{-webkit-appearance:none;appearance:none;background:transparent;min-height:44px;padding:0}.reglette::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface);margin-top:-11px}.reglette::-moz-range-track{height:6px;border-radius:3px;background:var(--bordure)}.reglette::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:currentColor;border:2px solid var(--surface)}.reglette:focus-visible{outline:2px solid var(--accent-fort);outline-offset:4px;border-radius:8px}.carte-mannequin{background-color:var(--carte-figure)}.carte-mannequin image{mix-blend-mode:multiply}@media print{.carte-mannequin{background-color:#fff}.carte-mannequin image{mix-blend-mode:normal}}/* L'échelle typographique. Une taille vaut pour un métier, jamais pour un écran : c'est la seule règle qui empêche onze tailles de repousser. Les trois tailles de titre gardent leurs classes Tailwind — text-xl, text-2xl, text-3xl — parce qu'elles ne dérivaient pas. */.t-etiquette{font-size:0.6875rem}.t-accompagne{font-size:0.8125rem}.t-corps{font-size:0.9375rem}.t-carte{font-size:1.0625rem}@media(prefers-reduced-motion:reduce){.apparition,.coche-ressort{animation:none}}/* Impression du récapitulatif : le patient l'enregistre en PDF depuis l'aperçu et l'envoie à son kinésithérapeute, au lieu de lui tendre son téléphone. Le bandeau bleu nuit s'éclaircit — il gaspillerait l'encre et rendrait le texte blanc invisible — et les couleurs du calendrier et des pastilles de douleur sont forcées, car elles portent l'information. */@media print{/* Le papier est blanc quel que soit le thème du téléphone : les variables reprennent leurs valeurs claires avant toute autre règle d'impression. */:root{--page:#fff;--surface:#fff;--bordure:#E4E6F0;--bordure-douce:#EAEFF2;--encre:#16231B;--encre-prose:#3B4A40;--encre-doux:#57655C;--accent:#1F6B3F;--accent-fort:#1A5A35;--accent-voile:#E2F0D9;--accent-pale:#EEF6E8;--accent-calendrier:#B9DBA2;--accent-attente:rgba(31,107,63,0.12);--bandeau:#fff;--sur-bandeau:#16231B;--sur-bandeau-doux:#3B4A40;--sur-bandeau-pale:#57655C;--bandeau-vague:none;--bandeau-lueur:transparent;--warn:#9F1239;--warn-voile:#FDE4E9;--warn-filet:#F4B8C4;--prudence:#8F3517;--prudence-voile:#FBEDE7;--prudence-filet:#F0CDBD;--badge-coureur:#DBEAFE;--badge-coureur-texte:#1D4ED8;--badge-prevention:#F3E8FB;--badge-prevention-texte:#7B3FA8;--croissance-accent:#8A5D18;--croissance-fond:#F6EEDD;--croissance-sur-accent:#fff;--ombre-carte:none}@page{margin:14mm}html,body{background:#fff!important}body{padding:0!important}.sans-impression{display:none!important}.pour-impression{display:block!important}.bandeau-sombre,.bandeau-sombre *{background-color:#fff!important;color:#0F172A!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}#root>div{max-width:none!important}.min-h-screen{min-height:0!important;background-color:#fff!important}article,.rounded-2xl{break-inside:avoid}}.pour-impression{display:none}#loader{min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--encre-doux);font-family:-apple-system,Arial,sans-serif;font-size:0.9375rem}
 /* Sur écran large, l'interface reste une colonne : sans cela elle s'étire sur toute la largeur. */
 @media(min-width:560px){#root>div{max-width:480px;margin-left:auto;margin-right:auto}}</style></head><body><div id="root"><div id="loader">Chargement de vos exercices…</div></div><noscript><div style="padding:32px;color:#fff;font-family:Arial,sans-serif"><p>Cette application a besoin de JavaScript pour fonctionner.</p><p>Activez-le dans les réglages de votre navigateur, puis rechargez la page.</p></div></noscript><script>(function(){if(typeof React==="undefined"||typeof ReactDOM==="undefined"){document.getElementById("loader").innerHTML="Impossible de charger l'application.<br>Rechargez la page ; si le message revient, prévenez votre kinésithérapeute.";return;}try{"use strict";
 const { useState, useEffect } = React;
@@ -5681,8 +5698,8 @@ function BandeAssiduite({ journal, jour, accent }) {
                 // peine arrondies, elles redeviennent les barres d'un graphique.
                 React.createElement("div", { className: "w-full", style: {
                         height: 14, borderRadius: RAYON_CASE,
-                        backgroundColor: j.faits > 0 ? accent : "rgba(255,255,255,0.14)",
-                        border: j.estAujourdhui ? "2px solid rgba(255,255,255,0.9)" : "1.5px solid transparent",
+                        backgroundColor: j.faits > 0 ? accent : SUR_BANDEAU_VOILE,
+                        border: j.estAujourdhui ? `2px solid ${SUR_BANDEAU_DOUX}` : "1.5px solid transparent",
                     }, title: j.faits > 0 ? `${j.faits} exercice${j.faits > 1 ? "s" : ""}` : "aucun exercice" }),
                 // Sept jours glissants, le jour même à droite — mais alignées sous D L M M J V S,
                 // les cases se lisent comme une semaine de calendrier, et une patiente a
@@ -5690,9 +5707,9 @@ function BandeAssiduite({ journal, jour, accent }) {
                 // distinguait par un filet à 65 % de blanc et une initiale de 10 px à 60 % :
                 // trop peu pour trancher, surtout de loin.
                 React.createElement("span", { className: j.estAujourdhui ? "t-etiquette font-semibold" : "t-etiquette",
-                    style: { color: j.estAujourdhui ? "#FFFFFF" : "rgba(255,255,255,0.6)" } }, initiale)));
+                    style: { color: j.estAujourdhui ? SUR_BANDEAU : SUR_BANDEAU_PALE } }, initiale)));
         })),
-        React.createElement("p", { className: "t-accompagne mt-2", style: { color: "rgba(255,255,255,0.7)" } }, total === 0
+        React.createElement("p", { className: "t-accompagne mt-2", style: { color: SUR_BANDEAU_DOUX } }, total === 0
             ? "Aucune séance cette semaine — la régularité compte plus que la durée."
             : `${total} jour${total > 1 ? "s" : ""} travaillé${total > 1 ? "s" : ""} sur les 7 derniers.`)));
 }
@@ -5901,8 +5918,8 @@ function NoteDeCharge({ valeur, precedente, onEnregistrer, accent }) {
 // Trois d'entre elles existent aussi en classes Tailwind pré-compilées — bg-[#F5F8FA],
 // text-[#6B7086], text-[#0F172A] — qu'il faut changer avec elles.
 const ACCENT = "var(--accent)";
-// Sauge eclaircie : le sauge plein n'offre que ~3:1 sur le bleu nuit,
-// insuffisant pour le petit texte des sur-titres.
+// Le vert des sur-titres et des marques posés sur le bandeau. Sur l'ancien bleu nuit, le sauge
+// plein n'offrait que ~3:1 : il fallait une teinte à part, qui reste à part sur le bandeau clair.
 const ACCENT_SOFT = "var(--accent-soft)";
 const ACCENT_FORT = "var(--accent-fort)"; // texte vert sur fond blanc, doses
 const ACCENT_VOILE = "var(--accent-voile)"; // pastille des pictogrammes
@@ -5915,7 +5932,16 @@ const ACCENT_ATTENTE = "var(--accent-attente)";
 const INK = "var(--encre)";
 const INK_PROSE = "var(--encre-prose)"; // prose secondaire des cartes
 const INK_DOUX = "var(--encre-doux)"; // légendes, texte de second plan
-const HEADER = "#0F2A43";
+// Le bandeau. Il était bleu nuit et ne basculait pas avec le thème : soixante-dix-sept blancs
+// translucides posés dessus en dépendaient. Passé au clair avec la refonte, il a fallu nommer
+// chacun de ces blancs selon son rôle — texte, texte secondaire, filet, voile — pour qu'ils
+// suivent le bandeau dans les deux thèmes au lieu de disparaître sur le blanc.
+const HEADER = "var(--bandeau)";
+const SUR_BANDEAU = "var(--sur-bandeau)"; // titres et texte principal du bandeau
+const SUR_BANDEAU_DOUX = "var(--sur-bandeau-doux)"; // texte secondaire, retour, compteurs
+const SUR_BANDEAU_PALE = "var(--sur-bandeau-pale)"; // mentions en petit, toujours lisibles
+const SUR_BANDEAU_FILET = "var(--sur-bandeau-filet)"; // contours et pistes de progression
+const SUR_BANDEAU_VOILE = "var(--sur-bandeau-voile)"; // fonds de pastille et de carte
 // Les rayons. Trois valeurs, et chacune dit autre chose : la pilule pour ce qui se touche,
 // seize pour une carte ou un champ, quatre pour les cases d'un graphique, trop petites pour
 // porter davantage. Les classes « rounded-full » et « rounded-2xl » du Tailwind figé portent
@@ -6265,7 +6291,7 @@ function CarteExercice(props) {
                 React.createElement("span", { className: "font-medium" }, "Pourquoi : "),
                 props.pourquoi)),
         props.term && props.infoOuvert && React.createElement("p", { id: idDef, lang: "fr",
-            className: "mt-3 pt-3", style: Object.assign(styleProse(TAILLE_ACCOMPAGNE, HEADER),
+            className: "mt-3 pt-3", style: Object.assign(styleProse(TAILLE_ACCOMPAGNE, INK_PROSE),
                 { borderTop: `1px solid ${BORDURE}` }) },
             React.createElement("strong", null, majusculeInitiale(props.term)),
             " — ",
@@ -6432,12 +6458,12 @@ function ConstructeurDeLien({ onRetour }) {
         React.createElement("select", { value: valeur, onChange: (e) => surChangement(e.target.value), style: styleChamp },
             options.map((o) => React.createElement("option", { key: o.v, value: o.v }, o.t))));
     return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-        React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-            React.createElement("button", { onClick: onRetour, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+        React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+            React.createElement("button", { onClick: onRetour, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                 React.createElement(ChevronLeft, { size: 16 }),
                 " Retour"),
-            React.createElement("h1", { className: "text-white text-2xl font-medium" }, "Fabriquer un lien"),
-            React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
+            React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Fabriquer un lien"),
+            React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                 "À votre usage. Le lien ouvre directement le programme choisi, et l'application s'en souvient : le patient le retrouve à chaque ouverture, sans avoir à choisir sa blessure lui-même.")),
         React.createElement("div", { className: "px-6 py-6" },
             React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
@@ -6729,7 +6755,7 @@ function GuidedJourney() {
     // de retour et la colonne centrée sur ordinateur s'appliquent ainsi à tous, d'un seul point.
     const renderScreen = () => {
     if (view === "intro") {
-        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-10" },
                 // Identit\u00E9 d'abord : le patient doit savoir qui lui remet ce programme avant
                 // de lire trois avertissements. L'image est le fichier icon-192.png lui-m\u00EAme,
@@ -6743,14 +6769,14 @@ function GuidedJourney() {
                     // alors d'un seul tenant, là où un carré plus grand dominait l'écran d'accueil.
                     React.createElement("img", { src: LOGO, alt: "", width: 44, height: 44, className: "rounded-2xl shrink-0" }),
                     React.createElement("div", { className: "min-w-0" },
-                        React.createElement("p", { className: "text-white font-medium leading-tight", style: { fontSize: "1.125rem" } }, PRATICIEN),
+                        React.createElement("p", { className: "text-sur-bandeau font-medium leading-tight", style: { fontSize: "1.125rem" } }, PRATICIEN),
                         React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: ACCENT_SOFT } }, PRATICIEN_TITRE))),
-                PRATICIEN_ACCROCHE && React.createElement("p", { className: "t-corps mt-5 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, PRATICIEN_ACCROCHE),
-                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.7)" } },
+                PRATICIEN_ACCROCHE && React.createElement("p", { className: "t-corps mt-5 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, PRATICIEN_ACCROCHE),
+                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                     "Il fonctionne sans réseau, une fois ajouté à votre écran d'accueil, et rien de ce que vous cochez ne quitte votre téléphone."),
-                React.createElement("div", { style: { height: 1, backgroundColor: "rgba(255,255,255,0.16)", marginTop: "1.75rem", marginBottom: "1.5rem" } }),
+                React.createElement("div", { style: { height: 1, backgroundColor: SUR_BANDEAU_VOILE, marginTop: "1.75rem", marginBottom: "1.5rem" } }),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Avant de commencer"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium mb-6" }, "Quelques r\u00E8gles simples"),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium mb-6" }, "Quelques r\u00E8gles simples"),
                 React.createElement("div", { className: "flex flex-col gap-4" }, [
                     "Ce programme complète le suivi de votre kinésithérapeute, il ne le remplace pas.",
                     "Une gêne légère peut être normale. Arrêtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et prévenez votre kinésithérapeute.",
@@ -6759,16 +6785,16 @@ function GuidedJourney() {
                 // ces trois encadrés se lisaient comme trois boutons, et deux relecteurs ont
                 // dit avoir eu envie d'appuyer dessus. Un filet à gauche les tient ensemble
                 // sans promettre un geste.
-                ].map((txt, i) => (React.createElement("div", { key: i, className: "px-4", style: { borderLeft: "2px solid rgba(255,255,255,0.32)" } },
-                    React.createElement("p", { className: "t-corps text-white leading-relaxed" }, txt)))))),
+                ].map((txt, i) => (React.createElement("div", { key: i, className: "px-4", style: { borderLeft: `2px solid ${SUR_BANDEAU_FILET}` } },
+                    React.createElement("p", { className: "t-corps text-sur-bandeau leading-relaxed" }, txt)))))),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
                 // Le troisième encadré demande de contacter le kinésithérapeute : autant en
                 // donner le moyen, plutôt que de laisser le patient chercher ses coordonnées.
-                PRATICIEN_EMAIL && React.createElement("a", { href: `mailto:${PRATICIEN_EMAIL}?subject=${encodeURIComponent("Mes exercices — une question")}`, className: "w-full py-3.5 rounded-full t-corps font-medium text-center block", style: { border: "1px solid rgba(255,255,255,0.35)", color: "#FFFFFF" } }, "✉︎ Écrire à mon kinésithérapeute"),
+                PRATICIEN_EMAIL && React.createElement("a", { href: `mailto:${PRATICIEN_EMAIL}?subject=${encodeURIComponent("Mes exercices — une question")}`, className: "w-full py-3.5 rounded-full t-corps font-medium text-center block", style: { border: `1px solid ${SUR_BANDEAU_FILET}`, color: SUR_BANDEAU } }, "✉︎ Écrire à mon kinésithérapeute"),
                 React.createElement("button", { onClick: () => { setIntroVu(true); setView(depart.view); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "J'ai compris, continuer"),
                 // Le premier écran est aussi celui que voit quelqu'un qui n'est pas patient
                 // du cabinet : il doit pouvoir savoir qui publie ceci avant d'aller plus loin.
-                React.createElement("button", { onClick: () => { setRetourApropos("intro"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-center", style: { color: "rgba(255,255,255,0.6)" } }, "À propos et mentions légales"))));
+                React.createElement("button", { onClick: () => { setRetourApropos("intro"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-center", style: { color: SUR_BANDEAU_PALE } }, "À propos et mentions légales"))));
     }
     if (view === "lien")
         return React.createElement(ConstructeurDeLien, { onRetour: retourEnArriere });
@@ -6781,12 +6807,12 @@ function GuidedJourney() {
         const groupes = lexiqueParLettre();
         const total = groupes.reduce((n, g) => n + g.termes.length, 0);
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Retour"),
-                React.createElement("h1", { className: "text-white text-2xl font-medium" }, "Lexique"),
-                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Lexique"),
+                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                     "Les ", total, " mots employés dans l'application, expliqués en français courant. Ce sont les mêmes définitions que celles de la pastille « i » des exercices.")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-5" },
                 // Quatre-vingt-treize définitions font onze écrans de défilement : sans ce rang
@@ -6822,12 +6848,12 @@ function GuidedJourney() {
                         style: { color: INK, overflowWrap: "anywhere" } }, t)))) : null;
         };
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Retour"),
-                React.createElement("h1", { className: "text-white text-2xl font-medium" }, "À propos"),
-                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "À propos"),
+                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                     "Qui publie cette application, pour qui elle est écrite, et ce qu'elle fait de vos données.")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 // Le numéro RPPS n'est pas répété ici : c'est un identifiant administratif,
@@ -6892,14 +6918,14 @@ function GuidedJourney() {
                 setView("prevention-exercises");
             }
         };
-        return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+        return (React.createElement("div", { className: "min-h-screen bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5" },
                 // Deux accueils, selon que le kinesitherapeute a repondu ou non a la question.
                 // Pour un patient qui a recu un lien, demander « quelle zone ? » revient a lui
                 // faire refaire un choix qui n'est pas le sien.
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } },
                     infoPrescrite ? "Votre programme" : "Parcours guid\u00E9"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" },
                     infoPrescrite ? infoPrescrite.title : "Quelle zone souhaitez-vous travailler ?"),
                 React.createElement("div", { className: "mt-5 relative" },
                     React.createElement("input", { type: "text", value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Rechercher : sciatique\u2026", className: "w-full rounded-full py-3 pl-11 pr-10 t-corps", style: { backgroundColor: SURFACE, color: INK, border: "none",
@@ -6919,7 +6945,7 @@ function GuidedJourney() {
                 montrer: !regleVue("signaux"), onVue: () => marquerRegleVue("signaux") }),
             !searching && journal.length > 0 && (React.createElement("div", { className: "px-6 pb-5" },
                 React.createElement(BandeAssiduite, { journal: journal, jour: jour, accent: ACCENT_SOFT }),
-                React.createElement("button", { onClick: () => setView("recap"), className: "mt-3 t-accompagne underline underline-offset-2", style: { color: "rgba(255,255,255,0.75)" } }, "Voir le résumé à montrer à mon kinésithérapeute"))),
+                React.createElement("button", { onClick: () => setView("recap"), className: "mt-3 t-accompagne underline underline-offset-2", style: { color: SUR_BANDEAU_DOUX } }, "Voir le résumé à montrer à mon kinésithérapeute"))),
             // Le moment de l'abandon. Après quelques jours sans rien, l'application affichait le
             // même écran qu'au premier jour ; elle dit maintenant ce qu'elle voit, sans reproche,
             // et propose la plus petite reprise possible plutôt que la séance entière.
@@ -6927,8 +6953,8 @@ function GuidedJourney() {
             // pourtant là que le patient décroche — « rouvrir après un soir sauté est plus dur
             // que le premier soir ». Un mot dès deux jours, sans reproche.
             !searching && absence !== null && absence >= 2 && (React.createElement("div", { className: "px-6 pb-5" },
-                React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.22)" } },
-                    React.createElement("p", { className: "t-corps text-white leading-relaxed" },
+                React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: SUR_BANDEAU_VOILE, border: `1px solid ${SUR_BANDEAU_FILET}` } },
+                    React.createElement("p", { className: "t-corps text-sur-bandeau leading-relaxed" },
                         absence >= 21
                             ? "Cela fait quelques semaines. Reprendre après une interruption est la règle, pas l'exception : recommencez à l'étape où vous vous sentez, quitte à revenir en arrière."
                             : absence >= 4
@@ -6940,15 +6966,15 @@ function GuidedJourney() {
             !searching && (infoPrescrite || resumeInfo) && (React.createElement("div", { className: "px-6 pb-5" },
                 React.createElement("button", { onClick: () => (infoPrescrite ? ouvrirRoute(routePrescrite) : reprendre()), className: "w-full rounded-2xl p-4 flex items-center justify-between gap-3 text-left", style: { backgroundColor: ACCENT } },
                     React.createElement("div", { className: "min-w-0" },
-                        React.createElement("p", { className: "t-etiquette font-semibold text-white", style: { opacity: 0.85 } },
+                        React.createElement("p", { className: "t-etiquette font-semibold text-sur-bandeau", style: { opacity: 0.85 } },
                             infoPrescrite ? "ENVOY\u00C9 PAR VOTRE KIN\u00C9SITH\u00C9RAPEUTE" : "REPRENDRE O\u00D9 VOUS EN \u00C9TIEZ"),
-                        React.createElement("p", { className: "t-corps font-medium text-white mt-0.5" }, (infoPrescrite || resumeInfo).title),
-                        React.createElement("p", { className: "t-accompagne text-white mt-0.5", style: { opacity: 0.85 } },
+                        React.createElement("p", { className: "t-corps font-medium text-sur-bandeau mt-0.5" }, (infoPrescrite || resumeInfo).title),
+                        React.createElement("p", { className: "t-accompagne text-sur-bandeau mt-0.5", style: { opacity: 0.85 } },
                             (infoPrescrite || resumeInfo).detail,
                             infoPrescrite && prescrit.date ? " \u00B7 re\u00E7u le " + jjmm(prescrit.date) : "")),
-                    React.createElement(ChevronRight, { size: 20, style: { color: "#FFFFFF" }, className: "shrink-0" })))),
+                    React.createElement(ChevronRight, { size: 20, style: { color: SUR_BANDEAU }, className: "shrink-0" })))),
             searching ? (React.createElement("div", { className: "px-6 pb-10" }, results.length > 0 ? (React.createElement(React.Fragment, null,
-                React.createElement("p", { className: "t-accompagne mb-3", style: { color: "rgba(255,255,255,0.7)" } },
+                React.createElement("p", { className: "t-accompagne mb-3", style: { color: SUR_BANDEAU_DOUX } },
                     results.length,
                     " r\u00E9sultat",
                     results.length > 1 ? "s" : "",
@@ -6963,7 +6989,7 @@ function GuidedJourney() {
                             backgroundColor: entry.badge === "Coureur" ? BADGE_COUREUR : entry.badge === "Prévention" ? BADGE_PREVENTION : ACCENT_VOILE,
                             color: entry.badge === "Coureur" ? "var(--badge-coureur-texte)" : entry.badge === "Prévention" ? "var(--badge-prevention-texte)" : ACCENT_FORT,
                         } }, entry.badge))))),
-                React.createElement("p", { className: "t-accompagne mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.7)" } }, "Une m\u00EAme douleur peut appara\u00EEtre \u00E0 deux endroits, par exemple une version g\u00E9n\u00E9rale et une version adapt\u00E9e au coureur : choisissez celle qui correspond le mieux \u00E0 votre activit\u00E9."))) : (React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                React.createElement("p", { className: "t-accompagne mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "Une m\u00EAme douleur peut appara\u00EEtre \u00E0 deux endroits, par exemple une version g\u00E9n\u00E9rale et une version adapt\u00E9e au coureur : choisissez celle qui correspond le mieux \u00E0 votre activit\u00E9."))) : (React.createElement("div", { className: "rounded-2xl p-5 bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                 React.createElement("p", { className: "t-corps font-medium", style: { color: INK } },
                     "Aucun r\u00E9sultat pour \u00AB ",
                     query,
@@ -6978,10 +7004,10 @@ function GuidedJourney() {
                     ? React.createElement("div", { className: "px-6 pb-8" },
                         React.createElement("button", { onClick: () => setCatalogueOuvert(true),
                             className: "cible-44 w-full rounded-2xl px-4 flex items-center justify-between gap-3 text-left",
-                            style: { backgroundColor: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.22)" } },
+                            style: { backgroundColor: SUR_BANDEAU_VOILE, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                             React.createElement("div", { className: "min-w-0" },
-                                React.createElement("p", { className: "t-corps font-medium text-white" }, "Voir tous les programmes"),
-                                React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: "rgba(255,255,255,0.75)" } },
+                                React.createElement("p", { className: "t-corps font-medium text-sur-bandeau" }, "Voir tous les programmes"),
+                                React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: SUR_BANDEAU_DOUX } },
                                     "Une autre douleur, la course \u00E0 pied, la pr\u00E9vention")),
                             React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: ACCENT_SOFT } })))
                     : React.createElement(React.Fragment, null,
@@ -7013,13 +7039,13 @@ function GuidedJourney() {
                         // pour reposer les yeux.
                         React.createElement("div", { className: "rounded-3xl px-1 py-3 carte-mannequin" },
                             React.createElement(RealisticSelector, { onSelect: selectZone })),
-                        React.createElement("p", { className: "t-accompagne text-center mt-4", style: { color: "rgba(255,255,255,0.7)" } }, "Touchez la zone qui vous g\u00EAne, ou son nom \u00E0 c\u00F4t\u00E9."),
+                        React.createElement("p", { className: "t-accompagne text-center mt-4", style: { color: SUR_BANDEAU_DOUX } }, "Touchez la zone qui vous g\u00EAne, ou son nom \u00E0 c\u00F4t\u00E9."),
                         // Cette phrase ne vivait que sur l'écran suivant, celui des types de
                         // blessure — c'est-à-dire une fois la zone déjà choisie. Un patient
                         // arrivé par l'adresse nue s'auto-orientait donc pendant un écran entier
                         // avant qu'on lui dise de ne pas le faire. Elle est ici au moment où elle
                         // sert, c'est-à-dire avant le premier choix.
-                        React.createElement("p", { className: "t-accompagne text-center mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.55)" } },
+                        React.createElement("p", { className: "t-accompagne text-center mt-2 leading-relaxed", style: { color: SUR_BANDEAU_PALE } },
                             "Si votre kin\u00E9sith\u00E9rapeute vous a envoy\u00E9 un lien, il vous m\u00E8ne directement au bon endroit.")),
                     // Les trois voies d'accès n'étaient pas trois propositions concurrentes mais une
                     // seule question — « et si je ne suis pas le cas courant ? ». Réunies dans une
@@ -7046,7 +7072,7 @@ function GuidedJourney() {
                                     React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: INK_DOUX } }, voie.sous)),
                                 React.createElement(ChevronRight, { size: 20, className: "shrink-0", style: { color: voie.teinte } }))))))),
                 React.createElement("div", { className: "px-6 pb-10" },
-                    canSave ? (React.createElement("p", { className: "t-etiquette leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "t-etiquette leading-relaxed", style: { color: "rgba(255,255,255,0.6)" } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
+                    canSave ? (React.createElement("p", { className: "t-etiquette leading-relaxed", style: { color: SUR_BANDEAU_PALE } }, "Votre progression est enregistr\u00E9e sur cet appareil uniquement. Elle n'est envoy\u00E9e nulle part et reste priv\u00E9e.")) : (React.createElement("p", { className: "t-etiquette leading-relaxed", style: { color: SUR_BANDEAU_PALE } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
                     // Effacer sa progression est une action, pas une note de bas de page. Au même
                     // corps et à la même encre que la phrase de confidentialité et le lien des
                     // mentions légales, elle passait pour l'une d'elles : un patient qui reprend
@@ -7054,7 +7080,7 @@ function GuidedJourney() {
                     // lit comme un bouton — mais reste en retrait, car elle efface sans revenir.
                     (resumeInfo || Object.keys(done).length > 0) && (React.createElement("button", { onClick: toutEffacer,
                         className: "cible-44 mt-4 px-4 rounded-full t-accompagne font-medium inline-flex items-center gap-2",
-                        style: { color: "rgba(255,255,255,0.92)", border: "1px solid rgba(255,255,255,0.32)" } },
+                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeRecommencer, { size: "1.15em", className: "shrink-0" }),
                         "Effacer ma progression et repartir de z\u00E9ro")),
                     // Les mentions légales. Le réglage de taille de texte qui leur faisait face a
@@ -7063,17 +7089,17 @@ function GuidedJourney() {
                         // Le lexique s'ouvre d'ici et de nulle part ailleurs : c'est l'endroit
                         // ou l'on revient entre deux seances, et la pastille « i » suffit
                         // partout ou le mot se presente de lui-meme.
-                        React.createElement("button", { onClick: () => setView("lexique"), className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "Lexique\u00A0: les mots de l'application"),
-                        React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales")))))));
+                        React.createElement("button", { onClick: () => setView("lexique"), className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: SUR_BANDEAU_PALE } }, "Lexique\u00A0: les mots de l'application"),
+                        React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: SUR_BANDEAU_PALE } }, "\u00C0 propos et mentions l\u00E9gales")))))));
     }
     if (view === "injury") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de zone"),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, pathology.label),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quel est le type de blessure ?")),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Quel est le type de blessure ?")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 // Un intertitre s'insère quand le champ « groupe » change d'un parcours au
                 // suivant. Les zones qui n'en déclarent pas s'affichent exactement comme avant.
@@ -7088,13 +7114,13 @@ function GuidedJourney() {
     }
     if (view === "checkin") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " ",
                     injury.label),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Une derni\u00E8re question"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, injury.surgical
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, injury.surgical
                     ? "Combien de temps après votre opération ?"
                     : injury.checkinKind === "binary"
                         ? "Avez-vous des douleurs aujourd'hui ?"
@@ -7144,8 +7170,8 @@ function GuidedJourney() {
         // change alors de rôle — il ne rend plus compte, il annonce ce qui viendra.
         const vide = joursTravailles === 0 && resume.length === 0;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-6 bandeau-sombre", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "sans-impression flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-6 bandeau-sombre bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "sans-impression flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Retour"),
                 // Sur papier, la feuille doit dire de qui elle vient et de quand elle date.
@@ -7156,8 +7182,8 @@ function GuidedJourney() {
                 // dans huit centimètres. Le titre reste celui du patient — c'est lui qui l'a
                 // fait, et la feuille imprimée porte déjà le nom du praticien en tête.
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "\u00C0 montrer en s\u00E9ance"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Ce que j'ai fait"),
-                React.createElement("p", { className: "t-corps mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Ce que j'ai fait"),
+                React.createElement("p", { className: "t-corps mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                     joursTravailles === 0
                         ? "Aucune séance enregistrée pour l'instant. Cochez vos exercices au fur et à mesure : ce résumé se remplira tout seul."
                         : `${joursTravailles} jour${joursTravailles > 1 ? "s" : ""} travaillé${joursTravailles > 1 ? "s" : ""} sur les 4 dernières semaines.`)),
@@ -7241,13 +7267,13 @@ function GuidedJourney() {
     }
     if (view === "croissance-liste") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-6", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-6 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de zone"),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } }, "Croissance"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Où as-tu mal ?"),
-                React.createElement("p", { className: "t-corps mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, "Ces douleurs arrivent pendant que tu grandis, parce que tes os poussent plus vite que tes muscles. Ce n'est pas une blessure et tu n'as rien fait de mal.")),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Où as-tu mal ?"),
+                React.createElement("p", { className: "t-corps mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "Ces douleurs arrivent pendant que tu grandis, parce que tes os poussent plus vite que tes muscles. Ce n'est pas une blessure et tu n'as rien fait de mal.")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" }, CROISSANCE_DATA.map((c) => (React.createElement("button", { key: c.id, onClick: () => { setCroissanceId(c.id); setCroissanceStageIdx(0); setView("croissance-checkin"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                 React.createElement("p", { className: "t-carte font-medium", style: { color: INK } }, c.alias),
                 React.createElement("p", { className: "t-accompagne mt-1", style: { color: CROISSANCE_ACCENT } }, c.label),
@@ -7258,14 +7284,14 @@ function GuidedJourney() {
         if (!croi)
             return null;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-6", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-6 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " ",
                     croi.alias),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } }, "Croissance"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Où en es-tu aujourd'hui ?"),
-                React.createElement("p", { className: "t-corps mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, croi.context)),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Où en es-tu aujourd'hui ?"),
+                React.createElement("p", { className: "t-corps mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, croi.context)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 phasesDe(croi).map((ph, si) => (React.createElement("button", { key: ph.label, onClick: () => { setCroissanceStageIdx(si); setView("croissance-exercices"); }, className: "rounded-2xl p-5 text-left bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("p", { className: "t-carte font-medium", style: { color: INK } }, ph.label),
@@ -7287,38 +7313,38 @@ function GuidedJourney() {
         const sport = CROISSANCE_SPORTS.find((x) => x.id === sportId);
         const fini = st.exercises.every((e) => faits.has(idExercice(e)));
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
                 // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
                 // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
                 // demandait jusqu'à quatre retours successifs.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
-                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         croi.alias),
                     React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
                         "Accueil")),
-                React.createElement("div", { className: "flex gap-1.5 mb-3" }, phasesDe(croi).map((p, si) => (React.createElement("div", { key: p.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
+                React.createElement("div", { className: "flex gap-1.5 mb-3" }, phasesDe(croi).map((p, si) => (React.createElement("div", { key: p.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: SUR_BANDEAU_FILET } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < croissanceStageIdx ? "100%" : si === croissanceStageIdx ? "50%" : "0%", backgroundColor: CROISSANCE_CLAIR } }))))),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } },
                     "Étape ", croissanceStageIdx + 1, " sur ", phasesDe(croi).length),
-                React.createElement("h1", { className: "text-white text-2xl mt-1 font-medium" },
-                    React.createElement(MotExplique, { texte: ph.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
-                React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, phaseInfoDe(croi)[croissanceStageIdx]),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-1 font-medium" },
+                    React.createElement(MotExplique, { texte: ph.label, encre: HEADER, fond: ACCENT_SOFT, surFond: SUR_BANDEAU_DOUX })),
+                React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, phaseInfoDe(croi)[croissanceStageIdx]),
                 // Les trois autres parcours disent à quelle fréquence travailler ; celui-ci
                 // était le seul à ne rien dire, alors que la page parents de la scoliose
                 // promet des séances régulières.
                 croi.rythme && // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
                 // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
-                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     croi.rythme),
-                React.createElement("p", { className: "t-etiquette mt-4 mb-1.5", style: { color: "rgba(255,255,255,0.6)" } }, "Tu as"),
-                React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full t-accompagne font-medium transition-colors", style: { backgroundColor: ageId === a.id ? "#FFFFFF" : "rgba(255,255,255,0.14)", color: ageId === a.id ? HEADER : "rgba(255,255,255,0.75)" } }, a.label)))),
-                React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.75)" } }, age.note)),
+                React.createElement("p", { className: "t-etiquette mt-4 mb-1.5", style: { color: SUR_BANDEAU_PALE } }, "Tu as"),
+                React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_AGES.map((a) => (React.createElement("button", { key: a.id, onClick: () => setAgeId(a.id), className: "cible-44 px-4 rounded-full t-accompagne font-medium transition-colors", style: { backgroundColor: ageId === a.id ? SUR_BANDEAU : SUR_BANDEAU_VOILE, color: ageId === a.id ? HEADER : SUR_BANDEAU_DOUX } }, a.label)))),
+                React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, age.note)),
             React.createElement(NoteDePrudence, { key: croissanceStageIdx, deplier: !regleVue("croissance"), onVue: () => marquerRegleVue("croissance"), texte: "Arrête si la douleur devient vive, et parles-en à un adulte. Une gêne légère est normale, une douleur qui te fait grimacer ne l'est pas." }),
             React.createElement("div", { className: "px-6 pt-5" },
                 React.createElement("p", { className: "t-etiquette mb-1.5", style: { color: INK_DOUX } }, "Ton sport"),
@@ -7360,24 +7386,24 @@ function GuidedJourney() {
     }
     if (view === "croissance-fin") {
         const croi = CROISSANCE_DATA.find((c) => c.id === croissanceId);
-        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-16" },
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } }, "Bravo"),
-                React.createElement("h1", { className: "text-white text-3xl mt-3 font-medium leading-tight" }, "Tu es arrivé au bout du programme."),
-                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, "Mais ce programme n'est pas comme les autres : tant que tu grandis, la douleur peut revenir à la prochaine poussée. Si ça recommence, reviens à la première étape — ce n'est pas un échec, c'est normal, et tu sais déjà quoi faire."),
-                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, "En attendant, garde les étirements et le renforcement deux ou trois fois par semaine : c'est ce qui rendra la prochaine fois plus courte.")),
+                React.createElement("h1", { className: "text-sur-bandeau text-3xl mt-3 font-medium leading-tight" }, "Tu es arrivé au bout du programme."),
+                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "Mais ce programme n'est pas comme les autres : tant que tu grandis, la douleur peut revenir à la prochaine poussée. Si ça recommence, reviens à la première étape — ce n'est pas un échec, c'est normal, et tu sais déjà quoi faire."),
+                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "En attendant, garde les étirements et le renforcement deux ou trois fois par semaine : c'est ce qui rendra la prochaine fois plus courte.")),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
-                React.createElement("button", { onClick: () => { setCroissanceStageIdx(0); setView("croissance-exercices"); }, className: "w-full py-3.5 rounded-full t-corps font-medium", style: { backgroundColor: "rgba(255,255,255,0.14)", color: "#FFFFFF" } }, "Revenir à la première étape"),
+                React.createElement("button", { onClick: () => { setCroissanceStageIdx(0); setView("croissance-exercices"); }, className: "w-full py-3.5 rounded-full t-corps font-medium", style: { backgroundColor: SUR_BANDEAU_VOILE, color: SUR_BANDEAU } }, "Revenir à la première étape"),
                 React.createElement("button", { onClick: () => { setCroissanceId(null); setView("zone"); }, className: "w-full py-3.5 rounded-full t-corps font-medium", style: { backgroundColor: CROISSANCE_ACCENT, color: CROISSANCE_SUR_ACCENT } }, "Revenir à l'accueil"))));
     }
     if (view === "runner-pathology") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de zone"),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Coureur"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Quelle douleur vous concerne ?")),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Quelle douleur vous concerne ?")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 RUNNER_DATA.map((path) => (React.createElement("button", { key: path.id, onClick: () => { setRunnerPathId(path.id); setRunnerStageIdx(0); setView("runner-stage-select"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between gap-3", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("div", null,
@@ -7390,13 +7416,13 @@ function GuidedJourney() {
     if (view === "runner-stage-select") {
         const path = RUNNER_DATA.find((r) => r.id === runnerPathId);
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de douleur"),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, path.alias),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, path.label),
-                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, path.context)),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, path.label),
+                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, path.context)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" },
                 React.createElement("p", { className: "t-accompagne text-[#6B7086] px-1 leading-relaxed" }, "Ce parcours suit une progression en 4 stades. Commencez au stade qui correspond \u00E0 votre situation actuelle."),
                 RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("button", { key: st.label, onClick: () => { setRunnerStageIdx(si); setView("runner-exercises"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between gap-3", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
@@ -7418,33 +7444,33 @@ function GuidedJourney() {
         const guidance = RUNNER_STAGE_GUIDANCE[runnerStageIdx];
         const isLast = runnerStageIdx === RUNNER_STAGE_LABELS.length - 1;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
                 // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
                 // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
                 // demandait jusqu'à quatre retours successifs.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
-                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         path.label),
                     React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
                         "Accueil")),
-                React.createElement("div", { className: "flex gap-1.5 mb-3" }, RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("div", { key: st.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
+                React.createElement("div", { className: "flex gap-1.5 mb-3" }, RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("div", { key: st.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: SUR_BANDEAU_FILET } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < runnerStageIdx ? "100%" : si === runnerStageIdx ? "50%" : "0%", backgroundColor: ACCENT } }))))),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, stageInfo.sub),
-                React.createElement("h1", { className: "text-white text-xl font-medium mt-1" },
-                    React.createElement(MotExplique, { texte: stageInfo.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
-                React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
+                React.createElement("h1", { className: "text-sur-bandeau text-xl font-medium mt-1" },
+                    React.createElement(MotExplique, { texte: stageInfo.label, encre: HEADER, fond: ACCENT_SOFT, surFond: SUR_BANDEAU_DOUX })),
+                React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: SUR_BANDEAU_DOUX } },
                     totalDone,
                     " / ",
                     totalCount,
                     " exercices r\u00E9alis\u00E9s"),
                 // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
                 // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
-                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     guidance.freq,
                     " \u00B7 ",
@@ -7481,7 +7507,7 @@ function GuidedJourney() {
                     React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, "Plan de reprise de la course"),
                     React.createElement("p", { className: "t-accompagne mt-1 mb-3 leading-relaxed", style: { color: INK_DOUX } }, "Progression indicative. Ne passez \u00E0 la semaine suivante que si la douleur du lendemain reste stable \u2014 sinon, restez une semaine de plus au m\u00EAme palier."),
                     React.createElement("div", { className: "flex flex-col gap-2.5" }, runnerStage.plan.map((wk) => (React.createElement("div", { key: wk.week, className: "flex gap-3" },
-                        // « HEADER » est une constante en dur, pas une variable : elle ne bascule pas.
+                        // « HEADER » était alors une constante en dur, qui ne basculait pas avec le thème.
                         // Le bleu nuit du bandeau se retrouvait donc écrit sur le vert sombre du plan,
                         // à 1,03 de contraste — invisible. L'accent d'encre, lui, suit le thème.
                         React.createElement("span", { className: "t-etiquette font-semibold shrink-0 w-24 pt-0.5", style: { color: ACCENT_FORT } }, wk.week),
@@ -7514,25 +7540,25 @@ function GuidedJourney() {
     }
     if (view === "runner-complete") {
         const path = RUNNER_DATA.find((r) => r.id === runnerPathId);
-        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-16" },
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Parcours termin\u00E9"),
-                React.createElement("h1", { className: "text-white text-3xl mt-3 font-medium leading-tight" },
+                React.createElement("h1", { className: "text-sur-bandeau text-3xl mt-3 font-medium leading-tight" },
                     "Bravo pour votre travail sur \u00AB ", path === null || path === void 0 ? void 0 :
                     path.label,
                     " \u00BB."),
-                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, "Sur ce type de pathologie, l'erreur la plus fr\u00E9quente est d'arr\u00EAter le renforcement d\u00E8s que la douleur dispara\u00EEt. Maintenez-le une \u00E0 deux fois par semaine sur plusieurs mois : c'est ce qui prot\u00E8ge le mieux de la r\u00E9cidive. Faites le point avec votre kin\u00E9sith\u00E9rapeute avant de revenir \u00E0 votre volume d'entra\u00EEnement habituel.")),
+                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "Sur ce type de pathologie, l'erreur la plus fr\u00E9quente est d'arr\u00EAter le renforcement d\u00E8s que la douleur dispara\u00EEt. Maintenez-le une \u00E0 deux fois par semaine sur plusieurs mois : c'est ce qui prot\u00E8ge le mieux de la r\u00E9cidive. Faites le point avec votre kin\u00E9sith\u00E9rapeute avant de revenir \u00E0 votre volume d'entra\u00EEnement habituel.")),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
                 React.createElement("button", { onClick: () => { setView("zone"); setRunnerPathId(null); setRunnerStageIdx(0); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
     if (view === "prevention-category") {
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de zone"),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Pr\u00E9vention"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, "Que souhaitez-vous faire ?")),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, "Que souhaitez-vous faire ?")),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" }, PREVENTION_CATEGORIES.map((cat) => (React.createElement("button", { key: cat.id, onClick: () => { setPreventionCategory(cat.id); setPreventionSub(null); setView("prevention-sub"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                 React.createElement("div", null,
                     React.createElement("p", { className: "text-[#0F172A] t-carte font-medium" }, cat.title),
@@ -7542,12 +7568,12 @@ function GuidedJourney() {
     if (view === "prevention-sub") {
         const category = PREVENTION_CATEGORIES.find((c) => c.id === preventionCategory);
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
-                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(ChevronLeft, { size: 16 }),
                     " Changer de choix"),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "Pr\u00E9vention"),
-                React.createElement("h1", { className: "text-white text-2xl mt-2 font-medium" }, category.title)),
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl mt-2 font-medium" }, category.title)),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3" }, Object.entries(category.data).map(([id, sub]) => (React.createElement("button", { key: id, onClick: () => { setPreventionSub(id); setView("prevention-exercises"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                 React.createElement("p", { className: "text-[#0F172A] t-carte font-medium" }, sub.label),
                 React.createElement(ChevronRight, { size: 20, style: { color: ACCENT_FORT } })))))));
@@ -7561,32 +7587,32 @@ function GuidedJourney() {
         const totalCount = sub.exercises.length;
         const allDone = totalDone === totalCount;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
                 // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
                 // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
                 // demandait jusqu'à quatre retours successifs.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
-                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         category.title),
                     React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
                         "Accueil")),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, category.title),
-                React.createElement("h1", { className: "text-white text-xl font-medium" },
-                    React.createElement(MotExplique, { texte: sub.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
-                React.createElement("p", { className: "t-accompagne mt-1.5 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, sub.intro),
-                React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
+                React.createElement("h1", { className: "text-sur-bandeau text-xl font-medium" },
+                    React.createElement(MotExplique, { texte: sub.label, encre: HEADER, fond: ACCENT_SOFT, surFond: SUR_BANDEAU_DOUX })),
+                React.createElement("p", { className: "t-accompagne mt-1.5 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, sub.intro),
+                React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: SUR_BANDEAU_DOUX } },
                     totalDone,
                     " / ",
                     totalCount,
                     " exercices r\u00E9alis\u00E9s"),
                 // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
                 // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
-                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     category.guidance.freq,
                     " \u00B7 ",
@@ -7630,16 +7656,16 @@ function GuidedJourney() {
     if (view === "prevention-complete") {
         const category = PREVENTION_CATEGORIES.find((c) => c.id === preventionCategory);
         const sub = category.data[preventionSub];
-        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+        return (React.createElement("div", { className: "min-h-screen flex flex-col justify-between bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-16" },
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, "S\u00E9ance termin\u00E9e"),
-                React.createElement("h1", { className: "text-white text-3xl mt-3 font-medium leading-tight" },
+                React.createElement("h1", { className: "text-sur-bandeau text-3xl mt-3 font-medium leading-tight" },
                     "Bravo, \u00AB ",
                     category.title,
                     " \u2014 ",
                     sub.label,
                     " \u00BB compl\u00E9t\u00E9."),
-                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, "La r\u00E9gularit\u00E9 fait toute la diff\u00E9rence sur ce type d'exercices. Reprenez-les au rythme indiqu\u00E9, avant vos s\u00E9ances ou en dehors, selon le cas.")),
+                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, "La r\u00E9gularit\u00E9 fait toute la diff\u00E9rence sur ce type d'exercices. Reprenez-les au rythme indiqu\u00E9, avant vos s\u00E9ances ou en dehors, selon le cas.")),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
                 React.createElement("button", { onClick: () => { setView("zone"); setPreventionCategory(null); setPreventionSub(null); }, className: "w-full py-3.5 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } }, "Revenir \u00E0 l'accueil"))));
     }
@@ -7653,37 +7679,37 @@ function GuidedJourney() {
         const totalDone = injury.stages.reduce((a, s) => a + s.exercises.filter((e) => doneSet.has(idExercice(e))).length, 0);
         const totalCount = injury.stages.reduce((a, s) => a + s.exercises.length, 0);
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
-            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
                 // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
                 // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
                 // demandait jusqu'à quatre retours successifs.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
-                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: "rgba(255,255,255,0.75)" } },
+                    React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
                         injury.label),
                     React.createElement("button", { onClick: () => setView("zone"), "aria-label": "Revenir \u00E0 l'accueil",
                         className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.28)" } },
+                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
                         React.createElement(IconeMaison, { size: 15 }),
                         "Accueil")),
-                React.createElement("div", { className: "flex gap-1.5 mb-3" }, injury.stages.map((s, si) => (React.createElement("div", { key: s.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
+                React.createElement("div", { className: "flex gap-1.5 mb-3" }, injury.stages.map((s, si) => (React.createElement("div", { key: s.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: SUR_BANDEAU_FILET } },
                     React.createElement("div", { className: "h-full rounded-full", style: {
                             transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)",
                             width: si < stageIdx || stageComplete(s) ? "100%"
                                 : si === stageIdx ? partDeLEtape(s) : "0%",
                             backgroundColor: ACCENT,
                         } }))))),
-                React.createElement("h1", { className: "text-white text-xl font-medium" },
+                React.createElement("h1", { className: "text-sur-bandeau text-xl font-medium" },
                     "\u00C9tape ",
                     stageIdx + 1,
                     " / ",
                     injury.stages.length,
                     " \u2014 ",
-                    React.createElement(MotExplique, { texte: stage.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
-                stage.sub && React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: "rgba(255,255,255,0.75)" } }, stage.sub),
+                    React.createElement(MotExplique, { texte: stage.label, encre: HEADER, fond: ACCENT_SOFT, surFond: SUR_BANDEAU_DOUX })),
+                stage.sub && React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: SUR_BANDEAU_DOUX } }, stage.sub),
                 (stage.pourquoi || POURQUOI_ETAPE[stage.label]) && React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: ACCENT_SOFT } }, stage.pourquoi || POURQUOI_ETAPE[stage.label]),
-                React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
+                React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: SUR_BANDEAU_DOUX } },
                     // Ce compteur porte sur toutes les étapes, pas sur la seule affichée. Le
                     // dire ne suffisait pas : la précision venait après le nombre, et une
                     // patiente fatiguée lisait « 0 / 16 exercices » devant une liste de quatre,
@@ -7695,7 +7721,7 @@ function GuidedJourney() {
                     " exercices cochés aujourd'hui"),
                 // L'icône était en ligne dans le paragraphe : au retour à la ligne, le texte
                 // repassait dessous. Une rangée flex, l'icône fixe, et le bloc reste aligné.
-                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: "rgba(255,255,255,0.8)" } },
+                React.createElement("p", { className: "t-accompagne mt-2 flex items-start gap-2", style: { color: SUR_BANDEAU_DOUX } },
                     React.createElement(IconeCalendrier, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     (injury.stageGuidance || STAGE_GUIDANCE)[stageIdx].freq,
                     " \u00B7 ",
@@ -7769,7 +7795,7 @@ function GuidedJourney() {
         // « justify-between » poussait le pied de page tout en bas : deux tiers d'écran
         // vides entre le texte et le bouton. Ce qui suit la phrase la prolonge, et se
         // place donc à sa suite.
-        return (React.createElement("div", { className: "min-h-screen flex flex-col", style: { backgroundColor: HEADER, fontFamily: POLICE } },
+        return (React.createElement("div", { className: "min-h-screen flex flex-col bandeau", style: { backgroundColor: HEADER, fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-10" },
                 // Le nom du parcours remonte en étiquette, comme sur l'écran des blessures : dans
                 // le titre et entre guillemets, il « sonnait comme un formulaire rempli par
@@ -7781,11 +7807,11 @@ function GuidedJourney() {
                 // patient qui a traversé le parcours sans rien cocher se trouvait grondé et
                 // flatté en même temps, sans savoir lequel des deux croire. Le titre dit donc
                 // ce qui s'est passé, et le bravo est gardé pour ce qui le mérite.
-                React.createElement("h1", { className: "text-white text-3xl mt-3 font-medium leading-tight" },
+                React.createElement("h1", { className: "text-sur-bandeau text-3xl mt-3 font-medium leading-tight" },
                     // Le nom entre guillemets « sonne comme un formulaire rempli par une
                     // machine ». Sans eux, la phrase se lit comme une phrase.
                     toutValide ? "Bravo pour votre travail." : "Vous \u00EAtes au bout du parcours."),
-                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, toutValide
+                React.createElement("p", { className: "t-corps mt-4 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } }, toutValide
                     ? `Vous avez complété les ${nbEtapes} étapes du parcours. Faites le point avec votre kinésithérapeute pour confirmer la suite de votre prise en charge, avant de reprendre une activité complète.`
                     : `Vous avez parcouru les ${nbEtapes} étapes, sans tout valider en cours de route. Reprenez les exercices non cochés quand vous le pourrez, et faites le point avec votre kinésithérapeute sur votre progression.`)),
             React.createElement("div", { className: "px-6 pb-16 pt-6 flex flex-col gap-3" },
@@ -7880,7 +7906,7 @@ root.render(React.createElement(GuidedJourney));
         var barre = document.createElement("div");
         barre.setAttribute("role", "status");
         barre.style.cssText = "position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));"
-            + "max-width:448px;margin:0 auto;background:#0F2A43;color:#fff;border-radius:16px;padding:14px 16px;"
+            + "max-width:448px;margin:0 auto;background:#1F6B3F;color:#fff;border-radius:16px;padding:14px 16px;"
             + "display:flex;align-items:center;gap:12px;z-index:9999;font:500 14px/1.4 'Helvetica Neue',Arial,sans-serif;"
             + "box-shadow:0 8px 24px rgba(0,0,0,.28)";
         var texte = document.createElement("span");
