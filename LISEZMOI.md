@@ -34,6 +34,7 @@ Envoyer un nouveau lien remplace le précédent.
 | `manifest.webmanifest`, `*.png` | L'installation sur l'écran d'accueil |
 | `verification/` | Trente-six contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
 | `.github/workflows/` | Les mêmes contrôles, à chaque modification |
+| `CLAUDE.md` | Les contraintes du fichier et la façon de travailler sur ce dépôt |
 
 ## Modifier le contenu
 
