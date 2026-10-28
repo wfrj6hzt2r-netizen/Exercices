@@ -808,6 +808,31 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Mobilité thoracique en rotation": "seated-twist",
         "Mobilité en rotation assise": "seated-twist",
         "Mobilisation en rotation assise, amplitude progressive": "seated-twist",
+        // Quinze exercices tombaient sur la hanche en charnière, et cinq seulement en sont
+        // une. Les dix autres décrivent un soulevé au sol, une extension de hanche, un
+        // nordic ou un balancer — quatre gestes qui n'avaient aucun dessin.
+        "Hanche en charnière": "hip-hinge",
+        "Hanche en charnière (soulevé sécurisé)": "hip-hinge",
+        "Hanche en charnière lestée (deadlift roumain)": "hip-hinge",
+        "Renforcement de la chaîne postérieure": "hip-hinge",
+        "Renforcement global de la chaîne postérieure": "hip-hinge",
+        "Port de charge contrôlé": "floor-lift",
+        "Port de charge progressif": "floor-lift",
+        "Reprise du port de charge": "floor-lift",
+        "Retour progressif au port de charges": "floor-lift",
+        "Renforcement fonctionnel progressif": "floor-lift",
+        "Extension de hanche debout": "standing-hip-ext",
+        "Extension de hanche à angle progressif": "standing-hip-ext",
+        "Nordic hamstring (excentrique)": "nordic-kneel",
+        "Balancers de jambe contrôlés": "leg-swing",
+        // La flexion du genou déplace le travail sur le soléaire : c'est tout l'exercice,
+        // et les quatre montraient la jambe tendue, c'est-à-dire l'autre muscle.
+        "Isométrique genou fléchi (soléaire)": "calf-bent",
+        "Renforcement mollet genou fléchi": "calf-bent",
+        "Montée sur pointe genou fléchi": "calf-bent",
+        "Montée sur pointe lente genou fléchi": "calf-bent",
+        // Une cheville croisée sur le genou opposé, pas une mobilisation allongée.
+        "Étirement des fessiers": "glute-stretch",
     };
     const cles = new Map();
     for (const p of D.POSES) {
