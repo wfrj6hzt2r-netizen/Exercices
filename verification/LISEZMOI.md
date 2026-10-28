@@ -92,6 +92,30 @@ recharge pas le document**. L'application affichait l'écran, la note s'y marqua
 le rechargement qui suivait ne montrait plus rien — la sonde consommait la vue qu'elle
 mesurait. On passe désormais par une page vierge pour forcer un vrai chargement.
 
+## Les captures d'écran — `captures.mjs`
+
+Les contrôles disent « rien n'est coupé », « le contraste tient », « aucune erreur
+console ». Ils ne disent pas « cet écran ressemble à ce qu'il était ». Sur une refonte
+visuelle c'est pourtant la question : qu'est-ce qui a changé, et qu'est-ce qui a changé
+sans qu'on le veuille.
+
+```
+node verification/captures.mjs                 photographie les vingt-sept écrans
+node verification/captures.mjs --avant main    photographie aussi « main », et compare
+```
+
+La comparaison écrit trois choses dans `verification/captures/apres/` : un **rapport HTML**
+avec avant, après et ce qui a bougé pour chaque écran ; une **planche en PNG** des seuls
+écrans modifiés, lisible dans une conversation ; et la liste triée sur la sortie standard.
+Rien n'est versionné : `.gitignore` écarte le dossier, c'est l'outil qui compte.
+
+La part de pixels ne mesure pas l'ampleur d'un changement mais sa **hauteur de départ** :
+un bloc qui grandit de trente pixels décale tout ce qui le suit, et tout ce qui le suit
+compte alors comme différent. C'est l'image de différence qu'il faut regarder.
+
+La liste des écrans vit dans `ecrans.mjs`, lu par la suite de rendu **et** par cet outil :
+deux copies auraient dérivé dès le premier écran ajouté d'un seul côté.
+
 ## Deux contrôles à part
 
 Les deux derniers sont les seuls qui portent sur un **enchaînement d'écrans** et non sur un écran isolé.
