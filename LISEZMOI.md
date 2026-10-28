@@ -35,6 +35,7 @@ Envoyer un nouveau lien remplace le précédent.
 | `index.html` | Toute l'application : contenu, écrans, styles, React inclus. Aucune étape de compilation |
 | `sw.js` | Le service worker, qui rend l'ouverture possible sans réseau |
 | `manifest.webmanifest`, `*.png` | L'installation sur l'écran d'accueil |
+| `icone.svg` | Le dessin source de l'icône, d'où les cinq PNG sont tirés. La vignette encastrée dans `index.html` doit rester identique, octet pour octet, à `icon-192.png` : un contrôle y veille |
 | `verification/` | Trente-six contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
 | `.github/workflows/` | Les mêmes contrôles, à chaque modification |
 | `CLAUDE.md` | Les contraintes du fichier et la façon de travailler sur ce dépôt |
