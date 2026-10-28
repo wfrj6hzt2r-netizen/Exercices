@@ -852,6 +852,11 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Mobilité douce du coude": "elbow-mobilise",
         // Le dessin du membre supérieur reste celui des glissements du bras.
         "Étirement en rotation interne": "towel-behind",
+        // Trois exercices tiraient la flexion assise dans trois directions. Chacun part
+        // désormais où sa consigne le dit, et le dessin n'en sert plus qu'un.
+        "Étirement prolongé du bas du dos": "child-pose",
+        "Position de soulagement": "advice",
+        "Position assise penchée en avant": "seated-flexion",
     };
     const cles = new Map();
     for (const p of D.POSES) {

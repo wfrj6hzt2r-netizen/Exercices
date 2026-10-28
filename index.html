@@ -660,19 +660,20 @@ const PoseProneExtension = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "28", y1: "33", x2: "30", y2: "38" }),
     React.createElement("line", { x1: "16", y1: "35", x2: "16", y2: "38" })));
 // Assis sur une chaise, une jambe tendue devant, l'autre pied au sol : les deux jambes sont dessinées pour lever l'ambiguïté.
+// Assis, buste penché vers l'avant, coudes posés sur les genoux. Le dessin montrait une
+// flexion assise jambe tendue — un étirement des ischio-jambiers, c'est-à-dire autre
+// chose. Il servait trois exercices qui tiraient dans trois directions ; il n'en sert
+// plus qu'un, et c'est celui-là.
 const PoseSeatedFlexion = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "11", y1: "15", x2: "11", y2: "29" }),
-    React.createElement("line", { x1: "11", y1: "29", x2: "26", y2: "29" }),
-    React.createElement("line", { x1: "11", y1: "29", x2: "11", y2: "44" }),
-    React.createElement("line", { x1: "26", y1: "29", x2: "26", y2: "44" }),
-    React.createElement("circle", { cx: "17", cy: "11", r: "4" }),
-    React.createElement("line", { x1: "17", y1: "15", x2: "17", y2: "28" }),
-    React.createElement("line", { x1: "17", y1: "28", x2: "28", y2: "28" }),
-    React.createElement("line", { x1: "28", y1: "28", x2: "41", y2: "25" }),
-    React.createElement("line", { x1: "41", y1: "25", x2: "41", y2: "20" }),
-    React.createElement("line", { x1: "17", y1: "28", x2: "21", y2: "37" }),
-    React.createElement("line", { x1: "21", y1: "37", x2: "21", y2: "44" }),
-    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("line", { x1: "8", y1: "13", x2: "8", y2: "29" }),
+    React.createElement("line", { x1: "8", y1: "29", x2: "16", y2: "29" }),
+    React.createElement("line", { x1: "9", y1: "29", x2: "9", y2: "44" }),
+    React.createElement("circle", { cx: "26", cy: "13.5", r: "4" }),
+    React.createElement("line", { x1: "13", y1: "25", x2: "22.5", y2: "17.5" }),
+    React.createElement("line", { x1: "22.5", y1: "18.5", x2: "28", y2: "26" }),
+    React.createElement("line", { x1: "13", y1: "25", x2: "28", y2: "29" }),
+    React.createElement("line", { x1: "28", y1: "29", x2: "28", y2: "44" })));
 // Table ordonnée du plus spécifique au plus général : le premier test qui passe l'emporte.
 // Glissement nerveux du membre supérieur : bras écarté coude tendu, tête inclinée du côté opposé, l'arc rappelant le va-et-vient.
 const PoseNerveGlide = poseWrap(React.createElement(React.Fragment, null,
@@ -1442,7 +1443,10 @@ const POSES = [
     { key: "prone-lift", icon: PoseProneLift, test: (n) => n.includes("extenseurs du dos") || n.includes("extenseurs dorsaux") },
     { key: "calf-wall", icon: PoseCalfWall, test: (n, t) => n.includes("étirement") && n.includes("mollet") && /\bmur\b/.test(n + " " + t) },
     { key: "triceps-stretch", icon: PoseTricepsStretch, test: (n) => n.includes("étirement") && n.includes("triceps") },
-    { key: "child-pose", icon: PoseChildPose, test: (n) => n.includes("posture de l'enfant") },
+    { key: "child-pose", icon: PoseChildPose, test: (n) => n.includes("posture de l'enfant")
+            // « À genoux, asseyez-vous sur les talons, buste incliné vers l'avant, bras tendus
+            // loin devant » : c'est la posture de l'enfant, sans en porter le nom.
+            || n.includes("étirement prolongé du bas du dos") },
 
     // --- 0 ter. Trois réaffectations relevées à la relecture des 84 dessins ---
     // Le praticien a jugé chaque pictogramme devant les exercices qu'il sert. Ces
@@ -1639,9 +1643,14 @@ const POSES = [
             || n.includes("position allongée sur le ventre") || n.includes("extension complète debout")
             || n.includes("extenseurs du dos") || n.includes("extenseurs dorsaux") || n.includes("para-vertébral")
             || n.includes("extension thoracique") || n.includes("direction qui soulage") },
+    // Trois exercices tombaient ici, et tiraient dans trois directions. « Étirement prolongé
+    // du bas du dos » décrit mot pour mot la posture de l'enfant, qui existe ; « Position de
+    // soulagement » n'en décrit aucune — « plutôt allongé sur le ventre, plutôt genoux vers
+    // la poitrine, selon les personnes » — et revient donc au bloc-notes. Reste l'assis
+    // penché en avant, et le dessin montre enfin cela.
+    { key: "advice", icon: PoseAdvice, test: (n) => n.includes("position de soulagement") },
     { key: "seated-flexion", icon: PoseSeatedFlexion, test: (n) => n.includes("flexion allongée") || n.includes("position assise penchée") || n.includes("genoux vers poitrine")
-            || n.includes("position de soulagement") || n.includes("étirement lombaire") || n.includes("posture de l'enfant")
-            || n.includes("étirement prolongé du bas du dos") },
+            || n.includes("étirement lombaire") || n.includes("posture de l'enfant") },
     // --- 3. Étirements (avant les tests de renforcement du même muscle) ---
     { key: "etirement-epaule", icon: PoseShoulderStretch, test: (n) => n.includes("étirement") && (n.includes("épaule") || n.includes("pectoraux") || n.includes("capsule")
             || n.includes("triceps") || n.includes("dorsal") || n.includes("croisé") || n.includes("sommeil")
