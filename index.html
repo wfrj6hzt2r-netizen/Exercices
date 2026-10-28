@@ -1090,17 +1090,18 @@ const PoseTowelBehind = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "20", y1: "33", x2: "16", y2: "44" }),
     React.createElement("line", { x1: "20", y1: "33", x2: "24", y2: "44" })));
 // Allongé sur le côté, bras à angle droit, l'avant-bras poussé vers le sol.
-// Étirement en sommeil : allongé sur le côté de l'épaule douloureuse, bras à 90° du
-// corps, coude à 90°, et l'avant-bras poussé vers le sol — d'où le chevron. L'ancien
-// dessin montrait une silhouette sur le dos, et le relecteur ne comprenait pas le geste.
+// Étirement en sommeil, copié sur le schéma que le praticien a fourni : allongé sur le
+// côté de l'épaule douloureuse, le bras à 90° du corps décollé du lit, le coude à 90°,
+// l'avant-bras dressé et poussé vers le lit — d'où le chevron. Une première version
+// couchait le bras le long du corps : il s'y confondait, et le geste restait illisible.
 const PoseSleeper = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
     React.createElement("circle", { cx: "36", cy: "38", r: "3.4" }),
     React.createElement("line", { x1: "32.5", y1: "38", x2: "13", y2: "39" }),
     React.createElement("line", { x1: "13", y1: "39", x2: "7", y2: "42" }),
-    React.createElement("line", { x1: "31", y1: "37", x2: "29", y2: "25" }),
-    React.createElement("line", { x1: "29", y1: "25", x2: "18", y2: "24" }),
-    React.createElement("path", { d: "M15 18 L18 21.5 L21 18" })));
+    React.createElement("line", { x1: "31", y1: "36", x2: "18", y2: "30" }),
+    React.createElement("line", { x1: "18", y1: "30", x2: "16", y2: "19" }),
+    React.createElement("path", { d: "M13 13 L16 16.5 L19 13" })));
 // Allongé sur le dos, un bâton à deux mains : le bras sain pousse l'autre.
 const PoseSupineStick = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
@@ -1230,6 +1231,7 @@ const PoseFloorPushup = poseWrap(React.createElement(React.Fragment, null,
 // Décélération du bras : debout, bras armé en arrière à 90°, l'élastique en pointillé
 // jusqu'au mur derrière. L'arc de l'ancien dessin ne disait pas de quel mouvement il
 // s'agissait, et c'est le freinage — pas le lancer — qui fait tout l'exercice.
+// Le bras libre pend le long du corps : sans lui, la silhouette n'en avait qu'un.
 const PoseArmDecel = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
     React.createElement("line", { x1: "5", y1: "12", x2: "5", y2: "38" }),
@@ -1239,7 +1241,8 @@ const PoseArmDecel = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "28", y1: "31", x2: "31", y2: "44" }),
     React.createElement("line", { x1: "28", y1: "18", x2: "19", y2: "19" }),
     React.createElement("line", { x1: "19", y1: "19", x2: "18", y2: "10" }),
-    React.createElement("path", { d: "M18 10 L6 18", strokeDasharray: "3 3" })));
+    React.createElement("path", { d: "M18 10 L6 18", strokeDasharray: "3 3" }),
+    React.createElement("line", { x1: "28", y1: "18", x2: "32", y2: "29" })));
 // L'autre main soutient le bras et l'accompagne, sans forcer.
 const PoseAssistedElevation = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
