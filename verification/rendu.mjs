@@ -320,7 +320,7 @@ async function ouvrir(ctx, hash) {
         await ctx.setOffline(true);
         await p.goto(BASE, { waitUntil: "domcontentloaded" });
         await p.waitForTimeout(800);
-        if (!(await p.locator("text=Quelle zone").count()))
+        if (!(await p.locator("text=Bonjour").count()))
             out.push("l'accueil ne s'affiche pas sans réseau");
         const externes = await p.evaluate(() => performance.getEntriesByType("resource")
             .filter((r) => !r.name.startsWith(location.origin)).length);
@@ -346,6 +346,9 @@ async function ouvrir(ctx, hash) {
 // --- 6. Le lien prescrit tient dans le temps ------------------------------------------
 // Un lien reçu du kinésithérapeute doit être retenu : à la réouverture, l'accueil montre le
 // programme au lieu de redemander au patient de choisir sa blessure parmi quarante-deux.
+// Depuis la refonte, le programme tient dans la carte « Mon parcours » de l'accueil, et le
+// dessin du corps vit sur son propre écran : l'accueil ne doit plus le montrer, mais doit
+// toujours y mener — une douleur nouvelle ne prévient pas.
 {
     const out = [];
     const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
@@ -356,28 +359,23 @@ async function ouvrir(ctx, hash) {
         const { p } = await ouvrir(ctx, lien);
         await p.goto(BASE, { waitUntil: "load" });
         await p.waitForTimeout(500);
-        const r = await p.evaluate(() => {
-            const surtitre = document.querySelector("main p");
-            const carte = [...document.querySelectorAll("main button")]
-                .find((x) => /ENVOY\u00c9 PAR VOTRE KIN/i.test(x.textContent));
-            return {
-                surtitre: surtitre ? surtitre.textContent.trim() : "",
-                carte: !!carte,
-                catalogue: !!document.querySelector('main svg[role="group"]'),
-                bouton: [...document.querySelectorAll("main button")]
-                    .some((x) => /Voir tous les programmes/.test(x.textContent)),
-            };
-        });
-        if (r.surtitre !== "Votre programme")
-            out.push(`${lien} — l'accueil ne reconna\u00eet pas le programme (« ${r.surtitre} »)`);
+        const r = await p.evaluate(() => ({
+            carte: /ENVOY\u00c9 PAR VOTRE KIN/i.test(document.querySelector("main").textContent),
+            reprendre: [...document.querySelectorAll("main button")]
+                .some((x) => /Continuer ma s\u00e9ance|Commencer mon programme/.test(x.textContent)),
+            catalogue: !!document.querySelector('main svg[role="group"]'),
+        }));
         if (!r.carte)
             out.push(`${lien} — la carte du programme prescrit manque`);
+        if (!r.reprendre)
+            out.push(`${lien} — la carte ne permet pas de rouvrir le programme`);
         if (r.catalogue)
-            out.push(`${lien} — le catalogue s'affiche encore alors qu'un programme est prescrit`);
-        if (!r.bouton)
+            out.push(`${lien} — le catalogue s'affiche sur l'accueil alors qu'un programme est prescrit`);
+        const choisir = p.getByRole("button", { name: /Choisir une zone/ });
+        if (!(await choisir.count()))
             out.push(`${lien} — aucun moyen d'atteindre le catalogue`);
         else {
-            await p.getByRole("button", { name: /Voir tous les programmes/ }).click();
+            await choisir.first().click();
             await p.waitForTimeout(300);
             if (!(await p.locator('main svg[role="group"]').count()))
                 out.push(`${lien} — le catalogue ne s'ouvre pas quand on le demande`);
@@ -569,9 +567,53 @@ async function ouvrir(ctx, hash) {
         if ((await apres.count()) && (await apres.isDisabled()))
             out.push("« Enregistrer » reste inactif alors que la douleur a été indiquée");
     }
+    // Le point de départ porte la même promesse : sa note ancre toute la courbe de Progrès.
+    await p.goto(BASE + "#/depart", { waitUntil: "load" });
+    await p.waitForTimeout(500);
+    if (!/— \/ 10/.test(await p.locator("main").innerText()))
+        out.push("le point de départ affiche une douleur avant qu'on l'ait indiquée");
+    const enregistrer = p.getByRole("button", { name: /Enregistrer mon point de départ/ });
+    if (!(await enregistrer.count()) || !(await enregistrer.isDisabled()))
+        out.push("le point de départ s'enregistre sans douleur indiquée");
     await p.close();
     await ctx.close();
     noter("le relevé de douleur n'invente aucune valeur", out);
+}
+
+// --- 10. La coche de la fiche et celle de la liste ne font qu'une ---------------------
+// Depuis la refonte, un exercice se coche à deux endroits : d'un geste sur la liste de la
+// séance, ou par le gros bouton de sa fiche. Deux états qui divergeraient montreraient au
+// patient un exercice fait sur un écran et à faire sur l'autre — et le journal, lui, n'en
+// retiendrait qu'un.
+{
+    const out = [];
+    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+    const { p } = await ouvrir(ctx, "#/z/genou/entorse/e2");
+    await p.waitForTimeout(400);
+    const premier = () => p.locator('main [role="switch"]').first();
+    await p.locator("main article > button").first().click();
+    await p.waitForTimeout(400);
+    if (!/\/x\//.test(await p.evaluate(() => location.hash)))
+        out.push("la fiche ne prend pas d'adresse propre");
+    await p.getByRole("button", { name: /J'ai fait l'exercice/ }).click();
+    await p.waitForTimeout(500);
+    if (/\/x\//.test(await p.evaluate(() => location.hash)))
+        out.push("valider depuis la fiche ne ramène pas à la séance");
+    if ((await premier().getAttribute("aria-checked")) !== "true")
+        out.push("coché depuis la fiche, l'exercice reste « à faire » sur la liste");
+    // Dans l'autre sens : décoché sur la liste, la fiche doit le montrer à faire.
+    await premier().click();
+    await p.waitForTimeout(300);
+    await p.locator("main article > button").first().click();
+    await p.waitForTimeout(400);
+    if (!(await p.getByRole("button", { name: /J'ai fait l'exercice/ }).count()))
+        out.push("décoché sur la liste, l'exercice paraît encore fait sur sa fiche");
+    const journal = await p.evaluate(() => JSON.parse(localStorage.getItem("kine-exercices-v1") || "{}").journal || []);
+    if (journal.length)
+        out.push("cocher puis décocher laisse une séance au journal");
+    await p.close();
+    await ctx.close();
+    noter("la coche de la fiche et celle de la liste ne font qu'une", out);
 }
 
 await navigateur.close();

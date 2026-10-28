@@ -1,9 +1,9 @@
 # Vérification
 
-Trente-six contrôles automatiques — vingt-sept statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Quarante et un contrôles automatiques — trente et un statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
-Un troisième script, `mutation.mjs`, introduit vingt-trois défauts un par un et vérifie que le
+Un troisième script, `mutation.mjs`, introduit un défaut par contrôle statique, un par un, et vérifie que le
 contrôle concerné les voit. Deux d'entre eux avaient cessé de vérifier quoi que ce soit sans
 que rien ne le signale.
 
@@ -55,21 +55,26 @@ contrôles-ci mordent encore.
 | L'écran du lexique montre tout le tableau | L'écran se déduit du tableau des définitions, et c'est précisément ce qu'on vérifie : un mot ajouté doit y paraître sans qu'on y pense, et le classement par lettre ne doit en perdre aucun en route |
 | Tout dessin de silhouette entière déclare sa posture | Le contrôle de cohérence compare la posture que la consigne nomme à celle que le dessin déclare. Un dessin qui n'en déclare aucune n'est comparé à rien : trois « bascules du bassin », dont la consigne commence par « allongé sur le dos », ont montré un homme debout pendant des mois sans qu'aucun des vingt-cinq autres contrôles ne puisse le voir. Les dessins qui ne montrent pas une silhouette — un bloc-notes, un pied, une tête, un élastique — sont exemptés par une liste écrite en clair, et c'est elle qu'il faut modifier pour en exempter un de plus |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
-
+| Le rythme porté par le lien ne casse pas le lien | La fabrique ajoute « ?s=3 » au lien quand le kinésithérapeute attend un autre rythme que cinq séances par semaine. Si la lecture de l'adresse ne l'écartait pas, « entorse?s=3 » ne désignerait plus aucune blessure et le patient atterrirait sur l'accueil, son programme perdu |
+| La baisse de douleur affichée est exacte | L'écran Progrès affiche un badge « −60 % » que le patient montre à son kinésithérapeute. Un signe inversé ferait lire une aggravation comme un progrès ; le contrôle vérifie aussi que le point de départ ouvre la courbe, que la note retenue pour un jour est la plus haute, et qu'une première note à zéro ne produit aucun pourcentage |
+| Le repos affiché suit la règle du praticien | Le contenu n'écrit aucun temps de repos ; la fiche d'exercice en déduit un du dosage, selon la règle donnée par le praticien en octobre 2026 — trente secondes après des répétitions, autant que le travail pour un maintien en secondes, rien pour un travail en minutes. Le contrôle fige le résultat jugé sur sept dosages types, et vérifie qu'aucun dosage qui ne décrit pas des séries ne reçoit de tuiles |
+| Une sauvegarde ancienne garde toute sa progression | La refonte de 2026 a porté la sauvegarde en version 4. Les trois migrations précédentes n'avaient été vérifiées qu'en ouvrant l'application sur un téléphone qui gardait une sauvegarde d'avant — en pratique, chez le patient. Le contrôle rejoue une sauvegarde v1, une v3, le passage au lendemain et une seconde lecture, et exige que coches, journal, douleurs, charges, programme prescrit et réglages survivent |
 | La vignette de l'accueil est bien l'icône installée | Le logo encastré dans la page et le fichier `icon-192.png` avaient divergé : l'accueil montrait un dessin que l'icône posée sur l'écran d'accueil ne montrait plus. Le contrôle compare les octets |
 
 ### Contrôles de rendu — `rendu.mjs`
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 27 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
+| Chaque écran s'affiche sans erreur | 32 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
-| Aucune violation d'accessibilité | axe-core sur les 26 écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
+| Aucune violation d'accessibilité | axe-core sur tous les écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
 | L'application s'ouvre sans réseau | C'est sa promesse centrale, et un service worker cassé ne se voit pas tant qu'on a du réseau |
 | Le lien prescrit est retenu et n'enferme pas | Les sept formes de lien : l'accueil doit reconnaître le programme, ne pas afficher le catalogue, et laisser un moyen de l'atteindre |
 | Chaque règle de prudence paraît une fois par jour, sur son parcours | Les quatre parcours portent quatre textes différents mais partageaient une seule date « vue aujourd'hui » : un patient qui faisait son épaule puis ses étirements ne voyait jamais la règle de la prévention |
 | Les signes d'alerte ne paraissent qu'à l'accueil, une fois par jour | Ils ont vécu en pied de chaque écran d'exercices et sur chaque écran de bilan : à ce rythme ils devenaient un décor |
+| Le relevé de douleur n'invente aucune valeur | Le curseur partait à 2 sur 10 : un patient qui touchait « Enregistrer » sans y poser le doigt transmettait un 2 qu'il n'avait jamais dit |
+| La coche de la fiche et celle de la liste ne font qu'une | Depuis la refonte, un exercice se coche d'un geste sur la liste ou par le gros bouton de sa fiche. Deux états qui divergeraient montreraient l'exercice fait sur un écran et à faire sur l'autre. Éprouvé à la main sur une copie où le bouton de la fiche ne cochait plus : trois cas rouges |
 
 ## Lire du JavaScript sans analyseur syntaxique
 
@@ -101,11 +106,11 @@ visuelle c'est pourtant la question : qu'est-ce qui a changé, et qu'est-ce qui 
 sans qu'on le veuille.
 
 ```
-node verification/captures.mjs                 photographie les vingt-sept écrans
+node verification/captures.mjs                 photographie tous les écrans
 node verification/captures.mjs --avant main    photographie aussi « main », et compare
 ```
 
-Sans `--avant`, l'outil écrit aussi une **planche de contact des vingt-sept écrans** en une
+Sans `--avant`, l'outil écrit aussi une **planche de contact de tous les écrans** en une
 seule image : l'inventaire de l'application à un instant donné, qu'on peut envoyer et
 regarder d'un coup.
 

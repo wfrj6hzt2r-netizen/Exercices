@@ -15,13 +15,16 @@ dans l'application : les patients ne le rencontrent pas.
 Choisissez la zone, la blessure et le point de départ, puis copiez le lien et envoyez-le.
 
 Le patient qui ouvre ce lien arrive directement sur son programme, et **l'application s'en
-souvient** : à chaque ouverture suivante, l'accueil affiche « Votre programme » au lieu de lui
+souvient** : à chaque ouverture suivante, l'accueil affiche ce programme dans la carte « Mon parcours » au lieu de lui
 demander de choisir sa blessure parmi quarante-deux. Le catalogue reste accessible d'un
 bouton, pour une douleur nouvelle.
 
 Le **bilan de départ** est le point d'entrée recommandé : il fait choisir au patient son stade
 en fonction de ce qu'il ressent le jour où il ouvre le lien. Ouvrir une étape précise
 court-circuite ce réglage.
+
+Le champ **Séances par semaine** (cinq par défaut) règle l'objectif contre lequel l'écran
+Progrès mesure l'assiduité du patient ; il s'ajoute au lien sous la forme `?s=3`.
 
 Envoyer un nouveau lien remplace le précédent.
 
@@ -32,6 +35,7 @@ Envoyer un nouveau lien remplace le précédent.
 | `index.html` | Toute l'application : contenu, écrans, styles, React inclus. Aucune étape de compilation |
 | `sw.js` | Le service worker, qui rend l'ouverture possible sans réseau |
 | `manifest.webmanifest`, `*.png` | L'installation sur l'écran d'accueil |
+| `icone.svg` | Le dessin source de l'icône, d'où les cinq PNG sont tirés. La vignette encastrée dans `index.html` doit rester identique, octet pour octet, à `icon-192.png` : un contrôle y veille |
 | `verification/` | Trente-six contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
 | `.github/workflows/` | Les mêmes contrôles, à chaque modification |
 | `CLAUDE.md` | Les contraintes du fichier et la façon de travailler sur ce dépôt |

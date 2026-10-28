@@ -257,7 +257,8 @@ try {
         "REALISTIC_MARKERS", "LIBELLE_CIBLE_H", "LIBELLE_CIBLE_MARGE",
         "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
         "construireRoute", "phasesDe",
-        "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2"]);
+        "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2",
+        "migrerSauvegarde", "seancesDuLien", "etatDepuisRoute", "tuilesDeDose", "serieDouleur", "variationDouleur", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
 } catch (e) {
     panne = e.message;
 }
@@ -752,6 +753,143 @@ controle("la fabrique de liens atteint chaque programme", () => {
     return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
 });
+
+// --- Le rythme porté par le lien ne casse pas le lien ------------------------------------
+// La fabrique ajoute « ?s=3 » au lien quand le kinésithérapeute attend un autre rythme que
+// cinq séances. Si la lecture de l'adresse ne savait pas l'écarter, « entorse?s=3 » ne
+// désignerait plus aucune blessure : le patient atterrirait sur l'accueil, son programme perdu.
+controle("le rythme porté par le lien ne casse pas le lien", () => {
+    const out = [];
+    const e = D.etatDepuisRoute("#/z/genou/entorse/e2?s=3");
+    if (!e || e.view !== "stage" || e.injuryId !== "entorse" || e.stageIdx !== 1)
+        out.push(`« #/z/genou/entorse/e2?s=3 » n'ouvre plus l'étape 2 de l'entorse : ${JSON.stringify(e)}`);
+    if (D.seancesDuLien("#/z/genou/entorse?s=3") !== 3)
+        out.push("« ?s=3 » ne donne pas trois séances");
+    for (const h of ["#/z/genou/entorse", "#/z/genou/entorse?s=0", "#/z/genou/entorse?s=9"])
+        if (D.seancesDuLien(h) !== null)
+            out.push(`« ${h} » donne ${D.seancesDuLien(h)} séances au lieu de la valeur par défaut`);
+    return out;
+});
+
+// --- La baisse de douleur affichée est exacte ----------------------------------------------
+// L'écran Progrès affiche un badge « −60 % » que le patient montrera à son kinésithérapeute.
+// Un signe inversé ferait lire une aggravation comme un progrès ; un point de départ mal
+// placé ferait partir la courbe d'une note qui n'est pas la première.
+controle("la baisse de douleur affichée est exacte", () => {
+    const out = [];
+    const j = [
+        { date: "2026-10-20", cle: "a", faits: 1, douleur: 5 },
+        { date: "2026-10-20", cle: "b", faits: 1, douleur: 3 },
+        { date: "2026-10-25", cle: "a", faits: 1, douleur: 2 },
+        { date: "2026-10-26", cle: "a", faits: 1 },
+    ];
+    const serie = D.serieDouleur(j, { date: "2026-10-10", douleur: 8 }, "", "2026-10-28");
+    const lu = serie.map((p) => p.d.slice(5) + "=" + p.v).join(" ");
+    if (lu !== "10-10=8 10-20=5 10-25=2")
+        out.push(`série lue « ${lu} » au lieu de « 10-10=8 10-20=5 10-25=2 » (départ, puis la plus haute note du jour)`);
+    if (D.variationDouleur(serie) !== -75)
+        out.push(`de 8 à 2 : ${D.variationDouleur(serie)} % au lieu de −75 %`);
+    if (D.variationDouleur([{ v: 2 }, { v: 3 }]) !== 50)
+        out.push("une aggravation de 2 à 3 ne donne pas +50 %");
+    if (D.variationDouleur([{ v: 0 }, { v: 3 }]) !== null)
+        out.push("une première note à zéro produit un pourcentage");
+    const fenetre = D.serieDouleur(j, { date: "2026-10-10", douleur: 8 }, "2026-10-22", "2026-10-28");
+    if (fenetre.length !== 1)
+        out.push("un point de départ hors de la fenêtre y entre quand même");
+    return out;
+});
+
+// --- Le repos suit la règle donnée par le praticien -------------------------------------
+// Le contenu n'écrit aucun temps de repos. La fiche d'exercice en affiche un, tiré d'une
+// règle que le praticien a donnée en octobre 2026 : trente secondes après des répétitions,
+// autant de repos que de travail pour un maintien en secondes, rien pour un travail en
+// minutes. C'est du contenu clinique déduit par le code : on fige le résultat jugé, pas la
+// règle qui le produit, pour qu'une retouche du découpage ne le change pas en silence.
+controle("le repos affiché suit la règle du praticien", () => {
+    const attendus = [
+        ["3 × 10", "Répétitions", "10", "30\u00A0s"],
+        ["3 × 12 chaque côté", "Répétitions", "12", "30\u00A0s"],
+        ["5 × 30 sec", "Durée", "30\u00A0s", "30\u00A0s"],
+        ["3 × 20-30 sec chaque côté", "Durée", "20–30\u00A0s", "20–30\u00A0s"],
+        ["3 × 20 m", "Distance", "20\u00A0m", "30\u00A0s"],
+        ["4 × 5 min", "Durée", "5\u00A0min", null],
+        ["3 × 10 (3 sec / 3 sec)", "Répétitions", "10", "30\u00A0s"],
+    ];
+    const out = [];
+    for (const [dose, titre, valeur, repos] of attendus) {
+        const t = D.tuilesDeDose(dose);
+        const q = t && t[1], r = t && t.find((x) => x.titre === "Repos");
+        if (!q || q.titre !== titre || q.valeur !== valeur)
+            out.push(`« ${dose} » : ${q ? q.titre + " " + q.valeur : "aucune tuile"} au lieu de ${titre} ${valeur}`);
+        if ((r ? r.valeur : null) !== repos)
+            out.push(`« ${dose} » : repos ${r ? r.valeur : "absent"} au lieu de ${repos || "absent"}`);
+    }
+    for (const dose of ["quotidien", "10 min", "3 × par semaine", "2 × l'alphabet", "selon tolérance"])
+        if (D.tuilesDeDose(dose))
+            out.push(`« ${dose} » ne décrit pas des séries, et reçoit pourtant des tuiles`);
+    return out;
+});
+
+// --- La progression d'un ancien patient survit à la mise à jour ------------------------
+// La refonte de 2026 a porté la sauvegarde en version 4. Chacune des trois migrations
+// précédentes n'avait été vérifiée qu'en ouvrant l'application sur un téléphone qui avait
+// une sauvegarde de la version d'avant — c'est-à-dire, en pratique, chez le patient. On
+// rejoue ici trois sauvegardes réalistes, une par version passée, et l'on exige que rien
+// de ce que le patient a fait ne se perde.
+controle("une sauvegarde ancienne garde toute sa progression", () => {
+    const out = [];
+    const jour = "2026-10-28", veille = "2026-10-27";
+    const z = D.PATHOLOGIES[0], inj = z.injuries[0], ex = inj.stages[0].exercises;
+    const cle = D.cleParcours(z.id, inj.id);
+    const id0 = D.idExercice(ex[0]), id1 = D.idExercice(ex[1]);
+    const egal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const migrer = (d, j) => D.migrerSauvegarde(structuredClone(d), j);
+
+    // Version 1 : les coches désignaient des positions, « étape-exercice ».
+    const v1 = migrer({ done: { [cle]: ["0-0", "0-1"] }, jour, introVu: true }, jour);
+    if (!egal([...v1.done[cle]].sort(), [id0, id1].sort()))
+        out.push(`v1 : coches perdues — ${JSON.stringify(v1.done)}`);
+    if (!(v1.journal || []).some((e) => e.cle === cle && e.faits === 2))
+        out.push("v1 : la séance du jour n'a pas été portée au journal");
+
+    // Version 3 : journal daté, douleurs, charges, programme prescrit.
+    const journal = [
+        { date: jour, cle, faits: 2, total: 4, douleur: 3 },
+        { date: veille, cle, faits: 4, total: 4, douleur: 5 },
+        { date: "2026-10-20", cle, faits: 1, total: 4 },
+    ];
+    const prescrit = { cle: `z:${z.id}:${inj.id}`, route: { view: "checkin", pathId: z.id, injuryId: inj.id }, date: "2026-10-01" };
+    const charges = { [cle]: { [id0]: [{ d: veille, v: "2 kg" }] } };
+    const lastRoute = { view: "stage", pathId: z.id, injuryId: inj.id, stageIdx: 0 };
+    const v3src = { version: 3, done: { [cle]: [id0] }, jour, journal, charges, prescrit,
+        lastRoute, introVu: true, ageId: "grand", sportId: "course", prudenceVue: { blessure: jour } };
+    const v3 = migrer(v3src, jour);
+    for (const k of ["journal", "charges", "prescrit", "lastRoute", "introVu", "ageId", "sportId", "prudenceVue"])
+        if (!egal(v3[k], v3src[k]))
+            out.push(`v3 : « ${k} » a changé — ${JSON.stringify(v3[k]).slice(0, 80)}`);
+    if (!egal(v3.done[cle], [id0]))
+        out.push("v3 : les coches du jour ont été perdues");
+    if (v3.version !== D.STORAGE_VERSION)
+        out.push(`version ${v3.version} au lieu de ${D.STORAGE_VERSION}`);
+    for (const k of Object.keys(D.PROFIL_VIDE))
+        if (!(k in (v3.profil || {})))
+            out.push(`profil sans le champ « ${k} »`);
+    const m = (v3.memoire || {})[cle];
+    if (!m || m.seances !== 3 || m.debut !== "2026-10-20" || m.douleurDebut !== 5 || m.douleurFin !== 3)
+        out.push(`mémoire du parcours fausse — ${JSON.stringify(m)}`);
+
+    // Le lendemain : les coches repartent à zéro, mais rien d'autre ne bouge.
+    const lendemain = migrer(v3src, "2026-10-29");
+    if (Object.keys(lendemain.done).length || !egal(lendemain.journal, journal))
+        out.push("au lendemain, le journal a bougé ou les coches sont restées");
+
+    // Relire une sauvegarde déjà migrée ne doit rien compter deux fois.
+    const deux = migrer(v3, jour);
+    if (!egal(deux.memoire, v3.memoire))
+        out.push("une seconde lecture a modifié la mémoire des parcours");
+    return out;
+});
+
 
 // Les retraits de carte dérivaient : treize cartes bordées portaient vingt pixels, trois
 // en portaient seize, et rien ne disait laquelle avait raison. La règle est maintenant

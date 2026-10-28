@@ -1,4 +1,4 @@
-// Photographie les vingt-sept écrans, et dit lesquels ont bougé entre deux versions.
+// Photographie tous les écrans, et dit lesquels ont bougé entre deux versions.
 //
 // Les contrôles de rendu disent « rien n'est coupé », « le contraste tient », « aucune
 // erreur console ». Ils ne disent pas « cet écran ressemble à ce qu'il était ». Sur une
@@ -63,7 +63,7 @@ const slug = (nom) => nom.normalize("NFD").replace(/[̀-ͯ]/g, "")
     .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /**
- * Photographie les vingt-sept écrans dans un sous-dossier, et rend leur hauteur.
+ * Photographie tous les écrans dans un sous-dossier, et rend leur hauteur.
  * Le facteur d'échelle reste à 1 : l'écran du lexique fait douze mille pixels de haut, et
  * le doubler ne montrerait rien de plus qu'on ne verrait déjà.
  */
@@ -149,7 +149,7 @@ const echap = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 if (!revision) {
     rmSync(join(SORTIE, "actuel"), { recursive: true, force: true });
     const h = await serie("actuel");
-    // Une planche de contact des vingt-sept, en une image : l'inventaire de l'application
+    // Une planche de contact de tous les écrans, en une image : l'inventaire de l'application
     // à un instant donné, qu'on peut envoyer et regarder d'un coup. Les écrans longs sont
     // coupés en bas — celui du lexique fait douze mille pixels.
     const vignette = ([nom]) => `<figure><img src="${slug(nom)}.png">
@@ -162,7 +162,7 @@ figure{margin:0}figure img{width:100%;max-height:620px;object-fit:cover;object-p
  display:block;border:1px solid #DCE4EA;border-radius:10px;background:#fff}
 figcaption{font-size:13px;color:#0F172A;text-align:center;margin-top:6px;font-weight:600}
 figcaption span{font-weight:400;color:#8A94A6;font-size:12px}
-</style><h1>Les vingt-sept écrans</h1>
+</style><h1>Les écrans</h1>
 <p>Largeur d'iPhone, page entière. Les écrans longs sont coupés en bas.</p>
 <div class="g">${ROUTES.map(vignette).join("")}</div>`);
     const pl = await (await navigateur.newContext({
