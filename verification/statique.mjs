@@ -258,7 +258,7 @@ try {
         "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
         "construireRoute", "phasesDe",
         "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2",
-        "migrerSauvegarde", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
+        "migrerSauvegarde", "tuilesDeDose", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
 } catch (e) {
     panne = e.message;
 }
@@ -752,6 +752,37 @@ controle("la fabrique de liens atteint chaque programme", () => {
     const fantomes = [...joignables].filter((x) => !attendus.has(x));
     return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
+});
+
+// --- Le repos suit la règle donnée par le praticien -------------------------------------
+// Le contenu n'écrit aucun temps de repos. La fiche d'exercice en affiche un, tiré d'une
+// règle que le praticien a donnée en octobre 2026 : trente secondes après des répétitions,
+// autant de repos que de travail pour un maintien en secondes, rien pour un travail en
+// minutes. C'est du contenu clinique déduit par le code : on fige le résultat jugé, pas la
+// règle qui le produit, pour qu'une retouche du découpage ne le change pas en silence.
+controle("le repos affiché suit la règle du praticien", () => {
+    const attendus = [
+        ["3 × 10", "Répétitions", "10", "30\u00A0s"],
+        ["3 × 12 chaque côté", "Répétitions", "12", "30\u00A0s"],
+        ["5 × 30 sec", "Durée", "30\u00A0s", "30\u00A0s"],
+        ["3 × 20-30 sec chaque côté", "Durée", "20–30\u00A0s", "20–30\u00A0s"],
+        ["3 × 20 m", "Distance", "20\u00A0m", "30\u00A0s"],
+        ["4 × 5 min", "Durée", "5\u00A0min", null],
+        ["3 × 10 (3 sec / 3 sec)", "Répétitions", "10", "30\u00A0s"],
+    ];
+    const out = [];
+    for (const [dose, titre, valeur, repos] of attendus) {
+        const t = D.tuilesDeDose(dose);
+        const q = t && t[1], r = t && t.find((x) => x.titre === "Repos");
+        if (!q || q.titre !== titre || q.valeur !== valeur)
+            out.push(`« ${dose} » : ${q ? q.titre + " " + q.valeur : "aucune tuile"} au lieu de ${titre} ${valeur}`);
+        if ((r ? r.valeur : null) !== repos)
+            out.push(`« ${dose} » : repos ${r ? r.valeur : "absent"} au lieu de ${repos || "absent"}`);
+    }
+    for (const dose of ["quotidien", "10 min", "3 × par semaine", "2 × l'alphabet", "selon tolérance"])
+        if (D.tuilesDeDose(dose))
+            out.push(`« ${dose} » ne décrit pas des séries, et reçoit pourtant des tuiles`);
+    return out;
 });
 
 // --- La progression d'un ancien patient survit à la mise à jour ------------------------

@@ -572,6 +572,42 @@ async function ouvrir(ctx, hash) {
     noter("le relevé de douleur n'invente aucune valeur", out);
 }
 
+// --- 10. La coche de la fiche et celle de la liste ne font qu'une ---------------------
+// Depuis la refonte, un exercice se coche à deux endroits : d'un geste sur la liste de la
+// séance, ou par le gros bouton de sa fiche. Deux états qui divergeraient montreraient au
+// patient un exercice fait sur un écran et à faire sur l'autre — et le journal, lui, n'en
+// retiendrait qu'un.
+{
+    const out = [];
+    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+    const { p } = await ouvrir(ctx, "#/z/genou/entorse/e2");
+    await p.waitForTimeout(400);
+    const premier = () => p.locator('main [role="switch"]').first();
+    await p.locator("main article > button").first().click();
+    await p.waitForTimeout(400);
+    if (!/\/x\//.test(await p.evaluate(() => location.hash)))
+        out.push("la fiche ne prend pas d'adresse propre");
+    await p.getByRole("button", { name: /J'ai fait l'exercice/ }).click();
+    await p.waitForTimeout(500);
+    if (/\/x\//.test(await p.evaluate(() => location.hash)))
+        out.push("valider depuis la fiche ne ramène pas à la séance");
+    if ((await premier().getAttribute("aria-checked")) !== "true")
+        out.push("coché depuis la fiche, l'exercice reste « à faire » sur la liste");
+    // Dans l'autre sens : décoché sur la liste, la fiche doit le montrer à faire.
+    await premier().click();
+    await p.waitForTimeout(300);
+    await p.locator("main article > button").first().click();
+    await p.waitForTimeout(400);
+    if (!(await p.getByRole("button", { name: /J'ai fait l'exercice/ }).count()))
+        out.push("décoché sur la liste, l'exercice paraît encore fait sur sa fiche");
+    const journal = await p.evaluate(() => JSON.parse(localStorage.getItem("kine-exercices-v1") || "{}").journal || []);
+    if (journal.length)
+        out.push("cocher puis décocher laisse une séance au journal");
+    await p.close();
+    await ctx.close();
+    noter("la coche de la fiche et celle de la liste ne font qu'une", out);
+}
+
 await navigateur.close();
 serveur.close();
 

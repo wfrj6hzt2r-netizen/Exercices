@@ -373,6 +373,9 @@ la compilation y figurent. Cinq classes d'espacement écrites depuis ne s'y trou
 ne faisaient donc rien — silencieusement, ce qui est le pire des cas. Elles sont rétablies ici
 avec leurs valeurs d'origine. Toute nouvelle classe d'espacement doit être vérifiée de même. */
 .mt-2\.5{margin-top:0.625rem}.mt-3\.5{margin-top:0.875rem}.pb-4{padding-bottom:1rem}.pb-8{padding-bottom:2rem}.gap-5{gap:1.25rem}.pb-16{padding-bottom:4rem}.gap-6{gap:1.5rem}
+/* La fiche d'exercice montre le pictogramme à 128 px. Le trait est en unités du dessin et
+grossirait avec lui, plus épais que le texte autour : on l'amincit d'autant. */
+.picto-grand svg{stroke-width:1.4}
 /* Hauteur d'écran. « 100vh » sur iPhone compte la place occupée par la barre d'outils de
 Safari : le dernier bouton d'un écran de fin se retrouve dessous, ou la frôle. « svh » mesure
 la fenêtre réellement visible. La règle n'est appliquée que si le navigateur la comprend. */
@@ -5568,7 +5571,7 @@ function resumeDesJours(journal, jours, aujourdhui) {
 // être envoyé à un patient directement sur son protocole plutôt que sur l'accueil.
 const ROUTE_VIDE = { pathId: null, injuryId: null, stageIdx: 0, runnerPathId: null,
     runnerStageIdx: 0, preventionCategory: null, preventionSub: null,
-    croissanceId: null, croissanceStageIdx: 0 };
+    croissanceId: null, croissanceStageIdx: 0, exerciceId: null };
 function construireRoute(e) {
     const z = e.pathId, i = e.injuryId, c = e.preventionCategory, s = e.preventionSub, r = e.runnerPathId;
     switch (e.view) {
@@ -5604,7 +5607,15 @@ function construireRoute(e) {
 // l'appelant retombe alors sur l'accueil plutôt que d'afficher un écran vide.
 function etatDepuisRoute(hash) {
     const p = String(hash || "").replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
-    const fait = (sup) => Object.assign({}, ROUTE_VIDE, sup);
+    // La fiche d'un exercice se greffe au bout de l'adresse de sa séance : « …/e2/x/pont-fessier ».
+    // On la détache, on lit la séance comme d'habitude, puis on la rattache.
+    let exerciceId = null;
+    if (p.length > 2 && p[p.length - 2] === "x") {
+        exerciceId = p.pop();
+        p.pop();
+    }
+    const fait = (sup) => Object.assign({}, ROUTE_VIDE, sup,
+        exerciceId && /exercises|exercices|^stage$/.test(sup.view) ? { exerciceId } : null);
     if (!p.length)
         return fait({ view: "accueil" });
     if (p[0] === "zone")
@@ -6375,21 +6386,36 @@ function positionPonctuee(position) {
 function demandeUnElastique(ex) {
     return /élastique/i.test((ex.name || "") + " " + (ex.tip || ""));
 }
-function CarteExercice(props) {
-    const ex = props.ex, exId = props.exId, coche = props.coche, accent = props.accent;
-    // L'accent joue deux rôles opposés : fond de bouton, avec du blanc dessus, et encre sur
-    // une carte. Un seul ton ne peut pas tenir les deux en thème sombre — le sauge donne 3,2:1
-    // sur une carte sombre, sous le seuil lisible. « accentTexte » porte le rôle d'encre.
-    const accentTexte = props.accentTexte || props.accent;
-    // Les clés de rangement contiennent des deux-points ; un identifiant HTML qui en porte
-    // reste valide mais casse toute recherche CSS. On les assainit une fois pour toutes.
-    const base = slug(`${props.idBase}-${exId}`);
-    const idNom = `${base}-nom`;
-    const idEtat = `${base}-etat`;
-    const idDef = `${base}-def`;
-    const Icon = getExerciseIcon(ex.name, ex.tip);
-    // Le ressort ne se déclenche qu'au moment où le patient coche, jamais au chargement :
-    // en arrivant sur un stade déjà terminé, six cartes auraient sursauté ensemble.
+// Les trois tuiles de la fiche : séries, répétitions ou durée, repos. Elles se lisent dans le
+// dosage quand il a la forme « séries × quantité » ; les autres — « quotidien », « 10 min »,
+// « selon tolérance » — gardent leur libellé tel quel, sans tuiles.
+//
+// Le repos n'est écrit nulle part dans le contenu. Règle donnée par le praticien en octobre
+// 2026, à reprendre plus tard exercice par exercice : trente secondes pour un exercice en
+// répétitions, autant de repos que de travail pour un maintien compté en secondes. Un
+// travail compté en minutes n'en reçoit pas, faute de règle.
+const REPOS_PAR_DEFAUT = "30 s";
+function tuilesDeDose(dose) {
+    const m = /^(\d+)\s*×\s*(\d+(?:\s*[-–]\s*\d+)?)\s*(sec|min|m)?(?![\p{L}])\s*(.*)$/u.exec(String(dose || "").trim());
+    if (!m)
+        return null;
+    const quantite = m[2].replace(/\s*[-–]\s*/, "–");
+    const reste = m[4].replace(/^,\s*/, "").trim();
+    const series = { titre: "Séries", valeur: m[1] };
+    if (m[3] === "sec")
+        return [series, { titre: "Durée", valeur: `${quantite} s`, note: reste },
+            { titre: "Repos", valeur: `${quantite} s` }];
+    if (m[3] === "min")
+        return [series, { titre: "Durée", valeur: `${quantite} min`, note: reste }];
+    if (m[3] === "m")
+        return [series, { titre: "Distance", valeur: `${quantite} m`, note: reste },
+            { titre: "Repos", valeur: REPOS_PAR_DEFAUT }];
+    return [series, { titre: "Répétitions", valeur: quantite, note: reste },
+        { titre: "Repos", valeur: REPOS_PAR_DEFAUT }];
+}
+// Le ressort de la coche : il ne se déclenche qu'au moment où le patient coche, jamais au
+// chargement — en arrivant sur un stade déjà terminé, six cartes auraient sursauté ensemble.
+function useRessort(coche) {
     const [ressort, setRessort] = useState(false);
     const dejaMonte = React.useRef(false);
     useEffect(() => {
@@ -6408,118 +6434,192 @@ function CarteExercice(props) {
         const t = setTimeout(() => setRessort(false), 320);
         return () => clearTimeout(t);
     }, [coche]);
+    return ressort;
+}
+// --- La carte d'exercice, dans la liste de la séance ---------------------------------------
+// La liste montrait chaque exercice en entier — consigne, minuteur, charge, « pourquoi » : une
+// étape de quatre exercices tenait sur cinq écrans, et le patient qui connaissait déjà ses
+// gestes faisait défiler trois cents caractères pour cocher le suivant. La carte ne garde que
+// ce qui sert à reconnaître l'exercice et à le valider ; le reste est sur sa fiche.
+//
+// L'interrupteur, lui, n'a pas changé de forme : pleine largeur, 44 px, et une étiquette qui
+// porte le geste. Une patiente de soixante-douze ans n'osait pas toucher un rond vide, « de
+// peur que ça disparaisse ».
+function CarteExerciceCompacte(props) {
+    const ex = props.ex, exId = props.exId, coche = props.coche, accent = props.accent;
+    // L'accent joue deux rôles opposés : fond de bouton, avec du blanc dessus, et encre sur
+    // une carte. Un seul ton ne peut pas tenir les deux en thème sombre. « accentTexte » porte
+    // le rôle d'encre.
+    const accentTexte = props.accentTexte || props.accent;
+    // Les clés de rangement contiennent des deux-points ; un identifiant HTML qui en porte
+    // reste valide mais casse toute recherche CSS. On les assainit une fois pour toutes.
+    const base = slug(`${props.idBase}-${exId}`);
+    const idNom = `${base}-nom`;
+    const idEtat = `${base}-etat`;
+    const Icon = getExerciseIcon(ex.name, ex.tip);
+    const ressort = useRessort(coche);
+    const doseParts = splitDose(props.dose);
+    const echelle = echelleTexte();
+    // Le nom est mesuré dans sa propre colonne, chevron déjà déduit : aucune réserve à prendre.
+    const [refNom, tailleNom, nomSurUneLigne] = useNomAjuste(ex.name, 0, echelle);
+    // Pas de retrait sur la carte elle-même : chaque rang porte le sien, pour que la zone qui
+    // ouvre la fiche aille d'un bord à l'autre.
+    return (React.createElement("article", { className: "rounded-2xl bg-white overflow-hidden",
+        style: { border: coche ? `1px solid ${accent}` : `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+        React.createElement("button", { type: "button", onClick: props.onOuvrir,
+            className: "w-full px-5 pt-5 pb-3 flex items-center gap-3 text-left" },
+            React.createElement("span", { className: "w-11 h-11 rounded-full flex items-center justify-center shrink-0",
+                style: { backgroundColor: coche ? accent : props.fondIcone } },
+                React.createElement(Icon, { size: 24, color: coche ? "#FFFFFF" : accentTexte })),
+            React.createElement("span", { className: "min-w-0 flex-1 block" },
+                // Aux plus grandes tailles de texte, « Autograndissement » ne tenait pas dans la
+                // colonne et se faisait rogner : le nom se coupe plutôt que de disparaître.
+                React.createElement("span", { ref: refNom, id: idNom, className: "block", lang: "fr",
+                    style: { fontSize: `${tailleNom}px`, fontWeight: 600, color: INK, lineHeight: 1.25,
+                        letterSpacing: "-0.01em", overflow: "hidden", hyphens: "auto", WebkitHyphens: "auto",
+                        overflowWrap: "break-word",
+                        whiteSpace: nomSurUneLigne ? "nowrap" : "normal" } }, ex.name),
+                React.createElement("span", { className: "block mt-0.5", style: { color: accentTexte, fontVariantNumeric: "tabular-nums",
+                        fontSize: TAILLE_ACCOMPAGNE * echelle, fontWeight: 600, lineHeight: 1.3 } },
+                    doseParts.main,
+                    doseParts.note && React.createElement("span", { style: { color: INK_DOUX, fontWeight: 400 } }, " " + doseParts.note))),
+            React.createElement(ChevronRight, { size: 22, className: "shrink-0", style: { color: accentTexte } })),
+        React.createElement("div", { className: "px-5 pb-5" },
+            React.createElement(InterrupteurFait, { coche, accentTexte, ressort, idNom, idEtat, onBascule: props.onBascule }))));
+}
+// L'interrupteur « Je l'ai fait ». « À faire » et « Fait » nomment deux états, pas deux
+// gestes : l'étiquette porte donc le geste tant qu'il reste à faire, et l'état une fois fait.
+// Coché, il portait le style de l'action principale — plein, vert, texte blanc — et une étape
+// de quatre exercices faits donnait quatre gros boutons verts : « Fait » passe en fond voilé.
+function InterrupteurFait({ coche, accentTexte, ressort, idNom, idEtat, onBascule }) {
+    return React.createElement("button", { type: "button", role: "switch", "aria-checked": coche,
+        "aria-labelledby": `${idNom} ${idEtat}`, onClick: onBascule,
+        className: "w-full inline-flex items-center justify-center gap-2 rounded-full px-3.5",
+        style: { minHeight: 44,
+            border: coche ? `1px solid ${ACCENT_VOILE}` : `1.5px solid ${accentTexte}`,
+            backgroundColor: coche ? ACCENT_VOILE : "transparent",
+            color: accentTexte } },
+        React.createElement("span", { "aria-hidden": "true",
+            className: "inline-flex items-center justify-center rounded-full shrink-0" + (ressort ? " coche-ressort" : ""),
+            style: { width: 22, height: 22, fontSize: TAILLE_ACCOMPAGNE,
+                border: coche ? "none" : `1.5px solid ${accentTexte}`,
+                backgroundColor: coche ? accentTexte : "transparent",
+                color: coche ? ACCENT_VOILE : "transparent" } }, "✓"),
+        React.createElement("span", { id: idEtat, style: { fontSize: TAILLE_ACCOMPAGNE, fontWeight: 600 } },
+            coche ? "Fait" : "Je l'ai fait"));
+}
+// --- La fiche d'un exercice ----------------------------------------------------------------
+// Le pictogramme en grand, le dosage en trois tuiles, la consigne, le minuteur, et un seul
+// gros bouton en bas. Le pictogramme passait à 24 px dans une pastille de 44 : trop petit
+// pour lire une posture, ce qu'avait relevé le praticien. Il est ici à 128 px, le trait
+// aminci pour ne pas épaissir avec lui.
+function FicheExercice(props) {
+    const ex = props.ex, exId = props.exId, coche = props.coche, accent = props.accent;
+    const accentTexte = props.accentTexte || props.accent;
+    const base = slug(`${props.idBase}-${exId}-fiche`);
+    const idNom = `${base}-nom`;
+    const idDef = `${base}-def`;
+    const Icon = getExerciseIcon(ex.name, ex.tip);
     const doseParts = splitDose(props.dose);
     // Une dose en répétitions n'a pas de durée à décompter : le « 3 sec » d'un tempo
-    // "(3 sec / 3 sec)" décrivait la vitesse du mouvement, pas un maintien.
+    // « (3 sec / 3 sec) » décrivait la vitesse du mouvement, pas un maintien.
     const secondes = doseParts.note && doseParts.note.startsWith("répétitions")
         ? null
         : parseTimerSeconds(props.dose);
-    // La pastille de définition vit sur la ligne du nom : on lui réserve sa place avant de
-    // calculer la taille du texte, sinon elle passerait à la ligne toute seule.
-    const echelle = echelleTexte();
-    const [refNom, tailleNom, nomSurUneLigne] = useNomAjuste(ex.name, props.term ? 30 : 0, echelle);
-    return (React.createElement("article", { className: "rounded-2xl p-5 bg-white",
-        style: { border: coche ? `1px solid ${accent}` : `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
-        // 1. Le nom, seul sur sa ligne : c'est lui qu'on cherche des yeux en parcourant la liste.
-        React.createElement("h2", { ref: refNom, id: idNom, className: "flex items-center gap-1.5",
-            style: { fontSize: `${tailleNom}px`, fontWeight: 600, color: INK, lineHeight: 1.25,
-                letterSpacing: "-0.01em", overflow: "hidden",
-                whiteSpace: nomSurUneLigne ? "nowrap" : "normal" } },
-            ex.name,
-            props.term && React.createElement("button", { type: "button",
-                onClick: props.onBasculerInfo, "aria-expanded": !!props.infoOuvert, "aria-controls": idDef,
-                "aria-label": `Définition : ${props.term}`,
-                className: "shrink-0 inline-flex items-center justify-center rounded-full",
-                style: { width: 22, height: 22, minWidth: 22, backgroundColor: BORDURE, color: INK,
-                    fontSize: TAILLE_ETIQUETTE, fontWeight: 600, border: "none", padding: 0 } }, "i")),
-        // 2. Pictogramme et dosage. Le dosage est passé sous le nom, et non plus à côté :
-        // « aussi souvent que nécessaire » débordait de la carte en portrait.
-        React.createElement("div", { className: "flex items-center gap-3 mt-2.5" },
-            React.createElement("div", { className: "w-11 h-11 rounded-full flex items-center justify-center shrink-0",
-                style: { backgroundColor: coche ? accent : props.fondIcone } },
-                React.createElement(Icon, { size: 24, color: coche ? "#FFFFFF" : accentTexte })),
-            React.createElement("div", { className: "min-w-0 flex-1" },
-                // La dose était rendue en chasse fixe, ce qui la faisait ressembler à du code
-                // au milieu d'une prescription. Même police que le reste, chiffres alignés,
-                // et une graisse un cran au-dessus pour qu'elle reste le repère de la carte.
-                React.createElement("p", { style: { color: accentTexte, fontVariantNumeric: "tabular-nums",
-                        fontSize: TAILLE_ACCOMPAGNE * echelle, fontWeight: 600, lineHeight: 1.3 } },
+    const tuiles = tuilesDeDose(props.dose);
+    const onglets = [{ id: "exercice", titre: "Exercice" }];
+    if (props.pourquoi)
+        onglets.push({ id: "pourquoi", titre: "Pourquoi" });
+    if (demandeUnElastique(ex))
+        onglets.push({ id: "variante", titre: "Sans élastique" });
+    const [onglet, setOnglet] = useState("exercice");
+    const panneau = onglets.some((o) => o.id === onglet) ? onglet : "exercice";
+    const tu = props.tutoie;
+    return (React.createElement("div", { className: "min-h-screen flex flex-col", style: { backgroundColor: PAGE, fontFamily: POLICE } },
+        React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+            React.createElement("button", { onClick: props.onFermer, className: "cible-44 flex items-center gap-1 t-corps mb-2", style: { color: SUR_BANDEAU_DOUX } },
+                React.createElement(ChevronLeft, { size: 18 }),
+                " ",
+                props.contexte || "Séance"),
+            React.createElement("h1", { id: idNom, className: "text-sur-bandeau text-2xl font-medium leading-tight flex items-start gap-2" },
+                React.createElement("span", null, ex.name),
+                props.term && React.createElement("button", { type: "button",
+                    onClick: props.onBasculerInfo, "aria-expanded": !!props.infoOuvert, "aria-controls": idDef,
+                    "aria-label": `Définition : ${props.term}`,
+                    className: "shrink-0 inline-flex items-center justify-center rounded-full mt-1",
+                    style: { width: 24, height: 24, minWidth: 24, backgroundColor: ACCENT_SOFT, color: HEADER,
+                        fontSize: TAILLE_ETIQUETTE, fontWeight: 600, border: "none", padding: 0 } }, "i")),
+            props.term && props.infoOuvert && React.createElement("p", { id: idDef, lang: "fr",
+                className: "mt-3", style: styleProse(TAILLE_ACCOMPAGNE, SUR_BANDEAU_DOUX) },
+                React.createElement("strong", null, majusculeInitiale(props.term)),
+                " — ",
+                GLOSSARY[props.term])),
+        React.createElement("div", { className: "px-6 flex flex-col gap-4 flex-1 pb-6" },
+            React.createElement("div", { className: "rounded-3xl flex items-center justify-center picto-grand relative",
+                style: { backgroundColor: props.fondIcone, height: 188 } },
+                React.createElement(Icon, { size: 128, color: accentTexte }),
+                coche && React.createElement("span", { className: "absolute t-accompagne font-semibold px-3 py-1 rounded-full",
+                    style: { top: 12, right: 12, backgroundColor: accentTexte, color: props.fondIcone } }, "✓ Fait aujourd'hui")),
+            tuiles
+                ? React.createElement("div", { className: "flex rounded-2xl p-5", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                    tuiles.map((t, i) => React.createElement("div", { key: t.titre, className: "flex-1 text-center px-1",
+                        style: i ? { borderLeft: `1px solid ${BORDURE_DOUCE}` } : undefined },
+                        React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, t.titre),
+                        React.createElement("p", { className: "text-xl font-semibold mt-0.5 tabular-nums", style: { color: INK } }, t.valeur),
+                        t.note && React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, t.note))))
+                : React.createElement("p", { className: "t-corps font-semibold", style: { color: accentTexte } },
                     doseParts.main,
-                    doseParts.note && React.createElement("span", { style: { color: INK_DOUX, fontSize: TAILLE_ETIQUETTE * echelle,
-                            fontFamily: POLICE } }, " " + doseParts.note)),
-                props.position && React.createElement("p", { className: "t-etiquette mt-1 flex items-start gap-1",
-                    style: { color: ACCENT_FORT } },
-                    React.createElement(IconeEpingle, { size: 13, className: "shrink-0", style: { marginTop: 1 } }),
+                    doseParts.note && React.createElement("span", { style: { color: INK_DOUX, fontWeight: 400 } }, " " + doseParts.note)),
+            (props.position || props.effort) && React.createElement("div", { className: "flex flex-col gap-1" },
+                props.position && React.createElement("p", { className: "t-accompagne flex items-start gap-1.5", style: { color: ACCENT_FORT } },
+                    React.createElement(IconeEpingle, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
                     React.createElement("span", null, positionPonctuee(props.position))),
-                // L'intensité vit sous la dose, qu'elle qualifie, et en encre secondaire :
-                // la dose reste le repère principal de la carte.
-                props.effort && React.createElement("p", { className: "t-etiquette mt-1 flex items-start gap-1",
-                    style: { color: INK_DOUX } },
-                    React.createElement(IconeJauge, { size: 13, className: "shrink-0", style: { marginTop: 1 } }),
-                    React.createElement("span", null, props.effort)))),
-        // 3. La consigne. Justifiée et coupée en fin de ligne : sur une colonne étroite, le
-        // drapeau à droite laissait des trous qui hachaient la lecture.
-        React.createElement("p", { lang: "fr", className: "mt-3", style: styleProse(TAILLE_CORPS, INK_PROSE) }, ex.tip),
-        demandeUnElastique(ex) && React.createElement("p", { lang: "fr", className: "mt-2",
-            style: styleProse(TAILLE_ACCOMPAGNE, INK_DOUX) },
-            React.createElement("span", { className: "font-medium" }, "Sans élastique : "),
-            // Six exercices du parcours croissance demandent un élastique, et recevaient
-            // cette phrase au vouvoiement au milieu d'un texte qui tutoie d'un bout à l'autre.
-            props.tutoie
-                ? "fais le même mouvement sans résistance. C'est la version plus facile, et le repli quand tu n'en as pas avec toi."
-                : "faites le même mouvement sans résistance. C'est la version plus facile, et le repli quand vous n'en avez pas avec vous."),
-        props.pourquoi && React.createElement("div", { className: "rounded-2xl p-3 mt-3",
-            style: { backgroundColor: props.fondSecondaire } },
-            React.createElement("p", { lang: "fr", style: styleProse(TAILLE_CORPS, INK) },
-                React.createElement("span", { className: "font-medium" }, "Pourquoi : "),
-                props.pourquoi)),
-        props.term && props.infoOuvert && React.createElement("p", { id: idDef, lang: "fr",
-            className: "mt-3 pt-3", style: Object.assign(styleProse(TAILLE_ACCOMPAGNE, INK_PROSE),
-                { borderTop: `1px solid ${BORDURE}` }) },
-            React.createElement("strong", null, majusculeInitiale(props.term)),
-            " — ",
-            GLOSSARY[props.term]),
-        // 4. Minuteur, charge notée, et l'interrupteur — désormais un vrai bouton nommé plutôt
-        // qu'une carte entière cliquable : un lecteur d'écran annonçait les trois cents
-        // caractères de la consigne comme intitulé, et ne disait jamais si l'exercice était fait.
-        // Les outils secondaires tiennent leur propre ligne, l'action principale la sienne :
-        // avec un seul rang qui se replie, le bouton de validation se retrouvait tantôt à droite,
-        // tantôt à gauche selon la présence du minuteur.
-        (secondes || props.avecCharge) && React.createElement("div", { className: "flex flex-wrap items-center gap-2 mt-3.5" },
-            secondes ? React.createElement(ExerciseTimer, { seconds: secondes, accent: accent }) : null,
-            props.avecCharge ? React.createElement(NoteDeCharge, { valeur: props.charge,
-                precedente: props.chargePrecedente, accent: accent, onEnregistrer: props.onNoterCharge }) : null),
-        React.createElement("div", { className: "flex mt-3" },
-            React.createElement("button", { type: "button", role: "switch", "aria-checked": coche,
-                "aria-labelledby": `${idNom} ${idEtat}`, onClick: props.onBascule,
-                className: "w-full inline-flex items-center justify-center gap-2 rounded-full px-3.5",
-                // Cocher l'exercice est la seule raison d'être de la carte : ce bouton porte
-                // donc la couleur d'accent dès avant d'être coché, là où le minuteur et la
-                // charge se contentent d'un filet. Les trois pastilles étaient auparavant
-                // grises et de même poids, sans indiquer laquelle comptait.
-                // Coché, ce bouton portait exactement le style de l'action principale : plein,
-                // vert d'accent, texte blanc. Une étape de quatre exercices tous faits donnait
-                // donc quatre gros boutons verts, et l'écran ne disait plus où appuyer ni ce
-                // qu'il restait à faire. « Fait » est un état, pas une action : il passe en fond
-                // voilé, encre verte, et c'est le bouton d'enregistrement qui garde le plein.
-                style: { minHeight: 44,
-                    border: coche ? `1px solid ${ACCENT_VOILE}` : `1.5px solid ${accentTexte}`,
-                    backgroundColor: coche ? ACCENT_VOILE : "transparent",
-                    color: accentTexte } },
-                React.createElement("span", { "aria-hidden": "true",
-                    className: "inline-flex items-center justify-center rounded-full shrink-0" + (ressort ? " coche-ressort" : ""),
-                    style: { width: 22, height: 22, fontSize: TAILLE_ACCOMPAGNE,
-                        border: coche ? "none" : `1.5px solid ${accentTexte}`,
-                        backgroundColor: coche ? accentTexte : "transparent",
-                        color: coche ? ACCENT_VOILE : "transparent" } }, "✓"),
-                // « À faire » et « Fait » nomment deux états, pas deux gestes : sur un bouton,
-                // une étiquette qui décrit la situation se lit comme une pastille de statut.
-                // Le bouton a beau être irréprochable — pleine largeur, 44 px, bordure
-                // d'accent, rond vide visible — une patiente de soixante-douze ans n'osait pas
-                // y toucher, « de peur que ça disparaisse ». L'étiquette porte donc le geste
-                // tant qu'il reste à faire, et l'état une fois qu'il est fait.
-                React.createElement("span", { id: idEtat, style: { fontSize: TAILLE_ACCOMPAGNE, fontWeight: 600 } },
-                    coche ? "Fait" : "Je l'ai fait")))));
+                props.effort && React.createElement("p", { className: "t-accompagne flex items-start gap-1.5", style: { color: INK_DOUX } },
+                    React.createElement(IconeJauge, { size: 14, className: "shrink-0", style: { marginTop: 2 } }),
+                    React.createElement("span", null, props.effort))),
+            onglets.length > 1 && React.createElement("div", { role: "tablist", className: "flex gap-1", style: { borderBottom: `1px solid ${BORDURE}` } },
+                onglets.map((o) => React.createElement("button", { key: o.id, type: "button", role: "tab",
+                    id: `${base}-onglet-${o.id}`, "aria-selected": panneau === o.id, "aria-controls": `${base}-panneau`,
+                    onClick: () => setOnglet(o.id),
+                    className: "cible-44 px-3 t-corps",
+                    style: { color: panneau === o.id ? accentTexte : INK_DOUX, fontWeight: panneau === o.id ? 600 : 400,
+                        borderBottom: `2.5px solid ${panneau === o.id ? accentTexte : "transparent"}`, marginBottom: -1 } }, o.titre))),
+            React.createElement("article", { className: "rounded-2xl p-5 bg-white",
+                style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE }, id: `${base}-panneau`,
+                role: onglets.length > 1 ? "tabpanel" : undefined,
+                "aria-labelledby": onglets.length > 1 ? `${base}-onglet-${panneau}` : undefined },
+                panneau === "exercice" && React.createElement(React.Fragment, null,
+                    React.createElement("h2", { className: "t-carte font-semibold", style: { color: INK } }, "Consigne"),
+                    // Justifiée et coupée en fin de ligne : sur une colonne étroite, le drapeau
+                    // à droite laissait des trous qui hachaient la lecture.
+                    React.createElement("p", { lang: "fr", className: "mt-2", style: styleProse(TAILLE_CORPS, INK_PROSE) }, ex.tip),
+                    (secondes || props.avecCharge) && React.createElement("div", { className: "flex flex-wrap items-center gap-2 mt-4" },
+                        secondes ? React.createElement(ExerciseTimer, { seconds: secondes, accent: accent }) : null,
+                        props.avecCharge ? React.createElement(NoteDeCharge, { valeur: props.charge,
+                            precedente: props.chargePrecedente, accent: accent, onEnregistrer: props.onNoterCharge }) : null)),
+                panneau === "pourquoi" && React.createElement("p", { lang: "fr", style: styleProse(TAILLE_CORPS, INK) }, props.pourquoi),
+                // Six exercices du parcours croissance demandent un élastique, et recevaient
+                // cette phrase au vouvoiement au milieu d'un texte qui tutoie d'un bout à l'autre.
+                panneau === "variante" && React.createElement("p", { lang: "fr", style: styleProse(TAILLE_CORPS, INK_PROSE) },
+                    tu
+                        ? "Fais le même mouvement sans résistance. C'est la version plus facile, et le repli quand tu n'as pas d'élastique avec toi."
+                        : "Faites le même mouvement sans résistance. C'est la version plus facile, et le repli quand vous n'avez pas d'élastique avec vous."))),
+        // Le bouton reste au bas de l'écran pendant qu'on lit : c'est le geste qui clôt la fiche.
+        // Fait, il ne ferme plus rien et ne fait que décocher — l'erreur se rattrape sans quitter.
+        React.createElement("div", { className: "px-6 pt-3 pb-5", style: { position: "sticky", bottom: 0, backgroundColor: PAGE,
+                borderTop: `1px solid ${BORDURE_DOUCE}`, paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" } },
+            coche
+                ? React.createElement("button", { type: "button", "aria-pressed": true, onClick: props.onBascule,
+                    className: "cible-44 w-full rounded-full t-corps font-medium inline-flex items-center justify-center gap-2",
+                    style: { minHeight: 52, backgroundColor: ACCENT_VOILE, color: accentTexte } },
+                    "✓ Fait — toucher pour décocher")
+                : React.createElement("button", { type: "button", "aria-pressed": false,
+                    onClick: () => { props.onBascule(); props.onFermer(); },
+                    className: "cible-44 w-full rounded-full t-corps font-medium inline-flex items-center justify-center gap-2",
+                    // L'or du parcours croissance s'éclaircit en thème sombre : le blanc n'y
+                    // tiendrait plus, d'où une encre propre à chaque accent.
+                    style: { minHeight: 52, backgroundColor: accent, color: props.surAccent || "#FFFFFF" } },
+                    "✓ J'ai fait l'exercice"))));
 }
 // --- Fabrique de liens, pour le cabinet ------------------------------------------------
 // Un écran que le patient ne voit jamais : il n'est référencé nulle part et ne s'atteint
@@ -6712,6 +6812,10 @@ function GuidedJourney() {
     }, []);
     const [introVu, setIntroVu] = useState(() => !!restored.introVu);
     const [view, setView] = useState(() => (restored.introVu ? depart.view : "intro"));
+    // La fiche d'exercice ouverte, rattachée à l'adresse de sa séance : changer de séance la
+    // referme d'elle-même, sans qu'aucune des trente navigations de l'application ait à y penser.
+    const [ficheOuverte, setFicheOuverte] = useState(() => (restored.introVu && depart.exerciceId
+        ? { base: construireRoute(depart), id: depart.exerciceId } : null));
     // L'écran « À propos » s'atteint depuis l'introduction comme depuis l'accueil : on
     // retient d'où l'on vient pour ne pas renvoyer sur l'accueil quelqu'un qui n'a pas
     // encore validé les règles de prudence.
@@ -6780,9 +6884,33 @@ function GuidedJourney() {
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
-    const routeCourante = construireRoute({ view, pathId, injuryId, stageIdx,
+    const routeSeance = construireRoute({ view, pathId, injuryId, stageIdx,
         runnerPathId, runnerStageIdx, preventionCategory, preventionSub,
         croissanceId, croissanceStageIdx });
+    const ficheActive = ficheOuverte && routeSeance && ficheOuverte.base === routeSeance ? ficheOuverte.id : null;
+    const routeCourante = ficheActive ? `${routeSeance}/x/${encodeURIComponent(ficheActive)}` : routeSeance;
+    // En refermant la fiche, le patient retrouve la liste là où il l'avait laissée, et non
+    // tout en haut : sur une étape de six exercices, le cinquième était à deux écrans.
+    const defilementListe = React.useRef(0);
+    const ouvrirFiche = (id) => {
+        defilementListe.current = typeof window !== "undefined" ? window.scrollY : 0;
+        setFicheOuverte({ base: routeSeance, id });
+    };
+    const ficheEtaitOuverte = React.useRef(!!ficheActive);
+    useEffect(() => {
+        if (typeof window === "undefined" || ficheEtaitOuverte.current === !!ficheActive)
+            return;
+        ficheEtaitOuverte.current = !!ficheActive;
+        window.scrollTo(0, ficheActive ? 0 : defilementListe.current);
+    }, [ficheActive]);
+    // La fiche de l'exercice ouvert, s'il appartient à la liste de l'écran ; sinon rien.
+    const ficheParmi = (liste, fabrique, contexte) => {
+        if (!ficheActive)
+            return null;
+        const ex = liste.find((e) => idExercice(e) === ficheActive);
+        return ex ? React.createElement(FicheExercice, Object.assign(fabrique(ex), {
+            contexte, onFermer: retourEnArriere })) : null;
+    };
     // État → adresse. La première écriture remplace l'entrée d'historique au lieu d'en
     // ajouter une, pour qu'un retour immédiat sorte du site au lieu de tourner en rond.
     useEffect(() => {
@@ -6819,6 +6947,7 @@ function GuidedJourney() {
             setPreventionSub(e.preventionSub);
             setCroissanceId(e.croissanceId);
             setCroissanceStageIdx(e.croissanceStageIdx);
+            setFicheOuverte(e.exerciceId ? { base: construireRoute(e), id: e.exerciceId } : null);
             setQuery("");
             setView(e.view);
         };
@@ -6876,6 +7005,7 @@ function GuidedJourney() {
         setCroissanceStageIdx(route.croissanceStageIdx || 0);
         setPreventionCategory(route.preventionCategory || null);
         setPreventionSub(route.preventionSub || null);
+        setFicheOuverte(null);
         setQuery("");
         setView(route.view);
     };
@@ -7555,21 +7685,32 @@ function GuidedJourney() {
         const age = CROISSANCE_AGES.find((a) => a.id === ageId) || CROISSANCE_AGES[1];
         const sport = CROISSANCE_SPORTS.find((x) => x.id === sportId);
         const fini = st.exercises.every((e) => faits.has(idExercice(e)));
+        // Les propriétés d'un exercice, construites une fois pour sa carte et pour sa fiche.
+        const fabriqueExercice = (e) => {
+            const exId = idExercice(e);
+            return {
+                key: exId, ex: e, exId: exId, idBase: cle,
+                coche: faits.has(exId),
+                onBascule: () => toggle(cle, exId, st.exercises.length),
+                accent: CROISSANCE_ACCENT, accentTexte: CROISSANCE_ACCENT, fondIcone: CROISSANCE_FOND,
+                surAccent: CROISSANCE_SUR_ACCENT,
+                dose: e.dose,
+                effort: repereEffort(e, true), tutoie: true,
+                pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
+            };
+        };
+        const fiche = ficheParmi(st.exercises, fabriqueExercice, ph.label);
+        if (fiche)
+            return fiche;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
-                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
-                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
-                // demandait jusqu'à quatre retours successifs.
+                // Revenir d'un cran. Rentrer à l'accueil se faisait par un second bouton sur
+                // cette ligne ; c'est désormais le premier onglet, présent sur chaque écran.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
                     React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
-                        croi.alias),
-                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
-                        className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                        React.createElement(IconeMaison, { size: 15 }),
-                        "Accueil")),
+                        croi.alias)),
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, phasesDe(croi).map((p, si) => (React.createElement("div", { key: p.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: SUR_BANDEAU_FILET } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < croissanceStageIdx ? "100%" : si === croissanceStageIdx ? "50%" : "0%", backgroundColor: CROISSANCE_CLAIR } }))))),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } },
@@ -7594,18 +7735,7 @@ function GuidedJourney() {
                 React.createElement("div", { className: "flex gap-1.5 flex-wrap" }, CROISSANCE_SPORTS.map((sp) => (React.createElement("button", { key: sp.id, onClick: () => setSportId(sportId === sp.id ? null : sp.id), className: "px-3 py-1.5 rounded-full t-accompagne font-medium", style: { backgroundColor: sportId === sp.id ? CROISSANCE_ACCENT : SURFACE, color: sportId === sp.id ? CROISSANCE_SUR_ACCENT : INK, border: `1px solid ${BORDURE}` } }, sp.label)))),
                 sport && React.createElement("div", { className: "rounded-2xl p-4 mt-3", style: { backgroundColor: CROISSANCE_FOND } },
                     React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK } }, sport.conseil))),
-            React.createElement("div", { className: "px-6 py-5 flex flex-col gap-3 flex-1" }, st.exercises.map((e) => {
-                const exId = idExercice(e);
-                return React.createElement(CarteExercice, {
-                    key: exId, ex: e, exId: exId, idBase: cle,
-                    coche: faits.has(exId),
-                    onBascule: () => toggle(cle, exId, st.exercises.length),
-                    accent: CROISSANCE_ACCENT, accentTexte: CROISSANCE_ACCENT, fondIcone: CROISSANCE_FOND,
-                    dose: e.dose,
-                    effort: repereEffort(e, true), tutoie: true,
-                    pourquoi: e.pourquoi, fondSecondaire: CROISSANCE_FOND,
-                });
-            }),
+            React.createElement("div", { className: "px-6 py-5 flex flex-col gap-3 flex-1" }, st.exercises.map((e) => React.createElement(CarteExerciceCompacte, Object.assign(fabriqueExercice(e), { onOuvrir: () => ouvrirFiche(idExercice(e)) }))),
                 React.createElement(MinimumDuJour, { tutoie: true, rienDeFait: st.exercises.every((e) => !faits.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 st.critere && (React.createElement("div", { className: "rounded-2xl p-4 mb-4", style: { backgroundColor: CROISSANCE_FOND } },
@@ -7686,21 +7816,39 @@ function GuidedJourney() {
         const allDone = totalDone === totalCount;
         const guidance = RUNNER_STAGE_GUIDANCE[runnerStageIdx];
         const isLast = runnerStageIdx === RUNNER_STAGE_LABELS.length - 1;
+        // Les propriétés d'un exercice, construites une fois pour sa carte et pour sa fiche.
+        const fabriqueExercice = (ex) => {
+            const exId = idExercice(ex);
+            const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
+            return {
+                key: exId, ex: ex, exId: exId, idBase: runnerKey,
+                coche: runnerDoneSet.has(exId),
+                onBascule: () => toggle(runnerKey, exId, runnerStage.exercises.length),
+                accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
+                dose: doseAffichee(ex.dose),
+                term: term,
+                infoOuvert: openInfo.has(`${runnerKey}-${exId}`),
+                onBasculerInfo: () => toggleInfo(`${runnerKey}-${exId}`),
+                position: positionAffichable(ex.name, ex.tip),
+                effort: repereEffort(ex),
+                avecCharge: doseNotable(ex),
+                charge: chargeDuJour(charges, runnerKey, exId, jour),
+                chargePrecedente: chargePrecedente(charges, runnerKey, exId, jour),
+                onNoterCharge: (v) => setCharges((c) => noterCharge(c, runnerKey, exId, jour, v)),
+            };
+        };
+        const fiche = ficheParmi(runnerStage.exercises, fabriqueExercice, `\u00C9tape ${runnerStageIdx + 1}`);
+        if (fiche)
+            return fiche;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
-                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
-                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
-                // demandait jusqu'à quatre retours successifs.
+                // Revenir d'un cran. Rentrer à l'accueil se faisait par un second bouton sur
+                // cette ligne ; c'est désormais le premier onglet, présent sur chaque écran.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
                     React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
-                        path.label),
-                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
-                        className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                        React.createElement(IconeMaison, { size: 15 }),
-                        "Accueil")),
+                        path.label)),
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("div", { key: st.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: SUR_BANDEAU_FILET } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < runnerStageIdx ? "100%" : si === runnerStageIdx ? "50%" : "0%", backgroundColor: ACCENT } }))))),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, stageInfo.sub),
@@ -7725,26 +7873,7 @@ function GuidedJourney() {
                 runnerStage.pourquoi && React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: ACCENT_SOFT } }, runnerStage.pourquoi)),
             React.createElement(NoteDePrudence, { key: runnerStageIdx, deplier: !regleVue("coureur"), onVue: () => marquerRegleVue("coureur"), texte: RUNNER_PAIN_RULE }),
             React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" },
-                runnerStage.exercises.map((ex, ei) => {
-                    const exId = idExercice(ex);
-                    const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
-                        return React.createElement(CarteExercice, {
-                        key: exId, ex: ex, exId: exId, idBase: runnerKey,
-                        coche: runnerDoneSet.has(exId),
-                        onBascule: () => toggle(runnerKey, exId, runnerStage.exercises.length),
-                        accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
-                        dose: doseAffichee(ex.dose),
-                        term: term,
-                        infoOuvert: openInfo.has(`${runnerKey}-${exId}`),
-                        onBasculerInfo: () => toggleInfo(`${runnerKey}-${exId}`),
-                        position: positionAffichable(ex.name, ex.tip),
-                        effort: repereEffort(ex),
-                        avecCharge: doseNotable(ex),
-                        charge: chargeDuJour(charges, runnerKey, exId, jour),
-                        chargePrecedente: chargePrecedente(charges, runnerKey, exId, jour),
-                        onNoterCharge: (v) => setCharges((c) => noterCharge(c, runnerKey, exId, jour, v)),
-                    });
-                }),
+                runnerStage.exercises.map((ex) => React.createElement(CarteExerciceCompacte, Object.assign(fabriqueExercice(ex), { onOuvrir: () => ouvrirFiche(idExercice(ex)) }))),
                 React.createElement(MinimumDuJour, { rienDeFait: runnerStage.exercises.every((e) => !runnerDoneSet.has(idExercice(e))) }),
                 runnerStage.plan && (React.createElement("div", { className: "rounded-2xl p-5 mt-2", style: { backgroundColor: ACCENT_PALE, border: `1px solid ${ACCENT_CALENDRIER}` } },
                     React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, "Plan de reprise de la course"),
@@ -7829,21 +7958,39 @@ function GuidedJourney() {
         const totalDone = sub.exercises.filter((e) => prevDoneSet.has(idExercice(e))).length;
         const totalCount = sub.exercises.length;
         const allDone = totalDone === totalCount;
+        // Les propriétés d'un exercice, construites une fois pour sa carte et pour sa fiche.
+        const fabriqueExercice = (ex) => {
+            const exId = idExercice(ex);
+            const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
+            return {
+                key: exId, ex: ex, exId: exId, idBase: prevKey,
+                coche: prevDoneSet.has(exId),
+                onBascule: () => toggle(prevKey, exId, sub.exercises.length),
+                accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
+                dose: doseAffichee(ex.dose),
+                term: term,
+                infoOuvert: openInfo.has(`${prevKey}-${exId}`),
+                onBasculerInfo: () => toggleInfo(`${prevKey}-${exId}`),
+                position: positionAffichable(ex.name, ex.tip),
+                effort: repereEffort(ex),
+                avecCharge: doseNotable(ex),
+                charge: chargeDuJour(charges, prevKey, exId, jour),
+                chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
+                onNoterCharge: (v) => setCharges((c) => noterCharge(c, prevKey, exId, jour, v)),
+            };
+        };
+        const fiche = ficheParmi(sub.exercises, fabriqueExercice, sub.label);
+        if (fiche)
+            return fiche;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
-                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
-                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
-                // demandait jusqu'à quatre retours successifs.
+                // Revenir d'un cran. Rentrer à l'accueil se faisait par un second bouton sur
+                // cette ligne ; c'est désormais le premier onglet, présent sur chaque écran.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
                     React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
-                        category.title),
-                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
-                        className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                        React.createElement(IconeMaison, { size: 15 }),
-                        "Accueil")),
+                        category.title)),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, category.title),
                 React.createElement("h1", { className: "text-sur-bandeau text-xl font-medium" },
                     React.createElement(MotExplique, { texte: sub.label, encre: HEADER, fond: ACCENT_SOFT, surFond: SUR_BANDEAU_DOUX })),
@@ -7861,26 +8008,7 @@ function GuidedJourney() {
                     " \u00B7 ",
                     category.guidance.duration)),
             React.createElement(NoteDePrudence, { key: preventionSub, deplier: !regleVue("prevention"), onVue: () => marquerRegleVue("prevention"), texte: "Ces exercices supposent l'absence de douleur. En cas de g\u00EAne, arr\u00EAtez et privil\u00E9giez le parcours adapt\u00E9 \u00E0 votre blessure." }),
-            React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, sub.exercises.map((ex, ei) => {
-                const exId = idExercice(ex);
-                const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
-                return React.createElement(CarteExercice, {
-                    key: exId, ex: ex, exId: exId, idBase: prevKey,
-                    coche: prevDoneSet.has(exId),
-                    onBascule: () => toggle(prevKey, exId, sub.exercises.length),
-                    accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
-                    dose: doseAffichee(ex.dose),
-                    term: term,
-                    infoOuvert: openInfo.has(`${prevKey}-${exId}`),
-                    onBasculerInfo: () => toggleInfo(`${prevKey}-${exId}`),
-                    position: positionAffichable(ex.name, ex.tip),
-                    effort: repereEffort(ex),
-                    avecCharge: doseNotable(ex),
-                    charge: chargeDuJour(charges, prevKey, exId, jour),
-                    chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
-                    onNoterCharge: (v) => setCharges((c) => noterCharge(c, prevKey, exId, jour, v)),
-                });
-            }),
+            React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, sub.exercises.map((ex) => React.createElement(CarteExerciceCompacte, Object.assign(fabriqueExercice(ex), { onOuvrir: () => ouvrirFiche(idExercice(ex)) }))),
                 React.createElement(MinimumDuJour, { rienDeFait: sub.exercises.every((e) => !prevDoneSet.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 bilanDeFin(prevKey, sub.exercises, prevDoneSet, ACCENT, false),
@@ -7921,21 +8049,39 @@ function GuidedJourney() {
             : "0%");
         const totalDone = injury.stages.reduce((a, s) => a + s.exercises.filter((e) => doneSet.has(idExercice(e))).length, 0);
         const totalCount = injury.stages.reduce((a, s) => a + s.exercises.length, 0);
+        // Les propriétés d'un exercice, construites une fois pour sa carte et pour sa fiche.
+        const fabriqueExercice = (ex) => {
+            const exId = idExercice(ex);
+            const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
+            return {
+                key: exId, ex: ex, exId: exId, idBase: key,
+                coche: doneSet.has(exId),
+                onBascule: () => toggle(key, exId, totalCount),
+                accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
+                dose: doseAffichee(ex.dose),
+                term: term,
+                infoOuvert: openInfo.has(exId),
+                onBasculerInfo: () => toggleInfo(exId),
+                position: positionAffichable(ex.name, ex.tip),
+                effort: repereEffort(ex),
+                avecCharge: doseNotable(ex),
+                charge: chargeDuJour(charges, key, exId, jour),
+                chargePrecedente: chargePrecedente(charges, key, exId, jour),
+                onNoterCharge: (v) => setCharges((c) => noterCharge(c, key, exId, jour, v)),
+            };
+        };
+        const fiche = ficheParmi(stage.exercises, fabriqueExercice, `\u00C9tape ${stageIdx + 1}`);
+        if (fiche)
+            return fiche;
         return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA] flex flex-col", style: { fontFamily: POLICE } },
             React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
-                // Deux sorties, sur la même ligne et sans rien coûter en hauteur : revenir
-                // d'un cran, ou rentrer. Depuis le troisième exercice d'une étape, l'accueil
-                // demandait jusqu'à quatre retours successifs.
+                // Revenir d'un cran. Rentrer à l'accueil se faisait par un second bouton sur
+                // cette ligne ; c'est désormais le premier onglet, présent sur chaque écran.
                 React.createElement("div", { className: "flex items-center justify-between gap-3 mb-4" },
                     React.createElement("button", { onClick: retourEnArriere, className: "cible-44 flex items-center gap-1 t-corps min-w-0", style: { color: SUR_BANDEAU_DOUX } },
                         React.createElement(ChevronLeft, { size: 16, className: "shrink-0" }),
                         " ",
-                        injury.label),
-                    React.createElement("button", { onClick: () => setView("accueil"), "aria-label": "Revenir \u00E0 l'accueil",
-                        className: "cible-44 flex items-center gap-1.5 t-corps shrink-0 px-3 rounded-full",
-                        style: { color: SUR_BANDEAU_DOUX, border: `1px solid ${SUR_BANDEAU_FILET}` } },
-                        React.createElement(IconeMaison, { size: 15 }),
-                        "Accueil")),
+                        injury.label)),
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, injury.stages.map((s, si) => (React.createElement("div", { key: s.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: SUR_BANDEAU_FILET } },
                     React.createElement("div", { className: "h-full rounded-full", style: {
                             transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)",
@@ -7972,26 +8118,7 @@ function GuidedJourney() {
             React.createElement(BandeauUrgence, { texte: urgenceDe(pathId, injuryId) }),
             React.createElement(NoteDePrudence, { key: stageIdx, deplier: !regleVue("blessure"), onVue: () => marquerRegleVue("blessure"), texte: "Une g\u00EAne l\u00E9g\u00E8re peut \u00EAtre normale. Arr\u00EAtez si c'est nettement pire qu'avant l'exercice, ou si c'est encore pire le lendemain matin, et pr\u00E9venez votre kin\u00E9sith\u00E9rapeute." }),
             stageIdx === 0 && React.createElement(ConseilsPremiersJours, { lignes: injury.premiersJours }),
-            React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex, ei) => {
-                const exId = idExercice(ex);
-                const term = findGlossaryTerm(ex.name) || findGlossaryTerm(ex.tip);
-                return React.createElement(CarteExercice, {
-                    key: exId, ex: ex, exId: exId, idBase: key,
-                    coche: doneSet.has(exId),
-                    onBascule: () => toggle(key, exId, totalCount),
-                    accent: ACCENT, accentTexte: ACCENT_FORT, fondIcone: ACCENT_VOILE,
-                    dose: doseAffichee(ex.dose),
-                    term: term,
-                    infoOuvert: openInfo.has(exId),
-                    onBasculerInfo: () => toggleInfo(exId),
-                    position: positionAffichable(ex.name, ex.tip),
-                    effort: repereEffort(ex),
-                    avecCharge: doseNotable(ex),
-                    charge: chargeDuJour(charges, key, exId, jour),
-                    chargePrecedente: chargePrecedente(charges, key, exId, jour),
-                    onNoterCharge: (v) => setCharges((c) => noterCharge(c, key, exId, jour, v)),
-                });
-            }),
+            React.createElement("div", { className: "px-6 py-6 flex flex-col gap-3 flex-1" }, stage.exercises.map((ex) => React.createElement(CarteExerciceCompacte, Object.assign(fabriqueExercice(ex), { onOuvrir: () => ouvrirFiche(idExercice(ex)) }))),
                 React.createElement(MinimumDuJour, { rienDeFait: stage.exercises.every((e) => !doneSet.has(idExercice(e))) })),
             React.createElement("div", { className: "px-6 py-5 bg-white border-t", style: { borderColor: BORDURE } },
                 // Le relevé de douleur venait en dernier, sous les boutons de navigation : le
@@ -8084,13 +8211,16 @@ function GuidedJourney() {
     // la dépile : le bouton retour du navigateur, la flèche de l'en-tête et le glissement
     // produisent alors exactement le même effet. Sinon — cas du patient arrivé directement
     // par un lien reçu — il n'y a rien à dépiler, et on remonte d'un cran par la carte.
-    const cibleRetour = view === "apropos" ? retourApropos : RETOUR[view];
+    const cibleRetour = ficheActive ? view : view === "apropos" ? retourApropos : RETOUR[view];
     const retourEnArriere = () => {
         if (typeof window !== "undefined" && profondeur.current > 0) {
             window.history.back();
             return;
         }
-        if (cibleRetour)
+        // Arrivé directement sur une fiche par son adresse : rien à dépiler, on revient à la séance.
+        if (ficheActive)
+            setFicheOuverte(null);
+        else if (cibleRetour)
             setView(cibleRetour);
     };
     // Un repère de page unique, et le focus déplacé sur le titre à chaque changement d'écran :
@@ -8108,7 +8238,7 @@ function GuidedJourney() {
             return;
         titre.setAttribute("tabindex", "-1");
         titre.focus({ preventScroll: true });
-    }, [view, stageIdx, runnerStageIdx, croissanceStageIdx, preventionSub]);
+    }, [view, stageIdx, runnerStageIdx, croissanceStageIdx, preventionSub, ficheActive]);
     // Arrivée d'un écran : un fondu de 180 ms avec huit pixels de montée. La classe est
     // retirée puis remise, avec une lecture forcée de la géométrie entre les deux, pour que
     // l'animation rejoue — remonter le sous-arbre React aurait fait le même effet, mais au
@@ -8120,12 +8250,14 @@ function GuidedJourney() {
         el.classList.remove("apparition");
         void el.offsetWidth;
         el.classList.add("apparition");
-    }, [view, stageIdx, runnerStageIdx, croissanceStageIdx, preventionSub, pathId, injuryId, runnerPathId, croissanceId, preventionCategory]);
+    }, [view, stageIdx, runnerStageIdx, croissanceStageIdx, preventionSub, pathId, injuryId, runnerPathId, croissanceId, preventionCategory, ficheActive]);
     // La barre d'onglets accompagne tous les écrans sauf deux : l'introduction, qui doit être
     // lue avant d'aller ailleurs, et la fabrique de liens, réservée au kinésithérapeute.
-    const avecOnglets = view !== "intro" && view !== "lien";
+    // La fiche d'exercice s'en passe aussi : son gros bouton tient le bas de l'écran.
+    const avecOnglets = view !== "intro" && view !== "lien" && !ficheActive;
     const choisirOnglet = (id) => {
         setQuery("");
+        setFicheOuverte(null);
         if (id === "accueil")
             setView("accueil");
         else if (id === "progres")

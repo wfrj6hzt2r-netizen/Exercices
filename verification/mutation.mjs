@@ -175,6 +175,10 @@ const MUTATIONS = [
     ["une sauvegarde ancienne garde toute sa progression",
         (s) => rem(s, "    data.charges = propres;", "    data.charges = {};")],
 
+    // Le repos par défaut glisse d'une demi-minute à une minute, sans que personne l'ait décidé.
+    ["le repos affiché suit la règle du praticien",
+        (s) => rem(s, 'const REPOS_PAR_DEFAUT = "30\u00A0s";', 'const REPOS_PAR_DEFAUT = "60\u00A0s";')],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

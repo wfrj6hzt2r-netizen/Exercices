@@ -7,7 +7,7 @@
 
 export const ROUTES = [
     ["accueil", "#/"], ["choisir une zone", "#/zone"], ["profil", "#/profil"], ["blessures", "#/z/genou"], ["check-in", "#/z/genou/entorse"],
-    ["exercices", "#/z/genou/entorse/e1"], ["exercices tardifs", "#/z/genou/entorse/e4"],
+    ["exercices", "#/z/genou/entorse/e1"], ["fiche d'exercice", "#/z/genou/entorse/e2/x/presse-a-une-jambe-legere"], ["exercices tardifs", "#/z/genou/entorse/e4"],
     ["fin de parcours", "#/z/genou/entorse/fin"], ["lombaires", "#/z/lombaire/hernie-discale"],
     ["hernie positions", "#/z/lombaire/hernie-discale/e1"],
     ["cheville", "#/z/cheville/achille-insertion/e4"], ["cervicales", "#/z/cervical/cervicalgie"],
