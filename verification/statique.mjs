@@ -857,6 +857,13 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Étirement prolongé du bas du dos": "child-pose",
         "Position de soulagement": "advice",
         "Position assise penchée en avant": "seated-flexion",
+        // Trois bascules du bassin « allongé sur le dos » recevaient une silhouette debout,
+        // et le contrôle de cohérence ne pouvait rien y voir : le dessin du tronc ne
+        // déclarait pas la posture qu'il montre. Il la déclare, et le repli fait le reste.
+        "Bascules du bassin": "supine-core",
+        "Bascules du bassin en insistant sur la flexion": "supine-core",
+        "Bascule du bassin": "supine-core",
+        "Coordination mobilité thoraco-lombaire": "seated-twist",
     };
     const cles = new Map();
     for (const p of D.POSES) {
