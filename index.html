@@ -1324,6 +1324,106 @@ const PoseGluteStretch = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "27", y1: "25", x2: "35", y2: "29" }),
     React.createElement("line", { x1: "20", y1: "27", x2: "33", y2: "32" }),
     React.createElement("line", { x1: "16", y1: "35", x2: "24", y2: "31" })));
+// --- Huit dessins pour les gestes que la relecture a laissés sans candidat ---------
+// Le praticien les a nommés un par un : « aucun des 84 ne convient ». Chacun reçoit ici
+// le dessin de son geste, et non celui du geste voisin.
+
+// Presse à une jambe. Cinq exercices disent « sur une presse, assis ou semi-allongé » :
+// ils recevaient un squat debout, ou une extension de genou sur une chaise. De profil, une
+// jambe et deux se confondent — c'est la machine qui manquait, pas le compte des jambes.
+const PoseLegPress = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("line", { x1: "10", y1: "39", x2: "23", y2: "39" }),
+    React.createElement("line", { x1: "12", y1: "39", x2: "12", y2: "44" }),
+    React.createElement("line", { x1: "10", y1: "39", x2: "5", y2: "27" }),
+    React.createElement("circle", { cx: "7", cy: "24", r: "3.6" }),
+    React.createElement("line", { x1: "8", y1: "27", x2: "21", y2: "37" }),
+    React.createElement("line", { x1: "21", y1: "37", x2: "30", y2: "31" }),
+    React.createElement("line", { x1: "30", y1: "31", x2: "35", y2: "37" }),
+    React.createElement("line", { x1: "36", y1: "26", x2: "36", y2: "40" })));
+// Rotation interne : les avant-bras reviennent vers le ventre, et les deux chevrons
+// pointent vers le corps. Le dessin reçu était celui de la rotation externe, c'est-à-dire
+// le mouvement inverse — l'erreur la plus coûteuse possible sur une épaule.
+const PoseBandRotInt = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "32" }),
+    React.createElement("line", { x1: "24", y1: "17", x2: "16", y2: "22" }),
+    React.createElement("line", { x1: "16", y1: "22", x2: "21", y2: "18" }),
+    React.createElement("line", { x1: "24", y1: "17", x2: "32", y2: "22" }),
+    React.createElement("line", { x1: "32", y1: "22", x2: "27", y2: "18" }),
+    React.createElement("path", { d: "M9 17 L14 21 L9 25" }),
+    React.createElement("path", { d: "M39 17 L34 21 L39 25" }),
+    React.createElement("line", { x1: "24", y1: "32", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "32", x2: "28", y2: "44" })));
+// Tirage scapulaire : le coude est déjà passé derrière le tronc, et le chevron dit où il
+// va. Le tirage générique montre le début du geste, bras tendu devant ; or ce qu'on
+// demande ici, c'est la fin — « tirez les coudes vers l'arrière ».
+const PoseScapRow = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("line", { x1: "6", y1: "13", x2: "6", y2: "27" }),
+    React.createElement("line", { x1: "7", y1: "20", x2: "19", y2: "21" }),
+    React.createElement("circle", { cx: "26", cy: "10", r: "4" }),
+    React.createElement("line", { x1: "26", y1: "14", x2: "26", y2: "30" }),
+    React.createElement("line", { x1: "26", y1: "18", x2: "31", y2: "26" }),
+    React.createElement("line", { x1: "31", y1: "26", x2: "19", y2: "21" }),
+    React.createElement("path", { d: "M33 23 L36.5 26 L33 29" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "23", y2: "44" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" })));
+// Copenhague : gainage latéral, jambe du dessus posée sur un banc, jambe du dessous
+// libre. Il recevait le couché sur le côté jambe levée, qui travaille les abducteurs —
+// l'opposé du muscle visé, sur la pathologie dont c'est l'exercice de référence.
+const PoseCopenhagen = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("line", { x1: "33", y1: "37", x2: "43", y2: "37" }),
+    React.createElement("line", { x1: "37", y1: "37", x2: "37", y2: "44" }),
+    React.createElement("circle", { cx: "9", cy: "24", r: "3.6" }),
+    React.createElement("line", { x1: "14", y1: "28", x2: "12", y2: "43" }),
+    React.createElement("line", { x1: "12", y1: "43", x2: "19", y2: "43" }),
+    React.createElement("line", { x1: "14", y1: "28", x2: "28", y2: "33" }),
+    React.createElement("line", { x1: "28", y1: "33", x2: "42", y2: "33" }),
+    React.createElement("line", { x1: "28", y1: "33", x2: "36", y2: "42" })));
+// Glissement du nerf sciatique, assis : le genou se tend pendant que la tête se relève —
+// d'où l'arc au-dessus du crâne. La position pliée est en pointillé. Les deux exercices
+// sciatiques portaient le dessin du membre supérieur, bras tendu devant.
+const PoseNerveSciatic = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M8 13 L8 28 L22 28" }),
+    React.createElement("line", { x1: "9", y1: "28", x2: "9", y2: "45" }),
+    React.createElement("circle", { cx: "12", cy: "9", r: "3.6" }),
+    React.createElement("line", { x1: "12", y1: "12.6", x2: "14", y2: "27" }),
+    React.createElement("line", { x1: "14", y1: "27", x2: "27", y2: "27" }),
+    React.createElement("line", { x1: "27", y1: "27", x2: "38", y2: "25" }),
+    React.createElement("path", { d: "M27 27 L30 38", strokeDasharray: "3 3" }),
+    React.createElement("path", { d: "M8 4.5 Q12 2 16 4.5" })));
+// L'autre exercice sciatique : allongé sur le dos, un genou plié, l'autre jambe tendue
+// remontée vers le plafond, la serviette sous le pied en pointillé.
+const PoseSupineSlr = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "38", r: "3.6" }),
+    React.createElement("line", { x1: "12.6", y1: "39", x2: "26", y2: "39" }),
+    React.createElement("line", { x1: "26", y1: "39", x2: "33", y2: "33" }),
+    React.createElement("line", { x1: "33", y1: "33", x2: "38", y2: "41" }),
+    React.createElement("line", { x1: "26", y1: "39", x2: "31", y2: "22" }),
+    React.createElement("path", { d: "M31 22 L22 35", strokeDasharray: "3 3" })));
+// Curl des ischio-jambiers : à plat ventre, le talon revient vers la fesse, l'élastique
+// en pointillé derrière. Il recevait l'extension à plat ventre, qui lève le buste.
+const PoseHamCurl = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "38", r: "3.6" }),
+    React.createElement("line", { x1: "12.6", y1: "39", x2: "29", y2: "40" }),
+    React.createElement("line", { x1: "29", y1: "40", x2: "37", y2: "40" }),
+    React.createElement("line", { x1: "37", y1: "40", x2: "33", y2: "29" }),
+    React.createElement("path", { d: "M33 29 L42 39", strokeDasharray: "3 3" })));
+// Mobilité du coude : le bras seul, l'avant-bras plié et sa position tendue en pointillé,
+// comme le poignet le fait déjà. La consigne tient en une phrase — « plie et tends ton
+// coude » — et recevait une silhouette allongée.
+const PoseElbowMobilise = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("circle", { cx: "16", cy: "12", r: "2.6" }),
+    React.createElement("line", { x1: "16", y1: "14.6", x2: "16", y2: "28" }),
+    React.createElement("circle", { cx: "16", cy: "30", r: "2.4" }),
+    React.createElement("line", { x1: "17.5", y1: "28.5", x2: "28", y2: "21" }),
+    React.createElement("path", { d: "M16 32.5 L16 43", strokeDasharray: "3 3" }),
+    React.createElement("path", { d: "M 27 24 A 12 12 0 0 1 19 41" })));
 const POSES = [
     // --- 0 bis. Cinq gestes relevés à l'écran, chacun dessiné par une règle trop large ---
     // Le chat-vache tombait sur la rotation du tronc debout, le relevé de buste à plat
@@ -1371,6 +1471,16 @@ const POSES = [
     { key: "leg-swing", icon: PoseLegSwing, test: (n) => n.includes("balancers de jambe") },
     { key: "calf-bent", icon: PoseCalfBent, test: (n) => n.includes("genou fléchi") },
     { key: "glute-stretch", icon: PoseGluteStretch, test: (n) => n.includes("étirement des fessiers") },
+
+    // --- 0 quinquies. Les huit gestes que la relecture a laissés sans candidat ---
+    { key: "leg-press", icon: PoseLegPress, test: (n) => n.includes("presse à") },
+    { key: "band-rot-int", icon: PoseBandRotInt, test: (n) => n.includes("rotation interne à l'élastique") },
+    { key: "scap-row", icon: PoseScapRow, test: (n) => n.includes("renforcement scapulaire en charge") },
+    { key: "copenhagen", icon: PoseCopenhagen, test: (n) => n.includes("copenhague") },
+    { key: "nerve-sciatic", icon: PoseNerveSciatic, test: (n) => n.includes("glissements du nerf sciatique") },
+    { key: "supine-slr", icon: PoseSupineSlr, test: (n) => n.includes("étirements du nerf sciatique") },
+    { key: "ham-curl", icon: PoseHamCurl, test: (n) => n.includes("curl ischio") },
+    { key: "elbow-mobilise", icon: PoseElbowMobilise, test: (n) => n.includes("mobilité douce du coude") },
 
     // --- 0. Gestes que des règles plus générales captaient à tort ---
     // « glissement » tombait sur l'élastique, et le bras posé sur une flexion de genou assise.
@@ -1667,6 +1777,9 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
     "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
     "floor-lift": "debout", "standing-hip-ext": "debout", "leg-swing": "debout",
+    "leg-press": "assis", "band-rot-int": "debout", "scap-row": "debout",
+    "copenhagen": "cote", "nerve-sciatic": "assis", "supine-slr": "dos",
+    "ham-curl": "ventre",
     "calf-bent": "debout", "glute-stretch": "dos",
     balance: "debout", jump: "debout", run: "debout",
     // Les nouveaux venus : la marche et l'appui au mur se font debout, le menton rentré

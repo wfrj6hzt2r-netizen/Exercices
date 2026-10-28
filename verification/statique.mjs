@@ -833,6 +833,25 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Montée sur pointe lente genou fléchi": "calf-bent",
         // Une cheville croisée sur le genou opposé, pas une mobilisation allongée.
         "Étirement des fessiers": "glute-stretch",
+        // Les huit gestes que la relecture a laissés sans candidat : « aucun des 84 ne
+        // convient ». Deux d'entre eux montraient le mouvement inverse de celui demandé.
+        "Presse à une jambe": "leg-press",
+        "Presse à une jambe (légère)": "leg-press",
+        "Presse à une jambe chargée": "leg-press",
+        "Presse à une jambe (amplitude progressive)": "leg-press",
+        "Presse à deux jambes progressive": "leg-press",
+        // Le dessin reçu était celui de la rotation externe, c'est-à-dire l'inverse.
+        "Rotation interne à l'élastique": "band-rot-int",
+        // Et celui-ci travaillait les abducteurs là où l'exercice vise les adducteurs.
+        "Exercice de Copenhague (niveau débutant)": "copenhagen",
+        "Exercice de Copenhague progressif": "copenhagen",
+        "Renforcement scapulaire en charge": "scap-row",
+        "Glissements du nerf sciatique": "nerve-sciatic",
+        "Étirements du nerf sciatique (doux)": "supine-slr",
+        "Curl ischio-jambiers en charge": "ham-curl",
+        "Mobilité douce du coude": "elbow-mobilise",
+        // Le dessin du membre supérieur reste celui des glissements du bras.
+        "Étirement en rotation interne": "towel-behind",
     };
     const cles = new Map();
     for (const p of D.POSES) {
