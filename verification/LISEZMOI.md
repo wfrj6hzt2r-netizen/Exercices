@@ -1,6 +1,6 @@
 # Vérification
 
-Trente-cinq contrôles automatiques — vingt-six statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Trente-six contrôles automatiques — vingt-sept statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 Un troisième script, `mutation.mjs`, introduit vingt-trois défauts un par un et vérifie que le
@@ -53,6 +53,7 @@ contrôles-ci mordent encore.
 | Aucun mot du lexique n'est masqué par un autre | La recherche rend le premier terme contenu dans le texte, dans l'ordre du tableau. « abdomino-adducteurs », placé derrière « adducteurs », n'est jamais sorti : la carte qui écrivait le mot composé expliquait l'intérieur de la cuisse |
 | Les mots réservés au lexique n'en sortent jamais | « prévention » et « échauffement » figurent dans la consigne de quatre exercices, où leur définition répond à une question que personne ne se pose à cet endroit : ils restent définis, sans déclencher de pastille. Le contrôle garde sa propre copie de la liste — sa première version la lisait dans le fichier, et le banc l'a prise en défaut : retirer un mot de l'ensemble la rendait aveugle à son propre défaut |
 | L'écran du lexique montre tout le tableau | L'écran se déduit du tableau des définitions, et c'est précisément ce qu'on vérifie : un mot ajouté doit y paraître sans qu'on y pense, et le classement par lettre ne doit en perdre aucun en route |
+| Tout dessin de silhouette entière déclare sa posture | Le contrôle de cohérence compare la posture que la consigne nomme à celle que le dessin déclare. Un dessin qui n'en déclare aucune n'est comparé à rien : trois « bascules du bassin », dont la consigne commence par « allongé sur le dos », ont montré un homme debout pendant des mois sans qu'aucun des vingt-cinq autres contrôles ne puisse le voir. Les dessins qui ne montrent pas une silhouette — un bloc-notes, un pied, une tête, un élastique — sont exemptés par une liste écrite en clair, et c'est elle qu'il faut modifier pour en exempter un de plus |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
 
 | La vignette de l'accueil est bien l'icône installée | Le logo encastré dans la page et le fichier `icon-192.png` avaient divergé : l'accueil montrait un dessin que l'icône posée sur l'écran d'accueil ne montrait plus. Le contrôle compare les octets |
