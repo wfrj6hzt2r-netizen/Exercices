@@ -312,7 +312,7 @@ comme le reste ; ses blancs translucides sont désormais nommés par rôle (« s
   --accent:#1F6B3F; --accent-fort:#1A5A35; --accent-soft:#2A6E45;
   --accent-voile:#E2F0D9; --accent-pale:#EEF6E8; --accent-eteint:#A3BC9C;
   --accent-calendrier:#B9DBA2; --accent-attente:rgba(31,107,63,0.12);
-  --anis:#A8DC4E; --anis-voile:#EEF8DC; --sur-anis:#16301F; --orange:#E8792A;
+  --anis:#A8DC4E; --anis-voile:#EEF8DC; --sur-anis:#16301F; --orange:#C9621A;
   --bandeau:#F6F8F3; --sur-bandeau:#16231B; --sur-bandeau-doux:#3B4A40; --sur-bandeau-pale:#57655C;
   --sur-bandeau-filet:rgba(31,107,63,0.24); --sur-bandeau-voile:rgba(31,107,63,0.08);
   --bandeau-lueur:rgba(168,220,78,0.20);
@@ -5094,11 +5094,16 @@ function migrerDepuisPositions(done) {
 // La dose affichée est fixe, alors que la progressivité de charge est le moteur du
 // renforcement : « 4 × 8 avec la 8e difficile » n'a pas le même contenu en semaine 1 et
 // en semaine 5. Le patient note ce qu'il a réellement fait, et retrouve la fois d'avant.
-const CHARGES_MAX = 6; // on ne garde que les dernières notes par exercice
-function noterCharge(charges, cle, exId, date, valeur) {
+// Six notes suffisaient à dire « avant, maintenant ». L'écran Progrès en trace la courbe :
+// trente couvrent deux mois de séances un jour sur deux, pour quelques kilo-octets.
+const CHARGES_MAX = 30;
+// Une note : la charge en texte libre (« v »), et depuis la refonte le nombre de répétitions
+// réellement faites (« r »), facultatif. Les notes d'avant n'ont que « v » et restent valides.
+function noterCharge(charges, cle, exId, date, valeur, reps) {
     const copie = Object.assign({}, charges);
     const liste = (copie[cle] && copie[cle][exId] ? copie[cle][exId] : []).filter((n) => n.d !== date);
-    const suite = valeur ? [{ d: date, v: valeur }].concat(liste) : liste;
+    const note = Object.assign({ d: date, v: valeur || "" }, reps ? { r: reps } : null);
+    const suite = valeur || reps ? [note].concat(liste) : liste;
     copie[cle] = Object.assign({}, copie[cle]);
     if (suite.length)
         copie[cle][exId] = suite.slice(0, CHARGES_MAX);
@@ -5108,8 +5113,17 @@ function noterCharge(charges, cle, exId, date, valeur) {
 }
 function chargeDuJour(charges, cle, exId, date) {
     const l = (charges[cle] && charges[cle][exId]) || [];
-    const t = l.find((n) => n.d === date);
-    return t ? t.v : "";
+    return l.find((n) => n.d === date) || null;
+}
+// « 8 kg · 12 rép. », ou l'un des deux seul.
+function libelleCharge(n) {
+    return n ? [n.v, n.r ? `${n.r}\u00A0rép.` : ""].filter(Boolean).join(" \u00B7 ") : "";
+}
+// Le premier nombre d'une charge écrite librement : « 8 kg », « 2,5 kg », « 8 » ; rien pour
+// « élastique rouge », qu'aucune courbe ne saurait placer.
+function nombreDeCharge(v) {
+    const m = /(\d+(?:[.,]\d+)?)/.exec(String(v || ""));
+    return m ? Number(m[1].replace(",", ".")) : null;
 }
 // Le patient note ses charges mais ne voyait jamais le chemin parcouru : seule la dernière
 // valeur s'affichait. Or c'est l'écart entre la première et la dernière qui donne envie de
@@ -5231,6 +5245,7 @@ function migrerSauvegarde(data, aujourdhui) {
     data.profil = Object.assign({}, PROFIL_VIDE, data.profil);
     data.pointDeDepart = data.pointDeDepart || null;
     data.memoire = memoriserParcours(data.memoire, data.journal);
+    data.etapes = data.etapes || [];
     data.version = STORAGE_VERSION;
     return data;
 }
@@ -5552,6 +5567,23 @@ function seanceDeRoute(route) {
     }
     return null;
 }
+// Le nom d'une étape, tel que l'écran de séance l'affiche.
+function libelleEtape(seance, vue) {
+    const b = String(seance.cle || "").split(":");
+    if (vue === "stage") {
+        const z = PATHOLOGIES.find((x) => x.id === b[0]);
+        const inj = z && z.injuries.find((x) => x.id === b[1]);
+        const st = inj && inj.stages[seance.etape];
+        return st ? st.label : "";
+    }
+    if (vue === "runner-exercises")
+        return (RUNNER_STAGE_LABELS[seance.etape] || {}).label || "";
+    if (vue === "croissance-exercices") {
+        const c = CROISSANCE_DATA.find((x) => x.id === b[1]);
+        return ((c && phasesDe(c)[seance.etape]) || {}).label || "";
+    }
+    return "";
+}
 // Le résumé de l'accueil : séances, exercices et douleur moyenne sur une fenêtre de jours.
 function resumeDesJours(journal, jours, aujourdhui) {
     const d = new Date();
@@ -5580,6 +5612,7 @@ function construireRoute(e) {
         case "accueil": return "#/";
         case "zone": return "#/zone";
         case "profil": return "#/profil";
+        case "progres": return "#/progres";
         case "injury": return z ? `#/z/${z}` : null;
         case "checkin": return z && i ? `#/z/${z}/${i}` : null;
         case "stage": return z && i ? `#/z/${z}/${i}/e${(e.stageIdx || 0) + 1}` : null;
@@ -5622,6 +5655,8 @@ function etatDepuisRoute(hash) {
         return fait({ view: "zone" });
     if (p[0] === "profil")
         return fait({ view: "profil" });
+    if (p[0] === "progres")
+        return fait({ view: "progres" });
     const etape = (txt, max) => {
         const m = /^e(\d+)$/.exec(txt || "");
         if (!m)
@@ -5713,7 +5748,7 @@ const RETOUR = {
     "runner-stage-select": "runner-pathology",
     "runner-exercises": "runner-stage-select",
     "runner-complete": "accueil",
-    recap: "accueil",
+    recap: "progres",
     // Destination par défaut seulement : l'écran « À propos » s'ouvre aussi depuis
     // l'introduction, et le retour est alors calculé par « cibleRetour ».
     apropos: "profil",
@@ -5836,7 +5871,7 @@ const ONGLETS = [
 function ongletDeVue(vue) {
     if (vue === "accueil")
         return "accueil";
-    if (vue === "recap")
+    if (vue === "recap" || vue === "progres")
         return "progres";
     if (vue === "profil" || vue === "apropos" || vue === "lexique")
         return "profil";
@@ -5872,6 +5907,84 @@ function AnneauProgression({ part, taille }) {
         React.createElement("span", { className: "absolute t-corps font-semibold tabular-nums",
             style: { inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: INK } },
             pct, "\u00A0%"));
+}
+// --- L'écran Progrès ------------------------------------------------------------------------
+// Trois fenêtres de lecture. « Global » remonte au premier jour noté, et non à l'installation :
+// un patient qui a ouvert l'application deux semaines avant de commencer ne se voit pas
+// reprocher quatorze jours vides.
+const FENETRES = [
+    { id: "7j", libelle: "7 jours", jours: 7 },
+    { id: "4s", libelle: "4 semaines", jours: 28 },
+    { id: "tout", libelle: "Global", jours: null },
+];
+// Le nombre de séances par semaine attendu par défaut, quand le lien du kinésithérapeute
+// n'en dit rien. Choisi par le praticien.
+const SEANCES_SEMAINE_DEFAUT = 5;
+function joursDeLaFenetre(fenetre, journal, aujourdhui) {
+    if (fenetre.jours)
+        return fenetre.jours;
+    const dates = (journal || []).map((e) => e.date).sort();
+    return dates.length ? Math.max(1, joursEcoules(dates[0], aujourdhui) + 1) : 7;
+}
+// La douleur notée chaque jour : la plus haute des notes du jour quand plusieurs parcours en
+// ont reçu une, comme sur la bande d'assiduité. Le point de départ, s'il tombe dans la
+// fenêtre, ouvre la série : c'est lui qui donne son sens à la baisse.
+function serieDouleur(journal, depart, borne, aujourdhui) {
+    const parJour = {};
+    (journal || []).forEach((e) => {
+        if (e.douleur === undefined || e.date < borne || e.date > aujourdhui)
+            return;
+        parJour[e.date] = Math.max(parJour[e.date] === undefined ? -1 : parJour[e.date], e.douleur);
+    });
+    const serie = Object.keys(parJour).sort().map((d) => ({ d, v: parJour[d] }));
+    if (depart && depart.douleur !== undefined && depart.date >= borne && !(serie[0] && serie[0].d < depart.date))
+        serie.unshift({ d: depart.date, v: depart.douleur, depart: true });
+    return serie;
+}
+// La variation de la première à la dernière note, en pourcentage de la première. Rien quand
+// la première vaut zéro : « +∞ % » ne dit rien à personne.
+function variationDouleur(serie) {
+    if (serie.length < 2 || serie[0].v === 0)
+        return null;
+    return Math.round((serie[serie.length - 1].v - serie[0].v) / serie[0].v * 100);
+}
+// La courbe de douleur. Une seule série : pas de légende, le titre de la carte la nomme. Le
+// trait est orange, la couleur réservée à la douleur ; les valeurs, elles, restent à l'encre.
+// Seuls le premier et le dernier point portent leur chiffre — c'est l'écart qu'on lit.
+function CourbeDouleur({ serie }) {
+    const larg = 320, haut = 150, g = 28, d = 14, h = 14, b = 24;
+    const x0 = g, x1 = larg - d, y0 = h, y1 = haut - b;
+    const n = serie.length;
+    const debut = new Date(serie[0].d), fin = new Date(serie[n - 1].d);
+    const etendue = Math.max(1, (fin - debut) / 86400000);
+    const px = (p) => (n === 1 ? (x0 + x1) / 2 : x0 + (x1 - x0) * ((new Date(p.d) - debut) / 86400000) / etendue);
+    const py = (v) => y1 - (y1 - y0) * v / 10;
+    const trace = serie.map((p) => `${px(p).toFixed(1)},${py(p.v).toFixed(1)}`).join(" ");
+    const resume = `Douleur notée de ${serie[0].v} sur 10 le ${jjmm(serie[0].d)} à ${serie[n - 1].v} sur 10 le ${jjmm(serie[n - 1].d)}, en ${n} relevés.`;
+    return React.createElement("svg", { viewBox: `0 0 ${larg} ${haut}`, width: "100%", role: "img", "aria-label": resume, style: { display: "block", overflow: "visible" } },
+        [0, 5, 10].map((v) => React.createElement("g", { key: v },
+            React.createElement("line", { x1: x0, x2: x1, y1: py(v), y2: py(v), stroke: BORDURE_DOUCE, strokeWidth: 1 }),
+            React.createElement("text", { x: x0 - 8, y: py(v) + 4, textAnchor: "end", fill: INK_DOUX, style: { fontSize: TAILLE_ETIQUETTE } }, v))),
+        React.createElement("polyline", { points: trace, fill: "none", stroke: ORANGE, strokeWidth: 2.5, strokeLinejoin: "round", strokeLinecap: "round" }),
+        serie.map((p, i) => React.createElement("circle", { key: p.d, cx: px(p), cy: py(p.v), r: i === 0 || i === n - 1 ? 5 : 4,
+            fill: i === n - 1 ? ORANGE : SURFACE, stroke: ORANGE, strokeWidth: 2 },
+            React.createElement("title", null, `${jjmm(p.d)} : ${p.v}/10`))),
+        [serie[0], serie[n - 1]].filter((p, i) => i === 0 || n > 1).map((p, i) => React.createElement("text", { key: "v" + i,
+            x: px(p), y: py(p.v) - 10, textAnchor: i === 0 ? "start" : "end", fill: INK, style: { fontSize: TAILLE_ACCOMPAGNE, fontWeight: 600 } },
+            `${p.v}/10`)),
+        React.createElement("text", { x: x0, y: haut - 4, fill: INK_DOUX, style: { fontSize: TAILLE_ETIQUETTE } }, serie[0].depart ? `départ ${jjmm(serie[0].d)}` : jjmm(serie[0].d)),
+        n > 1 && React.createElement("text", { x: x1, y: haut - 4, textAnchor: "end", fill: INK_DOUX, style: { fontSize: TAILLE_ETIQUETTE } }, jjmm(serie[n - 1].d)));
+}
+// Une petite courbe par exercice, pour la charge notée. Sans axe : elle dit le sens, les deux
+// chiffres à côté disent l'écart.
+function MiniCourbe({ valeurs }) {
+    const larg = 84, haut = 28, m = 4;
+    const min = Math.min.apply(null, valeurs), max = Math.max.apply(null, valeurs);
+    const py = (v) => (max === min ? haut / 2 : haut - m - (haut - 2 * m) * (v - min) / (max - min));
+    const px = (i) => m + (larg - 2 * m) * i / (valeurs.length - 1);
+    return React.createElement("svg", { width: larg, height: haut, viewBox: `0 0 ${larg} ${haut}`, "aria-hidden": "true", className: "shrink-0" },
+        React.createElement("polyline", { points: valeurs.map((v, i) => `${px(i)},${py(v)}`).join(" "), fill: "none", stroke: ACCENT, strokeWidth: 2, strokeLinejoin: "round", strokeLinecap: "round" }),
+        React.createElement("circle", { cx: px(valeurs.length - 1), cy: py(valeurs[valeurs.length - 1]), r: 3, fill: ACCENT }));
 }
 function BandeAssiduite({ journal, jour, accent }) {
     const jours = septDerniersJours(journal, jour);
@@ -6077,27 +6190,40 @@ function SignauxAlerte({ items }) {
 // « élastique rouge » ou « 12 répétitions », et imposer une unité ferait perdre l'usage.
 function NoteDeCharge({ valeur, precedente, onEnregistrer, accent }) {
     const [ouvert, setOuvert] = useState(false);
-    const [saisie, setSaisie] = useState(valeur || "");
-    useEffect(() => { setSaisie(valeur || ""); }, [valeur]);
-    const valider = () => { onEnregistrer(saisie.trim()); setOuvert(false); };
+    const [saisie, setSaisie] = useState((valeur && valeur.v) || "");
+    const [reps, setReps] = useState((valeur && valeur.r) || "");
+    useEffect(() => { setSaisie((valeur && valeur.v) || ""); setReps((valeur && valeur.r) || ""); }, [valeur]);
+    const valider = () => {
+        const n = parseInt(reps, 10);
+        onEnregistrer(saisie.trim(), n > 0 && n < 1000 ? n : null);
+        setOuvert(false);
+    };
+    const libelle = libelleCharge(valeur);
     if (!ouvert) {
         return (React.createElement("div", { onClick: (e) => e.stopPropagation(), className: "mt-2 flex items-center gap-2 flex-wrap" },
             React.createElement("button", { onClick: () => setOuvert(true), className: "cible-44 px-3.5 rounded-full t-accompagne font-medium", style: {
                     // Même retrait que le minuteur tant qu'il n'y a rien de noté : la carte
                     // ne doit proposer qu'une seule action évidente, cocher l'exercice.
-                    backgroundColor: valeur ? ACCENT_VOILE : "transparent",
-                    border: valeur ? "1px solid transparent" : `1px solid ${BORDURE}`,
-                    color: valeur ? ACCENT_FORT : INK_DOUX,
-                } }, valeur ? `Aujourd'hui : ${valeur}` : "Noter ma charge"),
+                    backgroundColor: libelle ? ACCENT_VOILE : "transparent",
+                    border: libelle ? "1px solid transparent" : `1px solid ${BORDURE}`,
+                    color: libelle ? ACCENT_FORT : INK_DOUX,
+                } }, libelle ? `Aujourd'hui : ${libelle}` : "Noter ma charge"),
             precedente && React.createElement("span", { className: "t-etiquette", style: { color: INK_DOUX } },
-                `dernière fois : ${precedente.v} (${jjmm(precedente.d)})`)));
+                `dernière fois : ${libelleCharge(precedente)} (${jjmm(precedente.d)})`)));
     }
+    // Deux champs, et le second facultatif : la charge reste du texte libre — un patient
+    // note « 8 kg », un autre « élastique rouge » —, les répétitions sont un nombre.
     return (React.createElement("div", { onClick: (e) => e.stopPropagation(), className: "mt-2 flex items-center gap-2 flex-wrap" },
-        React.createElement("input", { type: "text", value: saisie, autoFocus: true,
+        React.createElement("input", { type: "text", value: saisie, autoFocus: true, "aria-label": "Charge",
             onChange: (e) => setSaisie(e.target.value),
             onKeyDown: (e) => { if (e.key === "Enter") valider(); },
-            placeholder: precedente ? precedente.v : "8 kg, élastique rouge…",
+            placeholder: precedente && precedente.v ? precedente.v : "8 kg, élastique rouge…",
             className: "cible-44 rounded-full px-3.5 t-accompagne", style: { border: `1px solid ${BORDURE}`, color: INK, maxWidth: "11rem" } }),
+        React.createElement("input", { type: "number", inputMode: "numeric", min: 1, value: reps, "aria-label": "Répétitions faites",
+            onChange: (e) => setReps(e.target.value),
+            onKeyDown: (e) => { if (e.key === "Enter") valider(); },
+            placeholder: "rép.",
+            className: "cible-44 rounded-full px-3.5 t-accompagne", style: { border: `1px solid ${BORDURE}`, color: INK, width: "5.5rem" } }),
         React.createElement("button", { onClick: valider, className: "cible-44 px-4 rounded-full t-accompagne font-medium text-white", style: { backgroundColor: accent } }, "OK")));
 }
 // --- Palette ------------------------------------------------------------------------------
@@ -6830,6 +6956,12 @@ function GuidedJourney() {
     const [profil, setProfil] = useState(() => Object.assign({}, PROFIL_VIDE, restored.profil));
     const [pointDeDepart, setPointDeDepart] = useState(() => restored.pointDeDepart || null);
     const [memoire, setMemoire] = useState(() => restored.memoire || {});
+    // Les étapes menées à bout, une ligne la première fois que toutes leurs cases sont
+    // cochées le même jour. C'est ce qui permet à l'écran Progrès de dire « Bravo ».
+    const [etapes, setEtapes] = useState(() => restored.etapes || []);
+    // Quatre semaines par défaut : sur sept jours, une douleur qui baisse lentement paraît
+    // immobile, et c'est justement la baisse que l'écran doit rendre visible.
+    const [fenetreProgres, setFenetreProgres] = useState("4s");
     // La mémoire suit le journal : chaque journée inscrite y laisse sa trace durable.
     useEffect(() => { setMemoire((m) => memoriserParcours(m, journal)); }, [journal]);
     const [jour, setJour] = useState(() => aujourdHui());
@@ -6879,8 +7011,8 @@ function GuidedJourney() {
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
         writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit,
-            profil, pointDeDepart, memoire });
-    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire]);
+            profil, pointDeDepart, memoire, etapes });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -6991,6 +7123,20 @@ function GuidedJourney() {
     const routePrescrite = prescrit && (cleDuProgramme(lastRoute) === prescrit.cle ? lastRoute : prescrit.route);
     const infoPrescrite = describeRoute(routePrescrite);
     const routeDuParcours = infoPrescrite ? routePrescrite : resumeInfo ? lastRoute : null;
+    // Les séances attendues chaque semaine : celles que le lien du kinésithérapeute indique,
+    // à défaut la valeur choisie par le praticien.
+    const seancesSemaine = (prescrit && prescrit.seancesSemaine) || SEANCES_SEMAINE_DEFAUT;
+    const seanceAffichee = seanceDeRoute({ view, pathId, injuryId, stageIdx, runnerPathId, runnerStageIdx,
+        croissanceId, croissanceStageIdx, preventionCategory, preventionSub });
+    const etapeFinie = seanceAffichee && seanceAffichee.etape !== null && seanceAffichee.exercices.length > 0
+        && seanceAffichee.exercices.every((e) => (done[seanceAffichee.cle] || new Set()).has(idExercice(e)));
+    useEffect(() => {
+        if (!etapeFinie)
+            return;
+        const { cle, etape, total } = seanceAffichee;
+        setEtapes((l) => (l.some((e) => e.cle === cle && e.etape === etape) ? l
+            : l.concat([{ cle, etape, total, date: jour, label: libelleEtape(seanceAffichee, view) }]).slice(-40)));
+    }, [etapeFinie]);
     // Ouvrir une adresse quelconque : la reprise du parcours en cours et l'ouverture du
     // programme prescrit font le meme geste, sur deux adresses differentes.
     const ouvrirRoute = (route) => {
@@ -7018,6 +7164,7 @@ function GuidedJourney() {
         setProfil(Object.assign({}, PROFIL_VIDE));
         setPointDeDepart(null);
         setMemoire({});
+        setEtapes([]);
         setBilanOuvert(null);
         setLastRoute(null);
         setQuery("");
@@ -7309,7 +7456,7 @@ function GuidedJourney() {
                                 "Choisir une zone"))),
                 React.createElement("section", null,
                     intertitre("Ma progression"),
-                    React.createElement("button", { onClick: () => setView("recap"), className: "w-full text-left" },
+                    React.createElement("button", { onClick: () => setView("progres"), className: "w-full text-left" },
                         React.createElement("div", { className: "flex rounded-2xl p-5", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                             tuile(semaine.seances, semaine.seances > 1 ? "séances" : "séance", IconeCalendrier, 0),
                             tuile(semaine.exercices, semaine.exercices > 1 ? "exercices" : "exercice", IconeProgres, 1),
@@ -7326,6 +7473,109 @@ function GuidedJourney() {
                 React.createElement("section", null,
                     intertitre("Autres programmes"),
                     carteVoies()))));
+    }
+    if (view === "progres") {
+        const fenetre = FENETRES.find((f) => f.id === fenetreProgres) || FENETRES[0];
+        const nbJours = joursDeLaFenetre(fenetre, journal, jour);
+        const debutFenetre = new Date();
+        debutFenetre.setDate(debutFenetre.getDate() - (nbJours - 1));
+        const borne = aujourdHui(debutFenetre);
+        const periode = resumeDesJours(journal, nbJours, jour);
+        const serie = serieDouleur(journal, pointDeDepart, fenetre.jours ? borne : "", jour);
+        const variation = variationDouleur(serie);
+        const objectif = seancesSemaine;
+        // L'assiduité rapporte les jours de séance à ce qui était attendu sur la fenêtre,
+        // semaine entamée comprise, et s'arrête à 100 % : un patient qui en fait plus n'a pas
+        // à lire « 140 % » comme un excès.
+        const attendu = Math.max(1, Math.round(objectif * nbJours / 7));
+        const assiduite = Math.min(100, Math.round(100 * periode.seances / attendu));
+        const derniereEtape = (etapes || []).filter((e) => e.date >= (fenetre.jours ? borne : "")).slice(-1)[0];
+        // Les charges notées dans la fenêtre, exercice par exercice, de la plus ancienne à la
+        // plus récente.
+        const lignesCharge = [];
+        Object.keys(charges || {}).forEach((cle) => Object.keys(charges[cle]).forEach((exId) => {
+            const notes = charges[cle][exId].filter((n) => !fenetre.jours || n.d >= borne).slice().reverse();
+            if (!notes.length)
+                return;
+            const kg = notes.map((n) => nombreDeCharge(n.v)).filter((v) => v !== null);
+            const reps = notes.map((n) => n.r).filter(Boolean);
+            lignesCharge.push({ cle, exId, notes, courbe: kg.length >= 2 ? kg : reps.length >= 2 ? reps : null,
+                dernier: notes[notes.length - 1].d });
+        }));
+        lignesCharge.sort((a, b) => (a.dernier < b.dernier ? 1 : -1));
+        const carte = { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE };
+        const chiffre = (valeur, legende, i) => React.createElement("div", { key: legende, className: "flex-1 text-center px-1",
+            style: i ? { borderLeft: `1px solid ${BORDURE_DOUCE}` } : undefined },
+            React.createElement("p", { className: "text-xl font-semibold tabular-nums", style: { color: INK } }, valeur),
+            React.createElement("p", { className: "t-accompagne", style: { color: INK_DOUX } }, legende));
+        return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
+                React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Mes progrès"),
+                React.createElement("div", { className: "mt-4 flex rounded-full p-1", role: "group", "aria-label": "Période",
+                    style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}` } },
+                    FENETRES.map((f) => React.createElement("button", { key: f.id, type: "button", "aria-pressed": f.id === fenetre.id,
+                        onClick: () => setFenetreProgres(f.id),
+                        className: "flex-1 cible-44 rounded-full t-accompagne",
+                        style: { backgroundColor: f.id === fenetre.id ? ACCENT_VOILE : "transparent",
+                            color: f.id === fenetre.id ? ACCENT_FORT : INK_DOUX, fontWeight: f.id === fenetre.id ? 600 : 400 } }, f.libelle)))),
+            React.createElement("div", { className: "px-6 pb-8 flex flex-col gap-6" },
+                React.createElement("section", { className: "rounded-2xl p-5", style: carte },
+                    React.createElement("div", { className: "flex items-center justify-between gap-3" },
+                        React.createElement("h2", { className: "t-carte font-semibold", style: { color: INK } }, "Douleur"),
+                        variation !== null && React.createElement("span", { className: "t-accompagne font-semibold px-3 py-1 rounded-full tabular-nums",
+                            style: variation <= 0
+                                ? { backgroundColor: ACCENT_VOILE, color: ACCENT_FORT }
+                                : { backgroundColor: PRUDENCE_VOILE, color: PRUDENCE } },
+                            variation <= 0 ? `−${-variation} %` : `+${variation} %`)),
+                    serie.length >= 2
+                        ? React.createElement(React.Fragment, null,
+                            React.createElement("p", { className: "t-accompagne mt-1", style: { color: INK_DOUX } },
+                                serie[0].depart ? "Au départ : " : `Le ${jjmm(serie[0].d)} : `, serie[0].v, "/10 \u00B7 ",
+                                "dernière note : ", serie[serie.length - 1].v, "/10"),
+                            React.createElement("div", { className: "mt-4" }, React.createElement(CourbeDouleur, { serie })))
+                        : React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: INK_PROSE } },
+                            serie.length === 1
+                                ? `Une note pour l'instant : ${serie[0].v}/10. La courbe apparaîtra dès la deuxième.`
+                                : "Notez votre douleur à la fin de chaque séance : la courbe apparaîtra dès la deuxième note.")),
+                React.createElement("section", null,
+                    intertitre("Mes séances"),
+                    React.createElement("div", { className: "flex rounded-2xl p-5", style: carte },
+                        chiffre(periode.seances, periode.seances > 1 ? "séances" : "séance", 0),
+                        chiffre(periode.exercices, periode.exercices > 1 ? "exercices" : "exercice", 1),
+                        chiffre(`${assiduite} %`, "assiduité", 2)),
+                    React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } },
+                        `Objectif : ${objectif} séance${objectif > 1 ? "s" : ""} par semaine.`)),
+                derniereEtape && React.createElement("section", { className: "rounded-2xl p-4 flex gap-3 items-start", style: { backgroundColor: ANIS_VOILE } },
+                    React.createElement("span", { className: "inline-flex items-center justify-center rounded-full shrink-0 w-11 h-11", style: { backgroundColor: SURFACE, color: ACCENT_FORT } },
+                        React.createElement(IconeProgres, { size: 22 })),
+                    React.createElement("div", { className: "min-w-0" },
+                        React.createElement("p", { className: "t-carte font-semibold", style: { color: INK } }, "Bravo !"),
+                        React.createElement("p", { className: "t-corps mt-0.5 leading-relaxed", style: { color: INK_PROSE } },
+                            `Vous avez terminé l'étape ${derniereEtape.etape + 1}`,
+                            derniereEtape.label ? ` — ${derniereEtape.label}` : "", ".",
+                            derniereEtape.total
+                                ? derniereEtape.total - derniereEtape.etape - 1 === 0 ? " C'était la dernière."
+                                    : derniereEtape.total - derniereEtape.etape - 1 === 1 ? " Plus qu'une étape !"
+                                        : ` Encore ${derniereEtape.total - derniereEtape.etape - 1} étapes.`
+                                : ""))),
+                lignesCharge.length > 0 && React.createElement("section", null,
+                    intertitre("Mes charges"),
+                    React.createElement("div", { className: "rounded-2xl overflow-hidden", style: carte },
+                        lignesCharge.map((l, i) => React.createElement("div", { key: l.cle + l.exId, className: "p-4 flex items-center gap-3",
+                            style: i ? { borderTop: `1px solid ${BORDURE_DOUCE}` } : undefined },
+                            React.createElement("div", { className: "min-w-0 flex-1" },
+                                React.createElement("p", { className: "t-corps font-medium", style: { color: INK } }, nomExercice(l.cle, l.exId)),
+                                React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: INK_DOUX } },
+                                    l.notes.length > 1 ? `${libelleCharge(l.notes[0])} → ` : "",
+                                    React.createElement("span", { style: { color: INK, fontWeight: 600 } }, libelleCharge(l.notes[l.notes.length - 1])))),
+                            l.courbe && React.createElement(MiniCourbe, { valeurs: l.courbe }))))),
+                React.createElement("button", { onClick: () => setView("recap"),
+                    className: "cible-44 w-full rounded-full t-corps font-medium", style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } },
+                    "Le résumé à montrer à mon kinésithérapeute"),
+                React.createElement("p", { className: "t-accompagne leading-relaxed", style: { color: INK_DOUX } },
+                    canSave
+                        ? "Tout reste sur ce téléphone : rien n'est envoyé nulle part."
+                        : "Ce navigateur n'autorise pas l'enregistrement : vos progrès seront perdus en fermant la page."))));
     }
     if (view === "profil") {
         return (React.createElement("div", { className: "min-h-screen", style: { backgroundColor: PAGE, fontFamily: POLICE } },
@@ -7612,14 +7862,14 @@ function GuidedJourney() {
                                     const p = progressionCharge(charges, g.cle, x.exId);
                                     return React.createElement("p", { key: x.exId, className: "t-accompagne", style: { color: INK_PROSE } },
                                         nomExercice(g.cle, x.exId), " — ",
-                                        p && p.depuis.v !== p.vers.v
+                                        p && libelleCharge(p.depuis) !== libelleCharge(p.vers)
                                             ? React.createElement(React.Fragment, null,
-                                                React.createElement("span", { style: { color: INK_DOUX } }, p.depuis.v),
+                                                React.createElement("span", { style: { color: INK_DOUX } }, libelleCharge(p.depuis)),
                                                 " → ",
-                                                React.createElement("span", { style: { color: INK, fontWeight: 500 } }, p.vers.v),
+                                                React.createElement("span", { style: { color: INK, fontWeight: 500 } }, libelleCharge(p.vers)),
                                                 " (depuis le ", jjmm(p.depuis.d), ")")
                                             : React.createElement(React.Fragment, null,
-                                                React.createElement("span", { style: { color: INK, fontWeight: 500 } }, x.n.v),
+                                                React.createElement("span", { style: { color: INK, fontWeight: 500 } }, libelleCharge(x.n)),
                                                 " (", jjmm(x.n.d), ")"));
                                 }))))));
                     }),
@@ -7834,7 +8084,7 @@ function GuidedJourney() {
                 avecCharge: doseNotable(ex),
                 charge: chargeDuJour(charges, runnerKey, exId, jour),
                 chargePrecedente: chargePrecedente(charges, runnerKey, exId, jour),
-                onNoterCharge: (v) => setCharges((c) => noterCharge(c, runnerKey, exId, jour, v)),
+                onNoterCharge: (v, n) => setCharges((c) => noterCharge(c, runnerKey, exId, jour, v, n)),
             };
         };
         const fiche = ficheParmi(runnerStage.exercises, fabriqueExercice, `\u00C9tape ${runnerStageIdx + 1}`);
@@ -7976,7 +8226,7 @@ function GuidedJourney() {
                 avecCharge: doseNotable(ex),
                 charge: chargeDuJour(charges, prevKey, exId, jour),
                 chargePrecedente: chargePrecedente(charges, prevKey, exId, jour),
-                onNoterCharge: (v) => setCharges((c) => noterCharge(c, prevKey, exId, jour, v)),
+                onNoterCharge: (v, n) => setCharges((c) => noterCharge(c, prevKey, exId, jour, v, n)),
             };
         };
         const fiche = ficheParmi(sub.exercises, fabriqueExercice, sub.label);
@@ -8067,7 +8317,7 @@ function GuidedJourney() {
                 avecCharge: doseNotable(ex),
                 charge: chargeDuJour(charges, key, exId, jour),
                 chargePrecedente: chargePrecedente(charges, key, exId, jour),
-                onNoterCharge: (v) => setCharges((c) => noterCharge(c, key, exId, jour, v)),
+                onNoterCharge: (v, n) => setCharges((c) => noterCharge(c, key, exId, jour, v, n)),
             };
         };
         const fiche = ficheParmi(stage.exercises, fabriqueExercice, `\u00C9tape ${stageIdx + 1}`);
@@ -8261,7 +8511,7 @@ function GuidedJourney() {
         if (id === "accueil")
             setView("accueil");
         else if (id === "progres")
-            setView("recap");
+            setView("progres");
         else if (id === "profil")
             setView("profil");
         else if (routeDuParcours)

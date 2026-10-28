@@ -258,7 +258,7 @@ try {
         "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
         "construireRoute", "phasesDe",
         "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2",
-        "migrerSauvegarde", "tuilesDeDose", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
+        "migrerSauvegarde", "tuilesDeDose", "serieDouleur", "variationDouleur", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
 } catch (e) {
     panne = e.message;
 }
@@ -752,6 +752,34 @@ controle("la fabrique de liens atteint chaque programme", () => {
     const fantomes = [...joignables].filter((x) => !attendus.has(x));
     return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
+});
+
+// --- La baisse de douleur affichée est exacte ----------------------------------------------
+// L'écran Progrès affiche un badge « −60 % » que le patient montrera à son kinésithérapeute.
+// Un signe inversé ferait lire une aggravation comme un progrès ; un point de départ mal
+// placé ferait partir la courbe d'une note qui n'est pas la première.
+controle("la baisse de douleur affichée est exacte", () => {
+    const out = [];
+    const j = [
+        { date: "2026-10-20", cle: "a", faits: 1, douleur: 5 },
+        { date: "2026-10-20", cle: "b", faits: 1, douleur: 3 },
+        { date: "2026-10-25", cle: "a", faits: 1, douleur: 2 },
+        { date: "2026-10-26", cle: "a", faits: 1 },
+    ];
+    const serie = D.serieDouleur(j, { date: "2026-10-10", douleur: 8 }, "", "2026-10-28");
+    const lu = serie.map((p) => p.d.slice(5) + "=" + p.v).join(" ");
+    if (lu !== "10-10=8 10-20=5 10-25=2")
+        out.push(`série lue « ${lu} » au lieu de « 10-10=8 10-20=5 10-25=2 » (départ, puis la plus haute note du jour)`);
+    if (D.variationDouleur(serie) !== -75)
+        out.push(`de 8 à 2 : ${D.variationDouleur(serie)} % au lieu de −75 %`);
+    if (D.variationDouleur([{ v: 2 }, { v: 3 }]) !== 50)
+        out.push("une aggravation de 2 à 3 ne donne pas +50 %");
+    if (D.variationDouleur([{ v: 0 }, { v: 3 }]) !== null)
+        out.push("une première note à zéro produit un pourcentage");
+    const fenetre = D.serieDouleur(j, { date: "2026-10-10", douleur: 8 }, "2026-10-22", "2026-10-28");
+    if (fenetre.length !== 1)
+        out.push("un point de départ hors de la fenêtre y entre quand même");
+    return out;
 });
 
 // --- Le repos suit la règle donnée par le praticien -------------------------------------

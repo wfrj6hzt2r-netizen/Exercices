@@ -179,6 +179,11 @@ const MUTATIONS = [
     ["le repos affiché suit la règle du praticien",
         (s) => rem(s, 'const REPOS_PAR_DEFAUT = "30\u00A0s";', 'const REPOS_PAR_DEFAUT = "60\u00A0s";')],
 
+    // Le signe s'inverse : une douleur qui baisse s'afficherait en hausse.
+    ["la baisse de douleur affichée est exacte",
+        (s) => rem(s, "return Math.round((serie[serie.length - 1].v - serie[0].v) / serie[0].v * 100);",
+                      "return Math.round((serie[0].v - serie[serie.length - 1].v) / serie[0].v * 100);")],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

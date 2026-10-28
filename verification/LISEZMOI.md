@@ -1,6 +1,6 @@
 # Vérification
 
-Trente-neuf contrôles automatiques — vingt-neuf statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Quarante contrôles automatiques — trente statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 Un troisième script, `mutation.mjs`, introduit un défaut par contrôle statique, un par un, et vérifie que le
@@ -55,6 +55,7 @@ contrôles-ci mordent encore.
 | L'écran du lexique montre tout le tableau | L'écran se déduit du tableau des définitions, et c'est précisément ce qu'on vérifie : un mot ajouté doit y paraître sans qu'on y pense, et le classement par lettre ne doit en perdre aucun en route |
 | Tout dessin de silhouette entière déclare sa posture | Le contrôle de cohérence compare la posture que la consigne nomme à celle que le dessin déclare. Un dessin qui n'en déclare aucune n'est comparé à rien : trois « bascules du bassin », dont la consigne commence par « allongé sur le dos », ont montré un homme debout pendant des mois sans qu'aucun des vingt-cinq autres contrôles ne puisse le voir. Les dessins qui ne montrent pas une silhouette — un bloc-notes, un pied, une tête, un élastique — sont exemptés par une liste écrite en clair, et c'est elle qu'il faut modifier pour en exempter un de plus |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
+| La baisse de douleur affichée est exacte | L'écran Progrès affiche un badge « −60 % » que le patient montre à son kinésithérapeute. Un signe inversé ferait lire une aggravation comme un progrès ; le contrôle vérifie aussi que le point de départ ouvre la courbe, que la note retenue pour un jour est la plus haute, et qu'une première note à zéro ne produit aucun pourcentage |
 | Le repos affiché suit la règle du praticien | Le contenu n'écrit aucun temps de repos ; la fiche d'exercice en déduit un du dosage, selon la règle donnée par le praticien en octobre 2026 — trente secondes après des répétitions, autant que le travail pour un maintien en secondes, rien pour un travail en minutes. Le contrôle fige le résultat jugé sur sept dosages types, et vérifie qu'aucun dosage qui ne décrit pas des séries ne reçoit de tuiles |
 | Une sauvegarde ancienne garde toute sa progression | La refonte de 2026 a porté la sauvegarde en version 4. Les trois migrations précédentes n'avaient été vérifiées qu'en ouvrant l'application sur un téléphone qui gardait une sauvegarde d'avant — en pratique, chez le patient. Le contrôle rejoue une sauvegarde v1, une v3, le passage au lendemain et une seconde lecture, et exige que coches, journal, douleurs, charges, programme prescrit et réglages survivent |
 | La vignette de l'accueil est bien l'icône installée | Le logo encastré dans la page et le fichier `icon-192.png` avaient divergé : l'accueil montrait un dessin que l'icône posée sur l'écran d'accueil ne montrait plus. Le contrôle compare les octets |
@@ -63,7 +64,7 @@ contrôles-ci mordent encore.
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 30 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
+| Chaque écran s'affiche sans erreur | 31 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur tous les écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |
