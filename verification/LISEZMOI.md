@@ -1,6 +1,6 @@
 # Vérification
 
-Trente-deux contrôles automatiques — vingt-trois statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Trente-cinq contrôles automatiques — vingt-six statiques, neuf sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 Un troisième script, `mutation.mjs`, introduit vingt-trois défauts un par un et vérifie que le
@@ -49,6 +49,10 @@ contrôles-ci mordent encore.
 | Le repère d'effort ne contredit pas la consigne | Le repère se déduit du nom et de la consigne, et s'est trompé cinq fois : « Montée de marche » prise pour de la marche, « Balancers » pour un lancer, « Squat mural maintenu » pour de la charge lourde, « Extension sur rouleau » pour du renforcement, et la glace après le sport — dix minutes — pour des répétitions |
 | Les repères tutoyés couvrent les mêmes familles, sans charge inventée | Le parcours croissance affiche les mêmes repères à la deuxième personne. Une famille absente de la table tutoyée n'afficherait rien, sans erreur ; et « assez lourd » n'a de sens pour un enfant que si une charge est nommée quelque part |
 | Chaque rythme propre couvre toutes ses étapes | Six parcours remplacent le rythme par défaut par le leur. Une entrée manquante ne se verrait pas en lisant le fichier : l'écran lit le rythme par index et se rendrait vide sur la dernière étape, celle qu'on ouvre le moins souvent en vérifiant |
+| Chaque mot du lexique est écrit quelque part dans l'application | « scapulo » a vécu depuis sa création sans qu'aucun texte ne contienne ce mot : une définition que personne ne pouvait voir, et que personne ne corrigeait donc. Le contrôle a d'abord cherché dans les seules cartes d'exercice ; il lit maintenant tout le texte de l'application, commentaires exclus — sa première version passait parce qu'un commentaire citait en exemple les trois mots manquants |
+| Aucun mot du lexique n'est masqué par un autre | La recherche rend le premier terme contenu dans le texte, dans l'ordre du tableau. « abdomino-adducteurs », placé derrière « adducteurs », n'est jamais sorti : la carte qui écrivait le mot composé expliquait l'intérieur de la cuisse |
+| Les mots réservés au lexique n'en sortent jamais | « prévention » et « échauffement » figurent dans la consigne de quatre exercices, où leur définition répond à une question que personne ne se pose à cet endroit : ils restent définis, sans déclencher de pastille. Le contrôle garde sa propre copie de la liste — sa première version la lisait dans le fichier, et le banc l'a prise en défaut : retirer un mot de l'ensemble la rendait aveugle à son propre défaut |
+| L'écran du lexique montre tout le tableau | L'écran se déduit du tableau des définitions, et c'est précisément ce qu'on vérifie : un mot ajouté doit y paraître sans qu'on y pense, et le classement par lettre ne doit en perdre aucun en route |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
 
 | La vignette de l'accueil est bien l'icône installée | Le logo encastré dans la page et le fichier `icon-192.png` avaient divergé : l'accueil montrait un dessin que l'icône posée sur l'écran d'accueil ne montrait plus. Le contrôle compare les octets |
@@ -57,7 +61,7 @@ contrôles-ci mordent encore.
 
 | Contrôle | Le défaut qui l'a fait naître |
 | --- | --- |
-| Chaque écran s'affiche sans erreur | 26 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
+| Chaque écran s'affiche sans erreur | 27 écrans, console surveillée. Un écran qui ne rend rien est un résultat nommé, et arrête la suite : les contrôles suivants mesureraient des couleurs sur des pages vides |
 | Rien n'est coupé ni ne déborde | « Thoraciques » sortait du cadre du mannequin, le texte indicatif de la recherche était rogné en plein mot, un surtitre passait à deux lignes. Contrôlé aux trois tailles de texte |
 | Le texte reste lisible dans les deux thèmes | Contraste calculé en composant les couches translucides, seuils WCAG AA |
 | Aucune violation d'accessibilité | axe-core sur les 26 écrans. Il s'arrêtait aux dix premiers, et les seize suivants — la scoliose, la croissance, la prévention, le récapitulatif, « À propos », la fabrique de liens — n'avaient jamais été examinés. L'élément fautif est nommé : une violation de contraste vue une fois et non reproduite est restée indiagnosticable faute de savoir sur quoi elle portait |

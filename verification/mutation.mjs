@@ -116,9 +116,29 @@ const MUTATIONS = [
         (s) => rem(s, "const POURQUOI_ETAPE = {\n",
                       "const POURQUOI_ETAPE = {\n    \"Étape absente\": \"Texte orphelin.\",\n")],
 
-    ["chaque terme du glossaire est atteignable",
+    ["chaque mot du lexique est écrit quelque part dans l'application",
         (s) => rem(s, "const GLOSSARY = {\n",
                       "const GLOSSARY = {\n    \"sous-acromial\": \"Sous l'arche osseuse de l'épaule.\",\n")],
+
+    // « névrome » repasse devant « névrome de Morton », qu'il contient : le mot long ne sort
+    // plus jamais, et le pied du patient reçoit la définition générale à la place de la sienne.
+    ["aucun mot du lexique n'est masqué par un autre",
+        (s) => {
+            const court = "    \"névrome\": \"Épaississement douloureux d'un nerf, souvent entre les orteils.\",\n";
+            const long = "    \"névrome de Morton\": ";
+            return rem(rem(s, court, ""), long, court + long);
+        }],
+
+    // « échauffement » n'est plus réservé : la pastille le repose sur deux cartes
+    // d'exercice, pour y définir un mot que la consigne n'emploie qu'en passant.
+    ["les mots réservés au lexique n'en sortent jamais",
+        (s) => rem(s, 'const LEXIQUE_SEUL = new Set(["prévention", "échauffement"]);',
+                      'const LEXIQUE_SEUL = new Set(["prévention"]);')],
+
+    // Le classement par lettre perd son premier mot en chemin : l'écran en montre
+    // quatre-vingt-douze pour quatre-vingt-treize définitions, sans rien signaler.
+    ["l'écran du lexique montre tout le tableau",
+        (s) => rem(s, "Object.keys(GLOSSARY).slice().sort(", "Object.keys(GLOSSARY).slice(1).sort(")],
 
     // La cheville revient à son ancien rayon : sa pastille retombe à 27 px et son libellé,
     // ramené à la hauteur d'avant, recouvre celui du pied.

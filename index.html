@@ -2903,10 +2903,12 @@ const GLOSSARY = {
     "lombo-pelvien": "Qui concerne à la fois le bas du dos et le bassin.",
     "para-vertébral": "Qui se situe le long de la colonne vertébrale.",
     "capsule postérieure": "Le tissu à l'arrière de l'articulation de l'épaule, qui peut se rétracter et limiter le mouvement.",
+    // « abdomino-adducteurs » contient « adducteurs » : placé après, il ne sortait jamais,
+    // et une carte de pubalgie expliquait l'intérieur de la cuisse au lieu du mot écrit.
+    "abdomino-adducteurs": "Qui concerne à la fois les muscles abdominaux et les adducteurs, souvent liés dans la pubalgie.",
     "adducteurs": "Les muscles à l'intérieur de la cuisse, qui rapprochent la jambe de l'axe du corps.",
     "adduction": "Mouvement qui rapproche la jambe de l'axe du corps.",
     "abducteurs": "Les muscles sur le côté de la hanche, qui écartent la jambe de l'axe du corps et stabilisent le bassin à la marche.",
-    "abdomino-adducteurs": "Qui concerne à la fois les muscles abdominaux et les adducteurs, souvent liés dans la pubalgie.",
     "hanche en charnière": "Un mouvement où l'on plie au niveau des hanches en poussant les fesses vers l'arrière, dos neutre, plutôt que de plier les genoux vers l'avant comme dans un squat classique.",
     "arthrose": "Une usure progressive du cartilage de l'articulation. Contrairement à une idée reçue, bouger et renforcer les muscles autour ne l'aggrave pas : c'est au contraire le traitement de première intention recommandé.",
     // Vingt-et-un mots relevés par un patient qui a lu son parcours à voix haute : il n'en
@@ -2934,10 +2936,101 @@ const GLOSSARY = {
     "bipodal": "Sur les deux jambes.",
     "quadriceps": "Le muscle à l'avant de la cuisse, qui tend le genou. C'est le premier à perdre du volume après une blessure ou une opération du genou, et le plus long à revenir.",
     "ischio-jambiers": "Les muscles à l'arrière de la cuisse, qui plient le genou et freinent la jambe à chaque foulée.",
+    // Quarante-cinq mots écrits par le kinésithérapeute après la relecture : ce sont les noms
+    // des blessures et des étapes, c'est-à-dire le vocabulaire que le patient rencontre
+    // avant d'arriver au premier exercice. Les entités composées et les éponymes ouvrent la
+    // liste, les mots de l'interface la ferment : le premier terme contenu dans le texte
+    // l'emporte, et « névrome » placé trop haut aurait masqué « névrome de Morton ».
+    "névralgie cervico-brachiale": "Douleur venant d'un nerf du cou et descendant dans le bras.",
+    "conflit fémoro-acétabulaire": "La tête du fémur frotte contre le bord du bassin à cause d'une forme d'os particulière, ce qui limite et rend douloureux certains mouvements de hanche.",
+    "syndrome fémoro-patellaire": "Douleur à l'avant du genou, autour ou derrière la rotule.",
+    "syndrome de la bandelette ilio-tibiale": "Douleur à l'extérieur du genou, fréquente chez les coureurs et cyclistes (« syndrome de l'essuie-glace »).",
+    "syndrome du coussinet adipeux": "Irritation du petit coussin graisseux situé sous la rotule (syndrome de Hoffa).",
+    "névrome de Morton": "Épaississement d'un nerf entre deux orteils (souvent le 3e et le 4e), causant douleurs ou fourmillements.",
+    "Osgood-Schlatter": "Douleur sous la rotule, sur la bosse du tibia, chez l'enfant ou l'ado sportif en croissance.",
+    "Sinding-Larsen-Johansson": "Douleur à la pointe basse de la rotule chez l'ado sportif en croissance.",
+    "Scheuermann": "Déformation des vertèbres pendant la croissance, qui arrondit le haut du dos.",
+    "Sever": "Douleur à l'arrière du talon chez l'enfant sportif en croissance.",
+    "capsulite rétractile": "Enraidissement douloureux de l'épaule : l'enveloppe de l'articulation se rétracte (« épaule gelée »).",
+    "fasciite plantaire": "Douleur sous le pied, souvent au talon, due à l'irritation de la membrane qui soutient la voûte plantaire.",
+    "enthésopathie": "Souffrance de la zone où un tendon ou un ligament s'attache sur l'os.",
+    "paraténonite": "Inflammation de l'enveloppe qui entoure un tendon.",
+    "épicondylite": "Douleur à l'extérieur du coude (« tennis elbow »).",
+    "épitrochléite": "Douleur à l'intérieur du coude (« golf elbow »).",
+    "tendinopathie": "Souffrance d'un tendon, souvent liée à une surcharge.",
+    "pubalgie": "Douleur au niveau du pubis et de l'aine, fréquente chez les sportifs (football, handball).",
+    "périostite": "Douleur de la membrane qui recouvre l'os, souvent sur le tibia chez les coureurs.",
+    "apophysite": "Douleur d'une zone de croissance de l'os chez l'enfant ou l'ado sportif (talon, genou…).",
+    "ostéochondrite": "Atteinte de l'os juste sous le cartilage d'une articulation, surtout chez le jeune.",
+    "spondylolyse": "Petite fissure sur une partie d'une vertèbre, souvent dans le bas du dos.",
+    "hernie discale": "Le disque entre deux vertèbres déborde et peut appuyer sur un nerf.",
+    "sténose spinale": "Rétrécissement du canal où passent les nerfs dans la colonne.",
+    "névrome": "Épaississement douloureux d'un nerf, souvent entre les orteils.",
+    "lombosciatique": "Douleur du bas du dos qui descend dans la jambe, le long du nerf sciatique.",
+    "cervicalgie": "Douleur au niveau du cou.",
+    "dorsalgie": "Douleur au milieu du dos.",
+    "lombalgie": "Douleur dans le bas du dos.",
+    "cervicales": "Les vertèbres du cou.",
+    "thoraciques": "Les vertèbres du haut et du milieu du dos, où s'attachent les côtes.",
+    "lombaires": "Les vertèbres du bas du dos.",
+    "méniscectomie": "Opération qui retire la partie abîmée du ménisque.",
+    "ménisque": "Petit coussin en forme de croissant qui amortit et stabilise le genou.",
+    "suture": "Opération qui recoud le ménisque pour le conserver, plutôt que d'en retirer la partie abîmée.",
+    "ligaments croisés": "Deux ligaments au centre du genou qui l'empêchent de partir en avant ou en arrière.",
+    "prothèse totale": "Remplacement de l'articulation usée par une articulation artificielle.",
+    "instabilité": "Articulation qui « lâche » ou se déboîte facilement.",
+    "luxation": "Déboîtement complet d'une articulation.",
+    "œdème": "Gonflement dû à une accumulation de liquide dans les tissus.",
+    "contrôle moteur": "Apprendre à bien maîtriser et coordonner ses mouvements.",
+    "réathlétisation": "Retrouver progressivement ses capacités sportives avant la reprise.",
+    "restitution d'énergie": "Capacité des muscles et tendons à rebondir comme un ressort (sauts, course).",
+    "charge dynamique": "Exercices en mouvement qui sollicitent progressivement la zone.",
+    "raideur posturale": "Manque de souplesse lié aux positions prolongées (assis, debout).",
+    "décharge": "Réduire le poids ou l'effort sur la zone blessée pour la soulager.",
+    "amortissement": "Capacité à absorber les chocs à la réception d'un saut ou d'une foulée.",
+    "parcours guidé": "Une suite d'exercices proposée étape par étape.",
+    "pathologies": "Les blessures ou problèmes de santé.",
+    "prévention": "Exercices pour éviter de se blesser.",
+    "échauffement": "Exercices pour préparer le corps avant l'effort.",
+    "récapitulatif": "Résumé de votre séance ou de vos exercices.",
+    "charge légère": "Exercice facile, avec peu de poids ou d'effort.",
+    "noter ma charge": "Indiquer à quel point l'exercice vous a paru difficile.",
 };
+// Deux mots restent définis mais ne déclenchent aucune pastille : « prévention » et
+// « échauffement » figurent dans la consigne de quatre exercices, où la définition —
+// « exercices pour éviter de se blesser » — répond à une question que personne ne se pose
+// à cet endroit. On les lit sur l'écran du lexique, là où on vient chercher un mot.
+const LEXIQUE_SEUL = new Set(["prévention", "échauffement"]);
 function findGlossaryTerm(name) {
     const n = name.toLowerCase();
-    return Object.keys(GLOSSARY).find((term) => n.includes(term));
+    return Object.keys(GLOSSARY).find((term) =>
+        !LEXIQUE_SEUL.has(term) && n.includes(term.toLowerCase()));
+}
+// « Coiffe des rotateurs » s'affichait « Coiffe Des Rotateurs » : la majuscule venait de
+// « text-transform: capitalize », qui la pose sur chaque mot. Seule l'initiale en prend une,
+// et les noms propres du lexique gardent la leur telle qu'elle est écrite dans la clé.
+function majusculeInitiale(mot) {
+    return mot.charAt(0).toUpperCase() + mot.slice(1);
+}
+// La lettre sous laquelle un mot se rangera dans le lexique : « épicondylite » sous E,
+// « œdème » sous O. Sans cela, un patient qui cherche un mot accentué le trouve après Z.
+function initialeLexique(mot) {
+    const l = mot.charAt(0).toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return l === "\u0152" ? "O" : l;
+}
+// Le lexique entier, rangé par lettre. Il se déduit de GLOSSARY : un mot ajouté au tableau
+// apparaît sur l'écran sans qu'on y pense, et aucune définition ne peut rester sans porte.
+function lexiqueParLettre() {
+    const groupes = new Map();
+    for (const terme of Object.keys(GLOSSARY).slice().sort((a, b) => a.localeCompare(b, "fr"))) {
+        const lettre = initialeLexique(terme);
+        if (!groupes.has(lettre))
+            groupes.set(lettre, []);
+        groupes.get(lettre).push(terme);
+    }
+    return [...groupes.entries()]
+        .sort((a, b) => a[0].localeCompare(b[0], "fr"))
+        .map(([lettre, termes]) => ({ lettre, termes }));
 }
 // --- Prévention : échauffement sportif, étirements post-effort, souplesse (hors contexte douloureux) ---
 const WARMUP_DATA = {
@@ -5045,6 +5138,7 @@ function construireRoute(e) {
         case "runner-complete": return r ? `#/coureur/${r}/fin` : null;
         case "recap": return "#/recap";
         case "apropos": return "#/apropos";
+        case "lexique": return "#/lexique";
         case "lien": return "#/lien";
         case "croissance-liste": return "#/croissance";
         case "croissance-checkin": return e.croissanceId ? `#/croissance/${e.croissanceId}` : null;
@@ -5106,6 +5200,8 @@ function etatDepuisRoute(hash) {
         return fait({ view: "recap" });
     if (p[0] === "apropos")
         return fait({ view: "apropos" });
+    if (p[0] === "lexique")
+        return fait({ view: "lexique" });
     if (p[0] === "lien")
         return fait({ view: "lien" });
     if (p[0] === "croissance") {
@@ -5156,6 +5252,7 @@ const RETOUR = {
     // Destination par défaut seulement : l'écran « À propos » s'ouvre aussi depuis
     // l'introduction, et le retour est alors calculé par « cibleRetour ».
     apropos: "zone",
+    lexique: "zone",
     lien: "zone",
     "croissance-liste": "zone",
     "croissance-checkin": "croissance-liste",
@@ -5564,6 +5661,49 @@ const WARN_FILET = "var(--warn-filet)";
 const PRUDENCE = "var(--prudence)";
 const PRUDENCE_VOILE = "var(--prudence-voile)";
 const PRUDENCE_FILET = "var(--prudence-filet)";
+// --- Un mot que le glossaire explique -----------------------------------------------
+// Le glossaire ne vivait que sur la carte d'exercice, c'est-à-dire tout au bout du
+// parcours. Or les mots qui arrêtent le patient sont en amont : « pubalgie » sur le dessin
+// du corps, « tendinopathie » sur l'écran des blessures, « contrôle moteur » en tête d'une
+// étape. Trois relecteurs sur trois ont buté là, et pas une seule définition ne s'y
+// affichait — celle de « coiffe des rotateurs » existait pendant que l'écran écrivait
+// « Tendinopathie de la coiffe » sans rien proposer.
+//
+// Ce composant pose la même pastille partout où un libellé porte un terme défini. Il
+// garde son état pour lui : ces libellés sont des feuilles, et faire remonter un
+// « ouvert » par écran coûterait plus que le service rendu.
+//
+// Il ne va donc que sur les libellés qui ne sont pas eux-mêmes cliquables : les intertitres
+// et les titres d'étape. Les cartes de choix — une blessure, une phase de croissance, une
+// activité — sont des boutons entiers, et une commande dans une commande n'est annoncée
+// par aucun lecteur d'écran. Pour une phase de croissance et une activité de prévention,
+// la définition attend l'écran suivant, dont le titre reprend le même libellé et porte la
+// pastille ; pour un nom de blessure, aucun écran ne la porte encore.
+function MotExplique({ texte, encre, fond, surFond, classe, style }) {
+    const [ouvert, setOuvert] = useState(false);
+    const term = texte ? findGlossaryTerm(texte) : null;
+    if (!term)
+        return React.createElement("span", { className: classe, style: style }, texte);
+    const idDef = "def-" + slug(term);
+    return React.createElement("span", { className: classe, style: style },
+        texte,
+        " ",
+        React.createElement("button", { type: "button",
+            onClick: (e) => { e.stopPropagation(); setOuvert((o) => !o); },
+            "aria-expanded": ouvert, "aria-controls": idDef,
+            "aria-label": `D\u00E9finition : ${term}`,
+            className: "shrink-0 inline-flex items-center justify-center rounded-full",
+            style: { width: 20, height: 20, minWidth: 20, backgroundColor: fond, color: encre,
+                fontSize: TAILLE_ETIQUETTE, fontWeight: 600, border: "none", padding: 0,
+                verticalAlign: "middle" } }, "i"),
+        ouvert && React.createElement("span", { id: idDef, lang: "fr",
+            className: "t-accompagne mt-2 leading-relaxed",
+            style: { color: surFond, letterSpacing: "normal", fontWeight: 400,
+                display: "block", textTransform: "none" } },
+            React.createElement("strong", null, majusculeInitiale(term)),
+            " \u2014 ",
+            GLOSSARY[term]));
+}
 // --- Carte d'exercice --------------------------------------------------------------------
 // Écrite une fois, utilisée par les quatre parcours. Elle existait jusqu'ici en quatre copies
 // d'environ cent vingt lignes : toute correction devait être faite quatre fois, et les copies
@@ -5818,7 +5958,7 @@ function CarteExercice(props) {
         props.term && props.infoOuvert && React.createElement("p", { id: idDef, lang: "fr",
             className: "mt-3 pt-3", style: Object.assign(styleProse(TAILLE_ACCOMPAGNE, HEADER),
                 { borderTop: `1px solid ${BORDURE}` }) },
-            React.createElement("strong", { className: "capitalize" }, props.term),
+            React.createElement("strong", null, majusculeInitiale(props.term)),
             " — ",
             GLOSSARY[props.term]),
         // 4. Minuteur, charge notée, et l'interrupteur — désormais un vrai bouton nommé plutôt
@@ -6323,6 +6463,41 @@ function GuidedJourney() {
     }
     if (view === "lien")
         return React.createElement(ConstructeurDeLien, { onRetour: retourEnArriere });
+    // --- Lexique ---------------------------------------------------------------------
+    // Les définitions ne vivaient que sur la pastille « i » : utiles quand on tombe sur le
+    // mot, introuvables quand on le cherche. Et vingt-sept d'entre elles n'avaient aucune
+    // porte — « ménisque », « récapitulatif », « parcours guidé » ne titrent aucune étape.
+    // L'écran les range par lettre, et se déduit du tableau : rien à tenir à jour deux fois.
+    if (view === "lexique") {
+        const groupes = lexiqueParLettre();
+        const total = groupes.reduce((n, g) => n + g.termes.length, 0);
+        return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
+            React.createElement("div", { className: "px-6 pt-8 pb-5", style: { backgroundColor: HEADER } },
+                React.createElement("button", { onClick: retourEnArriere, className: "flex items-center gap-1 t-corps mb-4", style: { color: "rgba(255,255,255,0.75)" } },
+                    React.createElement(ChevronLeft, { size: 16 }),
+                    " Retour"),
+                React.createElement("h1", { className: "text-white text-2xl font-medium" }, "Lexique"),
+                React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } },
+                    "Les ", total, " mots employés dans l'application, expliqués en français courant. Ce sont les mêmes définitions que celles de la pastille « i » des exercices.")),
+            React.createElement("div", { className: "px-6 py-6 flex flex-col gap-5" },
+                // Quatre-vingt-treize définitions font onze écrans de défilement : sans ce rang
+                // de lettres, chercher « œdème » revient à faire glisser le pouce à l'aveugle.
+                React.createElement("nav", { "aria-label": "Aller à une lettre", className: "flex flex-wrap gap-1" },
+                    groupes.map(({ lettre }) => (React.createElement("button", { key: lettre, type: "button",
+                        onClick: () => {
+                            const cible = document.getElementById("lex-" + lettre);
+                            if (cible)
+                                cible.scrollIntoView({ behavior: MOUVEMENT_REDUIT ? "auto" : "smooth", block: "start" });
+                        },
+                        className: "cible-44 inline-flex items-center justify-center rounded-full t-corps font-medium",
+                        style: { width: 44, color: INK, backgroundColor: SURFACE, border: `1px solid ${BORDURE}` } }, lettre)))),
+                groupes.map(({ lettre, termes }) => (React.createElement("section", { key: lettre, id: "lex-" + lettre, style: { scrollMarginTop: 16 } },
+                    React.createElement("h2", { className: "t-etiquette font-semibold uppercase px-1", style: { color: INK_DOUX, letterSpacing: "0.08em" } }, lettre),
+                    React.createElement("div", { className: "mt-2 rounded-2xl overflow-hidden bg-white", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        termes.map((terme, i) => (React.createElement("div", { key: terme, className: "p-4", style: i ? { borderTop: `1px solid ${BORDURE}` } : undefined },
+                            React.createElement("p", { className: "t-carte font-medium", style: { color: INK } }, majusculeInitiale(terme)),
+                            React.createElement("p", { lang: "fr", className: "mt-1", style: styleProse(TAILLE_ACCOMPAGNE, INK_PROSE) }, GLOSSARY[terme])))))))))));
+    }
     if (view === "apropos") {
         // Une ligne vide est retirée plutôt qu'affichée sans réponse : tant qu'un numéro
         // ou une adresse n'est pas renseigné dans CABINET, la rubrique se referme dessus.
@@ -6575,7 +6750,11 @@ function GuidedJourney() {
                         "Effacer ma progression et repartir de z\u00E9ro")),
                     // Les mentions légales. Le réglage de taille de texte qui leur faisait face a
                     // été retiré : il était cherché une fois, au début, puis plus jamais.
-                    React.createElement("div", { className: "mt-3" },
+                    React.createElement("div", { className: "mt-3 flex flex-col items-start" },
+                        // Le lexique s'ouvre d'ici et de nulle part ailleurs : c'est l'endroit
+                        // ou l'on revient entre deux seances, et la pastille « i » suffit
+                        // partout ou le mot se presente de lui-meme.
+                        React.createElement("button", { onClick: () => setView("lexique"), className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "Lexique\u00A0: les mots de l'application"),
                         React.createElement("button", { onClick: () => { setRetourApropos("zone"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-left", style: { color: "rgba(255,255,255,0.6)" } }, "\u00C0 propos et mentions l\u00E9gales")))))));
     }
     if (view === "injury") {
@@ -6590,7 +6769,7 @@ function GuidedJourney() {
                 // Un intertitre s'insère quand le champ « groupe » change d'un parcours au
                 // suivant. Les zones qui n'en déclarent pas s'affichent exactement comme avant.
                 injuriesOrdonnees(pathology).map((inj, ii, liste) => (React.createElement(React.Fragment, { key: inj.id },
-                    inj.groupe && inj.groupe !== (liste[ii - 1] || {}).groupe && (React.createElement("p", { className: "t-etiquette font-semibold uppercase px-1", style: { color: INK_DOUX, letterSpacing: "0.08em", marginTop: ii ? "0.5rem" : 0 } }, inj.groupe)),
+                    inj.groupe && inj.groupe !== (liste[ii - 1] || {}).groupe && (React.createElement("p", { className: "t-etiquette font-semibold uppercase px-1", style: { color: INK_DOUX, letterSpacing: "0.08em", marginTop: ii ? "0.5rem" : 0 } }, React.createElement(MotExplique, { texte: inj.groupe, encre: INK, fond: BORDURE, surFond: INK_PROSE }))),
                     React.createElement("button", { onClick: () => { setInjuryId(inj.id); setStageIdx(0); setView("checkin"); }, className: "rounded-2xl p-5 text-left bg-white flex items-center justify-between", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                     React.createElement("div", null,
                         React.createElement("p", { className: "text-[#0F172A] t-carte font-medium" }, inj.label),
@@ -6817,7 +6996,8 @@ function GuidedJourney() {
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < croissanceStageIdx ? "100%" : si === croissanceStageIdx ? "50%" : "0%", backgroundColor: CROISSANCE_CLAIR } }))))),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: CROISSANCE_CLAIR } },
                     "Étape ", croissanceStageIdx + 1, " sur ", phasesDe(croi).length),
-                React.createElement("h1", { className: "text-white text-2xl mt-1 font-medium" }, ph.label),
+                React.createElement("h1", { className: "text-white text-2xl mt-1 font-medium" },
+                    React.createElement(MotExplique, { texte: ph.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
                 React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: "rgba(255,255,255,0.85)" } }, phaseInfoDe(croi)[croissanceStageIdx]),
                 // Les trois autres parcours disent à quelle fréquence travailler ; celui-ci
                 // était le seul à ne rien dire, alors que la page parents de la scoliose
@@ -6946,7 +7126,8 @@ function GuidedJourney() {
                 React.createElement("div", { className: "flex gap-1.5 mb-3" }, RUNNER_STAGE_LABELS.map((st, si) => (React.createElement("div", { key: st.label, className: "h-1.5 flex-1 rounded-full overflow-hidden", style: { backgroundColor: "rgba(255,255,255,0.25)" } },
                     React.createElement("div", { className: "h-full rounded-full", style: { transition: MOUVEMENT_REDUIT ? "none" : "width .3s cubic-bezier(.2,.7,.3,1)", width: si < runnerStageIdx ? "100%" : si === runnerStageIdx ? "50%" : "0%", backgroundColor: ACCENT } }))))),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, stageInfo.sub),
-                React.createElement("h1", { className: "text-white text-xl font-medium mt-1" }, stageInfo.label),
+                React.createElement("h1", { className: "text-white text-xl font-medium mt-1" },
+                    React.createElement(MotExplique, { texte: stageInfo.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
                 React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
                     totalDone,
                     " / ",
@@ -7086,7 +7267,8 @@ function GuidedJourney() {
                         React.createElement(IconeMaison, { size: 15 }),
                         "Accueil")),
                 React.createElement("p", { className: "t-etiquette tracking-[0.25em] uppercase", style: { color: ACCENT_SOFT } }, category.title),
-                React.createElement("h1", { className: "text-white text-xl font-medium" }, sub.label),
+                React.createElement("h1", { className: "text-white text-xl font-medium" },
+                    React.createElement(MotExplique, { texte: sub.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
                 React.createElement("p", { className: "t-accompagne mt-1.5 leading-relaxed", style: { color: "rgba(255,255,255,0.8)" } }, sub.intro),
                 React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },
                     totalDone,
@@ -7189,7 +7371,7 @@ function GuidedJourney() {
                     " / ",
                     injury.stages.length,
                     " \u2014 ",
-                    stage.label),
+                    React.createElement(MotExplique, { texte: stage.label, encre: HEADER, fond: ACCENT_SOFT, surFond: "rgba(255,255,255,0.85)" })),
                 stage.sub && React.createElement("p", { className: "t-accompagne mt-0.5", style: { color: "rgba(255,255,255,0.75)" } }, stage.sub),
                 (stage.pourquoi || POURQUOI_ETAPE[stage.label]) && React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: ACCENT_SOFT } }, stage.pourquoi || POURQUOI_ETAPE[stage.label]),
                 React.createElement("p", { className: "t-accompagne mt-1 tabular-nums", style: { color: "rgba(255,255,255,0.75)" } },

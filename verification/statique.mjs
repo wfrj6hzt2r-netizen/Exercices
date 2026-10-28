@@ -248,7 +248,8 @@ try {
     D = await donnees(html, ["PATHOLOGIES", "RUNNER_DATA", "CROISSANCE_DATA",
         "PREVENTION_CATEGORIES", "POSTURE_DESSIN", "DESSIN_AUTRE_POSTURE", "postureDecrite",
         "posturesFines",
-        "GLOSSARY", "findGlossaryTerm",
+        "GLOSSARY", "findGlossaryTerm", "lexiqueParLettre", "initialeLexique",
+        "LEXIQUE_SEUL",
         "getExerciseIcon", "POSES", "demandeUnElastique", "POURQUOI_ETAPE",
         "positionAffichable", "familleEffort", "repereEffort", "REPERE_EFFORT",
         "SANS_REPERE_EFFORT",
@@ -537,18 +538,84 @@ controle("chaque rythme propre couvre toutes ses étapes", () => {
 // n'afficherait rien du tout, sans la moindre erreur — le même genre de panne silencieuse
 // que les cinq classes d'espacement qui ne faisaient rien. On vérifie donc les deux sens :
 // chaque clé de la table désigne bien une étape existante, et on rapporte la couverture.
-controle("chaque terme du glossaire est atteignable", () => {
-    // Une définition ne s'affiche que si une carte contient le mot : la pastille naît de
-    // « findGlossaryTerm », qui cherche le terme dans le nom puis dans la consigne. Un terme
-    // qu'aucune carte ne porte est une définition que personne ne verra jamais, et que
-    // personne ne corrigera donc non plus. « scapulo » vivait ainsi depuis sa création.
+// Tout le texte de l'application sauf le tableau du glossaire lui-même : noms et consignes
+// d'exercice, intitulés d'étape, noms de blessure, et jusqu'aux libellés des boutons — un
+// mot comme « Noter ma charge » n'apparaît dans aucune donnée, seulement dans le rendu.
+// Les accents y sont tantôt écrits tels quels, tantôt échappés : on décode avant de chercher.
+function corpusSansGlossaire() {
+    const debut = app.indexOf("const GLOSSARY = {");
+    if (debut < 0)
+        throw new Error("tableau GLOSSARY introuvable");
+    const fin = app.indexOf("\n};", debut);
+    const sansTable = app.slice(0, debut) + app.slice(fin + 3);
+    // Les commentaires sortent aussi, et ce n'est pas un détail : la première version de ce
+    // contrôle passait parce que le commentaire de l'écran du lexique citait en exemple les
+    // trois mots que l'application n'écrit nulle part. Un contrôle qui se lit lui-même ne
+    // vérifie rien. Le « // » précédé de deux points est épargné : c'est une adresse web.
+    const sansCommentaires = sansTable
+        .replace(/\/\*[\s\S]*?\*\//g, " ")
+        .replace(/(^|[^:])\/\/.*$/gm, "$1");
+    return sansCommentaires.replace(/\\u([0-9a-fA-F]{4})/g,
+        (_, h) => String.fromCharCode(parseInt(h, 16))).toLowerCase();
+}
+controle("chaque mot du lexique est écrit quelque part dans l'application", () => {
+    // Une définition qui explique un mot que l'application n'emploie jamais ne sera lue par
+    // personne, et ne sera donc jamais corrigée : « scapulo » a vécu ainsi depuis sa
+    // création. Le contrôle portait d'abord sur les seules cartes d'exercice, du temps où
+    // la pastille « i » était la seule porte ; l'écran du lexique les montre maintenant
+    // toutes, et c'est donc l'emploi du mot, non son affichage, qu'il reste à vérifier.
+    const texte = corpusSansGlossaire();
+    return Object.keys(D.GLOSSARY || {})
+        .filter((terme) => !texte.includes(terme.toLowerCase()))
+        .map((terme) => `« ${terme} » : l'application n'écrit ce mot nulle part`);
+});
+controle("aucun mot du lexique n'est masqué par un autre", () => {
+    // « findGlossaryTerm » rend le premier terme contenu dans le texte, dans l'ordre du
+    // tableau. Un mot placé après un autre qui le contient ne sort donc jamais : « abdomino-
+    // adducteurs », derrière « adducteurs », a expliqué l'intérieur de la cuisse pendant
+    // des mois là où la carte écrivait le mot composé. On demande à chaque mot de se
+    // reconnaître lui-même.
+    return Object.keys(D.GLOSSARY || {})
+        .filter((terme) => !D.LEXIQUE_SEUL.has(terme))
+        .map((terme) => [terme, D.findGlossaryTerm(terme)])
+        .filter(([terme, trouve]) => trouve !== terme)
+        .map(([terme, trouve]) => `« ${terme} » est masqué par « ${trouve} », placé avant lui`);
+});
+// La décision est celle du kinésithérapeute : ces deux mots restent définis mais ne se
+// posent sur aucune carte. Le contrôle en garde sa propre copie plutôt que de lire
+// l'ensemble du fichier — sa première version le lisait, et le banc de mutation l'a prise
+// en défaut : retirer « échauffement » de l'ensemble le rendait aveugle à son propre défaut,
+// puisqu'il demandait au code s'il était d'accord avec lui-même.
+const RESERVES_AU_LEXIQUE = ["prévention", "échauffement"];
+controle("les mots réservés au lexique n'en sortent jamais", () => {
     const out = [];
-    for (const terme of Object.keys(D.GLOSSARY || {})) {
-        const porte = exercices.some(({ ex }) =>
-            (ex.name + " " + ex.tip).toLowerCase().includes(terme));
-        if (!porte)
-            out.push(`« ${terme} » : aucune carte ne contient ce mot, la définition est inatteignable`);
+    for (const mot of RESERVES_AU_LEXIQUE) {
+        if (!(mot in (D.GLOSSARY || {})))
+            out.push(`« ${mot} » est réservé au lexique mais n'y est pas défini`);
+        if (!D.LEXIQUE_SEUL.has(mot))
+            out.push(`« ${mot} » ne figure plus parmi les mots réservés`);
     }
+    for (const { ex, ou } of exercices) {
+        const terme = D.findGlossaryTerm(ex.name) || D.findGlossaryTerm(ex.tip || "");
+        if (terme && RESERVES_AU_LEXIQUE.includes(terme))
+            out.push(`${ou} — « ${ex.name} » porte la pastille « ${terme} »`);
+    }
+    return out;
+});
+controle("l'écran du lexique montre tout le tableau", () => {
+    // L'écran se déduit de GLOSSARY, et c'est précisément ce qu'on vérifie : une définition
+    // ajoutée au tableau doit y paraître sans qu'on y pense, et le classement par lettre
+    // ne doit en perdre aucune en route.
+    const cles = Object.keys(D.GLOSSARY || {});
+    const montres = D.lexiqueParLettre().flatMap((g) => g.termes);
+    const out = cles.filter((t) => !montres.includes(t))
+        .map((t) => `« ${t} » est défini mais ne paraît pas dans le lexique`);
+    if (montres.length !== cles.length)
+        out.push(`le lexique montre ${montres.length} mots pour ${cles.length} définitions`);
+    for (const { lettre, termes } of D.lexiqueParLettre())
+        for (const t of termes)
+            if (D.initialeLexique(t) !== lettre)
+                out.push(`« ${t} » est rangé sous ${lettre}`);
     return out;
 });
 controle("chaque « pourquoi » désigne une étape qui existe", () => {
