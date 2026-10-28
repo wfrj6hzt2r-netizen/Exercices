@@ -1466,26 +1466,30 @@ const PoseNerveAssis = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M38 10 A 8 8 0 0 1 38 22" })));
 // Respiration assise. Les deux arcs disent l'ampliation des côtes ; les mains posées
 // dessus sont dans la consigne, et les dessiner encombrait le tronc sans rien ajouter.
+// La chaise a un dossier : sans lui, le siège seul se lisait comme un tabouret.
 const PoseBreathingAssis = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
-    React.createElement("line", { x1: "6", y1: "28", x2: "22", y2: "28" }),
-    React.createElement("line", { x1: "8", y1: "28", x2: "8", y2: "45" }),
-    React.createElement("circle", { cx: "15", cy: "9", r: "3.6" }),
-    React.createElement("line", { x1: "15", y1: "12.6", x2: "16", y2: "27" }),
-    React.createElement("line", { x1: "16", y1: "27", x2: "28", y2: "27" }),
-    React.createElement("line", { x1: "28", y1: "27", x2: "28", y2: "45" }),
-    React.createElement("path", { d: "M11 16 A 5 5 0 0 0 11 25" }),
-    React.createElement("path", { d: "M21 16 A 5 5 0 0 1 21 25" })));
+    React.createElement("path", { d: "M5 14 L5 28 L21 28" }),
+    React.createElement("line", { x1: "7", y1: "28", x2: "7", y2: "45" }),
+    React.createElement("circle", { cx: "16", cy: "8", r: "3.6" }),
+    React.createElement("line", { x1: "16", y1: "11.6", x2: "17", y2: "27" }),
+    React.createElement("line", { x1: "17", y1: "27", x2: "29", y2: "27" }),
+    React.createElement("line", { x1: "29", y1: "27", x2: "29", y2: "45" }),
+    React.createElement("path", { d: "M13 17 A 4 4 0 0 0 13 25" }),
+    React.createElement("path", { d: "M20 17 A 4 4 0 0 1 20 25" })));
 // Respiration diaphragmatique : allongé sur le dos, une main posée sur le ventre, et
-// l'arc en pointillé pour le ventre qui se gonfle.
+// l'arc en pointillé pour le ventre qui se gonfle. Le genou plié, pied au sol, est ce qui
+// dit « sur le dos » : sans lui, jambes tendues et bras relevé, la silhouette se lisait
+// à plat ventre, comme toutes les autres silhouettes couchées de l'application.
 const PoseBreathingDos = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
     React.createElement("circle", { cx: "9", cy: "38", r: "3.6" }),
-    React.createElement("line", { x1: "12.6", y1: "38", x2: "32", y2: "39" }),
-    React.createElement("line", { x1: "32", y1: "39", x2: "39", y2: "42" }),
-    React.createElement("line", { x1: "15", y1: "37", x2: "19", y2: "32" }),
-    React.createElement("line", { x1: "19", y1: "32", x2: "25", y2: "36" }),
-    React.createElement("path", { d: "M22 30 A 7 7 0 0 1 30 32", strokeDasharray: "3 3" })));
+    React.createElement("line", { x1: "12.6", y1: "38", x2: "26", y2: "39" }),
+    React.createElement("line", { x1: "26", y1: "39", x2: "33", y2: "32" }),
+    React.createElement("line", { x1: "33", y1: "32", x2: "38", y2: "41" }),
+    React.createElement("line", { x1: "14", y1: "37", x2: "18", y2: "34" }),
+    React.createElement("line", { x1: "18", y1: "34", x2: "23", y2: "37" }),
+    React.createElement("path", { d: "M18 31 A 6 6 0 0 1 26 32", strokeDasharray: "3 3" })));
 // Extension du haut du dos assise : chaise à dossier bas, mains derrière la tête, et la
 // flèche pour la poitrine qui s'ouvre vers le plafond.
 const PoseThoracicExtAssis = poseWrap(React.createElement(React.Fragment, null,
