@@ -170,6 +170,11 @@ const MUTATIONS = [
 
     // La règle des massages perd son exception : la voûte plantaire retombe sur le
     // bloc-notes, alors que le praticien a validé son dessin devant ses exercices.
+    // Une migration qui laisse tomber les charges notées : c'est la perte la plus discrète,
+    // le patient ne s'en aperçoit qu'au moment de montrer sa progression.
+    ["une sauvegarde ancienne garde toute sa progression",
+        (s) => rem(s, "    data.charges = propres;", "    data.charges = {};")],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

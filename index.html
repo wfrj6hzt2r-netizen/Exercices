@@ -4974,7 +4974,7 @@ const LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQ
 // (navigation privée, aperçu restreint, réglages du navigateur) — dans ce cas
 // l'application continue de fonctionner, simplement sans mémoire d'une fois sur l'autre.
 const STORAGE_KEY = "kine-exercices-v1";
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 4;
 // --- Identité des exercices ----------------------------------------------------------
 // La version 1 repérait un exercice par sa position : « 1-2 » pour le 3e exercice du 2e
 // stade. Toute retouche du contenu décalait alors les cases cochées des patients. On
@@ -5149,55 +5149,99 @@ function readStore() {
         const raw = window.localStorage.getItem(STORAGE_KEY);
         if (!raw)
             return null;
-        const data = JSON.parse(raw);
-        // Sauvegarde d'avant les identifiants stables : on retraduit les positions une fois
-        // pour toutes. Un patient qui revient après une mise à jour garde sa progression.
-        if (!data.version || data.version < 2)
-            data.done = migrerDepuisPositions(data.done);
-        // Puis, à chaque lecture, on écarte les exercices qui ne sont plus au programme et
-        // on conserve tous les autres. C'est ce qui rend les retouches de contenu inoffensives.
-        const tri = elaguer(data.done);
-        data.done = tri.done;
-        // Passage aux séances datées. Les coches trouvées sont celles de la dernière séance :
-        // on les crédite au jour enregistré, ou à aujourd'hui si la date est inconnue.
-        if (!data.version || data.version < 3) {
-            const jour = data.jour || aujourdHui();
-            let journal = [];
-            Object.keys(data.done).forEach((cle) => {
-                const n = (data.done[cle] || []).length;
-                if (n)
-                    journal = ajouterAuJournal(journal, cle, jour, n, n);
-            });
-            data.journal = journal;
-            data.jour = jour;
-        }
-        data.journal = (data.journal || []).slice(0, JOURNAL_MAX);
-        // Les charges suivent la même règle que les coches : ce qui n'existe plus est écarté.
-        const inv = inventaireIds();
-        const propres = {};
-        Object.keys(data.charges || {}).forEach((cle) => {
-            if (!inv[cle])
-                return;
-            const gardees = {};
-            Object.keys(data.charges[cle]).forEach((exId) => {
-                if (inv[cle].has(exId))
-                    gardees[exId] = data.charges[cle][exId];
-            });
-            if (Object.keys(gardees).length)
-                propres[cle] = gardees;
-        });
-        data.charges = propres;
-        // Nouveau jour : les coches repartent à zéro, le journal conserve la trace.
-        if (data.jour !== aujourdHui()) {
-            data.done = {};
-            data.jour = aujourdHui();
-        }
-        data.version = STORAGE_VERSION;
-        return data;
+        return migrerSauvegarde(JSON.parse(raw), aujourdHui());
     }
     catch (e) {
         return null;
     }
+}
+// Toutes les versions de la sauvegarde passent par ici. Sortie de « readStore » pour être
+// éprouvée sans navigateur : la refonte de 2026 ajoutait un profil et une mémoire des
+// parcours, et rien ne garantissait qu'un patient revenant après la mise à jour retrouverait
+// ses coches, son journal et ses charges — on ne le vérifiait qu'en le constatant chez lui.
+function migrerSauvegarde(data, aujourdhui) {
+    // Sauvegarde d'avant les identifiants stables : on retraduit les positions une fois
+    // pour toutes. Un patient qui revient après une mise à jour garde sa progression.
+    if (!data.version || data.version < 2)
+        data.done = migrerDepuisPositions(data.done);
+    // Puis, à chaque lecture, on écarte les exercices qui ne sont plus au programme et
+    // on conserve tous les autres. C'est ce qui rend les retouches de contenu inoffensives.
+    const tri = elaguer(data.done);
+    data.done = tri.done;
+    // Passage aux séances datées. Les coches trouvées sont celles de la dernière séance :
+    // on les crédite au jour enregistré, ou à aujourd'hui si la date est inconnue.
+    if (!data.version || data.version < 3) {
+        const jour = data.jour || aujourdhui;
+        let journal = [];
+        Object.keys(data.done).forEach((cle) => {
+            const n = (data.done[cle] || []).length;
+            if (n)
+                journal = ajouterAuJournal(journal, cle, jour, n, n);
+        });
+        data.journal = journal;
+        data.jour = jour;
+    }
+    data.journal = (data.journal || []).slice(0, JOURNAL_MAX);
+    // Les charges suivent la même règle que les coches : ce qui n'existe plus est écarté.
+    const inv = inventaireIds();
+    const propres = {};
+    Object.keys(data.charges || {}).forEach((cle) => {
+        if (!inv[cle])
+            return;
+        const gardees = {};
+        Object.keys(data.charges[cle]).forEach((exId) => {
+            if (inv[cle].has(exId))
+                gardees[exId] = data.charges[cle][exId];
+        });
+        if (Object.keys(gardees).length)
+            propres[cle] = gardees;
+    });
+    data.charges = propres;
+    // Nouveau jour : les coches repartent à zéro, le journal conserve la trace.
+    if (data.jour !== aujourdhui) {
+        data.done = {};
+        data.jour = aujourdhui;
+    }
+    // Version 4 : ce que le patient dit de lui-même, son point de départ, et la mémoire
+    // de ses parcours. Ajoutés à côté de l'existant, sans rien en retirer ni renommer.
+    data.profil = Object.assign({}, PROFIL_VIDE, data.profil);
+    data.pointDeDepart = data.pointDeDepart || null;
+    data.memoire = memoriserParcours(data.memoire, data.journal);
+    data.version = STORAGE_VERSION;
+    return data;
+}
+// Ce que le patient écrit sur lui-même, dans l'écran Profil. Tout est facultatif.
+const PROFIL_VIDE = { prenom: "", nom: "", age: "", sports: "", objectifs: "",
+    antecedents: "", notesRdv: "" };
+// La mémoire des parcours. Le journal est borné à quatre mois et s'efface par le bas : un
+// patient qui revient deux mois après une entorse, pour l'épaule, aurait perdu jusqu'à la
+// trace de sa cheville. Une ligne par parcours suivi, qui ne s'efface pas : premier et
+// dernier jour, nombre de séances, première et dernière douleur notées.
+function memoriserParcours(memoire, journal) {
+    const out = Object.assign({}, memoire);
+    (journal || []).slice().sort((a, b) => (a.date < b.date ? -1 : 1)).forEach((e) => {
+        const m = Object.assign({ debut: e.date, dernier: null, seances: 0 }, out[e.cle]);
+        // Une séance ne compte qu'une fois : seules les journées postérieures à la dernière
+        // déjà retenue s'ajoutent, ce qui rend l'opération sans effet si on la répète.
+        if (!m.dernier || e.date > m.dernier) {
+            m.seances += 1;
+            m.dernier = e.date;
+        }
+        if (e.date < m.debut)
+            m.debut = e.date;
+        if (e.douleur !== undefined) {
+            if (m.douleurDebut === undefined || e.date <= (m.dateDouleurDebut || e.date)) {
+                m.douleurDebut = e.douleur;
+                m.dateDouleurDebut = e.date;
+            }
+            if (!m.dateDouleurFin || e.date >= m.dateDouleurFin) {
+                m.douleurFin = e.douleur;
+                m.dateDouleurFin = e.date;
+            }
+        }
+        out[e.cle] = m;
+    });
+    return out;
 }
 function writeStore(data) {
     try {
@@ -6543,6 +6587,11 @@ function GuidedJourney() {
     // Journal des séances : une entrée par jour travaillé et par parcours.
     const [journal, setJournal] = useState(() => restored.journal || []);
     const [charges, setCharges] = useState(() => restored.charges || {});
+    const [profil, setProfil] = useState(() => Object.assign({}, PROFIL_VIDE, restored.profil));
+    const [pointDeDepart, setPointDeDepart] = useState(() => restored.pointDeDepart || null);
+    const [memoire, setMemoire] = useState(() => restored.memoire || {});
+    // La mémoire suit le journal : chaque journée inscrite y laisse sa trace durable.
+    useEffect(() => { setMemoire((m) => memoriserParcours(m, journal)); }, [journal]);
     const [jour, setJour] = useState(() => aujourdHui());
     // Date à laquelle chaque règle de prudence a été montrée pour la dernière fois, par
     // parcours. Une seule date pour les quatre ne convenait pas : les textes diffèrent
@@ -6589,8 +6638,9 @@ function GuidedJourney() {
     }, [view, pathId, injuryId, stageIdx, runnerPathId, runnerStageIdx, preventionCategory, preventionSub]);
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
-        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit });
-    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit]);
+        writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit,
+            profil, pointDeDepart, memoire });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -6693,6 +6743,9 @@ function GuidedJourney() {
         setDone({});
         setJournal([]);
         setCharges({});
+        setProfil(Object.assign({}, PROFIL_VIDE));
+        setPointDeDepart(null);
+        setMemoire({});
         setBilanOuvert(null);
         setLastRoute(null);
         setQuery("");

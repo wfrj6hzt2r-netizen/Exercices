@@ -257,7 +257,8 @@ try {
         "REALISTIC_MARKERS", "LIBELLE_CIBLE_H", "LIBELLE_CIBLE_MARGE",
         "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
         "construireRoute", "phasesDe",
-        "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2"]);
+        "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2",
+        "migrerSauvegarde", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
 } catch (e) {
     panne = e.message;
 }
@@ -752,6 +753,67 @@ controle("la fabrique de liens atteint chaque programme", () => {
     return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
 });
+
+// --- La progression d'un ancien patient survit à la mise à jour ------------------------
+// La refonte de 2026 a porté la sauvegarde en version 4. Chacune des trois migrations
+// précédentes n'avait été vérifiée qu'en ouvrant l'application sur un téléphone qui avait
+// une sauvegarde de la version d'avant — c'est-à-dire, en pratique, chez le patient. On
+// rejoue ici trois sauvegardes réalistes, une par version passée, et l'on exige que rien
+// de ce que le patient a fait ne se perde.
+controle("une sauvegarde ancienne garde toute sa progression", () => {
+    const out = [];
+    const jour = "2026-10-28", veille = "2026-10-27";
+    const z = D.PATHOLOGIES[0], inj = z.injuries[0], ex = inj.stages[0].exercises;
+    const cle = D.cleParcours(z.id, inj.id);
+    const id0 = D.idExercice(ex[0]), id1 = D.idExercice(ex[1]);
+    const egal = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const migrer = (d, j) => D.migrerSauvegarde(structuredClone(d), j);
+
+    // Version 1 : les coches désignaient des positions, « étape-exercice ».
+    const v1 = migrer({ done: { [cle]: ["0-0", "0-1"] }, jour, introVu: true }, jour);
+    if (!egal([...v1.done[cle]].sort(), [id0, id1].sort()))
+        out.push(`v1 : coches perdues — ${JSON.stringify(v1.done)}`);
+    if (!(v1.journal || []).some((e) => e.cle === cle && e.faits === 2))
+        out.push("v1 : la séance du jour n'a pas été portée au journal");
+
+    // Version 3 : journal daté, douleurs, charges, programme prescrit.
+    const journal = [
+        { date: jour, cle, faits: 2, total: 4, douleur: 3 },
+        { date: veille, cle, faits: 4, total: 4, douleur: 5 },
+        { date: "2026-10-20", cle, faits: 1, total: 4 },
+    ];
+    const prescrit = { cle: `z:${z.id}:${inj.id}`, route: { view: "checkin", pathId: z.id, injuryId: inj.id }, date: "2026-10-01" };
+    const charges = { [cle]: { [id0]: [{ d: veille, v: "2 kg" }] } };
+    const lastRoute = { view: "stage", pathId: z.id, injuryId: inj.id, stageIdx: 0 };
+    const v3src = { version: 3, done: { [cle]: [id0] }, jour, journal, charges, prescrit,
+        lastRoute, introVu: true, ageId: "grand", sportId: "course", prudenceVue: { blessure: jour } };
+    const v3 = migrer(v3src, jour);
+    for (const k of ["journal", "charges", "prescrit", "lastRoute", "introVu", "ageId", "sportId", "prudenceVue"])
+        if (!egal(v3[k], v3src[k]))
+            out.push(`v3 : « ${k} » a changé — ${JSON.stringify(v3[k]).slice(0, 80)}`);
+    if (!egal(v3.done[cle], [id0]))
+        out.push("v3 : les coches du jour ont été perdues");
+    if (v3.version !== D.STORAGE_VERSION)
+        out.push(`version ${v3.version} au lieu de ${D.STORAGE_VERSION}`);
+    for (const k of Object.keys(D.PROFIL_VIDE))
+        if (!(k in (v3.profil || {})))
+            out.push(`profil sans le champ « ${k} »`);
+    const m = (v3.memoire || {})[cle];
+    if (!m || m.seances !== 3 || m.debut !== "2026-10-20" || m.douleurDebut !== 5 || m.douleurFin !== 3)
+        out.push(`mémoire du parcours fausse — ${JSON.stringify(m)}`);
+
+    // Le lendemain : les coches repartent à zéro, mais rien d'autre ne bouge.
+    const lendemain = migrer(v3src, "2026-10-29");
+    if (Object.keys(lendemain.done).length || !egal(lendemain.journal, journal))
+        out.push("au lendemain, le journal a bougé ou les coches sont restées");
+
+    // Relire une sauvegarde déjà migrée ne doit rien compter deux fois.
+    const deux = migrer(v3, jour);
+    if (!egal(deux.memoire, v3.memoire))
+        out.push("une seconde lecture a modifié la mémoire des parcours");
+    return out;
+});
+
 
 // Les retraits de carte dérivaient : treize cartes bordées portaient vingt pixels, trois
 // en portaient seize, et rien ne disait laquelle avait raison. La règle est maintenant
