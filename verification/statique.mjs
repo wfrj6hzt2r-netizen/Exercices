@@ -765,6 +765,24 @@ controle("la fabrique de liens atteint chaque programme", () => {
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
 });
 
+// --- La fabrique de liens reste au praticien -----------------------------------------------
+// Une version a montré la ligne « Lien patient » dans le Profil du téléphone qui avait ouvert
+// la fabrique. Le praticien n'en veut aucune trace côté patient : la fabrique s'ouvre par sa
+// page à lui, « praticien.html », et par rien dans l'application.
+controle("aucun écran du patient ne mène à la fabrique de liens", () => {
+    const out = [];
+    // L'aiguillage des adresses connaît « #/lien », et doit le connaître : c'est par là que
+    // la page du praticien entre. Ce qui est refusé, c'est un bouton ou un lien qui y mène.
+    for (const m of app.matchAll(/setView\(\s*"lien"\s*\)|href:\s*[^,}]*#\/lien/g))
+        out.push(`un accès à la fabrique de liens : « ${app.slice(Math.max(0, m.index - 60), m.index + 20).replace(/\s+/g, " ")} »`);
+    const page = readFileSync(join(RACINE, "praticien.html"), "utf8");
+    if (!/location\.replace\("\.\/#\/lien"\)/.test(page))
+        out.push("« praticien.html » n'ouvre plus la fabrique de liens");
+    if (/rel="manifest"/.test(page))
+        out.push("« praticien.html » porte le manifeste des patients : son icône rouvrirait leur accueil");
+    return out;
+});
+
 // --- Le QR code se lit ----------------------------------------------------------------------
 // Le QR code de la fabrique de liens est dessiné par l'application elle-même, sans bibliothèque :
 // un patient qui scanne en séance un code faux n'obtient rien, et rien ne le signale. On le

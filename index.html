@@ -5298,7 +5298,9 @@ function migrerSauvegarde(data, aujourdhui) {
     data.memoire = memoriserParcours(data.memoire, data.journal);
     data.etapes = data.etapes || [];
     data.prescritEcarte = data.prescritEcarte || null;
-    data.praticien = !!data.praticien;
+    // Le repère « praticien » d'une version d'un jour faisait paraître la fabrique de liens
+    // dans le Profil ; elle n'y paraît plus du tout, et le repère est oublié.
+    delete data.praticien;
     data.version = STORAGE_VERSION;
     return data;
 }
@@ -5817,7 +5819,6 @@ const RETOUR = {
     // l'introduction, et le retour est alors calculé par « cibleRetour ».
     apropos: "profil",
     lexique: "profil",
-    lien: "profil",
     "croissance-liste": "zone",
     "croissance-checkin": "croissance-liste",
     "croissance-exercices": "croissance-checkin",
@@ -7287,8 +7288,11 @@ function CodeQR({ texte, taille, legende }) {
         dangerouslySetInnerHTML: { __html: svg.replace("<svg ", `<svg width="${taille}" height="${taille}" `) } });
 }
 // --- Fabrique de liens, pour le cabinet ------------------------------------------------
-// Un écran que le patient ne voit jamais : il n'est référencé nulle part et ne s'atteint
-// qu'en tapant son adresse. Le kinésithérapeute y choisit le programme et obtient le lien
+// Un écran que le patient ne voit jamais : il n'est référencé nulle part dans l'application
+// et ne s'atteint que par son adresse — en pratique par « praticien.html », la page que le
+// praticien garde sur son propre écran d'accueil. Une version a montré une ligne « Lien
+// patient » dans le Profil du téléphone qui l'avait ouvert ; le praticien n'en veut aucune
+// trace côté patient, même conditionnelle. Le kinésithérapeute y choisit le programme et obtient le lien
 // à envoyer. Il aurait pu naviguer dans l'application et copier la barre d'adresse ; cet
 // écran lui évite de se tromper d'étape et de recommencer.
 // Les quatre parcours, decrits une fois, pour que la fabrique les traite pareil.
@@ -7373,7 +7377,7 @@ const PARCOURS_DU_LIEN = [
         route: (cid, sid) => construireRoute({ view: "prevention-exercises", preventionCategory: cid, preventionSub: sid }),
     },
 ];
-function ConstructeurDeLien({ onRetour }) {
+function ConstructeurDeLien() {
     const [parcoursId, setParcoursId] = useState(PARCOURS_DU_LIEN[0].id);
     const parcours = PARCOURS_DU_LIEN.find((p) => p.id === parcoursId) || PARCOURS_DU_LIEN[0];
     const [premierId, setPremierId] = useState(PARCOURS_DU_LIEN[0].premier()[0].v);
@@ -7411,9 +7415,8 @@ function ConstructeurDeLien({ onRetour }) {
             options.map((o) => React.createElement("option", { key: o.v, value: o.v }, o.t))));
     return (React.createElement("div", { className: "min-h-screen bg-[#F5F8FA]", style: { fontFamily: POLICE } },
         React.createElement("div", { className: "px-6 pt-8 pb-5 bandeau", style: { backgroundColor: HEADER } },
-            React.createElement("button", { onClick: onRetour, className: "flex items-center gap-1 t-corps mb-4", style: { color: SUR_BANDEAU_DOUX } },
-                React.createElement(ChevronLeft, { size: 16 }),
-                " Retour"),
+            // Pas de retour : la fabrique s'ouvre depuis l'icône du praticien, et revenir d'un
+            // cran l'aurait fait entrer dans l'application des patients.
             React.createElement("h1", { className: "text-sur-bandeau text-2xl font-medium" }, "Fabriquer un lien"),
             React.createElement("p", { className: "t-accompagne mt-3 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                 "À votre usage. Le lien ouvre directement le programme choisi, et l'application s'en souvient : le patient le retrouve à chaque ouverture, sans avoir à choisir sa blessure lui-même.")),
@@ -7506,10 +7509,6 @@ function GuidedJourney() {
     // programme écarté se réinstallait à l'ouverture suivante.
     const [prescritEcarte, setPrescritEcarte] = useState(() => restored.prescritEcarte || null);
     const [confirmerNouveau, setConfirmerNouveau] = useState(false);
-    // Le téléphone du praticien. La fabrique de liens ne s'atteignait qu'en tapant « #/lien » :
-    // il a demandé un accès facile, et les patients ne doivent pas la rencontrer. L'appareil
-    // qui l'a ouverte une fois s'en souvient, et lui seul montre la ligne « Lien patient ».
-    const [praticien, setPraticien] = useState(() => !!restored.praticien);
     useEffect(() => {
         const cle = cleDuProgramme(arrivee);
         const seances = typeof window !== "undefined" ? seancesDuLien(window.location.hash) : null;
@@ -7597,9 +7596,8 @@ function GuidedJourney() {
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
         writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit,
-            profil, pointDeDepart, memoire, etapes, prescritEcarte, praticien });
-    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes, prescritEcarte, praticien]);
-    useEffect(() => { if (view === "lien" && !praticien) setPraticien(true); }, [view]);
+            profil, pointDeDepart, memoire, etapes, prescritEcarte });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes, prescritEcarte]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -7874,7 +7872,7 @@ function GuidedJourney() {
                 React.createElement("button", { onClick: () => { setRetourApropos("intro"); setView("apropos"); }, className: "cible-44 t-etiquette underline underline-offset-2 text-center", style: { color: SUR_BANDEAU_PALE } }, "À propos et mentions légales"))));
     }
     if (view === "lien")
-        return React.createElement(ConstructeurDeLien, { onRetour: retourEnArriere });
+        return React.createElement(ConstructeurDeLien, null);
     // --- Lexique ---------------------------------------------------------------------
     // Les définitions ne vivaient que sur la pastille « i » : utiles quand on tombe sur le
     // mot, introuvables quand on le cherche. Et vingt-sept d'entre elles n'avaient aucune
@@ -8345,7 +8343,6 @@ function GuidedJourney() {
                     intertitre("L'application"),
                     React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                         [
-                            praticien && { id: "lien", titre: "Lien patient", sous: "Préparer et envoyer un programme", aller: () => setView("lien") },
                             { id: "lexique", titre: "Lexique", sous: "Les mots de l'application", aller: () => setView("lexique") },
                             { id: "apropos", titre: "À propos", sous: "Mentions légales et confidentialité", aller: () => { setRetourApropos("profil"); setView("apropos"); } },
                         ].filter(Boolean).map((l, i) => React.createElement("button", { key: l.id, onClick: l.aller,

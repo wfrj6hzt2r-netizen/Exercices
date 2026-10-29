@@ -198,6 +198,11 @@ const MUTATIONS = [
     ["le QR code se lit",
         (s) => rem(s, "            x ^= 0x11d;", "            x ^= 0x11b;")],
 
+    // La ligne « Lien patient » revient dans le Profil du patient.
+    ["aucun écran du patient ne mène à la fabrique de liens",
+        (s) => rem(s, '{ id: "lexique", titre: "Lexique", sous: "Les mots de l\'application", aller: () => setView("lexique") },',
+                      '{ id: "lien", titre: "Lien patient", sous: "", aller: () => setView("lien") },\n                            { id: "lexique", titre: "Lexique", sous: "Les mots de l\'application", aller: () => setView("lexique") },')],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

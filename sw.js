@@ -21,6 +21,8 @@ const COQUILLE = [
     "./icon-maskable-512.png",
     "./apple-touch-icon.png",
     "./favicon-32.png",
+    // La porte du praticien : qu'elle s'ouvre aussi en sous-sol, comme le reste.
+    "./praticien.html",
 ];
 
 self.addEventListener("install", (e) => {
