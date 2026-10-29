@@ -23,8 +23,8 @@ Le **bilan de départ** est le point d'entrée recommandé : il fait choisir au 
 en fonction de ce qu'il ressent le jour où il ouvre le lien. Ouvrir une étape précise
 court-circuite ce réglage.
 
-Le champ **Séances par semaine** (cinq par défaut) règle l'objectif contre lequel l'écran
-Progrès mesure l'assiduité du patient ; il s'ajoute au lien sous la forme `?s=3`.
+Le champ **Séances par semaine** (trois par défaut) règle l'objectif contre lequel l'écran
+Progrès mesure l'assiduité du patient ; il s'ajoute au lien sous la forme `?s=5` quand il s'écarte de trois.
 
 Envoyer un nouveau lien remplace le précédent.
 

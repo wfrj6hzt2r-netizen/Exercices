@@ -5250,6 +5250,7 @@ function migrerSauvegarde(data, aujourdhui) {
     data.pointDeDepart = data.pointDeDepart || null;
     data.memoire = memoriserParcours(data.memoire, data.journal);
     data.etapes = data.etapes || [];
+    data.prescritEcarte = data.prescritEcarte || null;
     data.version = STORAGE_VERSION;
     return data;
 }
@@ -5644,7 +5645,7 @@ function construireRoute(e) {
 // Une adresse inconnue, ou qui désigne une pathologie retirée du contenu, renvoie null :
 // l'appelant retombe alors sur l'accueil plutôt que d'afficher un écran vide.
 // Le nombre de séances par semaine que le kinésithérapeute attend, porté par le lien :
-// « #/z/genou/entorse?s=3 ». Absent, l'application compte cinq séances.
+// « #/z/genou/entorse?s=5 ». Absent, l'application compte trois séances.
 function seancesDuLien(hash) {
     const m = /[?&]s=(\d)\b/.exec(String(hash || ""));
     const n = m ? Number(m[1]) : null;
@@ -5933,8 +5934,8 @@ const FENETRES = [
     { id: "tout", libelle: "Global", jours: null },
 ];
 // Le nombre de séances par semaine attendu par défaut, quand le lien du kinésithérapeute
-// n'en dit rien. Choisi par le praticien.
-const SEANCES_SEMAINE_DEFAUT = 5;
+// n'en dit rien. Choisi par le praticien : cinq au départ, ramené à trois le 29 octobre 2026.
+const SEANCES_SEMAINE_DEFAUT = 3;
 function joursDeLaFenetre(fenetre, journal, aujourdhui) {
     if (fenetre.jours)
         return fenetre.jours;
@@ -6352,13 +6353,25 @@ function NoteDePrudence({ texte, deplier, onVue }) {
 //
 // La décision est figée au montage, comme pour la règle de prudence : sans cela, marquer
 // les signes « vus » les ferait disparaître sous les yeux du patient au rendu suivant.
+//
+// Déplié, l'encadré framboise occupait tout le premier écran sous « Bonjour » : le praticien
+// l'a jugé trop gros, et la carte « Mon parcours » passait sous la ligne de flottaison. Il
+// ne montre plus que son titre ; la liste s'ouvre d'une touche.
 function SignauxDuJour({ items, montrer, onVue }) {
     const [visible] = useState(() => !!montrer);
+    const [ouvert, setOuvert] = useState(false);
     useEffect(() => { if (montrer && onVue) onVue(); }, []);
     if (!visible)
         return null;
     return React.createElement("div", { className: "px-6 pb-5" },
-        React.createElement(SignauxAlerte, { items: items }));
+        ouvert
+            ? React.createElement(SignauxAlerte, { items: items, onReplier: () => setOuvert(false) })
+            : React.createElement("button", { type: "button", "aria-expanded": false, onClick: () => setOuvert(true),
+                className: "cible-44 w-full rounded-2xl px-4 flex items-center gap-2.5 text-left",
+                style: { backgroundColor: WARN_VOILE, border: `1px solid ${WARN_FILET}`, color: WARN } },
+                React.createElement(IconeAlerte, { size: 16, className: "shrink-0" }),
+                React.createElement("span", { className: "t-etiquette font-semibold uppercase flex-1", style: { letterSpacing: "0.03em" } }, "Quand consulter sans attendre"),
+                React.createElement(IconeChevronBas, { size: 16, className: "shrink-0" })));
 }
 // La zone suffit au rachis lombaire, où les quatre parcours partagent le même risque. Au
 // rachis cervical non : seules les quatre névralgies cervico-brachiales exposent à une
@@ -6387,9 +6400,14 @@ function BandeauUrgence({ texte }) {
             React.createElement("p", { className: "t-etiquette font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Urgence"),
             React.createElement("p", { className: "t-accompagne mt-1.5 leading-relaxed", style: { color: INK } }, texte)));
 }
-function SignauxAlerte({ items }) {
+function SignauxAlerte({ items, onReplier }) {
+    const titre = React.createElement("span", { className: "t-etiquette font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Quand consulter sans attendre");
     return (React.createElement("div", { className: "rounded-2xl p-4", style: { backgroundColor: WARN_VOILE, border: `1px solid ${WARN_FILET}` } },
-        React.createElement("p", { className: "t-etiquette font-semibold uppercase", style: { color: WARN, letterSpacing: "0.08em" } }, "Quand consulter sans attendre"),
+        onReplier
+            ? React.createElement("button", { type: "button", "aria-expanded": true, onClick: onReplier,
+                className: "w-full flex items-center justify-between gap-2 text-left", style: { color: WARN } },
+                titre, React.createElement(IconeChevronBas, { size: 16, className: "shrink-0", style: { transform: "rotate(180deg)" } }))
+            : React.createElement("p", null, titre),
         React.createElement("ul", { className: "mt-2 flex flex-col gap-1.5" }, items.map((t, i) => (React.createElement("li", { key: i, className: "t-accompagne leading-relaxed flex gap-2", style: { color: INK } },
             React.createElement("span", { style: { color: WARN } }, "\u2022"),
             React.createElement("span", null, t))))),
@@ -7149,10 +7167,17 @@ function GuidedJourney() {
     // simple retour en arrière réécrirait la prescription. Un nouveau lien est donc pris en
     // compte à la prochaine ouverture franche, ce qui est le cas courant.
     const [prescrit, setPrescrit] = useState(() => restored.prescrit || null);
+    // Le programme que le patient a écarté en recommençant un nouveau parcours. Le raccourci
+    // de l'écran d'accueil peut garder l'adresse du lien d'origine : sans cette mémoire, le
+    // programme écarté se réinstallait à l'ouverture suivante.
+    const [prescritEcarte, setPrescritEcarte] = useState(() => restored.prescritEcarte || null);
+    const [confirmerNouveau, setConfirmerNouveau] = useState(false);
     useEffect(() => {
         const cle = cleDuProgramme(arrivee);
         const seances = typeof window !== "undefined" ? seancesDuLien(window.location.hash) : null;
         // Un même programme renvoyé avec un autre rythme met le rythme à jour, sans toucher au reste.
+        if (cle && cle === prescritEcarte)
+            return;
         if (cle && cle !== (prescrit && prescrit.cle))
             setPrescrit(Object.assign({ cle, route: arrivee, date: aujourdHui() }, seances ? { seancesSemaine: seances } : null));
         else if (cle && seances && seances !== prescrit.seancesSemaine)
@@ -7234,8 +7259,8 @@ function GuidedJourney() {
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
         writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit,
-            profil, pointDeDepart, memoire, etapes });
-    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes]);
+            profil, pointDeDepart, memoire, etapes, prescritEcarte });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes, prescritEcarte]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -7379,6 +7404,23 @@ function GuidedJourney() {
         setView(route.view);
     };
     const reprendre = () => ouvrirRoute(lastRoute);
+    // Recommencer un nouveau parcours : le programme en cours quitte l'accueil, avec son point
+    // de départ. L'historique reste — journal, charges, mémoire des parcours — et se relit
+    // dans le Profil. « Tout effacer », plus bas dans le Profil, reste le seul geste qui vide tout.
+    const nouveauParcours = () => {
+        if (prescrit)
+            setPrescritEcarte(prescrit.cle);
+        setPrescrit(null);
+        setLastRoute(null);
+        setPointDeDepart(null);
+        setFicheOuverte(null);
+        setConfirmerNouveau(false);
+        setPathId(null);
+        setInjuryId(null);
+        setStageIdx(0);
+        setQuery("");
+        setView("zone");
+    };
     const toutEffacer = () => {
         clearStore();
         setDone({});
@@ -7388,6 +7430,7 @@ function GuidedJourney() {
         setPointDeDepart(null);
         setMemoire({});
         setEtapes([]);
+        setPrescritEcarte(null);
         setBilanOuvert(null);
         setLastRoute(null);
         setQuery("");
@@ -7670,7 +7713,21 @@ function GuidedJourney() {
                                 : `Aujourd'hui : ${faits} exercice${faits > 1 ? "s" : ""} sur ${seance.exercices.length}`),
                         React.createElement("button", { onClick: () => ouvrirRoute(routeDuParcours),
                             className: "cible-44 w-full mt-4 rounded-full t-corps font-medium text-white", style: { backgroundColor: ACCENT } },
-                            seance && seance.etape === null && seance.total ? "Commencer mon programme" : "Continuer ma séance"))
+                            seance && seance.etape === null && seance.total ? "Commencer mon programme" : "Continuer ma séance"),
+                        // En retrait, sous le bouton plein : on recommence rarement, et jamais par mégarde.
+                        confirmerNouveau
+                            ? React.createElement("div", { className: "mt-4 rounded-2xl p-4", style: { backgroundColor: ACCENT_PALE } },
+                                React.createElement("p", { className: "t-accompagne leading-relaxed", style: { color: INK } },
+                                    "Ce parcours quittera l'accueil, avec votre point de départ. Votre historique reste consultable dans Profil."),
+                                React.createElement("div", { className: "flex gap-2 mt-3" },
+                                    React.createElement("button", { type: "button", onClick: nouveauParcours,
+                                        className: "cible-44 flex-1 rounded-full t-accompagne font-semibold",
+                                        style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } }, "Recommencer"),
+                                    React.createElement("button", { type: "button", onClick: () => setConfirmerNouveau(false),
+                                        className: "cible-44 flex-1 rounded-full t-accompagne", style: { border: `1px solid ${BORDURE}`, color: INK } }, "Annuler")))
+                            : React.createElement("button", { type: "button", onClick: () => setConfirmerNouveau(true),
+                                className: "cible-44 w-full mt-2 t-accompagne underline underline-offset-2", style: { color: INK_DOUX } },
+                                "Recommencer un nouveau parcours"))
                         : React.createElement(React.Fragment, null,
                             React.createElement("p", { className: "t-etiquette font-semibold uppercase", style: { color: ACCENT_FORT } }, "MON PARCOURS"),
                             React.createElement("h2", { className: "t-carte font-semibold mt-1", style: { color: INK } }, "Aucun programme en cours"),
@@ -7690,8 +7747,10 @@ function GuidedJourney() {
                             React.createElement("span", { className: "underline underline-offset-2", style: { color: ACCENT_FORT } }, "voir le d\u00E9tail")))),
                 React.createElement("section", null,
                     intertitre("Accès rapide"),
+                    // Pastille au-dessus, libellé centré dessous : côte à côte, les deux libellés se
+                    // coupaient en deux lignes calées à gauche, d'aplomb nulle part (relevé sur iPhone).
                     React.createElement("div", { className: "flex gap-2.5" }, acces.map((a) => React.createElement("button", { key: a.id, onClick: a.aller,
-                        className: "flex-1 rounded-2xl p-5 flex items-center gap-3 text-left cible-44", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                        className: "flex-1 rounded-2xl p-5 flex flex-col items-center gap-2 text-center cible-44", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                         React.createElement("span", { className: "inline-flex items-center justify-center rounded-full shrink-0 w-11 h-11", style: { backgroundColor: ACCENT_VOILE, color: ACCENT_FORT } },
                             React.createElement(a.Icone, { size: 22 })),
                         React.createElement("span", { className: "t-corps font-medium", style: { color: INK } }, a.titre))))),
@@ -7866,6 +7925,38 @@ function GuidedJourney() {
                 React.createElement("p", { className: "t-corps mt-2 leading-relaxed", style: { color: SUR_BANDEAU_DOUX } },
                     "Tout est facultatif, et rien ne quitte ce téléphone.")),
             React.createElement("div", { className: "px-6 pb-8 flex flex-col gap-6" },
+                // De haut en bas, ce qui sert à chaque visite : le rappel, puis la note rapide pour
+                // le prochain rendez-vous. Le nom et l'âge, une fois écrits, ne se relisent plus,
+                // et repoussaient la note sous trois écrans de champs déjà remplis.
+                React.createElement("section", null,
+                    intertitre("Rappel de séance"),
+                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                        React.createElement("p", { id: "pr-jours", className: "t-accompagne font-medium", style: { color: INK } }, "Les jours"),
+                        React.createElement("div", { className: "flex gap-1.5 mt-1.5", role: "group", "aria-labelledby": "pr-jours" },
+                            JOURS_RAPPEL.map((j) => {
+                                const actif = joursRappel.indexOf(j.id) >= 0;
+                                return React.createElement("button", { key: j.id, type: "button", "aria-pressed": actif, "aria-label": j.long,
+                                    onClick: () => poser("rappelJours")(actif ? joursRappel.filter((x) => x !== j.id) : JOURS_RAPPEL.map((x) => x.id).filter((x) => x === j.id || joursRappel.indexOf(x) >= 0)),
+                                    className: "flex-1 cible-44 rounded-full t-accompagne font-semibold",
+                                    // Un état, pas une action : voilé, comme les filtres de Progrès. Cinq
+                                    // pastilles vertes pleines auraient été cinq boutons à presser (#71).
+                                    style: { backgroundColor: actif ? ACCENT_VOILE : "transparent", color: actif ? ACCENT_FORT : INK_DOUX,
+                                        border: `1.5px solid ${actif ? ACCENT_FORT : BORDURE}` } }, j.court);
+                            })),
+                        React.createElement("label", { htmlFor: "pr-heure", className: "t-accompagne font-medium block mt-4", style: { color: INK } }, "L'heure"),
+                        React.createElement("input", { id: "pr-heure", type: "time", value: heureRappel, onChange: (e) => poser("rappelHeure")(e.target.value || "18:00"),
+                            className: "cible-44 mt-1.5 rounded-2xl px-4 t-corps", style: { border: `1px solid ${BORDURE}`, color: INK, backgroundColor: SURFACE } }),
+                        React.createElement("button", { type: "button", disabled: !joursRappel.length,
+                            onClick: () => telecharger("rappel-mes-exercices.ics", "text/calendar", calendrierDeRappel(joursRappel, heureRappel)),
+                            className: "cible-44 w-full mt-4 rounded-full t-corps font-medium disabled:opacity-30",
+                            style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } }, "Ajouter le rappel à mon agenda"),
+                        React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: INK_DOUX } },
+                            "Le téléphone ouvre son agenda : confirmez l'ajout. Pour l'arrêter, supprimez l'évènement « Mes exercices » de l'agenda."))),
+                React.createElement("section", null,
+                    intertitre("Note rapide"),
+                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                        React.createElement(ChampProfil, { id: "pr-rdv", intitule: "Ce que je veux dire à mon kinésithérapeute",
+                            aide: "Une question, un exercice qui gêne, une douleur nouvelle.", valeur: profil.notesRdv, onChange: poser("notesRdv"), long: true }))),
                 React.createElement("section", null,
                     intertitre("Moi"),
                     React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-4", style: carte },
@@ -7892,35 +7983,6 @@ function GuidedJourney() {
                                 ` · ${m.seances} séance${m.seances > 1 ? "s" : ""}`, fourchette(m))))),
                     React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } },
                         "Gardé même après la fin d'un parcours, pour en reparler si la douleur revient.")),
-                React.createElement("section", null,
-                    intertitre("Pour mon prochain rendez-vous"),
-                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
-                        React.createElement(ChampProfil, { id: "pr-rdv", intitule: "Ce que je veux dire à mon kinésithérapeute",
-                            aide: "Une question, un exercice qui gêne, une douleur nouvelle.", valeur: profil.notesRdv, onChange: poser("notesRdv"), long: true }))),
-                React.createElement("section", null,
-                    intertitre("Rappel de séance"),
-                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
-                        React.createElement("p", { id: "pr-jours", className: "t-accompagne font-medium", style: { color: INK } }, "Les jours"),
-                        React.createElement("div", { className: "flex gap-1.5 mt-1.5", role: "group", "aria-labelledby": "pr-jours" },
-                            JOURS_RAPPEL.map((j) => {
-                                const actif = joursRappel.indexOf(j.id) >= 0;
-                                return React.createElement("button", { key: j.id, type: "button", "aria-pressed": actif, "aria-label": j.long,
-                                    onClick: () => poser("rappelJours")(actif ? joursRappel.filter((x) => x !== j.id) : JOURS_RAPPEL.map((x) => x.id).filter((x) => x === j.id || joursRappel.indexOf(x) >= 0)),
-                                    className: "flex-1 cible-44 rounded-full t-accompagne font-semibold",
-                                    // Un état, pas une action : voilé, comme les filtres de Progrès. Cinq
-                                    // pastilles vertes pleines auraient été cinq boutons à presser (#71).
-                                    style: { backgroundColor: actif ? ACCENT_VOILE : "transparent", color: actif ? ACCENT_FORT : INK_DOUX,
-                                        border: `1.5px solid ${actif ? ACCENT_FORT : BORDURE}` } }, j.court);
-                            })),
-                        React.createElement("label", { htmlFor: "pr-heure", className: "t-accompagne font-medium block mt-4", style: { color: INK } }, "L'heure"),
-                        React.createElement("input", { id: "pr-heure", type: "time", value: heureRappel, onChange: (e) => poser("rappelHeure")(e.target.value || "18:00"),
-                            className: "cible-44 mt-1.5 rounded-2xl px-4 t-corps", style: { border: `1px solid ${BORDURE}`, color: INK, backgroundColor: SURFACE } }),
-                        React.createElement("button", { type: "button", disabled: !joursRappel.length,
-                            onClick: () => telecharger("rappel-mes-exercices.ics", "text/calendar", calendrierDeRappel(joursRappel, heureRappel)),
-                            className: "cible-44 w-full mt-4 rounded-full t-corps font-medium disabled:opacity-30",
-                            style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } }, "Ajouter le rappel à mon agenda"),
-                        React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: INK_DOUX } },
-                            "Le téléphone ouvre son agenda : confirmez l'ajout. Pour l'arrêter, supprimez l'évènement « Mes exercices » de l'agenda."))),
                 React.createElement("section", null,
                     intertitre("Mes données"),
                     React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-3", style: carte },

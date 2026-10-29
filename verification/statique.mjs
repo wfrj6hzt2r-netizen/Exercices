@@ -755,8 +755,8 @@ controle("la fabrique de liens atteint chaque programme", () => {
 });
 
 // --- Le rythme porté par le lien ne casse pas le lien ------------------------------------
-// La fabrique ajoute « ?s=3 » au lien quand le kinésithérapeute attend un autre rythme que
-// cinq séances. Si la lecture de l'adresse ne savait pas l'écarter, « entorse?s=3 » ne
+// La fabrique ajoute « ?s=5 » au lien quand le kinésithérapeute attend un autre rythme que
+// trois séances. Si la lecture de l'adresse ne savait pas l'écarter, « entorse?s=5 » ne
 // désignerait plus aucune blessure : le patient atterrirait sur l'accueil, son programme perdu.
 controle("le rythme porté par le lien ne casse pas le lien", () => {
     const out = [];
