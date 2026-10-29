@@ -1058,6 +1058,9 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Hanche en charnière (soulevé sécurisé)": "hip-hinge",
         "Hanche en charnière lestée (deadlift roumain)": "hip-hinge",
         "Renforcement de la chaîne postérieure": "hip-hinge",
+        // Validé sur capture, octobre 2026 : dos enroulé, tête et bras pendants, comme la
+        // consigne le dit. L'étirement debout générique tenait un pied derrière soi.
+        "Étirement global de la chaîne postérieure": "forward-fold",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
