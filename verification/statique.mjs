@@ -336,6 +336,16 @@ controle("le pictogramme ne contredit pas la consigne", () => {
         if (montree && !decrites.includes(montree))
             out.push(`${ou} — « ${ex.name} » : dessin « ${montree} », consigne « ${decrite} »`);
     }
+    // Une posture que la lecture ne sait plus nommer rend ses consignes muettes, donc jamais
+    // contredites : « à genoux » a manqué jusqu'en octobre 2026, et un étirement « un genou au
+    // sol » a montré quelqu'un debout sans que ce contrôle le voie. On vérifie que chaque
+    // posture se lit encore.
+    const lues = [["Un genou au sol, l'autre jambe fléchie devant.", "genoux"], ["À genoux, assis sur les talons.", "genoux"],
+        ["Allongé sur le dos, genoux pliés.", "dos"], ["Assis au bord d'une chaise.", "assis"],
+        ["Debout, pieds écartés.", "debout"], ["Allongé sur le côté, jambes fléchies.", "cote"]];
+    for (const [txt, attendue] of lues)
+        if (D.postureDecrite(txt) !== attendue)
+            out.push(`la lecture des postures ne voit plus « ${attendue} » dans « ${txt} »`);
     return out;
 });
 
@@ -629,9 +639,10 @@ const SANS_POSTURE = new Set([
     "ankle-pump", "foot-arch",          // une jambe, un pied
     "band", "isometrique",              // un élastique, deux flèches
     "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
-    // À genoux, assis sur les talons : une posture que « postureDecrite » ne nomme pas.
-    // La déclarer reviendrait à inventer une sixième valeur que rien ne lirait.
-    "child-pose", "nordic-kneel",
+    // L'assis-debout passe d'une posture à l'autre : sa consigne commence tantôt assise,
+    // tantôt debout, et le dessin de la chaise convient aux deux. (« À genoux », exempté ici
+    // jusqu'en octobre 2026 faute d'être lu dans les consignes, se déclare désormais.)
+    "assis-debout",
 ]);
 controle("tout dessin de silhouette entière déclare sa posture", () => {
     // Le contrôle de cohérence compare la posture que la consigne nomme à celle que le
@@ -959,6 +970,19 @@ controle("aucune taille de texte hors de l'échelle", () => {
 // supplanterait en silence. Le contrôle fige le résultat jugé, pas la règle qui le produit.
 controle("les affectations relues restent celles qui ont été validées", () => {
     const attendu = {
+        // Relecture des postures, octobre 2026 : quatorze affectations validées sur planche.
+        "Étirement prolongé du fléchisseur de hanche": "fente-au-sol",
+        "Étirement de l'avant de la hanche": "fente-au-sol",
+        "Squat sur une chaise": "assis-debout",
+        "Assis-debout répétés": "assis-debout",
+        "Mobilité en flexion dorsale": "calf-wall",
+        "Renforcement des éverseurs en charge": "band",
+        "Équilibre unipodal avec voûte active": "balance",
+        "Renforcement du haut du dos à l'élastique": "retraction-omoplates",
+        "Renforcement scapulaire": "retraction-omoplates",
+        "Renforcement scapulaire associé": "retraction-omoplates",
+        "Renforcement rhomboïdes / trapèzes moyens": "retraction-omoplates",
+        "Arrêter les lancers et les appuis": "advice",
         // Coiffe, octobre 2026 : la rétraction a son propre dessin, debout de profil avec une
         // flèche double dans le dos ; le renforcement en charge prend le tirage qu'elle quitte.
         "Rétraction des omoplates": "retraction-omoplates",
