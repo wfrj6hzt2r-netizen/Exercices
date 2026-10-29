@@ -258,7 +258,7 @@ try {
         "PARCOURS_DU_LIEN", "RUNNER_DATA", "CROISSANCE_DATA", "injuriesOrdonnees",
         "construireRoute", "phasesDe",
         "LIBELLE_LARGEUR_CAR", "VUE_X1", "VUE_X2",
-        "migrerSauvegarde", "seancesDuLien", "etatDepuisRoute", "tuilesDeDose", "serieDouleur", "variationDouleur", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
+        "migrerSauvegarde", "qrCorrecteurs", "qrFormat", "qrVersionBits", "qrMatrice", "seancesDuLien", "etatDepuisRoute", "tuilesDeDose", "serieDouleur", "variationDouleur", "idExercice", "cleParcours", "STORAGE_VERSION", "PROFIL_VIDE"]);
 } catch (e) {
     panne = e.message;
 }
@@ -763,6 +763,36 @@ controle("la fabrique de liens atteint chaque programme", () => {
     const fantomes = [...joignables].filter((x) => !attendus.has(x));
     return manquants.map((x) => `${x} : aucun lien ne mène à ce programme`)
         .concat(fantomes.map((x) => `${x} : la fabrique propose un programme qui n'existe pas`));
+});
+
+// --- Le QR code se lit ----------------------------------------------------------------------
+// Le QR code de la fabrique de liens est dessiné par l'application elle-même, sans bibliothèque :
+// un patient qui scanne en séance un code faux n'obtient rien, et rien ne le signale. On le
+// confronte aux valeurs de référence de la norme — les correcteurs de l'exemple « HELLO WORLD »
+// en 1-M, le mot de format du masque 0, le mot de version 7 — et à sa structure : taille de
+// la version, trois repères aux coins, module sombre fixe.
+controle("le QR code se lit", () => {
+    const out = [];
+    const ec = D.qrCorrecteurs([32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17], 10);
+    if (ec.join(",") !== "196,35,39,119,235,215,231,226,93,23")
+        out.push(`correcteurs de « HELLO WORLD » faux : ${ec.join(",")}`);
+    if (D.qrFormat(0).toString(2).padStart(15, "0") !== "101010000010010")
+        out.push("mot de format (M, masque 0) faux");
+    if (D.qrVersionBits(7).toString(2).padStart(18, "0") !== "000111110010010100")
+        out.push("mot de version 7 faux");
+    const lien = "https://wfrj6hzt2r-netizen.github.io/Exercices/#/z/genou/reconstruction-lca/e2?s=5";
+    const m = D.qrMatrice(lien);
+    if (!m || m.length !== 37)
+        out.push(`un lien de ${lien.length} caractères devrait tenir en version 5 (37 modules) : ${m ? m.length : "rien"}`);
+    else {
+        const repere = (r, c) => [0, 6].every((d) => m[r + d][c] && m[r][c + d] && m[r + d][c + 6 - d])
+            && m[r + 3][c + 3] && !m[r + 1][c + 1];
+        if (!repere(0, 0) || !repere(0, 30) || !repere(30, 0))
+            out.push("les trois repères de coin ne sont pas dessinés");
+        if (!m[37 - 8][8])
+            out.push("le module sombre fixe manque");
+    }
+    return out;
 });
 
 // --- Le rythme porté par le lien ne casse pas le lien ------------------------------------

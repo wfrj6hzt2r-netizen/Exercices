@@ -193,6 +193,11 @@ const MUTATIONS = [
     ["le pictogramme ne contredit pas la consigne",
         (s) => rem(s, 'noter("genoux", /\\ba genoux\\b|^un genou au sol|\\bagenouille/);', "")],
 
+    // Le corps de Galois change de polynôme : le QR garde sa forme, mais ses correcteurs
+    // sont faux et aucun appareil ne le lit.
+    ["le QR code se lit",
+        (s) => rem(s, "            x ^= 0x11d;", "            x ^= 0x11b;")],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

@@ -5298,6 +5298,7 @@ function migrerSauvegarde(data, aujourdhui) {
     data.memoire = memoriserParcours(data.memoire, data.journal);
     data.etapes = data.etapes || [];
     data.prescritEcarte = data.prescritEcarte || null;
+    data.praticien = !!data.praticien;
     data.version = STORAGE_VERSION;
     return data;
 }
@@ -5816,7 +5817,7 @@ const RETOUR = {
     // l'introduction, et le retour est alors calculé par « cibleRetour ».
     apropos: "profil",
     lexique: "profil",
-    lien: "accueil",
+    lien: "profil",
     "croissance-liste": "zone",
     "croissance-checkin": "croissance-liste",
     "croissance-exercices": "croissance-checkin",
@@ -7043,6 +7044,248 @@ function FicheExercice(props) {
                     style: { minHeight: 52, backgroundColor: accent, color: props.surAccent || "#FFFFFF" } },
                     "✓ J'ai fait l'exercice"))));
 }
+// --- Le QR code ---------------------------------------------------------------------------
+// Écrit pour cette application, d'après la norme ISO/IEC 18004 : mode octets, correction de
+// niveau M (15 % de la surface peut être abîmée), versions 1 à 10, soit jusqu'à 213 octets —
+// le plus long lien de l'application en fait une centaine. Une bibliothèque toute faite aurait
+// été du code tiers dans la page du patient ; celui-ci tient en deux cents lignes relisibles,
+// et le contrôle « le QR code se lit » le confronte aux valeurs de référence de la norme.
+const QR_BLOCS_M = [null,
+    [10, [[1, 16]]], [16, [[1, 28]]], [26, [[1, 44]]], [18, [[2, 32]]], [24, [[2, 43]]],
+    [16, [[4, 27]]], [18, [[4, 31]]], [22, [[2, 38], [2, 39]]], [22, [[3, 36], [2, 37]]],
+    [26, [[4, 43], [1, 44]]]];
+const QR_ALIGNEMENTS = [null, [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34],
+    [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]];
+const QR_EXP = [];
+const QR_LOG = [];
+(function () {
+    let x = 1;
+    for (let i = 0; i < 255; i++) {
+        QR_EXP[i] = x;
+        QR_LOG[x] = i;
+        x <<= 1;
+        if (x & 0x100)
+            x ^= 0x11d;
+    }
+})();
+const qrMul = (a, b) => (a && b ? QR_EXP[(QR_LOG[a] + QR_LOG[b]) % 255] : 0);
+// Les codes correcteurs de Reed-Solomon d'un bloc de données.
+function qrCorrecteurs(donnees, n) {
+    let gen = [1];
+    for (let i = 0; i < n; i++) {
+        const suite = new Array(gen.length + 1).fill(0);
+        gen.forEach((c, j) => { suite[j] ^= c; suite[j + 1] ^= qrMul(c, QR_EXP[i]); });
+        gen = suite;
+    }
+    const reste = donnees.concat(new Array(n).fill(0));
+    for (let i = 0; i < donnees.length; i++) {
+        const f = reste[i];
+        if (f)
+            for (let j = 0; j < gen.length; j++)
+                reste[i + j] ^= qrMul(gen[j], f);
+    }
+    return reste.slice(donnees.length);
+}
+// Les bits de format (niveau M, masque) et de version, protégés par leur code BCH.
+function qrBch(valeur, poly, decalage) {
+    let v = valeur << decalage;
+    const degre = (p) => 31 - Math.clz32(p);
+    while (v && degre(v) >= degre(poly))
+        v ^= poly << (degre(v) - degre(poly));
+    return (valeur << decalage) | v;
+}
+const qrFormat = (masque) => qrBch((0 << 3) | masque, 0x537, 10) ^ 0x5412;
+const qrVersionBits = (version) => qrBch(version, 0x1f25, 12);
+const QR_MASQUES = [(i, j) => (i + j) % 2 === 0, (i) => i % 2 === 0, (i, j) => j % 3 === 0,
+    (i, j) => (i + j) % 3 === 0, (i, j) => (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0,
+    (i, j) => ((i * j) % 2) + ((i * j) % 3) === 0, (i, j) => (((i * j) % 2) + ((i * j) % 3)) % 2 === 0,
+    (i, j) => (((i + j) % 2) + ((i * j) % 3)) % 2 === 0];
+// La matrice d'un texte : un tableau de lignes de booléens (vrai = module sombre), ou null
+// si le texte dépasse la version 10.
+function qrMatrice(texte) {
+    const octets = Array.from(new TextEncoder().encode(texte));
+    let version = 1;
+    const capacite = (v) => QR_BLOCS_M[v][1].reduce((a, [n, k]) => a + n * k, 0);
+    while (version <= 10 && Math.ceil((4 + (version < 10 ? 8 : 16) + 8 * octets.length) / 8) > capacite(version))
+        version++;
+    if (version > 10)
+        return null;
+    const [nbCorrecteurs, groupes] = QR_BLOCS_M[version];
+    const total = capacite(version);
+    // Les données : mode octets, longueur, octets, terminateur, puis bourrage.
+    const bits = [];
+    const pousser = (v, n) => { for (let i = n - 1; i >= 0; i--) bits.push((v >> i) & 1); };
+    pousser(4, 4);
+    pousser(octets.length, version < 10 ? 8 : 16);
+    octets.forEach((o) => pousser(o, 8));
+    pousser(0, Math.min(4, total * 8 - bits.length));
+    while (bits.length % 8)
+        bits.push(0);
+    const mots = [];
+    for (let i = 0; i < bits.length; i += 8)
+        mots.push(parseInt(bits.slice(i, i + 8).join(""), 2));
+    for (let k = 0; mots.length < total; k++)
+        mots.push(k % 2 ? 0x11 : 0xec);
+    // Découpage en blocs, codes correcteurs, puis entrelacement.
+    const blocs = [];
+    let p = 0;
+    groupes.forEach(([n, k]) => { for (let i = 0; i < n; i++) { blocs.push(mots.slice(p, p + k)); p += k; } });
+    const correcteurs = blocs.map((b) => qrCorrecteurs(b, nbCorrecteurs));
+    const flux = [];
+    const plusLong = Math.max.apply(null, blocs.map((b) => b.length));
+    for (let i = 0; i < plusLong; i++)
+        blocs.forEach((b) => { if (i < b.length) flux.push(b[i]); });
+    for (let i = 0; i < nbCorrecteurs; i++)
+        correcteurs.forEach((c) => flux.push(c[i]));
+    // La matrice : motifs fixes d'abord, réservés, puis les données en zigzag.
+    const taille = 17 + 4 * version;
+    const m = [], fixe = [];
+    for (let i = 0; i < taille; i++) { m.push(new Array(taille).fill(false)); fixe.push(new Array(taille).fill(false)); }
+    const poser = (i, j, v) => { m[i][j] = v; fixe[i][j] = true; };
+    const reperes = (r, c) => {
+        for (let i = -1; i <= 7; i++)
+            for (let j = -1; j <= 7; j++) {
+                const y = r + i, x = c + j;
+                if (y < 0 || x < 0 || y >= taille || x >= taille)
+                    continue;
+                const dans = i >= 0 && i <= 6 && j >= 0 && j <= 6;
+                poser(y, x, dans && (i === 0 || i === 6 || j === 0 || j === 6 || (i >= 2 && i <= 4 && j >= 2 && j <= 4)));
+            }
+    };
+    reperes(0, 0);
+    reperes(0, taille - 7);
+    reperes(taille - 7, 0);
+    for (let i = 8; i < taille - 8; i++) {
+        poser(6, i, i % 2 === 0);
+        poser(i, 6, i % 2 === 0);
+    }
+    const al = QR_ALIGNEMENTS[version];
+    // Les trois coins occupés par les repères n'en reçoivent pas ; les autres, même posés
+    // sur la ligne de synchronisation, si.
+    al.forEach((r, ri) => al.forEach((c, ci) => {
+        const dernier = al.length - 1;
+        if ((ri === 0 && ci === 0) || (ri === 0 && ci === dernier) || (ri === dernier && ci === 0))
+            return;
+        for (let i = -2; i <= 2; i++)
+            for (let j = -2; j <= 2; j++)
+                poser(r + i, c + j, Math.max(Math.abs(i), Math.abs(j)) !== 1);
+    }));
+    // Zones de format et de version réservées ; le module sombre fixe.
+    for (let i = 0; i < 9; i++) {
+        if (!fixe[8][i]) poser(8, i, false);
+        if (!fixe[i][8]) poser(i, 8, false);
+    }
+    for (let i = 0; i < 8; i++) {
+        poser(8, taille - 1 - i, false);
+        poser(taille - 1 - i, 8, false);
+    }
+    poser(taille - 8, 8, true);
+    if (version >= 7)
+        for (let i = 0; i < 6; i++)
+            for (let j = 0; j < 3; j++) {
+                poser(i, taille - 11 + j, false);
+                poser(taille - 11 + j, i, false);
+            }
+    const fluxBits = [];
+    flux.forEach((o) => { for (let i = 7; i >= 0; i--) fluxBits.push((o >> i) & 1); });
+    let k = 0;
+    for (let c = taille - 1; c > 0; c -= 2) {
+        if (c === 6)
+            c--;
+        for (let n = 0; n < taille; n++) {
+            const montant = ((c + 1) & 2) === 0;
+            const r = montant ? taille - 1 - n : n;
+            for (let d = 0; d < 2; d++) {
+                const x = c - d;
+                if (fixe[r][x])
+                    continue;
+                m[r][x] = k < fluxBits.length ? fluxBits[k] === 1 : false;
+                k++;
+            }
+        }
+    }
+    // Les huit masques sont essayés ; le moins pénalisé selon la norme l'emporte.
+    const appliquer = (masque) => {
+        const out = m.map((l) => l.slice());
+        for (let i = 0; i < taille; i++)
+            for (let j = 0; j < taille; j++)
+                if (!fixe[i][j] && QR_MASQUES[masque](i, j))
+                    out[i][j] = !out[i][j];
+        const f = qrFormat(masque);
+        const bit = (i) => ((f >> i) & 1) === 1;
+        // Première copie, autour du repère en haut à gauche ; la colonne 6 et la ligne 6,
+        // celles de la synchronisation, sont enjambées.
+        for (let i = 0; i <= 5; i++)
+            out[i][8] = bit(i);
+        out[7][8] = bit(6);
+        out[8][8] = bit(7);
+        out[8][7] = bit(8);
+        for (let i = 9; i < 15; i++)
+            out[8][14 - i] = bit(i);
+        // Seconde copie, sous le repère en haut à droite et à droite de celui du bas.
+        for (let i = 0; i < 8; i++)
+            out[taille - 1 - i][8] = bit(i);
+        for (let i = 8; i < 15; i++)
+            out[8][taille - 15 + i] = bit(i);
+        out[taille - 8][8] = true;
+        if (version >= 7) {
+            const v = qrVersionBits(version);
+            for (let i = 0; i < 18; i++) {
+                const b = ((v >> i) & 1) === 1;
+                out[Math.floor(i / 3)][taille - 11 + (i % 3)] = b;
+                out[taille - 11 + (i % 3)][Math.floor(i / 3)] = b;
+            }
+        }
+        return out;
+    };
+    const penalite = (q) => {
+        let s = 0;
+        const lignes = q.concat(q[0].map((_, j) => q.map((l) => l[j])));
+        lignes.forEach((l) => {
+            let suite = 1;
+            for (let j = 1; j <= l.length; j++) {
+                if (j < l.length && l[j] === l[j - 1]) suite++;
+                else { if (suite >= 5) s += suite - 2; suite = 1; }
+            }
+            const t = l.map((b) => (b ? "1" : "0")).join("");
+            s += 40 * ((t.match(/(?=10111010000|00001011101)/g) || []).length);
+        });
+        for (let i = 0; i < taille - 1; i++)
+            for (let j = 0; j < taille - 1; j++)
+                if (q[i][j] === q[i + 1][j] && q[i][j] === q[i][j + 1] && q[i][j] === q[i + 1][j + 1]) s += 3;
+        const sombres = q.reduce((a, l) => a + l.filter(Boolean).length, 0);
+        s += 10 * Math.floor(Math.abs(sombres * 20 / (taille * taille) - 10));
+        return s;
+    };
+    let meilleure = null, score = Infinity;
+    for (let masque = 0; masque < 8; masque++) {
+        const q = appliquer(masque);
+        const p2 = penalite(q);
+        if (p2 < score) { score = p2; meilleure = q; }
+    }
+    return meilleure;
+}
+// Noir sur blanc quel que soit le thème : l'appareil photo de l'iPhone lit mal un QR inversé.
+const QR_ENCRE = "#000000";
+const QR_FOND = "#FFFFFF";
+// Le dessin d'un QR code, avec sa marge blanche de quatre modules que la norme exige.
+function svgQR(texte) {
+    const m = qrMatrice(texte);
+    if (!m)
+        return null;
+    const n = m.length + 8;
+    let chemin = "";
+    m.forEach((ligne, i) => ligne.forEach((sombre, j) => { if (sombre) chemin += `M${j + 4} ${i + 4}h1v1h-1z`; }));
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><rect width="${n}" height="${n}" fill="${QR_FOND}"/><path d="${chemin}" fill="${QR_ENCRE}"/></svg>`;
+}
+function CodeQR({ texte, taille, legende }) {
+    const svg = svgQR(texte);
+    if (!svg)
+        return null;
+    return React.createElement("div", { role: "img", "aria-label": legende || "QR code du lien",
+        style: { width: taille, height: taille, margin: "0 auto", borderRadius: 12, overflow: "hidden" },
+        dangerouslySetInnerHTML: { __html: svg.replace("<svg ", `<svg width="${taille}" height="${taille}" `) } });
+}
 // --- Fabrique de liens, pour le cabinet ------------------------------------------------
 // Un écran que le patient ne voit jamais : il n'est référencé nulle part et ne s'atteint
 // qu'en tapant son adresse. Le kinésithérapeute y choisit le programme et obtient le lien
@@ -7076,7 +7319,7 @@ const PARCOURS_DU_LIEN = [
             const b = z.injuries.find((i) => i.id === bid) || z.injuries[0];
             return b.stages.map((st, k) => ({ v: String(k), t: `\u00C9tape ${k + 1} \u2014 ${st.label}` }));
         },
-        bilan: "Le bilan de d\u00E9part (recommand\u00E9)",
+        bilan: "Le patient choisit son \u00E9tape (recommand\u00E9)",
         route: (zid, bid, etape) => (etape === "bilan"
             ? construireRoute({ view: "checkin", pathId: zid, injuryId: bid })
             : construireRoute({ view: "stage", pathId: zid, injuryId: bid, stageIdx: Number(etape) })),
@@ -7094,7 +7337,7 @@ const PARCOURS_DU_LIEN = [
             return r.stages.map((st, k) => ({ v: String(k),
                 t: `\u00C9tape ${k + 1} \u2014 ${(RUNNER_STAGE_LABELS[k] || {}).label || ""}` }));
         },
-        bilan: "Le choix de l'\u00E9tape par le patient (recommand\u00E9)",
+        bilan: "Le patient choisit son \u00E9tape (recommand\u00E9)",
         route: (rid, _s, etape) => (etape === "bilan"
             ? construireRoute({ view: "runner-stage-select", runnerPathId: rid })
             : construireRoute({ view: "runner-exercises", runnerPathId: rid, runnerStageIdx: Number(etape) })),
@@ -7110,7 +7353,7 @@ const PARCOURS_DU_LIEN = [
             const c = CROISSANCE_DATA.find((x) => x.id === cid) || CROISSANCE_DATA[0];
             return phasesDe(c).map((ph, k) => ({ v: String(k), t: `\u00C9tape ${k + 1} \u2014 ${ph.label}` }));
         },
-        bilan: "Le bilan de d\u00E9part (recommand\u00E9)",
+        bilan: "Le patient choisit son \u00E9tape (recommand\u00E9)",
         route: (cid, _s, etape) => (etape === "bilan"
             ? construireRoute({ view: "croissance-checkin", croissanceId: cid })
             : construireRoute({ view: "croissance-exercices", croissanceId: cid, croissanceStageIdx: Number(etape) })),
@@ -7154,6 +7397,7 @@ function ConstructeurDeLien({ onRetour }) {
         setEtape("bilan");
     };
     // Le rythme n'est écrit dans le lien que s'il s'écarte de la valeur par défaut.
+    const peutPartager = typeof navigator !== "undefined" && typeof navigator.share === "function";
     const route = parcours.route(premierId, secondId, etape)
         + (Number(seances) !== SEANCES_SEMAINE_DEFAUT ? `?s=${seances}` : "");
     const base = typeof window !== "undefined" ? window.location.origin + window.location.pathname : "";
@@ -7182,7 +7426,9 @@ function ConstructeurDeLien({ onRetour }) {
                     (v) => { setSecondId(v); setEtape("bilan"); }, parcours.second(premierId)),
                 // La prévention n'a ni bilan de départ ni étapes : le troisième champ
                 // disparaît plutôt que de proposer un choix vide.
-                parcours.etapes && champ("Point de départ", etape, setEtape,
+                // « Point de départ » se confondait avec le questionnaire « Mon point de départ »
+                // du patient : il s'agit ici de l'étape par laquelle le lien fait entrer.
+                parcours.etapes && champ("Commencer par", etape, setEtape,
                     [{ v: "bilan", t: parcours.bilan }].concat(parcours.etapes(premierId, secondId))),
                 // L'écran Progrès mesure l'assiduité contre ce rythme.
                 champ("Séances par semaine", seances, setSeances,
@@ -7191,13 +7437,35 @@ function ConstructeurDeLien({ onRetour }) {
                     style: { color: INK_DOUX, letterSpacing: "0.08em" } }, "Lien à envoyer"),
                 React.createElement("p", { className: "t-accompagne leading-relaxed",
                     style: { color: INK, backgroundColor: ACCENT_VOILE, borderRadius: RAYON_CARTE, padding: "0.7rem", overflowWrap: "anywhere" } }, lien),
+                // Trois façons de le donner. Envoyer ouvre le partage du téléphone — SMS,
+                // WhatsApp, courriel — avec le lien déjà rempli ; copier reste pour l'ordinateur ;
+                // et en séance, le patient scanne le QR code sur l'écran du praticien.
+                peutPartager && React.createElement("button", { onClick: () => {
+                        navigator.share({ title: "Mes exercices", text: "Votre programme d'exercices :", url: lien }).catch(() => {});
+                    },
+                    className: "cible-44 w-full rounded-full t-corps font-medium text-white mt-3",
+                    style: { backgroundColor: ACCENT } }, "Envoyer au patient"),
                 React.createElement("button", { onClick: () => {
                         if (typeof navigator !== "undefined" && navigator.clipboard)
                             navigator.clipboard.writeText(lien).then(() => setCopie(true), () => setCopie(false));
                         setCopie(true);
                     },
-                    className: "cible-44 w-full rounded-full t-corps font-medium text-white mt-3",
-                    style: { backgroundColor: ACCENT } }, copie ? "Lien copié" : "Copier le lien")),
+                    className: "cible-44 w-full rounded-full t-corps font-medium mt-2",
+                    style: peutPartager ? { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT }
+                        : { backgroundColor: ACCENT, color: "#FFFFFF" } }, copie ? "Lien copié" : "Copier le lien"),
+                React.createElement("p", { className: "t-accompagne mt-5 mb-2 text-center", style: { color: INK_DOUX } },
+                    "Ou faites-le scanner en séance :"),
+                React.createElement(CodeQR, { texte: lien, taille: 220, legende: "QR code du programme choisi" })),
+            // L'accès libre : l'adresse nue, qui ouvre l'accueil et laisse le patient choisir.
+            // C'est celle du QR code affiché au cabinet ; on la donne ici pour pouvoir le refaire.
+            React.createElement("div", { className: "rounded-2xl p-5 bg-white mt-5", style: { border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+                React.createElement("h2", { className: "t-carte font-semibold", style: { color: INK } }, "L'accès libre, pour votre cabinet"),
+                React.createElement("p", { className: "t-accompagne mt-1 mb-4 leading-relaxed", style: { color: INK_DOUX } },
+                    "Ce QR code ouvre l'accueil : le patient choisit lui-même sa zone et son programme."),
+                React.createElement(CodeQR, { texte: base, taille: 200, legende: "QR code de l'accès libre" }),
+                React.createElement("button", { onClick: () => telecharger("qr-mes-exercices.svg", "image/svg+xml", svgQR(base)),
+                    className: "cible-44 w-full rounded-full t-corps font-medium mt-4", style: { border: `1px solid ${BORDURE}`, color: INK } },
+                    "Enregistrer l'image pour l'imprimer")),
             // La note du bas ne valait que pour les pathologies par zone. La prévention
                 // n'a pas de point de départ à régler, et le parcours croissance tutoie
                 // l'enfant qui recevra le lien : le dire ici évite au praticien de
@@ -7205,7 +7473,7 @@ function ConstructeurDeLien({ onRetour }) {
             React.createElement("p", { className: "t-accompagne mt-4 leading-relaxed", style: { color: INK_DOUX } },
                 parcours.id === "prevention"
                     ? "Ce parcours n'a ni bilan de départ ni étapes : le lien ouvre directement la liste des exercices de l'activité choisie."
-                    : "Le bilan de départ fait choisir au patient son stade en fonction de ce qu'il ressent le jour où il ouvre le lien ; c'est le point d'entrée le plus sûr. Ouvrir une étape précise court-circuite ce réglage."),
+                    : "« Le patient choisit son étape » lui fait choisir son stade selon ce qu'il ressent le jour où il ouvre le lien ; c'est le point d'entrée le plus sûr. Ouvrir une étape précise court-circuite ce réglage."),
             parcours.id === "croissance" && React.createElement("p", { className: "t-accompagne mt-2 leading-relaxed", style: { color: INK_DOUX } },
                 "Ce parcours s'adresse directement à l'enfant et le tutoie. Chaque situation porte aussi une note à l'intention des parents."))));
 }
@@ -7238,6 +7506,10 @@ function GuidedJourney() {
     // programme écarté se réinstallait à l'ouverture suivante.
     const [prescritEcarte, setPrescritEcarte] = useState(() => restored.prescritEcarte || null);
     const [confirmerNouveau, setConfirmerNouveau] = useState(false);
+    // Le téléphone du praticien. La fabrique de liens ne s'atteignait qu'en tapant « #/lien » :
+    // il a demandé un accès facile, et les patients ne doivent pas la rencontrer. L'appareil
+    // qui l'a ouverte une fois s'en souvient, et lui seul montre la ligne « Lien patient ».
+    const [praticien, setPraticien] = useState(() => !!restored.praticien);
     useEffect(() => {
         const cle = cleDuProgramme(arrivee);
         const seances = typeof window !== "undefined" ? seancesDuLien(window.location.hash) : null;
@@ -7325,8 +7597,9 @@ function GuidedJourney() {
     // Sauvegarde à chaque changement utile.
     useEffect(() => {
         writeStore({ version: STORAGE_VERSION, done: doneToJSON(done), lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit,
-            profil, pointDeDepart, memoire, etapes, prescritEcarte });
-    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes, prescritEcarte]);
+            profil, pointDeDepart, memoire, etapes, prescritEcarte, praticien });
+    }, [done, lastRoute, introVu, journal, jour, charges, ageId, sportId, prudenceVue, prescrit, profil, pointDeDepart, memoire, etapes, prescritEcarte, praticien]);
+    useEffect(() => { if (view === "lien" && !praticien) setPraticien(true); }, [view]);
     // --- Synchronisation avec l'adresse ---
     const routeEcrite = React.useRef(null);
     const profondeur = React.useRef(0); // nombre d'entrées d'historique que nous avons empilées
@@ -8072,9 +8345,10 @@ function GuidedJourney() {
                     intertitre("L'application"),
                     React.createElement("div", { className: "rounded-2xl overflow-hidden", style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
                         [
+                            praticien && { id: "lien", titre: "Lien patient", sous: "Préparer et envoyer un programme", aller: () => setView("lien") },
                             { id: "lexique", titre: "Lexique", sous: "Les mots de l'application", aller: () => setView("lexique") },
                             { id: "apropos", titre: "À propos", sous: "Mentions légales et confidentialité", aller: () => { setRetourApropos("profil"); setView("apropos"); } },
-                        ].map((l, i) => React.createElement("button", { key: l.id, onClick: l.aller,
+                        ].filter(Boolean).map((l, i) => React.createElement("button", { key: l.id, onClick: l.aller,
                             className: "w-full p-4 flex items-center justify-between gap-3 text-left",
                             style: i ? { borderTop: `1px solid ${BORDURE}` } : undefined },
                             React.createElement("div", { className: "min-w-0" },
