@@ -1196,6 +1196,20 @@ const PoseBandRotators = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M14 17 Q24 25 34 17" }),
     React.createElement("line", { x1: "24", y1: "32", x2: "20", y2: "44" }),
     React.createElement("line", { x1: "24", y1: "32", x2: "28", y2: "44" })));
+// Rétraction des omoplates, dessinée sur la consigne du praticien : debout, de profil, bras
+// légèrement en avant, et une flèche double dans le dos à hauteur des omoplates. Le tirage
+// à l'élastique qu'elle recevait jusqu'ici montrait un accessoire que l'exercice n'emploie pas.
+const PoseRetractionOmoplates = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "26", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "26", y1: "13", x2: "26", y2: "30" }),
+    React.createElement("line", { x1: "26", y1: "17", x2: "31", y2: "24" }),
+    React.createElement("line", { x1: "31", y1: "24", x2: "37", y2: "27" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "23", y2: "44" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" }),
+    React.createElement("line", { x1: "13", y1: "19", x2: "23", y2: "19" }),
+    React.createElement("path", { d: "M16 16 L13 19 L16 22" }),
+    React.createElement("path", { d: "M20 16 L23 19 L20 22" })));
 // Tirage : les coudes partent vers l'arrière, les omoplates se rapprochent.
 const PoseBandRow = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
@@ -1661,8 +1675,11 @@ const POSES = [
             || n.includes("rotation interne")) && n.includes("élastique")
             || n.includes("rotateurs à l'élastique") || n.includes("rotateurs externes")
             || n.includes("lent des rotateurs") },
+    { key: "retraction-omoplates", icon: PoseRetractionOmoplates, test: (n) => n.includes("rétraction des omoplates") },
+    // « Renforcement progressif en charge » (coiffe, étape 3) tombait sur l'élastique seul,
+    // sans personne : le praticien lui a donné le tirage, en octobre 2026.
     { key: "band-row", icon: PoseBandRow, test: (n) => n.includes("tirage") || n.includes("scapulaire en charge")
-            || n.includes("rétraction des omoplates") || n.includes("stabilisateurs de l'omoplate")
+            || n.includes("progressif en charge") || n.includes("stabilisateurs de l'omoplate")
             || n.includes("tirage bas") },
     { key: "front-raise", icon: PoseFrontRaise, test: (n) => n.includes("deltoïde antérieur") },
     { key: "overhead-raise", icon: PoseOverheadRaise, test: (n) => n.includes("au-dessus de 90")
@@ -1886,7 +1903,7 @@ const POSES = [
                 || n.includes("tronc")) },
     { key: "breathing", icon: PoseBreathing, test: (n) => n.includes("respiration") || n.includes("relâchement") },
     // --- 8. Modalités génériques, en dernier recours ---
-    { key: "band", icon: PoseBand, test: (n) => n.includes("élastique") || n.includes("résistance") || n.includes("glissement") || n.includes("progressif en charge") },
+    { key: "band", icon: PoseBand, test: (n) => n.includes("élastique") || n.includes("résistance") || n.includes("glissement") },
     { key: "isometrique", icon: PoseIsometricPush, test: (n) => n.includes("isométrique") || n.includes("contraction") || n.includes("activation") },
     { key: "lying-mobilise", icon: PoseLyingMobilise, test: (n) => n.includes("mobilité") || n.includes("mobilisation") || n.includes("flexion-extension") || n.includes("amplitude")
             || n.includes("massage") || n.includes("nerf") || n.includes("sciatique")
@@ -1921,6 +1938,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "nerve-assis": "assis", "breathing-assis": "assis", "breathing-dos": "dos",
     "thoracic-ext-assis": "assis",
     "arm-support": "debout", "triceps-push": "debout", "band-row": "debout",
+    "retraction-omoplates": "debout",
     pendulum: "debout",
     "floor-lift": "debout", "standing-hip-ext": "debout", "leg-swing": "debout",
     "leg-press": "assis", "band-rot-int": "debout", "scap-row": "debout",

@@ -959,6 +959,10 @@ controle("aucune taille de texte hors de l'échelle", () => {
 // supplanterait en silence. Le contrôle fige le résultat jugé, pas la règle qui le produit.
 controle("les affectations relues restent celles qui ont été validées", () => {
     const attendu = {
+        // Coiffe, octobre 2026 : la rétraction a son propre dessin, debout de profil avec une
+        // flèche double dans le dos ; le renforcement en charge prend le tirage qu'elle quitte.
+        "Rétraction des omoplates": "retraction-omoplates",
+        "Renforcement progressif en charge": "band-row",
         // Un massage n'est pas un mouvement à reproduire.
         "Massage du mollet": "advice",
         "Massage des jambes le soir": "advice",
