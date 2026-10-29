@@ -1196,6 +1196,20 @@ const PoseBandRotators = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M14 17 Q24 25 34 17" }),
     React.createElement("line", { x1: "24", y1: "32", x2: "20", y2: "44" }),
     React.createElement("line", { x1: "24", y1: "32", x2: "28", y2: "44" })));
+// Rétraction des omoplates, dessinée sur la consigne du praticien : debout, de profil, bras
+// légèrement en avant, et une flèche double dans le dos à hauteur des omoplates. Le tirage
+// à l'élastique qu'elle recevait jusqu'ici montrait un accessoire que l'exercice n'emploie pas.
+const PoseRetractionOmoplates = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "26", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "26", y1: "13", x2: "26", y2: "30" }),
+    React.createElement("line", { x1: "26", y1: "17", x2: "31", y2: "24" }),
+    React.createElement("line", { x1: "31", y1: "24", x2: "37", y2: "27" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "23", y2: "44" }),
+    React.createElement("line", { x1: "26", y1: "30", x2: "29", y2: "44" }),
+    React.createElement("line", { x1: "13", y1: "19", x2: "23", y2: "19" }),
+    React.createElement("path", { d: "M16 16 L13 19 L16 22" }),
+    React.createElement("path", { d: "M20 16 L23 19 L20 22" })));
 // Tirage : les coudes partent vers l'arrière, les omoplates se rapprochent.
 const PoseBandRow = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
@@ -1661,8 +1675,11 @@ const POSES = [
             || n.includes("rotation interne")) && n.includes("élastique")
             || n.includes("rotateurs à l'élastique") || n.includes("rotateurs externes")
             || n.includes("lent des rotateurs") },
+    { key: "retraction-omoplates", icon: PoseRetractionOmoplates, test: (n) => n.includes("rétraction des omoplates") },
+    // « Renforcement progressif en charge » (coiffe, étape 3) tombait sur l'élastique seul,
+    // sans personne : le praticien lui a donné le tirage, en octobre 2026.
     { key: "band-row", icon: PoseBandRow, test: (n) => n.includes("tirage") || n.includes("scapulaire en charge")
-            || n.includes("rétraction des omoplates") || n.includes("stabilisateurs de l'omoplate")
+            || n.includes("progressif en charge") || n.includes("stabilisateurs de l'omoplate")
             || n.includes("tirage bas") },
     { key: "front-raise", icon: PoseFrontRaise, test: (n) => n.includes("deltoïde antérieur") },
     { key: "overhead-raise", icon: PoseOverheadRaise, test: (n) => n.includes("au-dessus de 90")
@@ -1886,7 +1903,7 @@ const POSES = [
                 || n.includes("tronc")) },
     { key: "breathing", icon: PoseBreathing, test: (n) => n.includes("respiration") || n.includes("relâchement") },
     // --- 8. Modalités génériques, en dernier recours ---
-    { key: "band", icon: PoseBand, test: (n) => n.includes("élastique") || n.includes("résistance") || n.includes("glissement") || n.includes("progressif en charge") },
+    { key: "band", icon: PoseBand, test: (n) => n.includes("élastique") || n.includes("résistance") || n.includes("glissement") },
     { key: "isometrique", icon: PoseIsometricPush, test: (n) => n.includes("isométrique") || n.includes("contraction") || n.includes("activation") },
     { key: "lying-mobilise", icon: PoseLyingMobilise, test: (n) => n.includes("mobilité") || n.includes("mobilisation") || n.includes("flexion-extension") || n.includes("amplitude")
             || n.includes("massage") || n.includes("nerf") || n.includes("sciatique")
@@ -1921,6 +1938,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "nerve-assis": "assis", "breathing-assis": "assis", "breathing-dos": "dos",
     "thoracic-ext-assis": "assis",
     "arm-support": "debout", "triceps-push": "debout", "band-row": "debout",
+    "retraction-omoplates": "debout",
     pendulum: "debout",
     "floor-lift": "debout", "standing-hip-ext": "debout", "leg-swing": "debout",
     "leg-press": "assis", "band-rot-int": "debout", "scap-row": "debout",
@@ -6184,6 +6202,25 @@ function telecharger(nom, type, contenu) {
         return false;
     }
 }
+// Une rubrique du profil qui se replie sur son titre et une ligne de résumé. « Moi », les
+// antécédents et les données, une fois remplis, ne se relisent plus : dépliés, ils occupaient
+// trois écrans entre la note rapide et le reste (retour du praticien, octobre 2026).
+function RubriqueRepliable({ id, titre, resume, children }) {
+    const [ouvert, setOuvert] = useState(false);
+    return React.createElement("section", { className: "rounded-2xl overflow-hidden",
+        style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+        React.createElement("button", { type: "button", onClick: () => setOuvert((o) => !o),
+            "aria-expanded": ouvert, "aria-controls": `${id}-contenu`,
+            className: "cible-44 w-full px-5 py-3.5 flex items-center justify-between gap-3 text-left" },
+            React.createElement("span", { className: "min-w-0" },
+                React.createElement("span", { className: "t-carte font-semibold block", style: { color: INK } }, titre),
+                // Le résumé passe à la ligne plutôt que de finir en « … » : coupé, il cachait
+                // justement ce que le patient cherchait à relire.
+                resume && React.createElement("span", { className: "t-accompagne block mt-0.5", style: { color: INK_DOUX } }, resume)),
+            React.createElement(IconeChevronBas, { size: 20, className: "shrink-0",
+                style: { color: ACCENT_FORT, transform: ouvert ? "rotate(180deg)" : "none" } })),
+        ouvert && React.createElement("div", { id: `${id}-contenu`, className: "px-5 pb-5" }, children));
+}
 // Un champ du profil : l'intitulé au-dessus, en clair, et non dans le champ — un texte
 // indicatif disparaît dès la première lettre, et la question avec lui.
 function ChampProfil({ id, intitule, aide, valeur, onChange, long, type }) {
@@ -7957,17 +7994,18 @@ function GuidedJourney() {
                     React.createElement("div", { className: "rounded-2xl p-5", style: carte },
                         React.createElement(ChampProfil, { id: "pr-rdv", intitule: "Ce que je veux dire à mon kinésithérapeute",
                             aide: "Une question, un exercice qui gêne, une douleur nouvelle.", valeur: profil.notesRdv, onChange: poser("notesRdv"), long: true }))),
-                React.createElement("section", null,
-                    intertitre("Moi"),
-                    React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-4", style: carte },
+                React.createElement(RubriqueRepliable, { id: "pr-moi", titre: "Moi",
+                    resume: [[profil.prenom, profil.nom].filter(Boolean).join(" "), profil.age ? `${profil.age} ans` : "", profil.sports]
+                        .filter((x) => x && String(x).trim()).join(" \u00B7 ") || "Prénom, âge, sports, objectifs" },
+                    React.createElement("div", { className: "flex flex-col gap-4" },
                         React.createElement(ChampProfil, { id: "pr-prenom", intitule: "Prénom", aide: "Pour que l'accueil vous dise bonjour.", valeur: profil.prenom, onChange: poser("prenom") }),
                         React.createElement(ChampProfil, { id: "pr-nom", intitule: "Nom", valeur: profil.nom, onChange: poser("nom") }),
                         React.createElement(ChampProfil, { id: "pr-age", intitule: "Âge", valeur: profil.age, onChange: poser("age"), type: "number" }),
                         React.createElement(ChampProfil, { id: "pr-sports", intitule: "Sports pratiqués", aide: "Et à quel niveau : loisir, club, compétition.", valeur: profil.sports, onChange: poser("sports"), long: true }),
                         React.createElement(ChampProfil, { id: "pr-objectifs", intitule: "Mes objectifs", valeur: profil.objectifs, onChange: poser("objectifs"), long: true }))),
-                React.createElement("section", null,
-                    intertitre("Mes antécédents"),
-                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                React.createElement(RubriqueRepliable, { id: "pr-antecedents-rubrique", titre: "Mes antécédents",
+                    resume: (profil.antecedents && profil.antecedents.trim()) || "Blessures et opérations passées" },
+                    React.createElement("div", null,
                         React.createElement(ChampProfil, { id: "pr-antecedents", intitule: "Blessures et opérations passées",
                             aide: "Avec leur date si vous la connaissez — elle compte après une ligamentoplastie ou une suture méniscale.",
                             valeur: profil.antecedents, onChange: poser("antecedents"), long: true }))),
@@ -7983,9 +8021,9 @@ function GuidedJourney() {
                                 ` · ${m.seances} séance${m.seances > 1 ? "s" : ""}`, fourchette(m))))),
                     React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } },
                         "Gardé même après la fin d'un parcours, pour en reparler si la douleur revient.")),
-                React.createElement("section", null,
-                    intertitre("Mes données"),
-                    React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-3", style: carte },
+                React.createElement(RubriqueRepliable, { id: "pr-donnees", titre: "Mes données",
+                    resume: canSave ? "Sur ce téléphone uniquement" : "Non enregistrées sur ce navigateur" },
+                    React.createElement("div", { className: "flex flex-col gap-3" },
                         canSave ? (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Votre progression est enregistrée sur cet appareil uniquement. Elle n'est envoyée nulle part et reste privée.")) : (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
                         React.createElement("button", { type: "button", onClick: copierResume,
                             className: "cible-44 w-full rounded-full t-corps font-medium", style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } },
