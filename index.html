@@ -6184,6 +6184,25 @@ function telecharger(nom, type, contenu) {
         return false;
     }
 }
+// Une rubrique du profil qui se replie sur son titre et une ligne de résumé. « Moi », les
+// antécédents et les données, une fois remplis, ne se relisent plus : dépliés, ils occupaient
+// trois écrans entre la note rapide et le reste (retour du praticien, octobre 2026).
+function RubriqueRepliable({ id, titre, resume, children }) {
+    const [ouvert, setOuvert] = useState(false);
+    return React.createElement("section", { className: "rounded-2xl overflow-hidden",
+        style: { backgroundColor: SURFACE, border: `1px solid ${BORDURE}`, boxShadow: OMBRE_CARTE } },
+        React.createElement("button", { type: "button", onClick: () => setOuvert((o) => !o),
+            "aria-expanded": ouvert, "aria-controls": `${id}-contenu`,
+            className: "cible-44 w-full px-5 py-3.5 flex items-center justify-between gap-3 text-left" },
+            React.createElement("span", { className: "min-w-0" },
+                React.createElement("span", { className: "t-carte font-semibold block", style: { color: INK } }, titre),
+                // Le résumé passe à la ligne plutôt que de finir en « … » : coupé, il cachait
+                // justement ce que le patient cherchait à relire.
+                resume && React.createElement("span", { className: "t-accompagne block mt-0.5", style: { color: INK_DOUX } }, resume)),
+            React.createElement(IconeChevronBas, { size: 20, className: "shrink-0",
+                style: { color: ACCENT_FORT, transform: ouvert ? "rotate(180deg)" : "none" } })),
+        ouvert && React.createElement("div", { id: `${id}-contenu`, className: "px-5 pb-5" }, children));
+}
 // Un champ du profil : l'intitulé au-dessus, en clair, et non dans le champ — un texte
 // indicatif disparaît dès la première lettre, et la question avec lui.
 function ChampProfil({ id, intitule, aide, valeur, onChange, long, type }) {
@@ -7957,17 +7976,18 @@ function GuidedJourney() {
                     React.createElement("div", { className: "rounded-2xl p-5", style: carte },
                         React.createElement(ChampProfil, { id: "pr-rdv", intitule: "Ce que je veux dire à mon kinésithérapeute",
                             aide: "Une question, un exercice qui gêne, une douleur nouvelle.", valeur: profil.notesRdv, onChange: poser("notesRdv"), long: true }))),
-                React.createElement("section", null,
-                    intertitre("Moi"),
-                    React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-4", style: carte },
+                React.createElement(RubriqueRepliable, { id: "pr-moi", titre: "Moi",
+                    resume: [[profil.prenom, profil.nom].filter(Boolean).join(" "), profil.age ? `${profil.age} ans` : "", profil.sports]
+                        .filter((x) => x && String(x).trim()).join(" \u00B7 ") || "Prénom, âge, sports, objectifs" },
+                    React.createElement("div", { className: "flex flex-col gap-4" },
                         React.createElement(ChampProfil, { id: "pr-prenom", intitule: "Prénom", aide: "Pour que l'accueil vous dise bonjour.", valeur: profil.prenom, onChange: poser("prenom") }),
                         React.createElement(ChampProfil, { id: "pr-nom", intitule: "Nom", valeur: profil.nom, onChange: poser("nom") }),
                         React.createElement(ChampProfil, { id: "pr-age", intitule: "Âge", valeur: profil.age, onChange: poser("age"), type: "number" }),
                         React.createElement(ChampProfil, { id: "pr-sports", intitule: "Sports pratiqués", aide: "Et à quel niveau : loisir, club, compétition.", valeur: profil.sports, onChange: poser("sports"), long: true }),
                         React.createElement(ChampProfil, { id: "pr-objectifs", intitule: "Mes objectifs", valeur: profil.objectifs, onChange: poser("objectifs"), long: true }))),
-                React.createElement("section", null,
-                    intertitre("Mes antécédents"),
-                    React.createElement("div", { className: "rounded-2xl p-5", style: carte },
+                React.createElement(RubriqueRepliable, { id: "pr-antecedents-rubrique", titre: "Mes antécédents",
+                    resume: (profil.antecedents && profil.antecedents.trim()) || "Blessures et opérations passées" },
+                    React.createElement("div", null,
                         React.createElement(ChampProfil, { id: "pr-antecedents", intitule: "Blessures et opérations passées",
                             aide: "Avec leur date si vous la connaissez — elle compte après une ligamentoplastie ou une suture méniscale.",
                             valeur: profil.antecedents, onChange: poser("antecedents"), long: true }))),
@@ -7983,9 +8003,9 @@ function GuidedJourney() {
                                 ` · ${m.seances} séance${m.seances > 1 ? "s" : ""}`, fourchette(m))))),
                     React.createElement("p", { className: "t-accompagne mt-2", style: { color: INK_DOUX } },
                         "Gardé même après la fin d'un parcours, pour en reparler si la douleur revient.")),
-                React.createElement("section", null,
-                    intertitre("Mes données"),
-                    React.createElement("div", { className: "rounded-2xl p-5 flex flex-col gap-3", style: carte },
+                React.createElement(RubriqueRepliable, { id: "pr-donnees", titre: "Mes données",
+                    resume: canSave ? "Sur ce téléphone uniquement" : "Non enregistrées sur ce navigateur" },
+                    React.createElement("div", { className: "flex flex-col gap-3" },
                         canSave ? (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Votre progression est enregistrée sur cet appareil uniquement. Elle n'est envoyée nulle part et reste privée.")) : (React.createElement("p", { className: "t-corps leading-relaxed", style: { color: INK_PROSE } }, "Ce navigateur n'autorise pas l'enregistrement : votre progression sera perdue en fermant la page. L'application reste utilisable normalement.")),
                         React.createElement("button", { type: "button", onClick: copierResume,
                             className: "cible-44 w-full rounded-full t-corps font-medium", style: { border: `1.5px solid ${ACCENT_FORT}`, color: ACCENT_FORT } },
