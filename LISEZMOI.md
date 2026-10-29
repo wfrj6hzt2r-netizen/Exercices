@@ -16,10 +16,10 @@ Deux façons d'amener un patient à l'application :
   pour l'imprimer.
 - **Un programme ciblé** : la fabrique de liens prépare le lien d'un programme précis.
 
-Ouvrez la fabrique une première fois par son adresse, **`#/lien`** — par exemple
-`https://…/#/lien`. Le téléphone qui l'a ouverte s'en souvient : la ligne **« Lien patient »**
-apparaît ensuite dans son Profil. Sur le téléphone d'un patient, qui n'ouvre jamais cette
-adresse, elle n'apparaît pas.
+La fabrique est au praticien seul : **aucun écran de l'application des patients n'y mène**.
+Elle s'ouvre par sa page à lui, **`praticien.html`** — `https://…/Exercices/praticien.html`.
+Ouverte dans Safari, cette page explique comment l'ajouter à l'écran d'accueil sous le nom
+« Liens patients » ; lancée ensuite depuis cette icône, elle ouvre directement la fabrique.
 
 Choisissez le parcours, la zone, la blessure et l'étape par laquelle commencer, puis donnez
 le lien : **« Envoyer au patient »** ouvre le partage du téléphone (SMS, WhatsApp, courriel),
@@ -48,6 +48,7 @@ Envoyer un nouveau lien remplace le précédent.
 | `index.html` | Toute l'application : contenu, écrans, styles, React inclus. Aucune étape de compilation |
 | `sw.js` | Le service worker, qui rend l'ouverture possible sans réseau |
 | `manifest.webmanifest`, `*.png` | L'installation sur l'écran d'accueil |
+| `praticien.html` | La porte du praticien vers la fabrique de liens, à garder sur son propre écran d'accueil |
 | `icone.svg` | Le dessin source de l'icône, d'où les cinq PNG sont tirés. La vignette encastrée dans `index.html` doit rester identique, octet pour octet, à `icon-192.png` : un contrôle y veille |
 | `verification/` | Trente-six contrôles automatiques, plus un banc qui les éprouve — voir son [mode d'emploi](verification/LISEZMOI.md) |
 | `.github/workflows/` | Les mêmes contrôles, à chaque modification |

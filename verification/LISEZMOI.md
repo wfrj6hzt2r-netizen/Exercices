@@ -1,6 +1,6 @@
 # Vérification
 
-Quarante-deux contrôles automatiques — trente-deux statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Quarante-trois contrôles automatiques — trente-trois statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 Un troisième script, `mutation.mjs`, introduit un défaut par contrôle statique, un par un, et vérifie que le
@@ -55,6 +55,7 @@ contrôles-ci mordent encore.
 | L'écran du lexique montre tout le tableau | L'écran se déduit du tableau des définitions, et c'est précisément ce qu'on vérifie : un mot ajouté doit y paraître sans qu'on y pense, et le classement par lettre ne doit en perdre aucun en route |
 | Tout dessin de silhouette entière déclare sa posture | Le contrôle de cohérence compare la posture que la consigne nomme à celle que le dessin déclare. Un dessin qui n'en déclare aucune n'est comparé à rien : trois « bascules du bassin », dont la consigne commence par « allongé sur le dos », ont montré un homme debout pendant des mois sans qu'aucun des vingt-cinq autres contrôles ne puisse le voir. Les dessins qui ne montrent pas une silhouette — un bloc-notes, un pied, une tête, un élastique — sont exemptés par une liste écrite en clair, et c'est elle qu'il faut modifier pour en exempter un de plus |
 | Chaque « pourquoi » désigne une étape qui existe | La table est indexée par libellé d'étape : un libellé mal orthographié n'afficherait rien, sans la moindre erreur |
+| Aucun écran du patient ne mène à la fabrique de liens | Une version a montré une ligne « Lien patient » dans le Profil du téléphone qui avait ouvert la fabrique. Le praticien n'en veut aucune trace côté patient : la fabrique s'ouvre par `praticien.html`, et par aucun bouton ni lien de l'application. Le contrôle vérifie aussi que cette page ouvre bien la fabrique, et qu'elle ne porte pas le manifeste des patients |
 | Le QR code se lit | La fabrique de liens dessine elle-même ses QR codes, sans bibliothèque tierce. Un code faux ne se lit pas, et rien ne le signale. Le contrôle confronte le dessin aux valeurs de référence de la norme (correcteurs de l'exemple « HELLO WORLD », mot de format, mot de version) et à sa structure |
 | Le rythme porté par le lien ne casse pas le lien | La fabrique ajoute « ?s=5 » au lien quand le kinésithérapeute attend un autre rythme que trois séances par semaine. Si la lecture de l'adresse ne l'écartait pas, « entorse?s=5 » ne désignerait plus aucune blessure et le patient atterrirait sur l'accueil, son programme perdu |
 | La baisse de douleur affichée est exacte | L'écran Progrès affiche un badge « −60 % » que le patient montre à son kinésithérapeute. Un signe inversé ferait lire une aggravation comme un progrès ; le contrôle vérifie aussi que le point de départ ouvre la courbe, que la note retenue pour un jour est la plus haute, et qu'une première note à zéro ne produit aucun pourcentage |

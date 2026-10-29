@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<!-- La porte du praticien vers la fabrique de liens. L'adresse des patients n'y mène plus :
+     cette page, que le praticien ajoute à son propre écran d'accueil sous un nom à part,
+     l'ouvre directement. Elle ne porte pas le manifeste de l'application, pour que l'icône
+     qu'on en tire rouvre bien cette page-ci, et non l'accueil des patients. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Liens patients">
+<meta name="theme-color" content="#F6F8F3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Liens patients</title>
+<script>
+// Lancée depuis l'icône, la page file droit vers la fabrique. Ouverte dans Safari, elle reste
+// affichée : c'est d'ici qu'on l'ajoute à l'écran d'accueil, et une redirection immédiate
+// aurait fait enregistrer l'adresse de la fabrique sous le manifeste des patients.
+if (window.navigator.standalone || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches))
+    location.replace("./#/lien");
+</script>
+<style>
+body{margin:0;padding:32px 24px;font-family:-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;background:#F6F8F3;color:#16231B;line-height:1.5}
+h1{font-size:1.5rem;font-weight:500;margin:0 0 .5rem}
+p{margin:.75rem 0;color:#3B4A40}
+a.bouton{display:block;margin:1.5rem 0;padding:.9rem 1rem;border-radius:999px;background:#1F6B3F;color:#fff;text-align:center;text-decoration:none;font-weight:500}
+ol{padding-left:1.25rem;color:#3B4A40}
+@media(prefers-color-scheme:dark){body{background:#0E1712;color:#E7EFE9}p,ol{color:#C2CFC6}a.bouton{background:#2E7D4F}}
+</style>
+</head>
+<body>
+<h1>Liens patients</h1>
+<p>La fabrique de liens, pour envoyer un programme à un patient. Cette page est la vôtre : l'application des patients n'y mène pas.</p>
+<a class="bouton" href="./#/lien">Ouvrir la fabrique de liens</a>
+<p>Pour la retrouver d'un geste, ajoutez cette page à votre écran d'accueil :</p>
+<ol>
+<li>touchez le bouton Partager de Safari&nbsp;;</li>
+<li>choisissez «&nbsp;Sur l'écran d'accueil&nbsp;»&nbsp;;</li>
+<li>gardez le nom «&nbsp;Liens patients&nbsp;».</li>
+</ol>
+<p>L'icône ouvrira directement la fabrique.</p>
+</body>
+</html>
