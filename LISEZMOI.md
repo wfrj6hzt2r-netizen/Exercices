@@ -9,22 +9,35 @@ aucun compte, et rien de ce que le patient coche ne quitte son téléphone.
 
 ## Envoyer un programme à un patient
 
-Ouvrez **`#/lien`** — par exemple `https://…/#/lien`. Cet écran n'est référencé nulle part
-dans l'application : les patients ne le rencontrent pas.
+Deux façons d'amener un patient à l'application :
 
-Choisissez la zone, la blessure et le point de départ, puis copiez le lien et envoyez-le.
+- **L'accès libre** : le QR code affiché au cabinet ouvre l'accueil, et le patient choisit
+  lui-même sa zone et son programme. La fabrique de liens redonne ce QR code, à enregistrer
+  pour l'imprimer.
+- **Un programme ciblé** : la fabrique de liens prépare le lien d'un programme précis.
+
+Ouvrez la fabrique une première fois par son adresse, **`#/lien`** — par exemple
+`https://…/#/lien`. Le téléphone qui l'a ouverte s'en souvient : la ligne **« Lien patient »**
+apparaît ensuite dans son Profil. Sur le téléphone d'un patient, qui n'ouvre jamais cette
+adresse, elle n'apparaît pas.
+
+Choisissez le parcours, la zone, la blessure et l'étape par laquelle commencer, puis donnez
+le lien : **« Envoyer au patient »** ouvre le partage du téléphone (SMS, WhatsApp, courriel),
+**« Copier le lien »** le garde pour un autre usage, et en séance le patient peut **scanner
+le QR code** affiché à l'écran.
 
 Le patient qui ouvre ce lien arrive directement sur son programme, et **l'application s'en
-souvient** : à chaque ouverture suivante, l'accueil affiche ce programme dans la carte « Mon parcours » au lieu de lui
-demander de choisir sa blessure parmi quarante-deux. Le catalogue reste accessible d'un
-bouton, pour une douleur nouvelle.
+souvient** : à chaque ouverture suivante, l'accueil affiche ce programme dans la carte « Mon
+parcours » au lieu de lui demander de choisir sa blessure parmi quarante-deux. Le catalogue
+reste accessible d'un bouton, pour une douleur nouvelle.
 
-Le **bilan de départ** est le point d'entrée recommandé : il fait choisir au patient son stade
-en fonction de ce qu'il ressent le jour où il ouvre le lien. Ouvrir une étape précise
-court-circuite ce réglage.
+**« Le patient choisit son étape »** est le point d'entrée recommandé : il fait choisir au
+patient son stade en fonction de ce qu'il ressent le jour où il ouvre le lien. Ouvrir une
+étape précise court-circuite ce réglage.
 
 Le champ **Séances par semaine** (trois par défaut) règle l'objectif contre lequel l'écran
-Progrès mesure l'assiduité du patient ; il s'ajoute au lien sous la forme `?s=5` quand il s'écarte de trois.
+Progrès mesure l'assiduité du patient ; il s'ajoute au lien sous la forme `?s=5` quand il
+s'écarte de trois.
 
 Envoyer un nouveau lien remplace le précédent.
 
