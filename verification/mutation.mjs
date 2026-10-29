@@ -188,6 +188,11 @@ const MUTATIONS = [
     ["le rythme porté par le lien ne casse pas le lien",
         (s) => rem(s, 'const p = String(hash || "").split("?")[0].replace(', 'const p = String(hash || "").replace(')],
 
+    // La lecture oublie « à genoux » : les consignes qui la nomment redeviennent muettes, et
+    // plus aucun dessin ne peut les contredire.
+    ["le pictogramme ne contredit pas la consigne",
+        (s) => rem(s, 'noter("genoux", /\\ba genoux\\b|^un genou au sol|\\bagenouille/);', "")],
+
     ["les affectations relues restent celles qui ont été validées",
         (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
 

@@ -1559,7 +1559,30 @@ const PoseThoracicExtAssis = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "20", y1: "11", x2: "15", y2: "6" }),
     React.createElement("line", { x1: "25", y1: "23", x2: "25", y2: "15" }),
     React.createElement("path", { d: "M22 18 L25 14 L28 18" })));
+// Deux gestes qui reprennent un dessin existant sous une clé à eux, parce qu'ils ne
+// s'installent pas dans la même posture que l'original. L'assis-debout part tantôt assis,
+// tantôt debout — « Debout devant une chaise, assieds-toi… » — et la chaise seule le dit.
+// La fente genou au sol est la fente debout menée jusqu'au sol : même dessin, mais à genoux.
+const PoseAssisDebout = (props) => PoseAssisChaise(props);
+const PoseFenteAuSol = (props) => PoseLunge(props);
 const POSES = [
+    // Relecture d'octobre 2026, posture par posture, des exercices que le contrôle de
+    // cohérence ne pouvait pas juger — consigne muette sur la posture, ou posture qu'il ne
+    // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
+    // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
+    { key: "fente-au-sol", icon: PoseFenteAuSol, test: (n) => n === "étirement prolongé du fléchisseur de hanche"
+            || n === "étirement de l'avant de la hanche" },
+    { key: "assis-debout", icon: PoseAssisDebout, test: (n) => n === "squat sur une chaise" || n === "assis-debout répétés" },
+    { key: "calf-wall", icon: PoseCalfWall, test: (n) => n === "mobilité en flexion dorsale" },
+    { key: "band", icon: PoseBand, test: (n) => n === "renforcement des éverseurs en charge" },
+    { key: "balance", icon: PoseBalance, test: (n) => n === "équilibre unipodal avec voûte active" },
+    { key: "calf", icon: PoseCalfRaise, test: (n, t) => n === "contraction sans bouger" && t.startsWith("debout, monte") },
+    { key: "retraction-omoplates", icon: PoseRetractionOmoplates, test: (n) => n === "renforcement du haut du dos à l'élastique"
+            || n === "renforcement scapulaire" || n === "renforcement scapulaire associé"
+            || n === "renforcement rhomboïdes / trapèzes moyens" },
+    { key: "band-rotators", icon: PoseBandRotators, test: (n, t) => n === "renforcement de l'épaule" && t.includes("coude collé au corps") },
+    // La consigne interdit le lancer : un dessin de lanceur la contredisait.
+    { key: "advice", icon: PoseAdvice, test: (n) => n === "arrêter les lancers et les appuis" },
     // --- 0 bis. Cinq gestes relevés à l'écran, chacun dessiné par une règle trop large ---
     // Le chat-vache tombait sur la rotation du tronc debout, le relevé de buste à plat
     // ventre sur le sphinx — qui prend appui sur les avant-bras et reste juste pour les
@@ -1939,6 +1962,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "thoracic-ext-assis": "assis",
     "arm-support": "debout", "triceps-push": "debout", "band-row": "debout",
     "retraction-omoplates": "debout",
+    "child-pose": "genoux", "nordic-kneel": "genoux", "fente-au-sol": "genoux",
     pendulum: "debout",
     "floor-lift": "debout", "standing-hip-ext": "debout", "leg-swing": "debout",
     "leg-press": "assis", "band-rot-int": "debout", "scap-row": "debout",
@@ -2029,6 +2053,11 @@ function postureDecrite(tip) {
         trouves.push([0, "cote", brut[0].length]);
     noter("debout", /\bdebout\b/);
     noter("assis", /\bassis\b|\bassise\b/);
+    // « À genoux » n'avait pas de nom : un étirement qui commence par « Un genou au sol »
+    // montrait quelqu'un debout tenant son pied, et rien ne pouvait le voir. « Sur les
+    // genoux » (la planche allégée) et « genou arrière vers le sol » (la fente) n'en sont
+    // pas : le patient y est en appui, ou debout.
+    noter("genoux", /\ba genoux\b|^un genou au sol|\bagenouille/);
     if (!trouves.length)
         return null;
     trouves.sort((a, b) => a[0] - b[0]);
