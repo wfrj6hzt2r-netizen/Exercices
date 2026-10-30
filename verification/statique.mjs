@@ -1090,6 +1090,17 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         // Validé sur capture, octobre 2026 : dos enroulé, tête et bras pendants, comme la
         // consigne le dit. L'étirement debout générique tenait un pied derrière soi.
         "Étirement global de la chaîne postérieure": "forward-fold",
+        // Le seul dessin que la relecture des 84 n'avait pas jugé, validé en octobre 2026
+        // (« oui c'est bon pour shoulder raise ») sur les neuf exercices qu'il sert.
+        "Élévation latérale sous 90°": "shoulder-raise",
+        "Coordination épaule-omoplate chargée légère": "shoulder-raise",
+        "Contrôle de l'omoplate en élévation": "shoulder-raise",
+        "Renforcement combiné deltoïde-coiffe": "shoulder-raise",
+        "Renforcement complet de l'épaule": "shoulder-raise",
+        "Renforcement des muscles de l'épaule et de l'omoplate": "shoulder-raise",
+        "Coordination épaule-coude en charge": "shoulder-raise",
+        "Contrôle des omoplates": "shoulder-raise",
+        "Renforcement du deltoïde": "shoulder-raise",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
