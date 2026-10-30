@@ -129,6 +129,26 @@ compte alors comme différent. C'est l'image de différence qu'il faut regarder.
 La liste des écrans vit dans `ecrans.mjs`, lu par la suite de rendu **et** par cet outil :
 deux copies auraient dérivé dès le premier écran ajouté d'un seul côté.
 
+## La planche de relecture des pictogrammes — `planche.mjs`
+
+Chaque exercice de l'application, sa consigne, et le dessin qu'elle lui sert vraiment, sur une
+page où le praticien répond « juste » ou « faux » et écrit ce que le dessin devrait montrer.
+Un dessin juste pour un exercice peut être faux pour un autre : c'est l'exercice que le
+patient lit, c'est donc lui qu'on juge.
+
+```
+node verification/planche.mjs                  écrit verification/captures/planche-pictogrammes.html
+```
+
+La page est publiée comme artifact, toujours à la même adresse :
+https://claude.ai/artifact/PyPnZ8mpnj8M5kWFd4UjAa. Les verdicts vivent dans la base de
+l'artifact (collection `verdicts`), pas dans la page : la republier régénérée ne perd rien.
+Seul le propriétaire peut y écrire. La mise en page vit dans `planche-modele.html`.
+
+La clé d'une fiche réunit le nom, le dessin, et une empreinte du tracé et de la consigne. Un
+dessin retouché, une affectation changée ou une consigne réécrite repassent donc d'eux-mêmes
+en « à juger » : un ancien verdict ne couvre jamais ce qu'il n'a pas vu.
+
 ## Deux contrôles à part
 
 Les deux derniers sont les seuls qui portent sur un **enchaînement d'écrans** et non sur un écran isolé.

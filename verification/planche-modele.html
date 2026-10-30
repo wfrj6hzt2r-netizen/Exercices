@@ -1,0 +1,503 @@
+<title>Tri des pictogrammes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Une planche de tri : une fiche à la fois au centre, le compteur en tête, la planche des
+   dessins en dessous. Les couleurs reprennent celles de l'application : vert du cabinet,
+   anis pour ce qui est actif, framboise pour ce qui ne va pas. */
+:root {
+  --fond: #F3F6F0;
+  --surface: #FFFFFF;
+  --encre: #16231B;
+  --doux: #4E5E53;
+  --filet: #DCE4D8;
+  --vert: #1F6B3F;
+  --vert-voile: #E3EFE2;
+  --anis: #A8DC4E;
+  --anis-voile: #EEF8DC;
+  --framboise: #B4234F;
+  --framboise-voile: #FBE7EC;
+  --or: #8A5D18;
+  --dessin: #1F6B3F;
+  --pastille: #E3EFE2;
+  --titre: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --texte: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #0E1712; --surface: #16231B; --encre: #E7EFE9; --doux: #A9B8AE; --filet: #2A3A30;
+    --vert: #7FCB98; --vert-voile: #1D3326; --anis: #A8DC4E; --anis-voile: #26381A;
+    --framboise: #F27A9C; --framboise-voile: #3A1A24; --or: #E3B55E; --dessin: #9ED8B0; --pastille: #1D3326;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #0E1712; --surface: #16231B; --encre: #E7EFE9; --doux: #A9B8AE; --filet: #2A3A30;
+  --vert: #7FCB98; --vert-voile: #1D3326; --anis: #A8DC4E; --anis-voile: #26381A;
+  --framboise: #F27A9C; --framboise-voile: #3A1A24; --or: #E3B55E; --dessin: #9ED8B0; --pastille: #1D3326;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--fond); color: var(--encre); font-family: var(--texte); font-size: 16px; line-height: 1.5; }
+.page { max-width: 1040px; margin: 0 auto; padding-block: 24px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 24px; }
+h1, h2, h3 { font-family: var(--titre); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--vert); font-weight: 700; }
+.chapeau { color: var(--doux); max-width: 62ch; margin: 6px 0 0; }
+button { font: inherit; cursor: pointer; }
+button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--anis); outline-offset: 2px; }
+
+/* Le tableau de score */
+.score { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center;
+  background: var(--surface); border: 1px solid var(--filet); border-radius: 20px; padding: 18px 20px; }
+.anneau { width: 96px; height: 96px; position: relative; }
+.anneau svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.anneau .chiffre { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--titre);
+  font-weight: 700; font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.compteurs { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.compteur { display: flex; flex-direction: column; min-width: 0; }
+.compteur b { font-family: var(--titre); font-size: 1.5rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.compteur span { font-size: 0.8rem; color: var(--doux); }
+.c-juste b { color: var(--vert); } .c-faux b { color: var(--framboise); } .c-serie b { color: var(--or); }
+.palier { grid-column: 1 / -1; font-size: 0.9rem; color: var(--doux); margin: 0; }
+.etat { grid-column: 1 / -1; font-size: 0.85rem; margin: 0; padding: 8px 12px; border-radius: 10px;
+  background: var(--anis-voile); color: var(--encre); }
+
+/* Les filtres */
+.filtres { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.puce { border: 1px solid var(--filet); background: var(--surface); color: var(--encre); border-radius: 999px;
+  padding: 6px 14px; font-size: 0.9rem; min-height: 36px; }
+.puce[aria-pressed="true"] { background: var(--vert); border-color: var(--vert); color: var(--surface); }
+.recherche { flex: 1 1 200px; min-width: 0; border: 1px solid var(--filet); background: var(--surface); color: var(--encre);
+  border-radius: 999px; padding: 7px 16px; font: inherit; font-size: 0.95rem; }
+select.puce { appearance: auto; }
+
+/* La fiche du moment */
+.scene { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 0;
+  background: var(--surface); border: 1px solid var(--filet); border-radius: 24px; overflow: hidden; }
+.cadre { background: var(--vert-voile); display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 28px 16px; position: relative; }
+.cadre .grand { width: 190px; height: 190px; color: var(--dessin); }
+.cadre .grand svg { width: 100%; height: 100%; stroke: currentColor; }
+.taille-reelle { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--doux); }
+.pastille { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; color: var(--dessin); }
+.pastille svg { width: 24px; height: 24px; stroke: currentColor; }
+.cle-dessin { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.75rem; color: var(--doux); }
+.tampon { position: absolute; top: 16px; right: 16px; transform: rotate(8deg); font-family: var(--titre); font-weight: 700;
+  font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; border: 2.5px solid currentColor; border-radius: 8px; padding: 2px 8px; }
+.tampon.juste { color: var(--vert); } .tampon.faux { color: var(--framboise); }
+.fiche { padding: 24px 24px 22px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.position { font-size: 0.8rem; color: var(--doux); font-variant-numeric: tabular-nums; }
+.fiche h2 { font-size: 1.5rem; }
+.dose { display: inline-block; font-size: 0.85rem; font-weight: 700; color: var(--vert); background: var(--vert-voile);
+  border-radius: 8px; padding: 2px 10px; width: fit-content; }
+.consigne { margin: 0; max-width: 65ch; }
+.ou { font-size: 0.85rem; color: var(--doux); margin: 0; }
+.ou summary { cursor: pointer; }
+.ou ul { margin: 6px 0 0; padding-left: 18px; }
+.verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.v { border-radius: 16px; padding: 14px 10px; font-family: var(--titre); font-weight: 700; font-size: 1.15rem;
+  border: 2px solid transparent; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .12s; }
+.v:active { transform: scale(0.97); }
+.v-juste { background: var(--vert-voile); color: var(--vert); border-color: var(--vert); }
+.v-faux { background: var(--framboise-voile); color: var(--framboise); border-color: var(--framboise); }
+.v-juste[aria-pressed="true"] { background: var(--vert); color: var(--surface); }
+.v-faux[aria-pressed="true"] { background: var(--framboise); color: var(--surface); }
+.v kbd { font-family: var(--texte); font-size: 0.7rem; opacity: 0.75; border: 1px solid currentColor; border-radius: 5px; padding: 0 5px; }
+.note label { font-weight: 700; font-size: 0.95rem; display: block; margin-bottom: 6px; }
+.note textarea { width: 100%; min-height: 96px; resize: vertical; border: 1.5px solid var(--filet); border-radius: 14px;
+  padding: 10px 12px; font: inherit; background: var(--fond); color: var(--encre); }
+.note.faux textarea { border-color: var(--framboise); }
+.note .aide { font-size: 0.8rem; color: var(--doux); margin: 4px 0 0; }
+.nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.nav button { background: none; border: 1px solid var(--filet); color: var(--encre); border-radius: 999px; padding: 8px 16px; min-height: 40px; }
+.nav .suivant { background: var(--encre); color: var(--fond); border-color: var(--encre); }
+.vide { padding: 40px 24px; text-align: center; color: var(--doux); }
+
+/* La planche des dessins */
+.planche { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.vignette { background: var(--surface); border: 1px solid var(--filet); border-radius: 16px; padding: 12px 8px 10px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--encre); min-width: 0; }
+.vignette[aria-pressed="true"] { border-color: var(--vert); box-shadow: 0 0 0 2px var(--vert) inset; }
+.vignette .mini { width: 52px; height: 52px; color: var(--dessin); }
+.vignette .mini svg { width: 100%; height: 100%; stroke: currentColor; }
+.vignette .nom { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.7rem; color: var(--doux);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jauge { width: 100%; height: 6px; border-radius: 3px; background: var(--filet); display: flex; overflow: hidden; }
+.jauge i { display: block; height: 100%; }
+.jauge .j { background: var(--vert); } .jauge .f { background: var(--framboise); }
+.vignette .compte { font-size: 0.75rem; color: var(--doux); font-variant-numeric: tabular-nums; }
+.groupe-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.confirmer { background: var(--anis-voile); border-radius: 14px; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.confirmer p { margin: 0; flex: 1 1 260px; }
+.bouton-plein { background: var(--vert); color: var(--surface); border: none; border-radius: 999px; padding: 8px 16px; min-height: 40px; font-weight: 700; }
+
+/* La fête */
+.bravo { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  background: var(--encre); color: var(--fond); border-radius: 999px; padding: 10px 20px; font-family: var(--titre); font-weight: 700;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.25); z-index: 20; max-width: calc(100% - 32px); text-align: center; }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 19; overflow: hidden; }
+.confetti i { position: absolute; top: -12px; width: 8px; height: 14px; border-radius: 2px; animation: tombe 1.6s ease-in forwards; }
+@keyframes tombe { to { transform: translateY(105vh) rotate(540deg); opacity: 0.6; } }
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } .v { transition: none; } }
+
+@media (max-width: 700px) {
+  .scene { grid-template-columns: minmax(0, 1fr); }
+  .cadre { padding: 20px 16px; }
+  .cadre .grand { width: 150px; height: 150px; }
+  .score { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .anneau { width: 80px; height: 80px; }
+}
+</style>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">Mes exercices · relecture du praticien</p>
+    <h1>Le tri des pictogrammes</h1>
+    <p class="chapeau">Chaque fiche montre le dessin que l'application affiche vraiment pour cet exercice, à côté de sa consigne. Dites s'il est juste ou faux ; s'il est faux, décrivez ce qu'il devrait montrer. Les fiches sont rangées par dessin : on juge un même dessin plusieurs fois de suite.</p>
+  </header>
+
+  <section class="score" aria-label="Avancement">
+    <div class="anneau" aria-hidden="true">
+      <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--filet)" stroke-width="4"></circle>
+        <circle id="arc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--vert)" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 100" pathLength="100"></circle></svg>
+      <div class="chiffre" id="pourcent">0 %</div>
+    </div>
+    <div class="compteurs">
+      <div class="compteur"><b id="n-vues">0</b><span id="n-total">sur 0 fiches jugées</span></div>
+      <div class="compteur c-juste"><b id="n-juste">0</b><span>justes</span></div>
+      <div class="compteur c-faux"><b id="n-faux">0</b><span>faux, avec vos consignes</span></div>
+      <div class="compteur c-serie"><b id="n-serie">0</b><span>d'affilée aujourd'hui</span></div>
+    </div>
+    <p class="palier" id="palier"></p>
+    <p class="etat" id="etat">Connexion à la sauvegarde partagée…</p>
+  </section>
+
+  <section class="filtres" aria-label="Filtres">
+    <button class="puce" type="button" data-statut="a-voir" aria-pressed="true">À juger</button>
+    <button class="puce" type="button" data-statut="faux" aria-pressed="false">Faux</button>
+    <button class="puce" type="button" data-statut="juste" aria-pressed="false">Justes</button>
+    <button class="puce" type="button" data-statut="tout" aria-pressed="false">Tout</button>
+    <select class="puce" id="zone" aria-label="Zone"><option value="">Toutes les zones</option></select>
+    <button class="puce" type="button" id="bloc" aria-pressed="true">Masquer le bloc-notes</button>
+    <input class="recherche" id="recherche" type="search" placeholder="Chercher un exercice, un mot de la consigne…" aria-label="Chercher">
+  </section>
+
+  <section class="scene" id="scene" aria-live="polite"></section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h2>La planche des dessins</h2>
+      <span class="ou" id="planche-legende">Touchez un dessin pour ne voir que ses exercices.</span>
+    </div>
+    <div id="groupe"></div>
+    <div class="planche" id="planche"></div>
+  </section>
+</div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+<div class="bravo" id="bravo" role="status" hidden></div>
+
+<script type="application/json" id="donnees">__DONNEES__</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById("donnees").textContent);
+  const FICHES = D.exercices;
+  const DESSINS = D.dessins;
+  const NOMS = { advice: "bloc-notes" };
+  const svg = (pose) => `<svg viewBox="0 0 48 48" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${DESSINS[pose] || ""}</svg>`;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+  // Ordre de passage : dessin par dessin, du plus servi au moins servi, puis par nom.
+  const parPose = {};
+  FICHES.forEach((f) => { (parPose[f.pose] = parPose[f.pose] || []).push(f); });
+  const ORDRE_POSES = Object.keys(parPose).sort((a, b) => parPose[b].length - parPose[a].length || a.localeCompare(b));
+  FICHES.sort((a, b) => ORDRE_POSES.indexOf(a.pose) - ORDRE_POSES.indexOf(b.pose) || a.nom.localeCompare(b.nom, "fr"));
+  const zoneDe = (f) => f.ou.map((o) => o.split(" › ")[0]);
+  const ZONES = [...new Set(FICHES.flatMap(zoneDe))].sort((a, b) => a.localeCompare(b, "fr"));
+  const selZone = document.getElementById("zone");
+  ZONES.forEach((z) => selZone.insertAdjacentHTML("beforeend", `<option value="${esc(z)}">${esc(z)}</option>`));
+
+  // Les verdicts : la sauvegarde partagée quand elle répond, l'appareil sinon.
+  let verdicts = {};
+  let db = null, col = null;
+  const etat = document.getElementById("etat");
+  const LOCAL = "tri-pictos-verdicts";
+  try { verdicts = JSON.parse(localStorage.getItem(LOCAL) || "{}"); } catch (e) { verdicts = {}; }
+  const garderLocal = () => { try { localStorage.setItem(LOCAL, JSON.stringify(verdicts)); } catch (e) {} };
+
+  const vue = { statut: "a-voir", zone: "", bloc: true, q: "", pose: null, i: 0 };
+  let serie = 0;
+  try { const s = JSON.parse(localStorage.getItem("tri-pictos-serie") || "{}"); if (s.jour === new Date().toDateString()) serie = s.n; } catch (e) {}
+
+  // Une fiche qu'on vient de dire fausse reste à l'écran, même sous « À juger » : c'est
+  // maintenant qu'on écrit ce que le dessin devrait montrer.
+  let epingle = null;
+  function filtrees() {
+    const q = vue.q.trim().toLowerCase();
+    return FICHES.filter((f) => {
+      if (f.k === epingle) return true;
+      const v = verdicts[f.k] && verdicts[f.k].v;
+      if (vue.statut === "a-voir" && v) return false;
+      if (vue.statut === "juste" && v !== "juste") return false;
+      if (vue.statut === "faux" && v !== "faux") return false;
+      if (vue.zone && !zoneDe(f).includes(vue.zone)) return false;
+      if (vue.bloc && f.pose === "advice" && vue.pose !== "advice") return false;
+      if (vue.pose && f.pose !== vue.pose) return false;
+      if (q && !(f.nom + " " + f.consigne + " " + f.pose).toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }
+
+  // La fiche affichée est retenue par sa clé : juger une fiche la retire de « À juger »,
+  // et l'index seul aurait sauté la suivante.
+  let courante = null;
+  function rendreScene() {
+    const liste = filtrees();
+    const scene = document.getElementById("scene");
+    if (!liste.length) {
+      scene.innerHTML = `<div class="vide" style="grid-column:1/-1"><h2>Rien à juger ici</h2><p>${vue.statut === "a-voir" ? "Toutes les fiches de cette sélection sont jugées. Changez de filtre ou de dessin." : "Aucune fiche ne correspond à ces filtres."}</p></div>`;
+      courante = null; return;
+    }
+    let i = courante ? liste.findIndex((f) => f.k === courante) : -1;
+    if (i < 0) i = Math.min(vue.i, liste.length - 1);
+    vue.i = i;
+    const f = liste[i];
+    courante = f.k;
+    const v = verdicts[f.k] || {};
+    const rangDessin = ORDRE_POSES.indexOf(f.pose) + 1;
+    scene.innerHTML = `
+      <div class="cadre">
+        ${v.v ? `<span class="tampon ${v.v}">${v.v === "juste" ? "Juste" : "Faux"}</span>` : ""}
+        <div class="grand" aria-hidden="true">${svg(f.pose)}</div>
+        <div class="taille-reelle"><div class="pastille" aria-hidden="true">${svg(f.pose)}</div> à la taille de la liste</div>
+        <span class="cle-dessin">dessin « ${esc(NOMS[f.pose] || f.pose)} » · ${rangDessin}/${ORDRE_POSES.length}</span>
+      </div>
+      <div class="fiche">
+        <span class="position">Fiche ${i + 1} sur ${liste.length} dans cette sélection</span>
+        <h2>${esc(f.nom)}</h2>
+        ${f.dose ? `<span class="dose">${esc(f.dose)}</span>` : ""}
+        <p class="consigne">${esc(f.consigne)}</p>
+        <details class="ou"><summary>${f.ou.length > 1 ? `Dans ${f.ou.length} parcours` : esc(f.ou[0])}</summary><ul>${f.ou.map((o) => `<li>${esc(o)}</li>`).join("")}</ul></details>
+        <div class="verdicts">
+          <button type="button" class="v v-juste" id="b-juste" aria-pressed="${v.v === "juste"}">Juste <kbd>J</kbd></button>
+          <button type="button" class="v v-faux" id="b-faux" aria-pressed="${v.v === "faux"}">Faux <kbd>F</kbd></button>
+        </div>
+        <div class="note ${v.v === "faux" ? "faux" : ""}">
+          <label for="note">${v.v === "faux" ? "Ce que le dessin devrait montrer" : "Une remarque (facultatif)"}</label>
+          <textarea id="note" placeholder="${v.v === "faux" ? "Ex. : allongé sur le dos, genoux pliés, le bassin qui monte…" : "Ex. : juste, mais le bras pourrait être plus haut."}">${esc(v.note || "")}</textarea>
+          <p class="aide" id="note-etat">${v.note ? "Enregistré." : "S'enregistre tout seul quand vous arrêtez d'écrire."}</p>
+        </div>
+        <div class="nav">
+          <button type="button" id="b-prec" ${i === 0 ? "disabled" : ""}>← Précédente</button>
+          <button type="button" class="suivant" id="b-suiv">${i === liste.length - 1 ? "Dernière fiche" : "Suivante →"}</button>
+        </div>
+      </div>`;
+    document.getElementById("b-juste").onclick = () => juger(f, "juste");
+    document.getElementById("b-faux").onclick = () => juger(f, "faux");
+    document.getElementById("b-prec").onclick = () => aller(-1);
+    document.getElementById("b-suiv").onclick = () => aller(1);
+    const ta = document.getElementById("note");
+    let minuteur = null;
+    ta.oninput = () => {
+      document.getElementById("note-etat").textContent = "…";
+      clearTimeout(minuteur);
+      minuteur = setTimeout(() => enregistrer(f, { note: ta.value }), 900);
+    };
+    ta.onblur = () => { clearTimeout(minuteur); if ((verdicts[f.k] || {}).note !== ta.value) enregistrer(f, { note: ta.value }); };
+    if (v.v === "faux" && !v.note) ta.focus();
+  }
+
+  function aller(pas) {
+    const liste = filtrees();
+    epingle = null;
+    const i = Math.max(0, Math.min(liste.length - 1, vue.i + pas));
+    vue.i = i; courante = liste[i] ? liste[i].k : null;
+    rendreScene();
+  }
+
+  async function juger(f, v) {
+    const avant = verdicts[f.k] && verdicts[f.k].v;
+    const liste = filtrees();
+    const i = liste.findIndex((x) => x.k === f.k);
+    await enregistrer(f, { v });
+    if (!avant) {
+      serie++;
+      try { localStorage.setItem("tri-pictos-serie", JSON.stringify({ jour: new Date().toDateString(), n: serie })); } catch (e) {}
+      feter();
+    }
+    if (v === "faux") epingle = f.k;
+    if (v === "juste") {
+      epingle = null;
+      // Une fiche juste s'en va ; on passe à la suivante de la même sélection.
+      const suivante = liste[i + 1];
+      courante = suivante ? suivante.k : null;
+      vue.i = Math.max(0, i);
+    }
+    rendreTout();
+  }
+
+  // Une écriture à la fois par fiche, comme le demande la sauvegarde.
+  const enCours = {};
+  async function enregistrer(f, champs) {
+    const ancien = verdicts[f.k] || {};
+    const nouveau = Object.assign({}, ancien, champs, { nom: f.nom, pose: f.pose, quand: new Date().toISOString() });
+    verdicts[f.k] = nouveau;
+    garderLocal();
+    if (champs.note !== undefined) { const e = document.getElementById("note-etat"); if (e) e.textContent = "Enregistré."; }
+    if (!col) return;
+    const precedent = enCours[f.k] || Promise.resolve();
+    enCours[f.k] = precedent.then(() => col.doc(f.k).set(nouveau)).catch((e) => {
+      etat.textContent = "La sauvegarde partagée a refusé la dernière réponse : elle reste sur cet appareil. (" + (e && e.code || "erreur") + ")";
+    });
+    return enCours[f.k];
+  }
+
+  function rendreScore() {
+    const tous = FICHES.length;
+    let j = 0, fx = 0;
+    FICHES.forEach((f) => { const v = verdicts[f.k] && verdicts[f.k].v; if (v === "juste") j++; else if (v === "faux") fx++; });
+    const vus = j + fx;
+    const pc = Math.round((vus / tous) * 100);
+    document.getElementById("arc").setAttribute("stroke-dasharray", `${(vus / tous) * 100} 100`);
+    document.getElementById("arc").style.opacity = vus ? 1 : 0;
+    document.getElementById("pourcent").textContent = pc + " %";
+    document.getElementById("n-vues").textContent = vus;
+    document.getElementById("n-total").textContent = `sur ${tous} fiches jugées`;
+    document.getElementById("n-juste").textContent = j;
+    document.getElementById("n-faux").textContent = fx;
+    document.getElementById("n-serie").textContent = serie;
+    const dessinsFinis = ORDRE_POSES.filter((p) => parPose[p].every((f) => verdicts[f.k] && verdicts[f.k].v)).length;
+    const prochain = [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, tous].find((n) => n > vus);
+    document.getElementById("palier").textContent = vus >= tous
+      ? "Tout est jugé. Il ne reste qu'à corriger les faux."
+      : `${dessinsFinis} dessins sur ${ORDRE_POSES.length} entièrement jugés · prochain palier : ${prochain} fiches, encore ${prochain - vus}.`;
+  }
+
+  function rendrePlanche() {
+    const pl = document.getElementById("planche");
+    pl.innerHTML = ORDRE_POSES.filter((p) => !(vue.bloc && p === "advice")).map((p) => {
+      const l = parPose[p];
+      const j = l.filter((f) => verdicts[f.k] && verdicts[f.k].v === "juste").length;
+      const fx = l.filter((f) => verdicts[f.k] && verdicts[f.k].v === "faux").length;
+      return `<button type="button" class="vignette" data-pose="${p}" aria-pressed="${vue.pose === p}" title="${esc(p)}">
+        <span class="mini" aria-hidden="true">${svg(p)}</span>
+        <span class="nom">${esc(NOMS[p] || p)}</span>
+        <span class="jauge"><i class="j" style="width:${(j / l.length) * 100}%"></i><i class="f" style="width:${(fx / l.length) * 100}%"></i></span>
+        <span class="compte">${j + fx}/${l.length}${fx ? ` · ${fx} faux` : ""}</span></button>`;
+    }).join("");
+    pl.querySelectorAll(".vignette").forEach((b) => b.onclick = () => {
+      vue.pose = vue.pose === b.dataset.pose ? null : b.dataset.pose;
+      vue.i = 0; courante = null; epingle = null; confirmation = false;
+      rendreTout();
+      document.getElementById("scene").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    rendreGroupe();
+  }
+
+  // Valider d'un geste tous les exercices d'un dessin qui restent à juger : le cas courant
+  // d'un dessin juste partout. Une confirmation dans la page, jamais un geste en un toucher.
+  let confirmation = false;
+  function rendreGroupe() {
+    const g = document.getElementById("groupe");
+    if (!vue.pose) { g.innerHTML = ""; return; }
+    const restants = parPose[vue.pose].filter((f) => !(verdicts[f.k] && verdicts[f.k].v));
+    g.innerHTML = `<div class="groupe-actions">
+      <span>Dessin « ${esc(NOMS[vue.pose] || vue.pose)} » : ${parPose[vue.pose].length} exercices, ${restants.length} à juger.</span>
+      <button type="button" class="puce" id="g-tous">Voir tous les dessins</button>
+      ${restants.length ? `<button type="button" class="puce" id="g-juste">Tout ce qui reste est juste</button>` : ""}</div>
+      ${confirmation ? `<div class="confirmer" style="margin-top:10px"><p>Marquer juste les ${restants.length} exercices restants de ce dessin ? Vous pourrez toujours en repasser un en faux.</p>
+        <button type="button" class="bouton-plein" id="g-oui">Oui, tout est juste</button><button type="button" class="puce" id="g-non">Annuler</button></div>` : ""}`;
+    document.getElementById("g-tous").onclick = () => { vue.pose = null; confirmation = false; rendreTout(); };
+    const gj = document.getElementById("g-juste");
+    if (gj) gj.onclick = () => { confirmation = true; rendreGroupe(); };
+    const oui = document.getElementById("g-oui");
+    if (oui) oui.onclick = async () => {
+      confirmation = false;
+      oui.disabled = true;
+      for (const f of restants) await enregistrer(f, { v: "juste" });
+      serie += restants.length;
+      feter(true);
+      rendreTout();
+    };
+    const non = document.getElementById("g-non");
+    if (non) non.onclick = () => { confirmation = false; rendreGroupe(); };
+  }
+
+  const MOTS = ["Bien vu.", "Et une de plus.", "Ça avance.", "Œil de kiné.", "Continuez comme ça.", "Encore un dessin de passé."];
+  let bravoMinuteur = null;
+  function feter(gros) {
+    const vus = Object.values(verdicts).filter((v) => v.v).length;
+    const palier = [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900].includes(vus) || gros || vus === FICHES.length;
+    if (!palier && serie % 10 !== 0) return;
+    const b = document.getElementById("bravo");
+    b.textContent = vus === FICHES.length ? "Toutes les fiches sont jugées. Bravo !"
+      : palier ? `${vus} fiches jugées. ${MOTS[vus % MOTS.length]}` : `${serie} d'affilée. ${MOTS[serie % MOTS.length]}`;
+    b.hidden = false;
+    clearTimeout(bravoMinuteur);
+    bravoMinuteur = setTimeout(() => { b.hidden = true; }, 2600);
+    if (palier) {
+      const c = document.getElementById("confetti");
+      const couleurs = ["var(--vert)", "var(--anis)", "var(--or)", "var(--framboise)"];
+      c.innerHTML = Array.from({ length: 60 }, (_, n) =>
+        `<i style="left:${Math.random() * 100}%;background:${couleurs[n % 4]};animation-delay:${Math.random() * 0.5}s"></i>`).join("");
+      setTimeout(() => { c.innerHTML = ""; }, 2300);
+    }
+  }
+
+  function rendreTout() { rendreScore(); rendreScene(); rendrePlanche(); }
+
+  document.querySelectorAll("[data-statut]").forEach((b) => b.onclick = () => {
+    vue.statut = b.dataset.statut; vue.i = 0; courante = null; epingle = null;
+    document.querySelectorAll("[data-statut]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    rendreTout();
+  });
+  selZone.onchange = () => { vue.zone = selZone.value; vue.i = 0; courante = null; epingle = null; rendreTout(); };
+  const bloc = document.getElementById("bloc");
+  bloc.onclick = () => { vue.bloc = !vue.bloc; bloc.setAttribute("aria-pressed", vue.bloc); vue.i = 0; courante = null; epingle = null; rendreTout(); };
+  document.getElementById("recherche").oninput = (e) => { vue.q = e.target.value; vue.i = 0; courante = null; epingle = null; rendreTout(); };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("textarea, input, select") || e.metaKey || e.ctrlKey || e.altKey) return;
+    const liste = filtrees(); const f = liste[vue.i];
+    if (!f) return;
+    if (e.key === "j" || e.key === "J") { e.preventDefault(); juger(f, "juste"); }
+    else if (e.key === "f" || e.key === "F") { e.preventDefault(); juger(f, "faux"); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); aller(1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); aller(-1); }
+  });
+
+  rendreTout();
+
+  // La sauvegarde partagée arrive après le premier affichage. Ce qu'elle contient l'emporte
+  // sur l'appareil ; ce que l'appareil a de plus (jugé hors connexion) lui est renvoyé.
+  if (window.claude && window.claude.use) {
+    window.claude.use("db").then((d) => {
+      if (!d) { etat.textContent = "Vos réponses restent sur cet appareil : la sauvegarde partagée n'est pas disponible ici."; return; }
+      db = d; col = db.collection("verdicts");
+      let premiere = true;
+      col.onSnapshot((snap) => {
+        const distant = {};
+        snap.docs.forEach((doc) => { if (doc.exists) distant[doc.id] = doc.data(); });
+        if (premiere) {
+          premiere = false;
+          const aEnvoyer = Object.keys(verdicts).filter((k) => !distant[k] && FICHES.some((f) => f.k === k));
+          aEnvoyer.reduce((p, k) => p.then(() => col.doc(k).set(verdicts[k])).catch(() => {}), Promise.resolve());
+        }
+        const ecrit = document.activeElement && document.activeElement.id === "note" ? courante : null;
+        verdicts = Object.assign({}, verdicts, distant);
+        garderLocal();
+        etat.textContent = "Vos réponses sont enregistrées en ligne : Claude les lit pour corriger les dessins.";
+        // On ne redessine pas la fiche sous les doigts de celui qui écrit.
+        if (ecrit) { rendreScore(); rendrePlanche(); } else rendreTout();
+      }, (e) => { etat.textContent = "La sauvegarde partagée s'est interrompue : vos réponses restent sur cet appareil. Rechargez la page pour la retrouver."; });
+    }).catch(() => { etat.textContent = "Vos réponses restent sur cet appareil."; });
+  } else {
+    etat.textContent = "Vos réponses restent sur cet appareil.";
+  }
+})();
+</script>
