@@ -5395,7 +5395,6 @@ function ajouterAuJournal(journal, cle, date, faits, total) {
 function noterDouleur(journal, cle, date, douleur) {
     return (journal || []).map((e) => (e.date === date && e.cle === cle ? Object.assign({}, e, { douleur }) : e));
 }
-// Les sept derniers jours, du plus ancien au plus récent, pour la bande d'assiduité.
 // L'abandon ne se produit pas le premier jour mais vers la deuxième ou troisième semaine, et
 // l'application n'avait rien à dire à ce moment-là : elle affichait le même écran qu'au premier
 // jour. Savoir depuis quand le patient n'a rien fait permet de lui parler à cet instant précis.
@@ -5404,24 +5403,6 @@ function joursDepuisDerniereSeance(journal, aujourdhui) {
     if (!dates.length)
         return null;
     return joursEcoules(dates[dates.length - 1], aujourdhui);
-}
-function septDerniersJours(journal, aujourdhui) {
-    const out = [];
-    for (let i = 6; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const jour = aujourdHui(d);
-        const entrees = (journal || []).filter((e) => e.date === jour);
-        const faits = entrees.reduce((a, e) => a + e.faits, 0);
-        const douleurs = entrees.filter((e) => e.douleur !== undefined).map((e) => e.douleur);
-        out.push({
-            jour,
-            faits,
-            douleur: douleurs.length ? Math.max.apply(null, douleurs) : undefined,
-            estAujourdhui: jour === aujourdhui,
-        });
-    }
-    return out;
 }
 // --- Récapitulatif de consultation ----------------------------------------------------
 // Le journal existait, mais le patient n'avait rien à montrer en consultation. Cet écran
@@ -6276,35 +6257,6 @@ function ChampProfil({ id, intitule, aide, valeur, onChange, long, type }) {
             ? React.createElement("textarea", Object.assign({ rows: 3 }, commun, { style: Object.assign({}, commun.style, { resize: "vertical" }) }))
             : React.createElement("input", Object.assign({ type: type || "text" }, commun, type === "number" ? { inputMode: "numeric", min: 1, max: 120 } : null, { className: commun.className + " cible-44" })));
 }
-function BandeAssiduite({ journal, jour, accent }) {
-    const jours = septDerniersJours(journal, jour);
-    const total = jours.filter((j) => j.faits > 0).length;
-    return (React.createElement("div", null,
-        React.createElement("div", { className: "flex items-end justify-between gap-1.5" }, jours.map((j) => {
-            const [a, m, d] = j.jour.split("-").map(Number);
-            const initiale = INITIALES_JOURS[new Date(a, m - 1, d).getDay()];
-            return (React.createElement("div", { key: j.jour, className: "flex flex-col items-center gap-1", style: { flex: 1 } },
-                // Hautes de 26 px, pleines et arrondies en pilule, ces sept pastilles avaient
-                // la forme de boutons sans en être : deux relecteurs ont dit ne pas savoir si
-                // l'on pouvait appuyer dessus, et n'avoir donc pas essayé. Plus basses et à
-                // peine arrondies, elles redeviennent les barres d'un graphique.
-                React.createElement("div", { className: "w-full", style: {
-                        height: 14, borderRadius: RAYON_CASE,
-                        backgroundColor: j.faits > 0 ? accent : SUR_BANDEAU_VOILE,
-                        border: j.estAujourdhui ? `2px solid ${SUR_BANDEAU_DOUX}` : "1.5px solid transparent",
-                    }, title: j.faits > 0 ? `${j.faits} exercice${j.faits > 1 ? "s" : ""}` : "aucun exercice" }),
-                // Sept jours glissants, le jour même à droite — mais alignées sous D L M M J V S,
-                // les cases se lisent comme une semaine de calendrier, et une patiente a
-                // cherché pourquoi la sienne commençait un dimanche. Le jour même se
-                // distinguait par un filet à 65 % de blanc et une initiale de 10 px à 60 % :
-                // trop peu pour trancher, surtout de loin.
-                React.createElement("span", { className: j.estAujourdhui ? "t-etiquette font-semibold" : "t-etiquette",
-                    style: { color: j.estAujourdhui ? SUR_BANDEAU : SUR_BANDEAU_PALE } }, initiale)));
-        })),
-        React.createElement("p", { className: "t-accompagne mt-2", style: { color: SUR_BANDEAU_DOUX } }, total === 0
-            ? "Aucune séance cette semaine — la régularité compte plus que la durée."
-            : `${total} jour${total > 1 ? "s" : ""} travaillé${total > 1 ? "s" : ""} sur les 7 derniers.`)));
-}
 // Curseur de fin de séance. La règle des 3-4/10 est rappelée sur chaque écran d'exercices
 // mais n'était jamais recueillie : le patient s'auto-évalue, et le kinésithérapeute dispose
 // d'un relevé à la consultation suivante plutôt que d'un souvenir approximatif.
@@ -6553,7 +6505,6 @@ const ACCENT_CALENDRIER = "var(--accent-calendrier)"; // palier intermédiaire d
 const ACCENT_ATTENTE = "var(--accent-attente)";
 // L'anis marque ce qui est actif — l'onglet courant —, jamais un texte : sur blanc, il ne
 // tient pas le contraste d'une écriture.
-const ANIS = "var(--anis)";
 const ANIS_VOILE = "var(--anis-voile)";
 const ORANGE = "var(--orange)"; // la douleur, dans les graphiques uniquement
 const INK = "var(--encre)";
@@ -6594,7 +6545,6 @@ const SUR_BANDEAU_VOILE = "var(--sur-bandeau-voile)"; // fonds de pastille et de
 const TAILLE_ETIQUETTE = 11;
 const TAILLE_ACCOMPAGNE = 13;
 const TAILLE_CORPS = 15;
-const TAILLE_CARTE = 17;
 const RAYON_CARTE = 16;
 const RAYON_CASE = 4;
 const PAGE = "var(--page)"; // fond des écrans de contenu
