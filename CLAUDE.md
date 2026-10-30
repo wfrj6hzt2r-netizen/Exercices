@@ -107,6 +107,11 @@ montrent les dessins ; le code et les contrôles sont de notre ressort.
   du dessin.
 - **Les affectations relues par le praticien sont figées** dans un contrôle. Il fige le
   résultat jugé, pas la règle qui le produit.
+- **La planche de relecture** (https://claude.ai/artifact/PyPnZ8mpnj8M5kWFd4UjAa) montre
+  chaque exercice avec son dessin ; le praticien y répond juste ou faux et écrit ce qu'il
+  veut voir. Lire ses verdicts (collection `verdicts`) avant de toucher un dessin, et
+  republier la planche régénérée (`node verification/planche.mjs`) après chaque changement
+  de pictogramme.
 
 ## Le lexique
 
