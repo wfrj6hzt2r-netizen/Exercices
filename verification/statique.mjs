@@ -180,6 +180,35 @@ controle("tout symbole majuscule employé est déclaré", () => {
     return [...manquants.values()];
 });
 
+// Le symbole inverse : déclaré, jamais employé. Cinq traînaient dans le fichier, dont une
+// bande d'assiduité que la refonte avait remplacée sans la retirer — et deux listes de
+// signaux d'alerte, rédigées pour les enfants et les coureurs, qu'aucun écran n'affichait.
+// Personne ne l'avait vu : un code qui ne sert à rien ne fait rien, sans le moindre signe.
+//
+// Deux exemptions, écrites en clair. Le praticien a choisi de ne pas afficher ces signaux
+// (« je n'ai pas envie qu'un enfant qui voit qu'il a mal au genou puisse le lier à un mot
+// comme tumeur, laisse comme ça ») ; le texte reste pour le jour où il en déciderait autrement.
+const DECLARES_SANS_EMPLOI = new Set(["CROISSANCE_DRAPEAUX_COMMUNS", "DRAPEAUX_COUREUR"]);
+controle("tout symbole déclaré sert quelque part", () => {
+    const declares = [];
+    const re = /^(?:const|let|var|function|class)\s+([A-Za-z_$][\w$]*)/gm;
+    let m;
+    while ((m = re.exec(app)))
+        declares.push(m[1]);
+    const code = codeSeul(app)
+        .replace(/\.\s*[A-Za-z_$][\w$]*/g, ".x")
+        .replace(/([{,]\s*)[A-Za-z_$][\w$]*(\s*:)/g, "$1k$2");
+    const fautes = [];
+    for (const nom of declares) {
+        const emplois = code.match(new RegExp(`(?<![\\w$])${nom.replace(/\$/g, "\\$")}(?![\\w$])`, "g")) || [];
+        if (emplois.length < 2 && !DECLARES_SANS_EMPLOI.has(nom))
+            fautes.push(`« ${nom} » est déclaré mais jamais employé`);
+        if (emplois.length >= 2 && DECLARES_SANS_EMPLOI.has(nom))
+            fautes.push(`« ${nom} » est exempté mais désormais employé : retirez-le de l'exemption`);
+    }
+    return fautes;
+});
+
 // --- 2. Toute classe employée est définie ---------------------------------------------
 // « pb-4 », « pb-8 », « gap-5 », « mt-2.5 » et « mt-3.5 » n'existaient pas dans le Tailwind
 // figé de cette page : elles ne faisaient rien, sans le moindre signe.

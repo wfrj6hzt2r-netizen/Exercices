@@ -47,6 +47,12 @@ const MUTATIONS = [
     ["tout symbole majuscule employé est déclaré",
         (s) => rem(s, "const POSES = [", "const essai = SYMBOLE_ABSENT;\nconst POSES = [")],
 
+    // Une constante de la palette, remise sans personne pour l'employer : c'est ce que la
+    // refonte avait laissé derrière elle.
+    ["tout symbole déclaré sert quelque part",
+        (s) => rem(s, 'const ANIS_VOILE = "var(--anis-voile)";',
+                      'const ANIS = "var(--anis)";\nconst ANIS_VOILE = "var(--anis-voile)";')],
+
     ["toute classe employée est définie",
         (s) => rem(s, 'className: "w-full max-w-[342px] mx-auto"',
                       'className: "w-full max-w-[342px] mx-auto pb-42"')],

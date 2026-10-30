@@ -1,6 +1,6 @@
 # Vérification
 
-Quarante-trois contrôles automatiques — trente-trois statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
+Quarante-quatre contrôles automatiques — trente-quatre statiques, dix sur rendu. Chacun correspond à un défaut réellement survenu, pas à une
 règle imaginée : un contrôle qui n'a jamais rien attrapé finit par être ignoré.
 
 Un troisième script, `mutation.mjs`, introduit un défaut par contrôle statique, un par un, et vérifie que le
@@ -37,6 +37,7 @@ contrôles-ci mordent encore.
 | --- | --- |
 | Le script se compile | Trois parenthèses déséquilibrées en une semaine, chacune produisant un écran blanc |
 | Tout symbole majuscule employé est déclaré | En retirant un bloc de code, une constante voisine est partie avec. Le script compilait toujours et les contrôles de contenu passaient, mais cinq écrans ne s'affichaient plus : un identifiant absent n'est une erreur qu'à l'exécution, et seulement sur le chemin qui l'emprunte |
+| Tout symbole déclaré sert quelque part | La refonte avait remplacé la bande d'assiduité sans la retirer, et deux listes de signaux d'alerte — enfants, coureurs — n'étaient affichées nulle part. Un code qui ne sert à rien ne fait rien, sans le moindre signe. Ces deux listes sont exemptées en clair, par décision du praticien. |
 | Toute classe employée est définie | `pb-4`, `pb-8`, `gap-5`, `mt-2.5`, `mt-3.5` n'existaient pas dans le Tailwind figé de la page : elles ne faisaient rien, sans le moindre signe |
 | Aucune couleur hors de la palette | Trente valeurs écrites en dur avaient divergé — sept verts pour trois rôles, deux gris de prose presque identiques |
 | Aucun emoji couleur | Quatre emoji système servaient d'icônes ; le dernier a survécu à une passe de remplacement parce qu'il était écrit en clair et non échappé |
