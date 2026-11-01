@@ -516,6 +516,74 @@ const PoseForwardFold = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M30 21 C29 13 19 12 17 23" }),
     React.createElement("circle", { cx: "15.5", cy: "27.5", r: "3.6" }),
     React.createElement("line", { x1: "19", y1: "23", x2: "21", y2: "38" })));
+// Relecture sur planche, novembre 2026 : cinq gestes d'échauffement et de saut recevaient
+// la course ou le saut générique. Le praticien a demandé un dessin propre à chacun.
+//
+// Montées de genoux : buste droit, une cuisse à l'horizontale, la jambe d'appui tendue.
+const PoseHighKnees = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "27" }),
+    React.createElement("line", { x1: "24", y1: "27", x2: "24", y2: "43" }),
+    React.createElement("line", { x1: "24", y1: "27", x2: "33", y2: "27" }),
+    React.createElement("line", { x1: "33", y1: "27", x2: "33", y2: "36" }),
+    React.createElement("line", { x1: "24", y1: "16", x2: "29", y2: "21" }),
+    React.createElement("line", { x1: "29", y1: "21", x2: "32", y2: "15" }),
+    React.createElement("line", { x1: "24", y1: "16", x2: "19", y2: "21" }),
+    React.createElement("line", { x1: "19", y1: "21", x2: "16", y2: "27" })));
+// Talons-fesses : la jambe libre plie derrière, le talon remonte sous le fessier.
+const PoseButtKicks = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "25", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "25", y1: "12", x2: "24", y2: "27" }),
+    React.createElement("line", { x1: "24", y1: "27", x2: "28", y2: "43" }),
+    React.createElement("line", { x1: "24", y1: "27", x2: "21", y2: "36" }),
+    React.createElement("line", { x1: "21", y1: "36", x2: "14", y2: "29" }),
+    React.createElement("line", { x1: "25", y1: "16", x2: "30", y2: "21" }),
+    React.createElement("line", { x1: "30", y1: "21", x2: "33", y2: "15" }),
+    React.createElement("line", { x1: "25", y1: "16", x2: "20", y2: "21" }),
+    React.createElement("line", { x1: "20", y1: "21", x2: "17", y2: "27" })));
+// Pas chassés : vu de face, jambes écartées et genoux fléchis, la flèche dit le côté.
+const PoseSideShuffle = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "22", cy: "10", r: "4" }),
+    React.createElement("line", { x1: "22", y1: "14", x2: "22", y2: "28" }),
+    React.createElement("line", { x1: "22", y1: "18", x2: "14", y2: "24" }),
+    React.createElement("line", { x1: "22", y1: "18", x2: "30", y2: "24" }),
+    React.createElement("line", { x1: "22", y1: "28", x2: "15", y2: "35" }),
+    React.createElement("line", { x1: "15", y1: "35", x2: "13", y2: "43" }),
+    React.createElement("line", { x1: "22", y1: "28", x2: "29", y2: "35" }),
+    React.createElement("line", { x1: "29", y1: "35", x2: "31", y2: "43" }),
+    React.createElement("line", { x1: "36", y1: "12", x2: "45", y2: "12" }),
+    React.createElement("path", { d: "M42 9 L45 12 L42 15" })));
+// Sautillement sur une jambe : le pied d'appui quitte le sol, l'autre jambe reste pliée
+// derrière. Deux traits sous le pied marquent le rebond.
+const PoseHopSingle = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "24", cy: "6", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "10", x2: "24", y2: "24" }),
+    React.createElement("line", { x1: "24", y1: "24", x2: "25", y2: "31" }),
+    React.createElement("line", { x1: "25", y1: "31", x2: "24", y2: "38" }),
+    React.createElement("line", { x1: "24", y1: "24", x2: "19", y2: "31" }),
+    React.createElement("line", { x1: "19", y1: "31", x2: "14", y2: "28" }),
+    React.createElement("line", { x1: "24", y1: "14", x2: "17", y2: "19" }),
+    React.createElement("line", { x1: "24", y1: "14", x2: "31", y2: "18" }),
+    React.createElement("line", { x1: "21", y1: "41", x2: "21", y2: "43" }),
+    React.createElement("line", { x1: "27", y1: "41", x2: "27", y2: "43" })));
+// Saut en contrebas : la marche à gauche, la trajectoire en tirets, la réception
+// genoux fléchis au pied de la marche.
+const PoseDropJump = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M5 30 L16 30 L16 44" }),
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("path", { d: "M13 24 Q22 12 27 19", strokeDasharray: "2 3" }),
+    React.createElement("circle", { cx: "31", cy: "17", r: "3.6" }),
+    React.createElement("line", { x1: "31", y1: "21", x2: "30", y2: "31" }),
+    React.createElement("line", { x1: "30", y1: "31", x2: "37", y2: "35" }),
+    React.createElement("line", { x1: "37", y1: "35", x2: "35", y2: "43" }),
+    React.createElement("line", { x1: "30", y1: "31", x2: "34", y2: "37" }),
+    React.createElement("line", { x1: "34", y1: "37", x2: "30", y2: "43" }),
+    React.createElement("line", { x1: "31", y1: "24", x2: "37", y2: "27" }),
+    React.createElement("line", { x1: "31", y1: "24", x2: "25", y2: "28" })));
 // Assis au sol jambes tendues, buste redressé et à peine penché vers le pied. Le buste très
 // incliné écrasait la silhouette : à une douzaine de degrés de la verticale, l'angle
 // tronc-jambes se lit et le bassin reste identifiable.
@@ -1580,6 +1648,19 @@ const POSES = [
     // cohérence ne pouvait pas juger — consigne muette sur la posture, ou posture qu'il ne
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
+    // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "high-knees", icon: PoseHighKnees, test: (n) => n === "montées de genoux" },
+    { key: "butt-kicks", icon: PoseButtKicks, test: (n) => n === "talons-fesses" },
+    { key: "side-shuffle", icon: PoseSideShuffle, test: (n) => n === "pas chassés latéraux" || n === "pas chassés et changements de direction lents" },
+    { key: "hop-single", icon: PoseHopSingle, test: (n) => n === "sautillements unipodaux" },
+    { key: "drop-jump", icon: PoseDropJump, test: (n) => n === "sauts en contrebas amortis (drop jumps légers)" },
+    // Des foulées, pas des sauts sur place.
+    { key: "run", icon: PoseWalkRun, test: (n) => n === "foulées bondissantes" || n === "foulées bondissantes courtes" },
+    // « Mettre les sprints de côté » dit de courir tranquillement : un sprinteur montrait
+    // l'inverse de la consigne.
+    { key: "walk", icon: PoseWalk, test: (n) => n === "mettre les sprints de côté" },
+    // Des consignes d'aménagement, pas des gestes.
+    { key: "advice", icon: PoseAdvice, test: (n) => n === "mettre les sauts de côté" || n === "réduction du volume et changement de surface" },
     { key: "fente-au-sol", icon: PoseFenteAuSol, test: (n) => n === "étirement prolongé du fléchisseur de hanche"
             || n === "étirement de l'avant de la hanche" },
     { key: "assis-debout", icon: PoseAssisDebout, test: (n) => n === "squat sur une chaise" || n === "assis-debout répétés" },
@@ -1960,6 +2041,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
     "side-lying": "cote", bridge: "dos", "lying-mobilise": "dos",
     "supine-core": "dos", "four-point": "quatre",
+    "high-knees": "debout", "butt-kicks": "debout", "side-shuffle": "debout", "hop-single": "debout", "drop-jump": "debout",
     "forward-fold": "debout", "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
     "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
     // Le dessin du tronc montre une silhouette debout, sans l'avoir jamais déclaré : le
