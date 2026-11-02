@@ -1120,6 +1120,9 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Position allongée sur le ventre": "prone-light",
         "Renforcement para-vertébral léger": "prone-lift",
         "Renforcement global cervico-scapulaire": "head-extension",
+        // Troisième passe, validée sur capture : « oui corrige aussi seated twist, et fusionne ».
+        "Correction posturale active": "autocorrection",
+        "Mobilité complète en charge": "side-bend",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
