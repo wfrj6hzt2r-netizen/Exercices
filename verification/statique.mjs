@@ -1055,7 +1055,9 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Mobilité en flexion dorsale": "calf-wall",
         "Renforcement des éverseurs en charge": "band",
         "Équilibre unipodal avec voûte active": "balance",
-        "Renforcement du haut du dos à l'élastique": "retraction-omoplates",
+        // Repassé au tirage à l'élastique sur la planche, novembre 2026 : « mets plutôt le
+        // pictogramme band-row ».
+        "Renforcement du haut du dos à l'élastique": "band-row",
         "Renforcement scapulaire": "retraction-omoplates",
         "Renforcement scapulaire associé": "retraction-omoplates",
         "Renforcement rhomboïdes / trapèzes moyens": "retraction-omoplates",
@@ -1166,7 +1168,8 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Bascules du bassin": "supine-core",
         "Bascules du bassin en insistant sur la flexion": "supine-core",
         "Bascule du bassin": "supine-core",
-        "Coordination mobilité thoraco-lombaire": "seated-twist",
+        // Repassé sur la planche, novembre 2026 : « on dit mains sous les fesses ».
+        "Coordination mobilité thoraco-lombaire": "seated-twist-mains",
         // Et les douze qu'a fait lever le contrôle une fois les postures déclarées : sept
         // glissements nerveux « Assis » qui montraient une silhouette debout, trois
         // respirations, deux exercices du haut du dos.

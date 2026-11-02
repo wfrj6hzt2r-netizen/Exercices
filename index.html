@@ -593,6 +593,34 @@ const PoseProneLight = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M 8 36 L 24 35 C 29 34 31 32.5 33.5 30.5" }),
     React.createElement("line", { x1: "29", y1: "33.5", x2: "30", y2: "38" }),
     React.createElement("line", { x1: "16", y1: "35.5", x2: "16", y2: "38" })));
+// Relecture sur planche, novembre 2026, sur « Coordination mobilité thoraco-lombaire » : « on
+// dit mains sous les fesses, donc la position à modifier ». La rotation assise, les mains
+// glissées sous le bassin pour le tenir.
+const PoseSeatedTwistMains = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "12", y1: "12", x2: "12", y2: "41" }),
+    React.createElement("line", { x1: "12", y1: "29", x2: "28", y2: "29" }),
+    React.createElement("circle", { cx: "19", cy: "10", r: "4" }),
+    React.createElement("line", { x1: "19", y1: "14", x2: "19", y2: "26" }),
+    React.createElement("line", { x1: "19", y1: "17", x2: "15", y2: "23" }),
+    React.createElement("line", { x1: "15", y1: "23", x2: "17", y2: "28" }),
+    React.createElement("line", { x1: "19", y1: "26", x2: "29", y2: "26" }),
+    React.createElement("line", { x1: "29", y1: "26", x2: "29", y2: "41" }),
+    React.createElement("path", { d: "M30 5 A 11 11 0 0 1 37 15" }),
+    React.createElement("path", { d: "M33 13 L37.5 15.5 L33 19" })));
+// Relecture sur planche, novembre 2026, sur « Mobilité complète en charge » : « mets un
+// pictogramme debout, avec flèches sur les côtés pour montrer des inclinaisons du tronc ».
+const PoseSideBend = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
+    React.createElement("circle", { cx: "24", cy: "10", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "14", x2: "24", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "18", x2: "19", y2: "29" }),
+    React.createElement("line", { x1: "24", y1: "18", x2: "29", y2: "29" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "28", y2: "44" }),
+    React.createElement("path", { d: "M17 5 Q9 7 8 17" }),
+    React.createElement("path", { d: "M5.5 14 L8 17.5 L10.5 14" }),
+    React.createElement("path", { d: "M31 5 Q39 7 40 17" }),
+    React.createElement("path", { d: "M37.5 14 L40 17.5 L42.5 14" })));
 // Assis au sol jambes tendues, buste redressé et à peine penché vers le pied. Le buste très
 // incliné écrasait la silhouette : à une douzaine de degrés de la verticale, l'angle
 // tronc-jambes se lit et le bassin reste identifiable.
@@ -823,14 +851,14 @@ const PoseNerveGlide = poseWrap(React.createElement(React.Fragment, null,
 const PoseArmSupport = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "32", cy: "9", r: "4" }),
     React.createElement("line", { x1: "32", y1: "13", x2: "32", y2: "30" }),
-    React.createElement("line", { x1: "32", y1: "17", x2: "27", y2: "24" }),
-    React.createElement("line", { x1: "27", y1: "24", x2: "21", y2: "21" }),
-    React.createElement("line", { x1: "32", y1: "17", x2: "36", y2: "24" }),
-    React.createElement("line", { x1: "36", y1: "24", x2: "36", y2: "30" }),
+    React.createElement("line", { x1: "32", y1: "17", x2: "28", y2: "22" }),
+    React.createElement("line", { x1: "28", y1: "22", x2: "23", y2: "20" }),
+    React.createElement("line", { x1: "32", y1: "17", x2: "35", y2: "22" }),
+    React.createElement("line", { x1: "35", y1: "22", x2: "35", y2: "27" }),
     React.createElement("line", { x1: "32", y1: "30", x2: "29", y2: "43" }),
     React.createElement("line", { x1: "32", y1: "30", x2: "35", y2: "43" }),
-    React.createElement("line", { x1: "6", y1: "26", x2: "28", y2: "26" }),
-    React.createElement("line", { x1: "8", y1: "26", x2: "8", y2: "44" }),
+    React.createElement("line", { x1: "6", y1: "23", x2: "29", y2: "23" }),
+    React.createElement("line", { x1: "8", y1: "23", x2: "8", y2: "44" }),
     React.createElement("line", { x1: "4", y1: "44", x2: "43", y2: "44" })));
 // Poussée contre un mur, les DEUX mains en appui : extension des coudes.
 // Relecture sur planche, novembre 2026 : « revois les proportions bras/jambes » et « ajoute une
@@ -839,15 +867,15 @@ const PoseArmSupport = poseWrap(React.createElement(React.Fragment, null,
 const PoseTricepsPush = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "43", y1: "6", x2: "43", y2: "44" }),
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("circle", { cx: "29.5", cy: "13.5", r: "3.6" }),
-    React.createElement("line", { x1: "27", y1: "17.5", x2: "21", y2: "30" }),
-    React.createElement("line", { x1: "21", y1: "30", x2: "14", y2: "43.5" }),
-    React.createElement("line", { x1: "21", y1: "30", x2: "17.5", y2: "43.5" }),
-    React.createElement("line", { x1: "27", y1: "18", x2: "35", y2: "23.5" }),
-    React.createElement("line", { x1: "35", y1: "23.5", x2: "42.5", y2: "20" }),
-    React.createElement("path", { d: "M30 4 L41 4" }),
-    React.createElement("path", { d: "M33 1 L30 4 L33 7" }),
-    React.createElement("path", { d: "M38 1 L41 4 L38 7" })));
+    React.createElement("circle", { cx: "32", cy: "16", r: "3.6" }),
+    React.createElement("line", { x1: "30", y1: "20", x2: "24", y2: "31" }),
+    React.createElement("line", { x1: "24", y1: "31", x2: "17", y2: "43.5" }),
+    React.createElement("line", { x1: "24", y1: "31", x2: "20.5", y2: "43.5" }),
+    React.createElement("line", { x1: "30", y1: "20.5", x2: "35.5", y2: "25" }),
+    React.createElement("line", { x1: "35.5", y1: "25", x2: "42.5", y2: "22.5" }),
+    React.createElement("path", { d: "M31 5 L41 5" }),
+    React.createElement("path", { d: "M34 2 L31 5 L34 8" }),
+    React.createElement("path", { d: "M38 2 L41 5 L38 8" })));
 // Main et doigts : renforcement de la préhension et travail de l'habileté.
 const PoseHand = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("rect", { x: "17", y: "24", width: "15", height: "13", rx: "3" }),
@@ -1106,9 +1134,9 @@ const PoseStandingExtension = poseWrap(React.createElement(React.Fragment, null,
 const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "43", x2: "30", y2: "43" }),
     React.createElement("line", { x1: "16", y1: "27", x2: "32", y2: "27" }),
-    React.createElement("circle", { cx: "11", cy: "28", r: "3.2" }),
+    React.createElement("circle", { cx: "12", cy: "30.5", r: "3" }),
     React.createElement("line", { x1: "16", y1: "27", x2: "16", y2: "43" }),
-    React.createElement("line", { x1: "16", y1: "26", x2: "4", y2: "17" }),
+    React.createElement("line", { x1: "16", y1: "25.5", x2: "4", y2: "24" }),
     React.createElement("line", { x1: "32", y1: "27", x2: "31", y2: "42" }),
     React.createElement("line", { x1: "31", y1: "42", x2: "40", y2: "42" }),
     React.createElement("line", { x1: "32", y1: "27", x2: "44", y2: "23" })));
@@ -1546,11 +1574,11 @@ const PoseLegPress = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
     React.createElement("line", { x1: "10", y1: "39", x2: "23", y2: "39" }),
     React.createElement("line", { x1: "12", y1: "39", x2: "12", y2: "44" }),
-    React.createElement("line", { x1: "10", y1: "39", x2: "5", y2: "27" }),
-    React.createElement("circle", { cx: "7", cy: "24", r: "3.6" }),
-    React.createElement("line", { x1: "8", y1: "27", x2: "21", y2: "37" }),
-    React.createElement("line", { x1: "21", y1: "37", x2: "30", y2: "31" }),
-    React.createElement("line", { x1: "30", y1: "31", x2: "35", y2: "37" }),
+    React.createElement("line", { x1: "10", y1: "39", x2: "4", y2: "27" }),
+    React.createElement("circle", { cx: "5", cy: "23.5", r: "3.6" }),
+    React.createElement("line", { x1: "6.5", y1: "27", x2: "12", y2: "37" }),
+    React.createElement("line", { x1: "12", y1: "37", x2: "25", y2: "30" }),
+    React.createElement("line", { x1: "25", y1: "30", x2: "35", y2: "35" }),
     React.createElement("line", { x1: "36", y1: "26", x2: "36", y2: "40" })));
 // Rotation interne : l'avant-bras revient vers le ventre. Les deux chevrons de la première
 // version pointaient vers le corps. Le dessin reçu était celui de la rotation externe, c'est-à-dire
@@ -1616,7 +1644,9 @@ const PoseNerveSciatic = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "27", y1: "27", x2: "39", y2: "24" }),
     React.createElement("path", { d: "M27 27 L30 39", strokeDasharray: "3 3" }),
     React.createElement("path", { d: "M33 40 Q42 38 42 29" }),
-    React.createElement("path", { d: "M39.5 31.5 L42 28 L44.5 31.5" })));
+    React.createElement("path", { d: "M39.5 31.5 L42 28 L44.5 31.5" }),
+    React.createElement("path", { d: "M16 4 Q20 6 19 11" }),
+    React.createElement("path", { d: "M16.8 8.6 L19 11.5 L21.4 9" })));
 // L'autre exercice sciatique : allongé sur le dos, un genou plié, l'autre jambe tendue
 // remontée vers le plafond, la serviette sous le pied en pointillé.
 const PoseSupineSlr = poseWrap(React.createElement(React.Fragment, null,
@@ -1724,13 +1754,31 @@ const PoseAssisDebout = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M35 17 L38 13.5 L41 17" })));
 // La fente genou au sol est la fente debout menée jusqu'au sol : même dessin, sous une clé à
 // elle parce qu'elle ne s'installe pas dans la même posture que l'original — à genoux.
-const PoseFenteAuSol = (props) => PoseLunge(props);
+// La fente genou au sol est la fente debout menée jusqu'au sol, à genoux. Elle reprenait le
+// dessin de la fente debout jusqu'à la relecture sur planche de novembre 2026 : « ne
+// ressemble pas trop à une fente, surtout la jambe arrière ». Le genou arrière est au sol, le
+// tibia couché derrière, la jambe avant à angle droit.
+const PoseFenteAuSol = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "22", cy: "12", r: "4" }),
+    React.createElement("line", { x1: "22", y1: "16", x2: "22", y2: "30" }),
+    React.createElement("line", { x1: "22", y1: "19", x2: "26", y2: "25" }),
+    React.createElement("line", { x1: "26", y1: "25", x2: "31", y2: "29" }),
+    React.createElement("line", { x1: "22", y1: "30", x2: "33", y2: "31" }),
+    React.createElement("line", { x1: "33", y1: "31", x2: "33", y2: "44" }),
+    React.createElement("line", { x1: "22", y1: "30", x2: "17", y2: "43" }),
+    React.createElement("line", { x1: "17", y1: "43", x2: "7", y2: "43" })));
 const POSES = [
     // Relecture d'octobre 2026, posture par posture, des exercices que le contrôle de
     // cohérence ne pouvait pas juger — consigne muette sur la posture, ou posture qu'il ne
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "seated-twist-mains", icon: PoseSeatedTwistMains, test: (n) => n === "coordination mobilité thoraco-lombaire" },
+    { key: "side-bend", icon: PoseSideBend, test: (n) => n === "mobilité complète en charge" },
+    { key: "autocorrection", icon: PoseAutocorrection, test: (n) => n === "correction posturale active" },
+    // « Mets plutôt le pictogramme band-row » : l'élastique tenu à deux mains se tire.
+    { key: "band-row", icon: PoseBandRow, test: (n) => n === "renforcement du haut du dos à l'élastique" },
     { key: "prone-light", icon: PoseProneLight, test: (n) => n === "position allongée sur le ventre" },
     // « Ne signale pas l'exercice à faire » : la poitrine qui se décolle, pas l'extension sur les bras.
     { key: "prone-lift", icon: PoseProneLift, test: (n) => n === "renforcement para-vertébral léger" },
@@ -1755,8 +1803,7 @@ const POSES = [
     { key: "band", icon: PoseBand, test: (n) => n === "renforcement des éverseurs en charge" },
     { key: "balance", icon: PoseBalance, test: (n) => n === "équilibre unipodal avec voûte active" },
     { key: "calf", icon: PoseCalfRaise, test: (n, t) => n === "contraction sans bouger" && t.startsWith("debout, monte") },
-    { key: "retraction-omoplates", icon: PoseRetractionOmoplates, test: (n) => n === "renforcement du haut du dos à l'élastique"
-            || n === "renforcement scapulaire" || n === "renforcement scapulaire associé"
+    { key: "retraction-omoplates", icon: PoseRetractionOmoplates, test: (n) => n === "renforcement scapulaire" || n === "renforcement scapulaire associé"
             || n === "renforcement rhomboïdes / trapèzes moyens" },
     { key: "band-rotators", icon: PoseBandRotators, test: (n, t) => n === "renforcement de l'épaule" && t.includes("coude collé au corps") },
     // La consigne interdit le lancer : un dessin de lanceur la contredisait.
@@ -2128,7 +2175,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
     "side-lying": "cote", bridge: "dos", "lying-mobilise": "dos",
     "supine-core": "dos", "four-point": "quatre",
-    "prone-light": "ventre", "high-knees": "debout", "butt-kicks": "debout", "side-shuffle": "debout", "hop-single": "debout", "drop-jump": "debout",
+    "seated-twist-mains": "assis", "side-bend": "debout", "prone-light": "ventre", "high-knees": "debout", "butt-kicks": "debout", "side-shuffle": "debout", "hop-single": "debout", "drop-jump": "debout",
     "forward-fold": "debout", "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
     "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
     // Le dessin du tronc montre une silhouette debout, sans l'avoir jamais déclaré : le

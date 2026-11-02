@@ -215,7 +215,7 @@ const MUTATIONS = [
     // Le bras de la silhouette en appui retrouve sa longueur d'avant : vingt-six unités
     // de membre supérieur sur un tronc de dix-huit.
     ["les quatre silhouettes redessinées gardent leurs proportions",
-        (s) => rem(s, 'x1: "32", y1: "17", x2: "27", y2: "24" }),\n    React.createElement("line", { x1: "27", y1: "24", x2: "21", y2: "21" })',
+        (s) => rem(s, 'x1: "32", y1: "17", x2: "28", y2: "22" }),\n    React.createElement("line", { x1: "28", y1: "22", x2: "23", y2: "20" })',
                       'x1: "32", y1: "17", x2: "24", y2: "29" }),\n    React.createElement("line", { x1: "24", y1: "29", x2: "12", y2: "24" })')],
 
     ["la vignette de l'accueil est bien l'icône installée",
