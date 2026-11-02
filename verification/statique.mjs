@@ -1114,6 +1114,10 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Mettre les sprints de côté": "walk",
         "Mettre les sauts de côté": "advice",
         "Réduction du volume et changement de surface": "advice",
+        // Deuxième passe, validée sur capture : « oui c'est bon, fusionne ».
+        "Position allongée sur le ventre": "prone-light",
+        "Renforcement para-vertébral léger": "prone-lift",
+        "Renforcement global cervico-scapulaire": "head-extension",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
