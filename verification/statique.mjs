@@ -1055,9 +1055,9 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Mobilité en flexion dorsale": "calf-wall",
         "Renforcement des éverseurs en charge": "band",
         "Équilibre unipodal avec voûte active": "balance",
-        // Repassé au tirage à l'élastique sur la planche, novembre 2026 : « mets plutôt le
-        // pictogramme band-row ».
-        "Renforcement du haut du dos à l'élastique": "band-row",
+        // Repassé deux fois sur la planche, novembre 2026 : le tirage d'abord, puis « pas
+        // l'exercice en lien avec la description » — l'élastique écarté à deux mains.
+        "Renforcement du haut du dos à l'élastique": "band-pull-apart",
         "Renforcement scapulaire": "retraction-omoplates",
         "Renforcement scapulaire associé": "retraction-omoplates",
         "Renforcement rhomboïdes / trapèzes moyens": "retraction-omoplates",
@@ -1065,7 +1065,9 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         // Coiffe, octobre 2026 : la rétraction a son propre dessin, debout de profil avec une
         // flèche double dans le dos ; le renforcement en charge prend le tirage qu'elle quitte.
         "Rétraction des omoplates": "retraction-omoplates",
-        "Renforcement progressif en charge": "band-row",
+        // Repassé à la rotation à l'élastique sur la planche, novembre 2026 : « pas le bon
+        // exercice, tu peux mettre plutôt band rotators ».
+        "Renforcement progressif en charge": "band-rotators",
         // Un massage n'est pas un mouvement à reproduire.
         "Massage du mollet": "advice",
         "Massage des jambes le soir": "advice",
@@ -1135,7 +1137,9 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Balancers de jambe contrôlés": "leg-swing",
         // La flexion du genou déplace le travail sur le soléaire : c'est tout l'exercice,
         // et les quatre montraient la jambe tendue, c'est-à-dire l'autre muscle.
-        "Isométrique genou fléchi (soléaire)": "calf-bent",
+        // Repassé sur la planche, novembre 2026 : « ajoute un step pour mettre l'avant-pied
+        // sur la marche ».
+        "Isométrique genou fléchi (soléaire)": "calf-bent-step",
         "Renforcement mollet genou fléchi": "calf-bent",
         "Montée sur pointe genou fléchi": "calf-bent",
         "Montée sur pointe lente genou fléchi": "calf-bent",
