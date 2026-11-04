@@ -642,13 +642,13 @@ const PoseSideLyingAdductor = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
     React.createElement("circle", { cx: "11", cy: "37", r: "3.6" }),
     React.createElement("line", { x1: "15", y1: "38", x2: "29", y2: "38" }),
-    React.createElement("line", { x1: "29", y1: "38", x2: "35", y2: "39.5" }),
-    React.createElement("path", { d: "M35 39.5 L41 41", strokeDasharray: "2.5 2.5" }),
-    React.createElement("line", { x1: "29", y1: "38", x2: "41", y2: "33" }),
+    React.createElement("line", { x1: "29", y1: "37", x2: "35", y2: "35" }),
+    React.createElement("path", { d: "M35 35 L41 33", strokeDasharray: "2.5 2.5" }),
+    React.createElement("line", { x1: "29", y1: "38", x2: "41", y2: "39" }),
     React.createElement("line", { x1: "17", y1: "37", x2: "21", y2: "32" }),
     React.createElement("line", { x1: "21", y1: "32", x2: "26", y2: "35" }),
-    React.createElement("line", { x1: "43", y1: "32", x2: "43", y2: "24" }),
-    React.createElement("path", { d: "M40 27 L43 23.5 L46 27" })));
+    React.createElement("line", { x1: "44", y1: "40", x2: "44", y2: "31" }),
+    React.createElement("path", { d: "M41.2 33.8 L44 30.5 L46.8 33.8" })));
 // Relecture sur planche, novembre 2026. Le coquillage : « les pieds sont joints, il s'agit d'une rotation de hanche, le
 // genou se lève ». Allongé sur le côté, genoux pliés, le genou du dessus s'ouvre.
 const PoseClamshell = poseWrap(React.createElement(React.Fragment, null,
@@ -702,13 +702,13 @@ const PoseBandRowHigh = poseWrap(React.createElement(React.Fragment, null,
 // incliné sur le côté. Il recevait l'étirement croisé de l'épaule.
 const PoseFlankStretch = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
-    React.createElement("circle", { cx: "20", cy: "11", r: "3.6" }),
-    React.createElement("path", { d: "M25 30 Q25 21 22 14.4" }),
-    React.createElement("line", { x1: "24", y1: "16", x2: "27", y2: "6" }),
-    React.createElement("line", { x1: "27", y1: "6", x2: "19", y2: "2" }),
-    React.createElement("line", { x1: "24.5", y1: "19", x2: "29", y2: "26" }),
-    React.createElement("line", { x1: "25", y1: "30", x2: "21", y2: "44" }),
-    React.createElement("line", { x1: "25", y1: "30", x2: "29", y2: "44" })));
+    React.createElement("circle", { cx: "17.5", cy: "11", r: "3.6" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "19.5", y2: "14.5" }),
+    React.createElement("path", { d: "M20.5 17 Q25 3 9 4" }),
+    React.createElement("line", { x1: "20.5", y1: "18", x2: "14", y2: "25" }),
+    React.createElement("line", { x1: "14", y1: "25", x2: "13", y2: "31" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "28", y2: "44" })));
 // Relecture sur planche, novembre 2026. Étirement du fascia plantaire, assis jambe croisée : la main tire les orteils vers
 // le tibia. Il recevait l'étirement assis des ischio-jambiers.
 const PoseFasciaStretch = poseWrap(React.createElement(React.Fragment, null,
@@ -900,12 +900,16 @@ const PoseStep = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "15", y1: "17", x2: "8", y2: "24" }),
     React.createElement("line", { x1: "15", y1: "17", x2: "22", y2: "22" })));
 // Étirement de l'épaule bras croisé devant, le SECOND bras vient le retenir.
+// Relecture sur planche, novembre 2026 : « propose-moi d'autres alternatives, proportions
+// pas bonnes ». Le praticien a retenu le bras tendu en travers, tenu au coude par l'autre main,
+// aux proportions du canon.
 const PoseShoulderStretch = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
     React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
     React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "30" }),
-    React.createElement("line", { x1: "24", y1: "18", x2: "11", y2: "22" }),
-    React.createElement("line", { x1: "24", y1: "21", x2: "16", y2: "27" }),
-    React.createElement("line", { x1: "16", y1: "27", x2: "13", y2: "23" }),
+    React.createElement("line", { x1: "26", y1: "17", x2: "9", y2: "17" }),
+    React.createElement("line", { x1: "22", y1: "18", x2: "17", y2: "24" }),
+    React.createElement("line", { x1: "17", y1: "24", x2: "14", y2: "18" }),
     React.createElement("line", { x1: "24", y1: "30", x2: "20", y2: "44" }),
     React.createElement("line", { x1: "24", y1: "30", x2: "28", y2: "44" })));
 // Contraction sans mouvement : deux forces opposées sur un appui immobile, et rien ne bouge.
