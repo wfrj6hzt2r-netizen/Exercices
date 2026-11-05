@@ -1096,14 +1096,16 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Étirement global de la chaîne postérieure": "forward-fold",
         // Le seul dessin que la relecture des 84 n'avait pas jugé, validé en octobre 2026
         // (« oui c'est bon pour shoulder raise ») sur les neuf exercices qu'il sert.
-        "Élévation latérale sous 90°": "shoulder-raise",
-        "Coordination épaule-omoplate chargée légère": "shoulder-raise",
+        "Élévation latérale sous 90°": "lateral-raise-weight",
+        "Coordination épaule-omoplate chargée légère": "lateral-raise-weight",
         "Contrôle de l'omoplate en élévation": "shoulder-raise",
         "Renforcement combiné deltoïde-coiffe": "shoulder-raise",
         "Renforcement complet de l'épaule": "shoulder-raise",
         "Renforcement des muscles de l'épaule et de l'omoplate": "shoulder-raise",
-        "Coordination épaule-coude en charge": "shoulder-raise",
-        "Contrôle des omoplates": "shoulder-raise",
+        // « Coordination épaule-coude en charge » n'est plus figé ici : deux exercices portent
+        // ce nom, l'un au tirage, l'autre au port de charge, et la table ne tient qu'un dessin
+        // par nom.
+        "Contrôle des omoplates": "retraction-omoplates",
         "Renforcement du deltoïde": "shoulder-raise",
         // Planche de relecture, novembre 2026 : les treize fiches jugées fausses, corrigées
         // comme le praticien l'a écrit, et les cinq dessins nouveaux validés sur capture.
@@ -1134,6 +1136,25 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Étirement spécifique du fascia plantaire": "fascia-stretch",
         "Étirement matinal avant le premier appui": "fascia-stretch",
         "Étirement de l'avant de la cuisse et de l'intérieur": "fente-au-sol",
+        // Cinquième passe : les changements de dessin ci-dessus (élévation, omoplates, bascules)
+        // suivent la planche de novembre 2026, et ces affectations-ci s'y ajoutent.
+        "Adduction de hanche à l'élastique": "standing-adduction-band",
+        "Renforcement des adducteurs à l'élastique": "standing-adduction-band",
+        "Renforcement des fessiers et de la hanche": "standing-abduction-band-knee",
+        "Abduction de hanche en charge, lente": "standing-abduction-band",
+        "Isométrique des abducteurs en position neutre": "supine-core-iso",
+        "Isométrique des adducteurs à faible intensité": "supine-core-iso",
+        "Isométrique des adducteurs (ballon entre les genoux)": "supine-core-iso",
+        "Serrer un coussin entre les genoux": "supine-core-iso",
+        "Isométrique des abducteurs doux": "side-lying",
+        "Renforcement des obliques": "obliques",
+        "Extension du genou en amplitude limitée (90-45°)": "seated-leg-arrow",
+        "Fentes latérales": "lateral-lunge",
+        "Fentes latérales contrôlées": "lateral-lunge",
+        "Fentes latérales lestées": "lateral-lunge",
+        "Presse ou fente en amplitude limitée": "leg-press",
+        "Renforcement diagonal D2 (schéma de lancer)": "band-d2",
+        "Retour aux frappes": "advice",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
@@ -1181,7 +1202,7 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         // Trois bascules du bassin « allongé sur le dos » recevaient une silhouette debout,
         // et le contrôle de cohérence ne pouvait rien y voir : le dessin du tronc ne
         // déclarait pas la posture qu'il montre. Il la déclare, et le repli fait le reste.
-        "Bascules du bassin": "supine-core",
+        "Bascules du bassin": "pelvic-tilt",
         "Bascules du bassin en insistant sur la flexion": "supine-core",
         "Bascule du bassin": "supine-core",
         // Repassé sur la planche, novembre 2026 : « on dit mains sous les fesses ».

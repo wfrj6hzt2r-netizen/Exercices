@@ -453,15 +453,20 @@ const PoseSquat = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "31", y1: "27", x2: "31", y2: "35" }),
     React.createElement("line", { x1: "31", y1: "35", x2: "36", y2: "35" })));
 // Fente vue de profil : genou avant fléchi, genou arrière descendu vers le sol.
+// La fente : un grand pas, le genou avant à angle droit, le genou arrière qui descend vers le
+// sol sans le toucher, le talon arrière levé. Relecture sur planche, novembre 2026 : « mets le
+// symbole des fentes qui correspond mieux » — les deux jambes tendues se lisaient comme un pas.
 const PoseLunge = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("circle", { cx: "22", cy: "9", r: "4" }),
-    React.createElement("line", { x1: "22", y1: "13", x2: "22", y2: "27" }),
-    React.createElement("line", { x1: "22", y1: "27", x2: "33", y2: "32" }),
-    React.createElement("line", { x1: "33", y1: "32", x2: "33", y2: "44" }),
-    React.createElement("line", { x1: "22", y1: "27", x2: "14", y2: "34" }),
-    React.createElement("line", { x1: "14", y1: "34", x2: "10", y2: "44" }),
-    React.createElement("line", { x1: "22", y1: "17", x2: "27", y2: "26" })));
+    React.createElement("circle", { cx: "21", cy: "12", r: "4" }),
+    React.createElement("line", { x1: "21", y1: "16", x2: "21", y2: "30" }),
+    React.createElement("line", { x1: "21", y1: "19", x2: "25", y2: "23" }),
+    React.createElement("line", { x1: "25", y1: "23", x2: "22", y2: "27" }),
+    React.createElement("line", { x1: "21", y1: "30", x2: "30", y2: "31" }),
+    React.createElement("line", { x1: "30", y1: "31", x2: "30", y2: "44" }),
+    React.createElement("line", { x1: "21", y1: "30", x2: "17", y2: "40" }),
+    React.createElement("line", { x1: "17", y1: "40", x2: "9", y2: "42" }),
+    React.createElement("line", { x1: "9", y1: "42", x2: "7", y2: "44" })));
 const PoseBalance = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
     React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "26" }),
@@ -727,6 +732,133 @@ const PoseFasciaStretch = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "22", x2: "33", y2: "24.5" }),
     React.createElement("path", { d: "M37 24 Q38 19 34 18" }),
     React.createElement("path", { d: "M36.5 20.6 L34 18 L37.4 16.9" })));
+// Relecture sur planche, novembre 2026. Abduction à l'élastique : « symbolise un élastique en plus », aux chevilles.
+const PoseStandingAbductionBand = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("circle", { cx: "19", cy: "8", r: "3.8" }),
+    React.createElement("line", { x1: "19", y1: "11.8", x2: "19", y2: "27" }),
+    React.createElement("line", { x1: "19", y1: "16", x2: "12", y2: "20" }),
+    React.createElement("line", { x1: "19", y1: "16", x2: "25", y2: "19" }),
+    React.createElement("line", { x1: "19", y1: "27", x2: "18", y2: "45" }),
+    React.createElement("line", { x1: "19", y1: "27", x2: "34", y2: "37" }),
+    React.createElement("path", { d: "M35.5 32.5 L40 35.5 L35.5 38.5" }),
+    React.createElement("path", { d: "M18.6 40 q2.2 -3 4.4 -1.4 t4.4 -1.4 t4.4 -1.4" })));
+// Relecture sur planche, novembre 2026. Abduction, élastique au-dessus des genoux : « symbolise l'élastique aux genoux ».
+const PoseStandingAbductionBandKnee = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("circle", { cx: "19", cy: "8", r: "3.8" }),
+    React.createElement("line", { x1: "19", y1: "11.8", x2: "19", y2: "27" }),
+    React.createElement("line", { x1: "19", y1: "16", x2: "12", y2: "20" }),
+    React.createElement("line", { x1: "19", y1: "16", x2: "25", y2: "19" }),
+    React.createElement("line", { x1: "19", y1: "27", x2: "18", y2: "45" }),
+    React.createElement("line", { x1: "19", y1: "27", x2: "34", y2: "37" }),
+    React.createElement("path", { d: "M35.5 32.5 L40 35.5 L35.5 38.5" }),
+    React.createElement("path", { d: "M18.8 33 q1.6 -2.4 3.2 -0.8 t3.2 -0.8" })));
+// Relecture sur planche, novembre 2026. Adduction à l'élastique : « on parle ici d'ADDUCTION, donc mouvement faux ». De face,
+// l'élastique part d'un point bas sur le côté, la jambe revient vers l'intérieur et croise.
+// Relecture sur planche, novembre 2026 : l'adduction « est un mouvement qui force de l'extérieur
+// vers l'intérieur ». La jambe qui travaille part écartée, tenue par l'élastique fixé de son
+// côté, et la flèche la ramène vers l'autre jambe.
+const PoseStandingAdductionBand = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "45", x2: "45", y2: "45" }),
+    React.createElement("line", { x1: "43", y1: "34", x2: "43", y2: "45" }),
+    React.createElement("circle", { cx: "22", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "22", y1: "12", x2: "22", y2: "27" }),
+    React.createElement("line", { x1: "22", y1: "16", x2: "17", y2: "25" }),
+    React.createElement("line", { x1: "22", y1: "16", x2: "27", y2: "25" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "18", y2: "44" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "32", y2: "41" }),
+    React.createElement("path", { d: "M42 38 q-1.7 1.8 -3.4 0.6 t-3.4 0.6 t-3 1.4" }),
+    React.createElement("line", { x1: "35", y1: "32", x2: "28", y2: "32" }),
+    React.createElement("path", { d: "M31 29 L28 32 L31 35" })));
+// Relecture sur planche, novembre 2026. Isométriques allongé sur le dos : « même pictogramme mais sans la flèche », puisque rien
+// ne bouge.
+const PoseSupineCoreIso = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "34", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
+    React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
+    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "41" })));
+// Relecture sur planche, novembre 2026. Bascules du bassin : « mets le même mais avec flèche haut/bas ».
+const PosePelvicTilt = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "34", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
+    React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
+    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "41" }),
+    React.createElement("line", { x1: "20", y1: "25", x2: "20", y2: "33" }),
+    React.createElement("path", { d: "M17.5 27.5 L20 24.5 L22.5 27.5" }),
+    React.createElement("path", { d: "M17.5 30.5 L20 33.5 L22.5 30.5" })));
+// Relecture sur planche, novembre 2026. Renforcement des obliques : « mets plutôt une vue du haut, avec flèche sur les côtés pour
+// inclinaison ». Allongé, vu d'au-dessus.
+const PoseObliques = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "2", x2: "42", y2: "2" }),
+    React.createElement("line", { x1: "6", y1: "46", x2: "42", y2: "46" }),
+    React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "16", x2: "18", y2: "26" }),
+    React.createElement("line", { x1: "24", y1: "16", x2: "30", y2: "26" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "20", y2: "43" }),
+    React.createElement("line", { x1: "24", y1: "30", x2: "28", y2: "43" }),
+    React.createElement("path", { d: "M15 12 Q9 19 13 27" }),
+    React.createElement("path", { d: "M13.3 23.4 L13 27 L9.9 25.1" }),
+    React.createElement("path", { d: "M33 12 Q39 19 35 27" }),
+    React.createElement("path", { d: "M38.1 25.1 L35 27 L34.7 23.4" })));
+// Relecture sur planche, novembre 2026. Élévation latérale : « poids, jusqu'à 90° ». Le bras monte jusqu'à l'horizontale, poids
+// en main, depuis la position basse en pointillé.
+const PoseLateralRaiseWeight = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "6", y1: "44", x2: "42", y2: "44" }),
+    React.createElement("circle", { cx: "22", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "22", y1: "12", x2: "22", y2: "28" }),
+    React.createElement("line", { x1: "22", y1: "16", x2: "37", y2: "16" }),
+    React.createElement("line", { x1: "37", y1: "13.5", x2: "37", y2: "18.5" }),
+    React.createElement("line", { x1: "39", y1: "13.5", x2: "39", y2: "18.5" }),
+    React.createElement("line", { x1: "37", y1: "16", x2: "39", y2: "16" }),
+    React.createElement("path", { d: "M22 16 L28 28", strokeDasharray: "2.5 2.5" }),
+    React.createElement("line", { x1: "22", y1: "16", x2: "16", y2: "26" }),
+    React.createElement("line", { x1: "22", y1: "28", x2: "18", y2: "44" }),
+    React.createElement("line", { x1: "22", y1: "28", x2: "26", y2: "44" }),
+    React.createElement("path", { d: "M31 30 Q36 28 37 21" }),
+    React.createElement("path", { d: "M34.7 23.8 L37 21 L38.5 24.3" })));
+// Relecture sur planche, novembre 2026. Extension du genou en amplitude limitée : « mettre une flèche pour montrer le mouvement ».
+const PoseSeatedLegArrow = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M8 13 L8 28 L22 28" }),
+    React.createElement("line", { x1: "9", y1: "28", x2: "9", y2: "45" }),
+    React.createElement("circle", { cx: "12", cy: "9", r: "3.6" }),
+    React.createElement("line", { x1: "12", y1: "12.6", x2: "14", y2: "27" }),
+    React.createElement("line", { x1: "14", y1: "27", x2: "27", y2: "27" }),
+    React.createElement("line", { x1: "27", y1: "27", x2: "38", y2: "22" }),
+    React.createElement("path", { d: "M27 27 L29 40", strokeDasharray: "3 3" }),
+    React.createElement("path", { d: "M32 39 Q39 36 39 27" }),
+    React.createElement("path", { d: "M37.1 30.1 L39 27 L40.9 30.1" })));
+// Relecture sur planche, novembre 2026. La fente latérale, de face : « fais un pictogramme pour fentes latérales, vue de face ».
+// Un genou fléchi au-dessus du pied, l'autre jambe tendue sur le côté.
+const PoseLateralLunge = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("circle", { cx: "25", cy: "9", r: "4" }),
+    React.createElement("line", { x1: "25", y1: "13", x2: "25", y2: "28" }),
+    React.createElement("line", { x1: "25", y1: "17", x2: "21", y2: "24" }),
+    React.createElement("line", { x1: "25", y1: "17", x2: "29", y2: "24" }),
+    React.createElement("line", { x1: "25", y1: "28", x2: "33", y2: "34" }),
+    React.createElement("line", { x1: "33", y1: "34", x2: "34", y2: "44" }),
+    React.createElement("line", { x1: "25", y1: "28", x2: "11", y2: "43" })));
+// Relecture sur planche, novembre 2026. Diagonale D2 à l'élastique : « on parle de tirage avec élastique ». L'élastique part d'en
+// bas du côté opposé ; la main va de la hanche opposée vers le haut et l'extérieur.
+const PoseBandD2 = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "45", x2: "45", y2: "45" }),
+    React.createElement("line", { x1: "43", y1: "36", x2: "43", y2: "45" }),
+    React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "24", y1: "12", x2: "24", y2: "29" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "17", y2: "9" }),
+    React.createElement("line", { x1: "17", y1: "9", x2: "10", y2: "4" }),
+    React.createElement("path", { d: "M24 15 L30 25", strokeDasharray: "2.5 2.5" }),
+    React.createElement("line", { x1: "42", y1: "40", x2: "10", y2: "4" }),
+    React.createElement("line", { x1: "24", y1: "15", x2: "20", y2: "24" }),
+    React.createElement("line", { x1: "24", y1: "29", x2: "20", y2: "44" }),
+    React.createElement("line", { x1: "24", y1: "29", x2: "28", y2: "44" }),
+    React.createElement("path", { d: "M7 13 Q5 8 8 4" }),
+    React.createElement("path", { d: "M4.6 5.3 L8 4 L7.7 7.6" })));
 // Assis au sol jambes tendues, buste redressé et à peine penché vers le pied. Le buste très
 // incliné écrasait la silhouette : à une douzaine de degrés de la verticale, l'angle
 // tronc-jambes se lit et le bassin reste identifiable.
@@ -1895,6 +2027,27 @@ const POSES = [
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "standing-abduction-band", icon: PoseStandingAbductionBand, test: (n, t) => (n === "abduction de hanche à l'élastique"
+            || n === "abduction de hanche en charge" || n === "abduction de hanche en charge, lente") && t.includes("élastique") },
+    { key: "standing-abduction-band-knee", icon: PoseStandingAbductionBandKnee, test: (n) => n === "renforcement des fessiers et de la hanche" },
+    { key: "standing-adduction-band", icon: PoseStandingAdductionBand, test: (n) => n === "adduction de hanche à l'élastique" || n === "renforcement des adducteurs à l'élastique" },
+    { key: "supine-core-iso", icon: PoseSupineCoreIso, test: (n) => n === "isométrique des abducteurs en position neutre"
+            || n === "isométrique des adducteurs à faible intensité" || n === "isométrique des adducteurs (ballon entre les genoux)"
+            || n === "serrer un coussin entre les genoux" },
+    { key: "pelvic-tilt", icon: PosePelvicTilt, test: (n) => n === "bascules du bassin" },
+    { key: "obliques", icon: PoseObliques, test: (n) => n === "renforcement des obliques" },
+    { key: "side-lying", icon: PoseSideLying, choisi: true, test: (n) => n === "isométrique des abducteurs doux" },
+    { key: "lateral-raise-weight", icon: PoseLateralRaiseWeight, test: (n) => n === "coordination épaule-omoplate chargée légère" || n === "élévation latérale sous 90°" },
+    { key: "retraction-omoplates", icon: PoseRetractionOmoplates, test: (n) => n === "contrôle des omoplates" },
+    // Deux exercices portent ce nom : l'un tire un élastique, l'autre porte une charge.
+    { key: "band-row", icon: PoseBandRow, test: (n, t) => n === "coordination épaule-coude en charge" && t.includes("élastique") },
+    { key: "floor-lift", icon: PoseFloorLift, test: (n) => n === "coordination épaule-coude en charge" },
+    { key: "seated-leg-arrow", icon: PoseSeatedLegArrow, test: (n) => n === "extension du genou en amplitude limitée (90-45°)" },
+    { key: "assis-debout", icon: PoseAssisDebout, test: (n, t) => n === "renforcement des fessiers et des cuisses" && t.startsWith("pont fessier et assis-debout") },
+    { key: "lateral-lunge", icon: PoseLateralLunge, test: (n) => n === "fentes latérales" || n === "fentes latérales contrôlées" || n === "fentes latérales lestées" },
+    { key: "leg-press", icon: PoseLegPress, test: (n) => n === "presse ou fente en amplitude limitée" },
+    { key: "band-d2", icon: PoseBandD2, test: (n) => n === "renforcement diagonal d2 (schéma de lancer)" },
+    { key: "advice", icon: PoseAdvice, test: (n) => n === "retour aux frappes" },
     { key: "calf-bent-step", icon: PoseCalfBentStep, test: (n) => n === "isométrique genou fléchi (soléaire)" },
     { key: "side-lying-adductor", icon: PoseSideLyingAdductor, test: (n) => n === "renforcement des adducteurs" },
     { key: "clamshell", icon: PoseClamshell, test: (n) => n === "renforcement fessiers léger" },
@@ -2306,6 +2459,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
     "side-lying": "cote", bridge: "dos", "lying-mobilise": "dos",
     "supine-core": "dos", "four-point": "quatre",
+    "standing-abduction-band": "debout", "standing-abduction-band-knee": "debout", "standing-adduction-band": "debout", "supine-core-iso": "dos", "pelvic-tilt": "dos", "obliques": "dos", "lateral-raise-weight": "debout", "seated-leg-arrow": "assis", "lateral-lunge": "debout", "band-d2": "debout",
     "calf-bent-step": "debout", "side-lying-adductor": "cote", "clamshell": "cote", "prone-lift-arms": "ventre", "band-pull-apart": "debout", "band-row-high": "debout", "flank-stretch": "debout", "fascia-stretch": "assis",
     "seated-twist-mains": "assis", "side-bend": "debout", "prone-light": "ventre", "high-knees": "debout", "butt-kicks": "debout", "side-shuffle": "debout", "hop-single": "debout", "drop-jump": "debout",
     "forward-fold": "debout", "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
@@ -2394,6 +2548,11 @@ function postureDecrite(tip) {
         return "ventre";
     if (/a quatre pattes/.test(t))
         return "quatre";
+    // « Allongé sur le dos ou sur le côté » laisse le choix : le « allongé » se lit avant
+    // le « sur le côté », et la règle générale du choix ne voit pas les deux postures côte à
+    // côte. L'isométrique des abducteurs, dessiné sur le côté, retombait sur le dos.
+    if (/^allonge sur le dos ou sur le cote/.test(t))
+        return ["dos", "cote"];
     const trouves = [];
     const noter = (cle, re) => { const m = t.match(re); if (m) trouves.push([m.index, cle, m[0].length]); };
     // Sur le dos et sur le côté sont deux postures, pas une. Les confondre sous un même
@@ -2411,7 +2570,9 @@ function postureDecrite(tip) {
     else if (brut)
         trouves.push([0, "cote", brut[0].length]);
     noter("debout", /\bdebout\b/);
-    noter("assis", /\bassis\b|\bassise\b/);
+    // « Sur une presse » installe le patient assis, même quand la consigne propose ensuite la
+    // fente debout : sans cela, la presse retenue par le praticien retombait sur le neutre.
+    noter("assis", /\bassis\b|\bassise\b|^sur une presse/);
     // « À genoux » n'avait pas de nom : un étirement qui commence par « Un genou au sol »
     // montrait quelqu'un debout tenant son pied, et rien ne pouvait le voir. « Sur les
     // genoux » (la planche allégée) et « genou arrière vers le sol » (la fente) n'en sont
@@ -2452,6 +2613,11 @@ function getExerciseIcon(name, tip) {
     // allongé » appelle le dessin assis s'il existe, parce que c'est l'assise que le patient
     // lit en premier. Le dessin n'est gardé que lorsque aucune posture mieux placée n'a de
     // remplaçant, et le pictogramme neutre reste le dernier recours.
+    // Une règle marquée « choisi » porte un dessin retenu par le praticien parmi les postures
+    // que la consigne propose : il reste, même si ce n'est pas la première citée. Les autres
+    // gardent la règle de l'ordre — « Assis ou allongé » appelle toujours le dessin assis.
+    if (match.choisi && decrites.includes(montree))
+        return match.icon;
     for (const decrite of decrites) {
         if (montree === decrite)
             return match.icon;
@@ -5007,6 +5173,9 @@ const POSITION_LIBRARY = [
     { test: (n) => n.includes("rotation contrôlée du genou"), label: "Debout" },
     { test: (n) => n.includes("coordination épaule") || n.includes("lancers"), label: "Debout" },
     { test: (n) => n.includes("adduction de hanche"), label: "Allongé sur le côté, ou debout selon le matériel" },
+    // La presse est la première proposée, et c'est elle que le dessin montre depuis la relecture
+    // sur planche de novembre 2026 : l'étiquette « Debout » la contredisait.
+    { test: (n) => n.includes("presse ou fente"), label: "Assis sur une presse ou debout" },
     { test: (n) => n.includes("squat") || n.includes("fente") || n.includes("équilibre") || n.includes("proprio") || n.includes("plateau") || n.includes("marche") || n.includes("course") || n.includes("saut") || n.includes("pliométrie") || n.includes("changement") || n.includes("sprint") || n.includes("mollet"), label: "Debout" },
 ];
 // La pastille de position et la consigne commencent souvent par la même mise en place.
