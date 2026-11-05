@@ -1125,6 +1125,15 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         // Troisième passe, validée sur capture : « oui corrige aussi seated twist, et fusionne ».
         "Correction posturale active": "autocorrection",
         "Mobilité complète en charge": "side-bend",
+        // Quatrième passe, validée sur capture : « c'est bon, fusionne ».
+        "Renforcement des adducteurs": "side-lying-adductor",
+        "Renforcement fessiers léger": "clamshell",
+        "Renforcement des extenseurs dorsaux": "prone-lift-arms",
+        "Tirage bas de l'omoplate (lower trap)": "band-row-high",
+        "Étirement prolongé du grand dorsal": "flank-stretch",
+        "Étirement spécifique du fascia plantaire": "fascia-stretch",
+        "Étirement matinal avant le premier appui": "fascia-stretch",
+        "Étirement de l'avant de la cuisse et de l'intérieur": "fente-au-sol",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
