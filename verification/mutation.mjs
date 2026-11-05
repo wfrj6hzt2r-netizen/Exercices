@@ -197,7 +197,7 @@ const MUTATIONS = [
     // La lecture oublie « à genoux » : les consignes qui la nomment redeviennent muettes, et
     // plus aucun dessin ne peut les contredire.
     ["le pictogramme ne contredit pas la consigne",
-        (s) => rem(s, 'noter("genoux", /\\ba genoux\\b|^un genou au sol|\\bagenouille/);', "")],
+        (s) => rem(s, 'noter("genoux", /\\ba genoux\\b|^un genou au sol|^fente avant,? genou arriere au sol|\\bagenouille/);', "")],
 
     // Le corps de Galois change de polynôme : le QR garde sa forme, mais ses correcteurs
     // sont faux et aucun appareil ne le lit.
