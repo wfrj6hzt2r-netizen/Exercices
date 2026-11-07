@@ -871,18 +871,16 @@ const PoseFootBall = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "24", cy: "40.5", r: "3.2" })));
 // Relecture sur planche, novembre 2026. Bascules des genoux allongé : « les 2 jambes sont pliées, mets une flèche pour montrer qu'on
 // bascule les genoux de chaque côté, essaye une vue de haut si ça ne convient pas ». De
-// profil, un anneau autour des genoux dit qu'ils basculent d'un côté puis de l'autre.
+// profil, un anneau au-dessus des genoux dit qu'ils basculent d'un côté puis de l'autre ; le
+// praticien a préféré cette lecture à la vue de dessus.
 const PoseKneeRocks = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "24", cy: "7", r: "3.6" }),
-    React.createElement("line", { x1: "24", y1: "10.6", x2: "24", y2: "27" }),
-    React.createElement("line", { x1: "24", y1: "14", x2: "16", y2: "22" }),
-    React.createElement("line", { x1: "24", y1: "14", x2: "32", y2: "22" }),
-    React.createElement("line", { x1: "24", y1: "27", x2: "32", y2: "32" }),
-    React.createElement("line", { x1: "32", y1: "32", x2: "27", y2: "39" }),
-    React.createElement("path", { d: "M24 27 L16 32 L21 39", strokeDasharray: "2.5 2.5" }),
-    React.createElement("path", { d: "M14 37 Q24 46 34 37" }),
-    React.createElement("path", { d: "M15.5 40.5 L14 36.8 L17.8 36.8" }),
-    React.createElement("path", { d: "M32.5 40.5 L34 36.8 L30.2 36.8" })));
+    React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
+    React.createElement("circle", { cx: "9", cy: "34", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
+    React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
+    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "35" }),
+    React.createElement("path", { d: "M24.0 23.1 A8.5 3.2 0 1 0 40.0 23.1" }),
+    React.createElement("path", { d: "M36.7 23.9 L40.0 23.1 L39.3 26.4" })));
 // Relecture sur planche, novembre 2026. Isométrique des ischio-jambiers : allongé sur le dos, talon posé sur une chaise basse,
 // genou légèrement fléchi ; la flèche pousse le talon vers le bas.
 const PoseHamstringIso = poseWrap(React.createElement(React.Fragment, null,
