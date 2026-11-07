@@ -665,9 +665,10 @@ const SANS_POSTURE = new Set([
     "advice", "advice-late",            // le bloc-notes
     "shoe",                             // une chaussure
     "hand", "wrist", "elbow-mobilise",  // main, poignet, bras seul
-    "ankle-pump", "foot-arch",          // une jambe, un pied
+    "ankle-pump", "foot-arch", "foot-ball", // une jambe, un pied, un pied sur sa balle
     "band", "isometrique",              // un élastique, deux flèches
     "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
+    "head-flexion-resist", "neck-tilt",
     // L'assis-debout passe d'une posture à l'autre : sa consigne commence tantôt assise,
     // tantôt debout, et le dessin de la chaise convient aux deux. (« À genoux », exempté ici
     // jusqu'en octobre 2026 faute d'être lu dans les consignes, se déclare désormais.)
@@ -1075,7 +1076,8 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Automassage le long des fibulaires": "advice",
         "Automassage et mobilisation des fibulaires": "advice",
         // Deux exceptions validées : ces dessins-là conviennent à leur massage.
-        "Automassage de la voûte plantaire": "foot-arch",
+        // Repassé sur la planche, novembre 2026 : « ajoute une balle sous le pied ».
+        "Automassage de la voûte plantaire": "foot-ball",
         "Auto-massage doux du trapèze": "neck",
         // Des descentes de marche, pas des épreuves d'équilibre.
         "Excentrique unipodal jusqu'au sol": "step",
