@@ -665,6 +665,7 @@ const SANS_POSTURE = new Set([
     "advice", "advice-late",            // le bloc-notes
     "shoe",                             // une chaussure
     "hand", "wrist", "elbow-mobilise",  // main, poignet, bras seul
+    "wrist-ext-stretch", "wrist-flex-stretch", // l'avant-bras en gros plan
     "ankle-pump", "foot-arch", "foot-ball", // une jambe, un pied, un pied sur sa balle
     "band", "isometrique",              // un élastique, deux flèches
     "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
