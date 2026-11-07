@@ -209,8 +209,11 @@ const MUTATIONS = [
         (s) => rem(s, '{ id: "lexique", titre: "Lexique", sous: "Les mots de l\'application", aller: () => setView("lexique") },',
                       '{ id: "lien", titre: "Lien patient", sous: "", aller: () => setView("lien") },\n                            { id: "lexique", titre: "Lexique", sous: "Les mots de l\'application", aller: () => setView("lexique") },')],
 
+    // La règle du saut en contrebas ne reconnaît plus son exercice, qui retombe sur le saut
+    // générique. (La mutation précédente retirait l'exception des massages plantaires, que la
+    // règle de la balle sous le pied a rendue sans effet.)
     ["les affectations relues restent celles qui ont été validées",
-        (s) => rem(s, '!/plantaire|voûte|trapèze/.test(n)', '!/trapèze/.test(n)')],
+        (s) => rem(s, 'n === "sauts en contrebas amortis (drop jumps légers)"', 'n === "sauts en contrebas"')],
 
     // Le bras de la silhouette en appui retrouve sa longueur d'avant : vingt-six unités
     // de membre supérieur sur un tronc de dix-huit.

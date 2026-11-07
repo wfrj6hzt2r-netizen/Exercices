@@ -665,9 +665,11 @@ const SANS_POSTURE = new Set([
     "advice", "advice-late",            // le bloc-notes
     "shoe",                             // une chaussure
     "hand", "wrist", "elbow-mobilise",  // main, poignet, bras seul
-    "ankle-pump", "foot-arch",          // une jambe, un pied
+    "wrist-ext-stretch", "wrist-flex-stretch", // l'avant-bras en gros plan
+    "ankle-pump", "foot-arch", "foot-ball", // une jambe, un pied, un pied sur sa balle
     "band", "isometrique",              // un élastique, deux flèches
     "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
+    "head-flexion-resist", "neck-tilt",
     // L'assis-debout passe d'une posture à l'autre : sa consigne commence tantôt assise,
     // tantôt debout, et le dessin de la chaise convient aux deux. (« À genoux », exempté ici
     // jusqu'en octobre 2026 faute d'être lu dans les consignes, se déclare désormais.)
@@ -1075,7 +1077,8 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Automassage le long des fibulaires": "advice",
         "Automassage et mobilisation des fibulaires": "advice",
         // Deux exceptions validées : ces dessins-là conviennent à leur massage.
-        "Automassage de la voûte plantaire": "foot-arch",
+        // Repassé sur la planche, novembre 2026 : « ajoute une balle sous le pied ».
+        "Automassage de la voûte plantaire": "foot-ball",
         "Auto-massage doux du trapèze": "neck",
         // Des descentes de marche, pas des épreuves d'équilibre.
         "Excentrique unipodal jusqu'au sol": "step",
@@ -1155,6 +1158,24 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Presse ou fente en amplitude limitée": "leg-press",
         "Renforcement diagonal D2 (schéma de lancer)": "band-d2",
         "Retour aux frappes": "advice",
+        // Sixième passe, validée sur capture : « le reste est bon ».
+        "Automassage plantaire": "foot-ball",
+        "Bascules de hanche allongé": "knee-rocks",
+        "Étirement en rotation allongée": "knee-rocks",
+        "Isométrique des ischio-jambiers en position neutre": "hamstring-iso",
+        "Position de flexion allongée (genoux vers poitrine)": "knees-to-chest",
+        "Mobilité du bassin en douceur": "pelvic-tilt",
+        "Isométrique fléchisseurs profonds": "head-flexion-resist",
+        "Renforcement progressif fléchisseurs profonds": "head-flexion-resist",
+        "Rétraction du menton": "chin-tuck-seated",
+        "Endurance des fléchisseurs profonds": "chin-tuck-seated",
+        "Inclinaisons latérales douces": "neck-tilt",
+        "Renforcement des trapèzes inférieurs": "band-row-high",
+        "Renforcement extenseurs cervicaux": "head-extension",
+        "Étirement des extenseurs": "wrist-ext-stretch",
+        "Étirement des extenseurs du poignet": "wrist-ext-stretch",
+        "Étirement des fléchisseurs": "wrist-flex-stretch",
+        "Renforcement en rotation de l'avant-bras": "forearm-rotation",
         "Renforcement global de la chaîne postérieure": "hip-hinge",
         "Port de charge contrôlé": "floor-lift",
         "Port de charge progressif": "floor-lift",
