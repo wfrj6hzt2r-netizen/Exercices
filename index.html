@@ -779,16 +779,19 @@ const PoseSupineCoreIso = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
     React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
     React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "35" })));
-// Relecture sur planche, novembre 2026. Bascules du bassin : « mets le même mais avec flèche haut/bas ».
+// Relecture sur planche, novembre 2026. Bascules du bassin : « mets le même mais avec flèche haut/bas », puis « proportion à
+// revoir pour que les pieds soient à bonne hauteur, tout aligné » : la tête et le dos flottaient au-dessus du sol pendant que le
+// pied seul le touchait. Tête, dos et pied reposent maintenant sur une même ligne, et la flèche monte au niveau du bassin.
 const PosePelvicTilt = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
-    React.createElement("circle", { cx: "9", cy: "34", r: "3.6" }),
-    React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
-    React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
-    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "41" }),
-    React.createElement("line", { x1: "20", y1: "25", x2: "20", y2: "33" }),
-    React.createElement("path", { d: "M17.5 27.5 L20 24.5 L22.5 27.5" }),
-    React.createElement("path", { d: "M17.5 30.5 L20 33.5 L22.5 30.5" })));
+    React.createElement("circle", { cx: "9", cy: "35", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "38", x2: "27", y2: "38" }),
+    React.createElement("line", { x1: "27", y1: "38", x2: "33", y2: "26" }),
+    React.createElement("line", { x1: "33", y1: "26", x2: "38", y2: "38" }),
+    React.createElement("line", { x1: "38", y1: "38", x2: "42", y2: "38" }),
+    React.createElement("line", { x1: "22", y1: "22", x2: "22", y2: "33" }),
+    React.createElement("path", { d: "M19.5 25 L22 22 L24.5 25" }),
+    React.createElement("path", { d: "M19.5 30 L22 33 L24.5 30" })));
 // Relecture sur planche, novembre 2026. Renforcement des obliques : « mets plutôt une vue du haut, avec flèche sur les côtés pour
 // inclinaison ». Allongé, vu d'au-dessus.
 const PoseObliques = poseWrap(React.createElement(React.Fragment, null,
