@@ -262,7 +262,11 @@ async function ouvrir(ctx, hash) {
 
 // --- 4. Aucune violation d'accessibilité ----------------------------------------------
 {
-    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 } });
+    // Mouvement réduit : sur une machine d'intégration lente, axe mesurait les textes pendant
+    // leur fondu d'apparition et lisait #916726 au lieu de #8A5D18 — un contraste de 4,39
+    // qui n'existe pas une fois l'écran posé. L'application coupe ce fondu d'elle-même dans
+    // ce mode ; la mesure porte ainsi sur l'écran tel qu'il reste.
+    const ctx = await navigateur.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
     const out = [];
     // Les seize écrans suivants n'étaient pas examinés : la scoliose, la croissance, le
     // récapitulatif et la fabrique de liens sont tous arrivés après cette limite de dix.
