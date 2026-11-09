@@ -475,13 +475,17 @@ const PoseBalance = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "26", x2: "21", y2: "42" }),
     React.createElement("line", { x1: "24", y1: "26", x2: "30", y2: "24" }),
     React.createElement("line", { x1: "30", y1: "24", x2: "24", y2: "21" })));
-// Pont fessier : épaules et pieds au sol, bassin décollé. Le sol lève l'ambiguïté sur la position allongée.
+// Relecture sur planche, novembre 2026. Pont fessier : « les proportions ne sont pas bonnes », puis « symboliser les bras sur
+// le sol ». Le tronc montait trop raide vers un bassin en pointe, sur une cuisse deux fois plus courte que la jambe. Épaule,
+// bassin et genou sont maintenant alignés, cuisse et jambe de même longueur, et le bras repose au sol le long du corps.
 const PoseBridge = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
-    React.createElement("circle", { cx: "9", cy: "38", r: "3.6" }),
-    React.createElement("line", { x1: "13", y1: "39", x2: "25", y2: "28" }),
-    React.createElement("line", { x1: "25", y1: "28", x2: "34", y2: "33" }),
-    React.createElement("line", { x1: "34", y1: "33", x2: "37", y2: "41" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "7", cy: "36.6", r: "3.6" }),
+    React.createElement("line", { x1: "11", y1: "40", x2: "24", y2: "33" }),
+    React.createElement("line", { x1: "24", y1: "33", x2: "35", y2: "28" }),
+    React.createElement("line", { x1: "35", y1: "28", x2: "36", y2: "40" }),
+    React.createElement("line", { x1: "36", y1: "40", x2: "40", y2: "40" }),
+    React.createElement("line", { x1: "13", y1: "40", x2: "22", y2: "40" })));
 // Gainage sur les coudes, corps aligné. Le pied relevé de la version précédente faisait croire à un mouvement.
 const PosePlank = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
@@ -1505,19 +1509,23 @@ const PoseBirdDog = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "32", y1: "27", x2: "31", y2: "42" }),
     React.createElement("line", { x1: "31", y1: "42", x2: "40", y2: "42" }),
     React.createElement("line", { x1: "32", y1: "27", x2: "44", y2: "23" })));
-// La marche, distincte de la course : tronc droit, foulée courte, les deux pieds bas.
+// Relecture sur planche, novembre 2026. Marche : « pas assez réaliste ». Le bras avant replié vers le haut était celui d'un
+// coureur, et les deux pieds posés à plat figeaient le pas. Les bras pendent et balancent en opposition, le pied avant
+// attaque par le talon, le pied arrière pousse sur la pointe.
 const PoseWalk = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("circle", { cx: "24", cy: "9", r: "4" }),
-    React.createElement("line", { x1: "24", y1: "13", x2: "24", y2: "28" }),
-    React.createElement("line", { x1: "24", y1: "17", x2: "30", y2: "23" }),
-    React.createElement("line", { x1: "30", y1: "23", x2: "32", y2: "19" }),
-    React.createElement("line", { x1: "24", y1: "17", x2: "18", y2: "23" }),
-    React.createElement("line", { x1: "18", y1: "23", x2: "15", y2: "27" }),
-    React.createElement("line", { x1: "24", y1: "28", x2: "31", y2: "35" }),
-    React.createElement("line", { x1: "31", y1: "35", x2: "35", y2: "44" }),
-    React.createElement("line", { x1: "24", y1: "28", x2: "17", y2: "35" }),
-    React.createElement("line", { x1: "17", y1: "35", x2: "13", y2: "44" })));
+    React.createElement("circle", { cx: "25", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "25", y1: "12", x2: "24", y2: "27" }),
+    React.createElement("line", { x1: "25", y1: "16", x2: "28", y2: "23" }),
+    React.createElement("line", { x1: "28", y1: "23", x2: "30", y2: "29" }),
+    React.createElement("line", { x1: "25", y1: "16", x2: "21", y2: "22" }),
+    React.createElement("line", { x1: "21", y1: "22", x2: "19", y2: "28" }),
+    React.createElement("line", { x1: "24", y1: "27", x2: "28", y2: "35" }),
+    React.createElement("line", { x1: "28", y1: "35", x2: "31", y2: "42" }),
+    React.createElement("line", { x1: "31", y1: "42", x2: "35", y2: "40" }),
+    React.createElement("line", { x1: "24", y1: "27", x2: "21", y2: "35" }),
+    React.createElement("line", { x1: "21", y1: "35", x2: "17", y2: "41" }),
+    React.createElement("line", { x1: "17", y1: "41", x2: "21", y2: "43.5" })));
 // La tête était vue de dessus, le nez marquant le regard, sous un arc de rotation.
 // Relecture sur planche, novembre 2026 : « mets une petite flèche à gauche et à droite du
 // mouvement ». La tête de face, une flèche de chaque côté.
