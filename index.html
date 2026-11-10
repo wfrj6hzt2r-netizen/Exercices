@@ -477,6 +477,46 @@ const PoseBalance = poseWrap(React.createElement(React.Fragment, null,
 // Relecture sur planche, novembre 2026. Pont fessier : « les proportions ne sont pas bonnes », puis « symboliser les bras sur
 // le sol ». Le tronc montait trop raide vers un bassin en pointe, sur une cuisse deux fois plus courte que la jambe. Épaule,
 // bassin et genou sont maintenant alignés, cuisse et jambe de même longueur, et le bras repose au sol le long du corps.
+// Relecture sur planche, novembre 2026. Pont sur une jambe : « même pictogramme mais avec une jambe tendue dans
+// l'axe du corps et une au sol », puis « le pied à 90° sur la jambe en l'air ». Le pont à deux pieds disait le
+// contraire de la consigne, qui lève une jambe tendue.
+const PoseBridgeSingle = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "7", cy: "36.6", r: "3.6" }),
+    React.createElement("line", { x1: "11", y1: "40", x2: "24", y2: "33" }),
+    React.createElement("line", { x1: "24", y1: "33", x2: "35", y2: "28" }),
+    React.createElement("line", { x1: "35", y1: "28", x2: "36", y2: "40" }),
+    React.createElement("line", { x1: "36", y1: "40", x2: "40", y2: "40" }),
+    React.createElement("line", { x1: "13", y1: "40", x2: "22", y2: "40" }),
+    React.createElement("line", { x1: "35", y1: "28", x2: "43", y2: "24.4" }),
+    React.createElement("line", { x1: "43", y1: "24.4", x2: "41.4", y2: "20.8" })));
+// Relecture sur planche, novembre 2026 : « ici le patient est à plat avec un coussin sous UN genou ». Le pont
+// fessier montrait un bassin décollé pour une contraction sans mouvement. Allongé à plat, le genou écrase le coussin.
+const PoseQuadLyingCushion = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "7", cy: "34.6", r: "3.6" }),
+    React.createElement("line", { x1: "11", y1: "38", x2: "26", y2: "38" }),
+    React.createElement("line", { x1: "26", y1: "38", x2: "43", y2: "38" }),
+    React.createElement("line", { x1: "26", y1: "38", x2: "33", y2: "34.5" }),
+    React.createElement("line", { x1: "33", y1: "34.5", x2: "42", y2: "38" }),
+    React.createElement("ellipse", { cx: "33", cy: "40.7", rx: "5.5", ry: "2.3" }),
+    React.createElement("path", { d: "M33 22 L33 29" }),
+    React.createElement("path", { d: "M30.5 26 L33 29 L35.5 26" })));
+// Relecture sur planche, novembre 2026 : « assis sur une chaise, jambe sur un step, coussin sous le genou ». Le
+// dessin de poussée isométrique montrait des bras contre un mur pour une contraction de la cuisse.
+const PoseQuadSeatedStep = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "45", x2: "44", y2: "45" }),
+    React.createElement("path", { d: "M6 13 L6 28 L19 28" }),
+    React.createElement("line", { x1: "7", y1: "28", x2: "7", y2: "45" }),
+    React.createElement("circle", { cx: "10", cy: "9", r: "3.6" }),
+    React.createElement("line", { x1: "10", y1: "12.6", x2: "12", y2: "27" }),
+    React.createElement("line", { x1: "12", y1: "27", x2: "25", y2: "27" }),
+    React.createElement("line", { x1: "25", y1: "27", x2: "41", y2: "30" }),
+    React.createElement("line", { x1: "41", y1: "30", x2: "42", y2: "26" }),
+    React.createElement("path", { d: "M25 45 L25 34 L44 34 L44 45" }),
+    React.createElement("ellipse", { cx: "26.5", cy: "31", rx: "3.5", ry: "1.8" }),
+    React.createElement("path", { d: "M27 14 L27 21" }),
+    React.createElement("path", { d: "M24.5 18 L27 21 L29.5 18" })));
 const PoseBridge = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
     React.createElement("circle", { cx: "7", cy: "36.6", r: "3.6" }),
@@ -2165,6 +2205,13 @@ const POSES = [
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "bridge-single", icon: PoseBridgeSingle, test: (n, t) => n === "pont fessier sur une jambe"
+            || n.startsWith("pont fessier unipodal")
+            || (n === "renforcement de l'arrière de la cuisse" && t.includes("pont fessier sur une jambe")) },
+    { key: "quad-lying-cushion", icon: PoseQuadLyingCushion, test: (n) => n === "contractions du quadriceps et des fessiers" },
+    { key: "quad-seated-step", icon: PoseQuadSeatedStep, test: (n, t) => n === "activation du quadriceps"
+            || n === "isométrique du quadriceps" || n === "isométrique quadriceps" || n === "isométrique quadriceps doux"
+            || (n === "contraction sans bouger" && t.startsWith("assis, jambe tendue") && t.includes("coussin sous")) },
     { key: "foot-ball", icon: PoseFootBall, test: (n) => n === "automassage de la voûte plantaire" || n === "automassage plantaire" },
     { key: "knee-rocks", icon: PoseKneeRocks, test: (n) => n === "bascules de hanche allongé" || n === "étirement en rotation allongée" },
     { key: "hamstring-iso", icon: PoseHamstringIso, test: (n) => n === "isométrique des ischio-jambiers en position neutre" },
@@ -2608,7 +2655,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "prone-extension": "ventre", plank: "ventre",
     "seated-flexion": "assis", "etirement-assis": "assis", "seated-hip-iso": "assis",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
-    "side-lying": "cote", bridge: "dos", "lying-mobilise": "dos",
+    "side-lying": "cote", bridge: "dos", "bridge-single": "dos", "quad-lying-cushion": "dos", "quad-seated-step": "assis", "lying-mobilise": "dos",
     "supine-core": "dos", "four-point": "quatre",
     "knee-rocks": "dos", "hamstring-iso": "dos", "knees-to-chest": "dos", "chin-tuck-seated": "assis", "forearm-rotation": "debout",
     "standing-abduction-band": "debout", "standing-abduction-band-knee": "debout", "standing-adduction-band": "debout", "supine-core-iso": "dos", "pelvic-tilt": "dos", "obliques": "dos", "lateral-raise-weight": "debout", "seated-leg-arrow": "assis", "lateral-lunge": "debout", "band-d2": "debout",
