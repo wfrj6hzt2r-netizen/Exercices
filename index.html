@@ -441,17 +441,16 @@ const IconeRecommencer = traitIcone(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M20 3.5V8h-4.5" })));
 // --- Pictogrammes détaillés : silhouettes schématiques en position d'exercice ---
 const poseWrap = (children) => ({ size = 24, color = "currentColor" }) => (React.createElement("svg", { width: size, height: size, viewBox: "0 0 48 48", fill: "none", style: { stroke: color }, strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round" }, children));
+// Relecture du praticien, novembre 2026 : version A retenue. De face, bras levés en V, le squat se lisait comme
+// une célébration. De profil, fesses en arrière, buste penché, bras tendus devant pour l'équilibre.
 const PoseSquat = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "24", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "24", y1: "12", x2: "23", y2: "24" }),
-    React.createElement("line", { x1: "23", y1: "15", x2: "14", y2: "12" }),
-    React.createElement("line", { x1: "23", y1: "15", x2: "32", y2: "12" }),
-    React.createElement("line", { x1: "23", y1: "24", x2: "15", y2: "27" }),
-    React.createElement("line", { x1: "15", y1: "27", x2: "15", y2: "35" }),
-    React.createElement("line", { x1: "15", y1: "35", x2: "10", y2: "35" }),
-    React.createElement("line", { x1: "23", y1: "24", x2: "31", y2: "27" }),
-    React.createElement("line", { x1: "31", y1: "27", x2: "31", y2: "35" }),
-    React.createElement("line", { x1: "31", y1: "35", x2: "36", y2: "35" })));
+    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
+    React.createElement("circle", { cx: "27", cy: "12", r: "4" }),
+    React.createElement("line", { x1: "25.5", y1: "16", x2: "20", y2: "30" }),
+    React.createElement("line", { x1: "24", y1: "19", x2: "37", y2: "19" }),
+    React.createElement("line", { x1: "20", y1: "30", x2: "31", y2: "32" }),
+    React.createElement("line", { x1: "31", y1: "32", x2: "27", y2: "42" }),
+    React.createElement("line", { x1: "25", y1: "43", x2: "32", y2: "43" })));
 // Fente vue de profil : genou avant fléchi, genou arrière descendu vers le sol.
 // La fente : un grand pas, le genou avant à angle droit, le genou arrière qui descend vers le
 // sol sans le toucher, le talon arrière levé. Relecture sur planche, novembre 2026 : « mets le
@@ -1111,12 +1110,17 @@ const PoseAdvice = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "18", y1: "31", x2: "30", y2: "31" })));
 // Jambe et pied de profil. Le pied devient une forme fermée — un trait seul se lisait comme
 // le prolongement du tibia, sans cheville visible. Position basse en pointillé.
+// Relecture du praticien, novembre 2026 : version A retenue. La petite tête sur un trait faisait une silhouette
+// sans corps, et la cheville se perdait dans un cercle. Gros plan sur la jambe allongée : pied relevé en trait
+// plein, pied tendu en pointillé, une flèche courbe entre les deux pour le va-et-vient.
 const PoseAnklePump = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("circle", { cx: "19", cy: "8", r: "2.4" }),
-    React.createElement("line", { x1: "19", y1: "10", x2: "19", y2: "27" }),
-    React.createElement("circle", { cx: "20", cy: "29.5", r: "3" }),
-    React.createElement("path", { d: "M 22 27.5 L 37 24 L 38 28 L 23 31.5 Z" }),
-    React.createElement("path", { d: "M 22 33 L 32 42", strokeDasharray: "3 3" })));
+    React.createElement("line", { x1: "4", y1: "30", x2: "30", y2: "30" }),
+    React.createElement("line", { x1: "4", y1: "35", x2: "28", y2: "35" }),
+    React.createElement("path", { d: "M30 30 L33 14 L37 15 L33 35 L28 35" }),
+    React.createElement("line", { x1: "33", y1: "33", x2: "44", y2: "28", strokeDasharray: "3 3" }),
+    React.createElement("path", { d: "M37 12 A12 12 0 0 1 43.5 22.5" }),
+    React.createElement("path", { d: "M34.6 11.6 L37 12 L36.4 14.4" }),
+    React.createElement("path", { d: "M44.2 20 L43.5 22.5 L41 21.8" })));
 // Allongé sur le côté, jambe du dessus levée : sol et deux jambes distinctes.
 const PoseSideLying = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
