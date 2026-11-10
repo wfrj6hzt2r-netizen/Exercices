@@ -1376,14 +1376,17 @@ const PoseAutocorrection = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "24", y1: "32", x2: "28", y2: "44" })));
 // Le même allongement, mais couché : la flèche part du crâne vers la gauche, dans l'axe du
 // corps, puisque c'est la colonne qu'on étire et non le regard qu'on lève.
+// Relecture sur planche, novembre 2026 : « sur la même ligne horizontale (pied trop bas) ». Le
+// pied descendait sous le niveau du dos ; tête, dos et pied reposent maintenant sur une ligne.
 const PoseAxialSupine = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
-    React.createElement("circle", { cx: "15", cy: "33", r: "4" }),
-    React.createElement("line", { x1: "19", y1: "34", x2: "30", y2: "34" }),
-    React.createElement("line", { x1: "30", y1: "34", x2: "35", y2: "28" }),
-    React.createElement("line", { x1: "35", y1: "28", x2: "40", y2: "39" }),
-    React.createElement("line", { x1: "10", y1: "33", x2: "5", y2: "33" }),
-    React.createElement("path", { d: "M7.5 30.5 L5 33 L7.5 35.5" })));
+    React.createElement("circle", { cx: "15", cy: "34", r: "4" }),
+    React.createElement("line", { x1: "19", y1: "38", x2: "30", y2: "38" }),
+    React.createElement("line", { x1: "30", y1: "38", x2: "35", y2: "27" }),
+    React.createElement("line", { x1: "35", y1: "27", x2: "39", y2: "38" }),
+    React.createElement("line", { x1: "39", y1: "38", x2: "43", y2: "38" }),
+    React.createElement("line", { x1: "10", y1: "34", x2: "5", y2: "34" }),
+    React.createElement("path", { d: "M7.5 31.5 L5 34 L7.5 36.5" })));
 // Le gainage latéral : le corps en diagonale, l'avant-bras seul au sol. Le gainage ventral
 // existait déjà, mais sa posture déclarée — sur le ventre — faisait retomber celui-ci sur
 // le pictogramme neutre.
