@@ -526,13 +526,45 @@ const PoseBridge = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "36", y1: "40", x2: "40", y2: "40" }),
     React.createElement("line", { x1: "13", y1: "40", x2: "22", y2: "40" })));
 // Gainage sur les coudes, corps aligné. Le pied relevé de la version précédente faisait croire à un mouvement.
+// Relecture sur planche, novembre 2026 : « revoir le pictogramme de planche, un peu plus réaliste, et à modifier en
+// fonction de la position décrite ». Le corps montait en diagonale raide, sans avant-bras au sol, avec une flèche.
+// De profil : avant-bras au sol, coude sous l'épaule, corps droit jusqu'aux pointes de pieds.
 const PosePlank = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("circle", { cx: "11", cy: "22", r: "4" }),
-    React.createElement("line", { x1: "15", y1: "24", x2: "39", y2: "35" }),
-    React.createElement("line", { x1: "15", y1: "24", x2: "11", y2: "35" }),
-    React.createElement("line", { x1: "25", y1: "28", x2: "23", y2: "38" }),
-    React.createElement("line", { x1: "39", y1: "35", x2: "42", y2: "40" })));
+    React.createElement("line", { x1: "3", y1: "41", x2: "45", y2: "41" }),
+    React.createElement("circle", { cx: "8", cy: "28.5", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "13", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "39.5", x2: "5", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "41", y2: "37.5" }),
+    React.createElement("line", { x1: "41", y1: "37.5", x2: "43", y2: "39.5" })));
+// La même planche, genoux au sol : la « planche modifiée » des consignes de reprise.
+const PosePlankKnees = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "41", x2: "45", y2: "41" }),
+    React.createElement("circle", { cx: "8", cy: "28.5", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "13", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "39.5", x2: "5", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "31", y2: "39.5" }),
+    React.createElement("line", { x1: "31", y1: "39.5", x2: "40", y2: "33" })));
+// La planche avec une jambe tendue levée, pour les gainages dynamiques de la jambe.
+const PosePlankLeg = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "41", x2: "45", y2: "41" }),
+    React.createElement("circle", { cx: "8", cy: "28.5", r: "3.6" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "13", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "39.5", x2: "5", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "27", y2: "33.8" }),
+    React.createElement("line", { x1: "27", y1: "33.8", x2: "41", y2: "37.5" }),
+    React.createElement("line", { x1: "41", y1: "37.5", x2: "43", y2: "39.5" }),
+    React.createElement("line", { x1: "27", y1: "33.8", x2: "43", y2: "29.5" })));
+// La planche avec un bras tendu devant : « lève un bras puis l'autre sans que le bassin tourne ». La tête
+// remonte d'un cran pour laisser passer le bras.
+const PosePlankArm = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "41", x2: "45", y2: "41" }),
+    React.createElement("circle", { cx: "8", cy: "25", r: "3.6" }),
+    React.createElement("line", { x1: "11.5", y1: "28", x2: "13", y2: "30" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "41", y2: "37.5" }),
+    React.createElement("line", { x1: "41", y1: "37.5", x2: "43", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "13", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "39.5", x2: "7", y2: "39.5" }),
+    React.createElement("line", { x1: "13", y1: "30", x2: "3", y2: "31" })));
 // Allongé sur le dos, un genou fléchi. L'ancienne version était illisible à 24 px :
 // proportions revues et sol ajouté pour donner l'assise du dessin.
 const PoseLyingMobilise = poseWrap(React.createElement(React.Fragment, null,
@@ -545,15 +577,21 @@ const PoseLyingMobilise = poseWrap(React.createElement(React.Fragment, null,
 // Étirement debout : talon ramené vers la fesse, main qui tient la cheville. Deux tentatives
 // de flexion avant ont échoué — en filaire, cette posture ferme toujours un triangle avec le
 // sol et cesse de se lire comme un corps. Ce geste-ci est le plus fréquent de la catégorie.
+// Relecture sur planche, novembre 2026 : « on n'a pas l'impression qu'il étire la cuisse, plutôt qu'il touche son
+// pied, fais peut-être une version de profil ». De profil, une main au mur, l'autre ramène le talon vers la fesse,
+// genou pointé vers le sol.
 const PoseStretchStanding = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("circle", { cx: "21", cy: "8", r: "4" }),
-    React.createElement("line", { x1: "21", y1: "12", x2: "21", y2: "27" }),
-    React.createElement("line", { x1: "21", y1: "27", x2: "19", y2: "43" }),
-    React.createElement("line", { x1: "21", y1: "27", x2: "30", y2: "33" }),
-    React.createElement("line", { x1: "30", y1: "33", x2: "24", y2: "38" }),
-    React.createElement("line", { x1: "21", y1: "16", x2: "27", y2: "35" }),
-    React.createElement("line", { x1: "21", y1: "16", x2: "13", y2: "23" })));
+    React.createElement("line", { x1: "42", y1: "6", x2: "42", y2: "44" }),
+    React.createElement("circle", { cx: "26", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "26", y1: "12", x2: "25", y2: "27" }),
+    React.createElement("line", { x1: "25", y1: "27", x2: "25", y2: "43" }),
+    React.createElement("line", { x1: "25", y1: "43", x2: "29", y2: "43" }),
+    React.createElement("line", { x1: "25", y1: "27", x2: "23.5", y2: "36" }),
+    React.createElement("line", { x1: "23.5", y1: "36", x2: "17", y2: "29" }),
+    React.createElement("line", { x1: "26", y1: "16", x2: "21", y2: "23" }),
+    React.createElement("line", { x1: "21", y1: "23", x2: "17.5", y2: "28.5" }),
+    React.createElement("line", { x1: "26", y1: "16", x2: "41", y2: "18" })));
 // Debout, buste enroulé vers l'avant, bras et tête pendants. L'étirement global de la
 // chaîne postérieure recevait l'étirement debout générique, qui tient un pied derrière soi :
 // le praticien n'y lisait pas la consigne.
@@ -1161,6 +1199,30 @@ const PoseAnklePump = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M37 12 A12 12 0 0 1 43.5 22.5" }),
     React.createElement("path", { d: "M34.6 11.6 L37 12 L36.4 14.4" }),
     React.createElement("path", { d: "M44.2 20 L43.5 22.5 L41 21.8" })));
+// Relecture sur planche, novembre 2026 : « mets plutôt une jambe de face avec élastique qui force vers l'extérieur ».
+// Les deux jambes de face, l'élastique autour des deux pieds : la flèche part vers l'extérieur.
+const PoseAnkleEversion = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "41", x2: "45", y2: "41" }),
+    React.createElement("line", { x1: "9", y1: "12", x2: "9", y2: "31" }),
+    React.createElement("line", { x1: "15", y1: "12", x2: "15", y2: "31" }),
+    React.createElement("path", { d: "M8 31 L16 31 L18 38 L6 38 Z" }),
+    React.createElement("line", { x1: "27", y1: "12", x2: "27", y2: "31" }),
+    React.createElement("line", { x1: "33", y1: "12", x2: "33", y2: "31" }),
+    React.createElement("path", { d: "M26 31 L34 31 L36 38 L24 38 Z" }),
+    React.createElement("path", { d: "M17 33 L25 33 M17.5 36.5 L24.5 36.5" }),
+    React.createElement("path", { d: "M38 34.5 L45 34.5" }),
+    React.createElement("path", { d: "M42.5 32 L45 34.5 L42.5 37" })));
+// Le tibial postérieur, à l'inverse : « ici élastique vers l'intérieur ». L'élastique est fixé à l'extérieur, le
+// pied tire vers l'intérieur.
+const PoseAnkleInversion = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "3", y1: "41", x2: "45", y2: "41" }),
+    React.createElement("line", { x1: "21", y1: "12", x2: "21", y2: "31" }),
+    React.createElement("line", { x1: "27", y1: "12", x2: "27", y2: "31" }),
+    React.createElement("path", { d: "M20 31 L28 31 L30 38 L18 38 Z" }),
+    React.createElement("line", { x1: "43", y1: "18", x2: "43", y2: "41" }),
+    React.createElement("path", { d: "M29 33 L43 26 M29.5 36.5 L43 30" }),
+    React.createElement("path", { d: "M16 34.5 L7 34.5" }),
+    React.createElement("path", { d: "M9.5 32 L7 34.5 L9.5 37" })));
 // Allongé sur le côté, jambe du dessus levée : sol et deux jambes distinctes.
 const PoseSideLying = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "5", y1: "42", x2: "43", y2: "42" }),
@@ -2205,6 +2267,20 @@ const POSES = [
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "plank-knees", icon: PosePlankKnees, test: (n) => n.includes("planche modifiée") || n === "gainage doux progressif" },
+    { key: "plank-leg", icon: PosePlankLeg, test: (n, t) => n === "gainage avec mouvement de jambe"
+            || n.includes("planche avec levée de jambe")
+            || (n === "gainage dynamique" && t.includes("mouvement de bras ou de jambe")) },
+    { key: "plank-arm", icon: PosePlankArm, test: (n, t) => n === "gainage dynamique" && t.includes("lève un bras") },
+    { key: "ankle-eversion", icon: PoseAnkleEversion, test: (n) => n.includes("éverseurs") && !n.includes("en charge") },
+    { key: "ankle-inversion", icon: PoseAnkleInversion, test: (n) => n.includes("tibial postérieur") },
+    { key: "etirement-assis", icon: PoseStretchSeated, test: (n) => n === "étirement des mollets et des cuisses" },
+    { key: "calf-wall", icon: PoseCalfWall, test: (n, t) => n === "étirements du soir"
+            || (n === "étirements d'entretien" && (t.startsWith("mollets") || t.includes("étirement du mollet"))) },
+    { key: "fente-au-sol", icon: PoseFenteAuSol, test: (n, t) => n === "étirements d'entretien" && t.startsWith("avant de la hanche") },
+    { key: "advice", icon: PoseAdvice, test: (n, t) => n === "étirements d'entretien" && t.startsWith("continue les étirements") },
+    { key: "lunge", icon: PoseLunge, test: (n) => n === "étirement doux du fléchisseur de hanche" },
+    { key: "quad-lying-cushion", icon: PoseQuadLyingCushion, test: (n) => n === "isométrique quadriceps à 0°" },
     { key: "bridge-single", icon: PoseBridgeSingle, test: (n, t) => n === "pont fessier sur une jambe"
             || n.startsWith("pont fessier unipodal")
             || (n === "renforcement de l'arrière de la cuisse" && t.includes("pont fessier sur une jambe")) },
@@ -2655,7 +2731,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "prone-extension": "ventre", plank: "ventre",
     "seated-flexion": "assis", "etirement-assis": "assis", "seated-hip-iso": "assis",
     "seated-rotators": "assis", "seated-leg": "assis", bike: "assis",
-    "side-lying": "cote", bridge: "dos", "bridge-single": "dos", "quad-lying-cushion": "dos", "quad-seated-step": "assis", "lying-mobilise": "dos",
+    "side-lying": "cote", bridge: "dos", "plank-knees": "ventre", "plank-leg": "ventre", "plank-arm": "ventre", "bridge-single": "dos", "quad-lying-cushion": "dos", "quad-seated-step": "assis", "lying-mobilise": "dos",
     "supine-core": "dos", "four-point": "quatre",
     "knee-rocks": "dos", "hamstring-iso": "dos", "knees-to-chest": "dos", "chin-tuck-seated": "assis", "forearm-rotation": "debout",
     "standing-abduction-band": "debout", "standing-abduction-band-knee": "debout", "standing-adduction-band": "debout", "supine-core-iso": "dos", "pelvic-tilt": "dos", "obliques": "dos", "lateral-raise-weight": "debout", "seated-leg-arrow": "assis", "lateral-lunge": "debout", "band-d2": "debout",
@@ -2954,7 +3030,7 @@ const PATHOLOGIES = [
             { id: "menisque-suture", label: "Ménisque — suture (réparation)", groupe: "Après une opération", desc: "Après réparation chirurgicale du ménisque : appui et flexion limités pendant plusieurs semaines.", context: "Après une suture, le ménisque doit cicatriser : c'est ce qui impose des consignes strictes d'appui et de flexion pendant plusieurs semaines, et une reprise sensiblement plus lente qu'après une méniscectomie. Deux gestes sont particulièrement à risque tant que la cicatrisation n'est pas acquise : la flexion profonde en charge — accroupissement, squat complet — et le pivot pied au sol. Les délais indiqués ici sont des ordres de grandeur courants : le protocole de votre chirurgien prime sur toute indication générale.", surgical: true, premiersJours: ["C'est la suture qui commande, pas la douleur : respectez à la lettre les consignes d'appui et d'amplitude de votre chirurgien, même si vous vous sentez bien.", "Une suture méniscale se protège plusieurs semaines. Un genou qui ne fait pas mal n'est pas un genou cicatrisé.", "Glace et surélévation contre le gonflement des premiers jours."], stages: [
                     { label: "Protection de la suture", pourquoi: "Le ménisque doit cicatriser, et deux gestes l'en empêchent : la flexion profonde en charge et le pivot pied au sol. Ces semaines-là conditionnent tout le reste.", critere: "Le genou se tend complètement, le gonflement est maîtrisé, et vous respectez sans écart les consignes d'appui et d'amplitude fixées par votre chirurgien — ici c'est la suture qui commande, pas la douleur.", sub: "0 à 4 semaines", exercises: [
                             { name: "Contrôle de la douleur et de l'œdème", dose: "plusieurs fois par jour", tip: "Glace une quinzaine de minutes plusieurs fois par jour, jambe surélevée au-dessus du niveau du cœur. C'est surtout utile les premiers jours, quand le gonflement limite à lui seul la contraction du quadriceps." },
-                            { name: "Isométrique quadriceps à 0°", dose: "5 × 10 sec", tip: "Allongé sur le dos, jambe opérée tendue, un coussin roulé sous la cheville. Écrasez le genou vers le lit en contractant l'avant de la cuisse, tenez, puis relâchez complètement. La rotule doit remonter légèrement." },
+                            { name: "Isométrique quadriceps à 0°", dose: "5 × 10 sec", tip: "Allongé sur le dos, jambe opérée tendue, un coussin roulé sous le genou. Écrasez le genou vers le lit en contractant l'avant de la cuisse, tenez, puis relâchez complètement. La rotule doit remonter légèrement." },
                             { name: "Flexion limitée à 90°", dose: "3 × 10", tip: "Assis au bord d'un lit, jambe soutenue par l'autre. Pliez le genou jusqu'à l'angle droit, pas au-delà, puis retendez. Cette limite n'est pas une précaution de confort : au-delà de 90°, le ménisque se comprime et la suture est mise en tension." },
                             { name: "Appui protégé selon les consignes", dose: "selon consignes chirurgicales", tip: "La mise en charge après suture est souvent partielle et sous attelle pendant plusieurs semaines. Respectez à la lettre le poids autorisé et le port de l'attelle : c'est la contrainte qui conditionne toute la suite." }
                         ] },
@@ -2992,7 +3068,7 @@ const PATHOLOGIES = [
             { id: "menisque-ablation", label: "Ménisque — méniscectomie ou lésion non opérée", groupe: "Après une opération", desc: "Après ablation partielle du ménisque, ou lésion prise en charge sans chirurgie.", context: "Ici rien n'a besoin de cicatriser : la partie lésée a été retirée, ou bien elle n'a pas été opérée. La progression se règle donc sur les symptômes et non sur un calendrier, et elle est nettement plus rapide qu'après une suture. Un point mérite d'être connu : pour une lésion dégénérative sans blocage vrai, la rééducation seule donne des résultats comparables à l'arthroscopie — ne pas être opéré n'est pas un pis-aller. En revanche, un genou qui se bloque franchement ou qui reste coincé en flexion justifie un avis chirurgical.", premiersJours: ["Après une méniscectomie la reprise est plus rapide qu'après une suture, mais elle reste progressive : le genou a perdu une partie de son amortisseur.", "Retrouvez l'extension complète et la marche sans boiter avant d'accélérer.", "Glace et surélévation contre le gonflement des premiers jours."], stages: [
                     { label: "Douleur & mobilité", critere: "Le genou se tend et plie sans blocage ni accrochage, et le gonflement a disparu.", sub: "Genou encore gonflé ou douloureux", exercises: [
                             { name: "Contrôle de la douleur et de l'œdème", dose: "plusieurs fois par jour", tip: "Glace une quinzaine de minutes plusieurs fois par jour, jambe surélevée. Un genou gonflé inhibe la contraction du quadriceps : faire baisser l'épanchement est le préalable au renforcement." },
-                            { name: "Isométrique quadriceps à 0°", dose: "5 × 10 sec", tip: "Allongé sur le dos, jambe tendue, un coussin roulé sous la cheville. Écrasez le genou vers le lit en contractant l'avant de la cuisse, tenez, puis relâchez complètement. La rotule doit remonter légèrement." },
+                            { name: "Isométrique quadriceps à 0°", dose: "5 × 10 sec", tip: "Allongé sur le dos, jambe tendue, un coussin roulé sous le genou. Écrasez le genou vers le lit en contractant l'avant de la cuisse, tenez, puis relâchez complètement. La rotule doit remonter légèrement." },
                             { name: "Mobilité active du genou", dose: "3 × 15", tip: "Assis au bord d'un lit, jambe pendante. Tendez le genou puis laissez-le se replier sous son propre poids, lentement, sur toute l'amplitude indolore. Récupérer l'extension complète est prioritaire sur la flexion." },
                             { name: "Marche avec appui selon tolérance", dose: "quotidien", tip: "Reposez le pied dès que la douleur le permet, avec une canne les premiers jours si la boiterie est marquée. Après une méniscectomie l'appui complet est généralement autorisé d'emblée, et la marche accélère la récupération." }
                         ] },

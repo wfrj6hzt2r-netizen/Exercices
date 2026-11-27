@@ -667,6 +667,7 @@ const SANS_POSTURE = new Set([
     "hand", "wrist", "elbow-mobilise",  // main, poignet, bras seul
     "wrist-ext-stretch", "wrist-flex-stretch", // l'avant-bras en gros plan
     "ankle-pump", "foot-arch", "foot-ball", // une jambe, un pied, un pied sur sa balle
+    "ankle-eversion", "ankle-inversion", // les deux jambes de face, coupées sous le genou
     "band", "isometrique",              // un élastique, deux flèches
     "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
     "head-flexion-resist", "neck-tilt",
@@ -1165,6 +1166,25 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Isométrique des ischio-jambiers en position neutre": "hamstring-iso",
         "Position de flexion allongée (genoux vers poitrine)": "knees-to-chest",
         "Mobilité du bassin en douceur": "pelvic-tilt",
+        // Novembre 2026 : gainages selon la position décrite, étirements debout, tendons de la cheville.
+        "Gainage abdominal (planche modifiée)": "plank-knees",
+        "Gainage abdominal progressif (planche modifiée)": "plank-knees",
+        "Gainage doux progressif": "plank-knees",
+        "Gainage avec mouvement de jambe": "plank-leg",
+        "Gainage dynamique (planche avec levée de jambe)": "plank-leg",
+        "Gainage global": "plank",
+        "Gainage sur les coudes": "plank",
+        "Gainage ventral": "plank",
+        "Excentrique des éverseurs à l'élastique": "ankle-eversion",
+        "Isométrique des éverseurs": "ankle-eversion",
+        "Renforcement des éverseurs": "ankle-eversion",
+        "Isométrique du tibial postérieur": "ankle-inversion",
+        "Renforcement du tibial postérieur à l'élastique": "ankle-inversion",
+        "Étirement des mollets et des cuisses": "etirement-assis",
+        "Étirements du soir": "calf-wall",
+        "Étirement doux du fléchisseur de hanche": "lunge",
+        "Étirement du quadriceps": "etirement-debout",
+        "Isométrique quadriceps à 0°": "quad-lying-cushion",
         // Novembre 2026 : pont sur une jambe, contractions du quadriceps à plat ou assis sur un step.
         "Pont fessier sur une jambe": "bridge-single",
         "Pont fessier unipodal": "bridge-single",
