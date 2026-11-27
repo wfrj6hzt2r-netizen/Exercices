@@ -1514,12 +1514,14 @@ const PoseSeatedLeg = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("path", { d: "M30 40 A 13 13 0 0 0 38 27", strokeDasharray: "3 3" })));
 // Gainage profond allongé sur le dos, genoux pliés : la flèche rentre au niveau du nombril,
 // c'est tout le geste. Le dessin de planche montrait quelqu'un à plat ventre.
+// Relecture sur planche, novembre 2026 : « juste remonter les pieds pour être au même niveau ». Le pied descendait
+// jusqu'au sol pendant que le dos restait au-dessus ; il revient à la hauteur du dos, comme sur la version sans flèche.
 const PoseSupineCore = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("line", { x1: "4", y1: "42", x2: "44", y2: "42" }),
     React.createElement("circle", { cx: "9", cy: "34", r: "3.6" }),
     React.createElement("line", { x1: "13", y1: "35", x2: "26", y2: "35" }),
     React.createElement("line", { x1: "26", y1: "35", x2: "32", y2: "25" }),
-    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "41" }),
+    React.createElement("line", { x1: "32", y1: "25", x2: "37", y2: "35" }),
     React.createElement("path", { d: "M20 27 L20 32 M17.5 29.5 L20 32 L22.5 29.5" })));
 // À quatre pattes, dos plat : la position du chat-vache et du bras-jambe opposés.
 const PoseFourPoint = poseWrap(React.createElement(React.Fragment, null,
@@ -2329,6 +2331,7 @@ const POSES = [
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "hop-single", icon: PoseHopSingle, test: (n) => n === "sauts avec réception unipodale" },
     { key: "step-down", icon: PoseStepDown, test: (n) => n === "descente de marche contrôlée" || n === "step-down contrôlé" },
     { key: "step-both", icon: PoseStepBoth, test: (n) => n === "montée et descente d'escalier"
             || n.startsWith("montée-descente sur step") || n.startsWith("reprise progressive de la marche et des escaliers")
