@@ -1174,6 +1174,8 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         "Isométrique des ischio-jambiers en position neutre": "hamstring-iso",
         "Position de flexion allongée (genoux vers poitrine)": "knees-to-chest",
         "Mobilité du bassin en douceur": "pelvic-tilt",
+        // « icône de saut sur une jambe » : la réception unipodale n'est pas un équilibre tenu.
+        "Sauts avec réception unipodale": "hop-single",
         // Novembre 2026 : gainages selon la position décrite, étirements debout, tendons de la cheville.
         "Gainage abdominal (planche modifiée)": "plank-knees",
         "Gainage abdominal progressif (planche modifiée)": "plank-knees",

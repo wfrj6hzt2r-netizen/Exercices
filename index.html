@@ -2329,6 +2329,7 @@ const POSES = [
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "hop-single", icon: PoseHopSingle, test: (n) => n === "sauts avec réception unipodale" },
     { key: "step-down", icon: PoseStepDown, test: (n) => n === "descente de marche contrôlée" || n === "step-down contrôlé" },
     { key: "step-both", icon: PoseStepBoth, test: (n) => n === "montée et descente d'escalier"
             || n.startsWith("montée-descente sur step") || n.startsWith("reprise progressive de la marche et des escaliers")
