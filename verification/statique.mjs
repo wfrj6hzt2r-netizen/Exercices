@@ -668,6 +668,7 @@ const SANS_POSTURE = new Set([
     "wrist-ext-stretch", "wrist-flex-stretch", // l'avant-bras en gros plan
     "ankle-pump", "foot-arch", "foot-ball", // une jambe, un pied, un pied sur sa balle
     "ankle-eversion", "ankle-inversion", // les deux jambes de face, coupées sous le genou
+    "calf-step-eccentric",              // une jambe au bord d'une marche
     "band", "isometrique",              // un élastique, deux flèches
     "head-rotation", "head-iso-multi", "head-extension", "neck", // tête et nuque
     "head-flexion-resist", "neck-tilt",
@@ -1081,9 +1082,16 @@ controle("les affectations relues restent celles qui ont été validées", () =>
         // Repassé sur la planche, novembre 2026 : « ajoute une balle sous le pied ».
         "Automassage de la voûte plantaire": "foot-ball",
         "Auto-massage doux du trapèze": "neck",
-        // Des descentes de marche, pas des épreuves d'équilibre.
-        "Excentrique unipodal jusqu'au sol": "step",
-        "Excentrique unipodal sur marche": "step",
+        // Des excentriques du mollet, pas des épreuves d'équilibre. Novembre 2026 : l'un se fait
+        // au bord d'une marche, l'autre au sol.
+        "Excentrique unipodal jusqu'au sol": "calf",
+        "Excentrique unipodal sur marche": "calf-step-eccentric",
+        "Descente de marche contrôlée": "step-down",
+        "Step-down contrôlé": "step-down",
+        "Montée et descente d'escalier": "step-both",
+        "Reprise progressive des escaliers": "step-both",
+        "Step-up latéral contrôlé": "step-lateral",
+        "Montée sur step": "step",
         // Des rotations du tronc, pas des extensions de genou assises.
         "Mobilité thoracique en rotation": "seated-twist",
         "Mobilité en rotation assise": "seated-twist",

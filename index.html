@@ -1254,16 +1254,78 @@ const PoseThrow = poseWrap(React.createElement(React.Fragment, null,
     React.createElement("circle", { cx: "37", cy: "7", r: "3.5" }),
     React.createElement("line", { x1: "20", y1: "28", x2: "14", y2: "42" }),
     React.createElement("line", { x1: "20", y1: "28", x2: "27", y2: "42" })));
-// Une seule marche, et une silhouette plus grande : montée sur step.
+// Relecture sur planche, novembre 2026 : « pas assez réaliste, je veux plusieurs versions : il descend, il monte, ou
+// les deux ». Le dessin unique posait une jambe tendue sur la marche, sans dire le sens du geste. Il monte : un pied
+// sur la marche, genou fléchi, la flèche vers le haut.
 const PoseStep = poseWrap(React.createElement(React.Fragment, null,
-    React.createElement("path", { d: "M27 44 L27 31 L43 31" }),
-    React.createElement("line", { x1: "5", y1: "44", x2: "43", y2: "44" }),
-    React.createElement("circle", { cx: "15", cy: "9", r: "4" }),
-    React.createElement("line", { x1: "15", y1: "13", x2: "15", y2: "28" }),
-    React.createElement("line", { x1: "15", y1: "28", x2: "28", y2: "32" }),
-    React.createElement("line", { x1: "15", y1: "28", x2: "12", y2: "43" }),
-    React.createElement("line", { x1: "15", y1: "17", x2: "8", y2: "24" }),
-    React.createElement("line", { x1: "15", y1: "17", x2: "22", y2: "22" })));
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("path", { d: "M26 44 L26 37 L44 37" }),
+    React.createElement("circle", { cx: "23.5", cy: "8.5", r: "4" }),
+    React.createElement("line", { x1: "23.5", y1: "12.5", x2: "22", y2: "27" }),
+    React.createElement("line", { x1: "23", y1: "16", x2: "25.5", y2: "25" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "29", y2: "29" }),
+    React.createElement("line", { x1: "29", y1: "29", x2: "30", y2: "37" }),
+    React.createElement("line", { x1: "30", y1: "37", x2: "35", y2: "37" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "20", y2: "35.5" }),
+    React.createElement("line", { x1: "20", y1: "35.5", x2: "17", y2: "43.5" }),
+    React.createElement("line", { x1: "17", y1: "43.5", x2: "21", y2: "43.5" }),
+    React.createElement("line", { x1: "10", y1: "34", x2: "10", y2: "17" }),
+    React.createElement("path", { d: "M7.5 20 L10 17 L12.5 20" })));
+// Il descend : debout sur la marche, l'autre pied part vers le sol.
+const PoseStepDown = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("path", { d: "M4 37 L24 37 L24 44" }),
+    React.createElement("circle", { cx: "17", cy: "5", r: "3.6" }),
+    React.createElement("line", { x1: "17", y1: "8.6", x2: "15", y2: "22" }),
+    React.createElement("line", { x1: "16.5", y1: "12", x2: "20", y2: "20" }),
+    React.createElement("line", { x1: "15", y1: "22", x2: "17.5", y2: "29.5" }),
+    React.createElement("line", { x1: "17.5", y1: "29.5", x2: "16", y2: "37" }),
+    React.createElement("line", { x1: "15", y1: "22", x2: "22", y2: "29" }),
+    React.createElement("line", { x1: "22", y1: "29", x2: "26", y2: "36.5" }),
+    React.createElement("line", { x1: "26", y1: "36.5", x2: "29", y2: "37.5" }),
+    React.createElement("line", { x1: "38", y1: "17", x2: "38", y2: "34" }),
+    React.createElement("path", { d: "M35.5 31 L38 34 L40.5 31" })));
+// Les deux : la position de la montée, flèche dans les deux sens, pour les escaliers montés puis descendus.
+const PoseStepBoth = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("path", { d: "M26 44 L26 37 L44 37" }),
+    React.createElement("circle", { cx: "23.5", cy: "8.5", r: "4" }),
+    React.createElement("line", { x1: "23.5", y1: "12.5", x2: "22", y2: "27" }),
+    React.createElement("line", { x1: "23", y1: "16", x2: "25.5", y2: "25" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "29", y2: "29" }),
+    React.createElement("line", { x1: "29", y1: "29", x2: "30", y2: "37" }),
+    React.createElement("line", { x1: "30", y1: "37", x2: "35", y2: "37" }),
+    React.createElement("line", { x1: "22", y1: "27", x2: "20", y2: "35.5" }),
+    React.createElement("line", { x1: "20", y1: "35.5", x2: "17", y2: "43.5" }),
+    React.createElement("line", { x1: "17", y1: "43.5", x2: "21", y2: "43.5" }),
+    React.createElement("line", { x1: "10", y1: "16", x2: "10", y2: "35" }),
+    React.createElement("path", { d: "M7.5 19 L10 16 L12.5 19" }),
+    React.createElement("path", { d: "M7.5 32 L10 35 L12.5 32" })));
+// Le step-up latéral, de face : la marche est sur le côté, la jambe la plus proche monte.
+const PoseStepLateral = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("path", { d: "M27 44 L27 37 L44 37" }),
+    React.createElement("circle", { cx: "18", cy: "8", r: "4" }),
+    React.createElement("line", { x1: "18", y1: "12", x2: "18", y2: "27" }),
+    React.createElement("line", { x1: "18", y1: "16", x2: "13", y2: "25" }),
+    React.createElement("line", { x1: "18", y1: "16", x2: "23", y2: "25" }),
+    React.createElement("line", { x1: "18", y1: "27", x2: "15", y2: "35" }),
+    React.createElement("line", { x1: "15", y1: "35", x2: "15", y2: "43.5" }),
+    React.createElement("line", { x1: "18", y1: "27", x2: "25", y2: "30" }),
+    React.createElement("line", { x1: "25", y1: "30", x2: "29", y2: "37" }),
+    React.createElement("line", { x1: "27", y1: "37", x2: "32", y2: "37" }),
+    React.createElement("line", { x1: "38", y1: "34", x2: "38", y2: "17" }),
+    React.createElement("path", { d: "M35.5 20 L38 17 L40.5 20" })));
+// L'excentrique du mollet sur marche : l'avant-pied au bord, sur la pointe en trait plein, le talon qui passe sous
+// le niveau de la marche en pointillé. Le dessin de montée sur step disait un autre exercice.
+const PoseCalfStepEccentric = poseWrap(React.createElement(React.Fragment, null,
+    React.createElement("path", { d: "M4 44 L4 30 L26 30 L26 44" }),
+    React.createElement("line", { x1: "4", y1: "44", x2: "44", y2: "44" }),
+    React.createElement("line", { x1: "29", y1: "4", x2: "31", y2: "26" }),
+    React.createElement("line", { x1: "19", y1: "30", x2: "33", y2: "25" }),
+    React.createElement("line", { x1: "19", y1: "30", x2: "33", y2: "36", strokeDasharray: "3 3" }),
+    React.createElement("line", { x1: "41", y1: "17", x2: "41", y2: "34" }),
+    React.createElement("path", { d: "M38.5 31 L41 34 L43.5 31" })));
 // Étirement de l'épaule bras croisé devant, le SECOND bras vient le retenir.
 // Relecture sur planche, novembre 2026 : « propose-moi d'autres alternatives, proportions
 // pas bonnes ». Le praticien a retenu le bras tendu en travers, tenu au coude par l'autre main,
@@ -2267,6 +2329,13 @@ const POSES = [
     // savait pas lire. Le praticien a validé chaque affectation sur planche. Nommées
     // exactement, en tête de liste, pour qu'aucune règle plus large ne les supplante.
     // Relecture sur planche, novembre 2026 : réaffectations demandées par le praticien.
+    { key: "step-down", icon: PoseStepDown, test: (n) => n === "descente de marche contrôlée" || n === "step-down contrôlé" },
+    { key: "step-both", icon: PoseStepBoth, test: (n) => n === "montée et descente d'escalier"
+            || n.startsWith("montée-descente sur step") || n.startsWith("reprise progressive de la marche et des escaliers")
+            || n === "reprise progressive des escaliers" },
+    { key: "step-lateral", icon: PoseStepLateral, test: (n) => n === "step-up latéral contrôlé" },
+    { key: "calf-step-eccentric", icon: PoseCalfStepEccentric, test: (n) => n === "excentrique unipodal sur marche" },
+    { key: "calf", icon: PoseCalfRaise, test: (n) => n === "excentrique unipodal jusqu'au sol" },
     { key: "plank-knees", icon: PosePlankKnees, test: (n) => n.includes("planche modifiée") || n === "gainage doux progressif" },
     { key: "plank-leg", icon: PosePlankLeg, test: (n, t) => n === "gainage avec mouvement de jambe"
             || n.includes("planche avec levée de jambe")
@@ -2737,7 +2806,7 @@ const POSTURE_DESSIN = { "assis-chaise": "assis", "debout-simple": "debout",
     "standing-abduction-band": "debout", "standing-abduction-band-knee": "debout", "standing-adduction-band": "debout", "supine-core-iso": "dos", "pelvic-tilt": "dos", "obliques": "dos", "lateral-raise-weight": "debout", "seated-leg-arrow": "assis", "lateral-lunge": "debout", "band-d2": "debout",
     "calf-bent-step": "debout", "side-lying-adductor": "cote", "clamshell": "cote", "prone-lift-arms": "ventre", "band-pull-apart": "debout", "band-row-high": "debout", "flank-stretch": "debout", "fascia-stretch": "assis",
     "seated-twist-mains": "assis", "side-bend": "debout", "prone-light": "ventre", "high-knees": "debout", "butt-kicks": "debout", "side-shuffle": "debout", "hop-single": "debout", "drop-jump": "debout",
-    "forward-fold": "debout", "etirement-debout": "debout", step: "debout", calf: "debout", "standing-abduction": "debout",
+    "forward-fold": "debout", "etirement-debout": "debout", step: "debout", "step-down": "debout", "step-both": "debout", "step-lateral": "debout", calf: "debout", "standing-abduction": "debout",
     "hip-rotation": "debout", squat: "debout", lunge: "debout", "hip-hinge": "debout",
     // Le dessin du tronc montre une silhouette debout, sans l'avoir jamais déclaré : le
     // contrôle de cohérence ne pouvait donc rien lui reprocher, et trois bascules du
